@@ -1,0 +1,179 @@
+import { expect, test } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
+
+test.beforeEach(async ({ page }) => {
+  // Photo CDN may be unreachable in CI sandboxes; tiles fall back to tone colours.
+  await page.route("https://images.unsplash.com/**", (r) => r.abort());
+});
+
+// Pages from batch 2 (built after homepage approval). Nav links prefetch them,
+// so their 404s are expected until then. Delete this list once they exist.
+const PENDING_ROUTES = ["/flights", "/deals", "/destinations", "/airlines", "/travel-guides", "/help", "/contact", "/about"];
+
+test("renders every homepage section without errors", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  page.on("response", (r) => {
+    const url = new URL(r.url());
+    if (r.status() < 400 || url.hostname === "images.unsplash.com") return;
+    if (PENDING_ROUTES.some((p) => url.pathname === p || url.pathname.startsWith(p + "/"))) return;
+    errors.push(`${r.status()} ${r.url()}`);
+  });
+  await page.goto("/");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Where to next? We’ll find the fare.");
+  for (const name of ["Fares from your city", "Departures worth a look", "Trending destinations", "Prefer to book with a person?", "Travel guides", "Questions before you book", "Get fare alerts in your inbox"]) {
+    await expect(page.getByRole("heading", { name, level: 2 })).toBeVisible();
+  }
+  await page.waitForLoadState("networkidle");
+  expect(errors).toEqual([]);
+});
+
+test("has no horizontal scroll at common widths", async ({ page }) => {
+  await page.goto("/");
+  for (const width of [360, 375, 414, 768, 1024, 1280, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow, `overflow at ${width}px`).toBeLessThanOrEqual(0);
+  }
+});
+
+test("fare board fits its panel", async ({ page }) => {
+  await page.goto("/");
+  for (const width of [375, 768, 1024, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    const spill = await page.evaluate(() => {
+      const table = document.querySelector("#board-title")!.closest("section")!.querySelector("table")!;
+      return table.scrollWidth - table.parentElement!.clientWidth;
+    });
+    expect(spill, `fare board spill at ${width}px`).toBeLessThanOrEqual(0);
+  }
+});
+
+test("search validates, then builds a results URL", async ({ page }) => {
+  await page.goto("/");
+  const form = page.getByRole("form", { name: "Search flights" });
+  await form.getByRole("button", { name: "Search flights" }).click();
+  await expect(form.getByText("Choose where you're going")).toBeVisible();
+  await expect(form.getByText("Add a departure date")).toBeVisible();
+
+  const to = form.getByRole("combobox", { name: "Going to" });
+  await to.fill("lon");
+  await page.getByRole("option", { name: /London.*Heathrow/ }).click();
+  await expect(to).toHaveValue("London (LHR)");
+
+  await form.getByLabel("Departing").fill("2030-03-10");
+  await form.getByLabel("Returning").fill("2030-03-20");
+  await form.getByRole("button", { name: "Search flights" }).click();
+  await expect(page).toHaveURL(/\/flights\?trip=round.*from0=NYC.*to0=LHR.*date0=2030-03-10.*return=2030-03-20/);
+});
+
+test("airport combobox works from the keyboard", async ({ page }) => {
+  await page.goto("/");
+  const to = page.getByRole("combobox", { name: "Going to" });
+  await to.fill("tok");
+  await to.press("ArrowDown");
+  await to.press("ArrowUp");
+  await to.press("Enter");
+  await expect(to).toHaveValue("Tokyo (HND)");
+});
+
+test("trip type tabs change the form", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("radio", { name: "One way" }).click();
+  await expect(page.getByLabel("Returning")).toHaveCount(0);
+  await page.getByRole("radio", { name: "Multi-city" }).click();
+  await expect(page.getByRole("combobox", { name: /Flight 2/ })).toBeVisible();
+  await page.getByRole("button", { name: "Add another flight" }).click();
+  await expect(page.getByRole("combobox", { name: /Flight 3/ })).toBeVisible();
+  await page.getByRole("button", { name: "Remove flight 3" }).click();
+  await expect(page.getByRole("combobox", { name: /Flight 3/ })).toHaveCount(0);
+});
+
+test("travellers popover enforces limits", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: /1 traveller, Economy/ }).click();
+  const dialog = page.getByRole("dialog", { name: "Travellers and cabin class" });
+  await expect(dialog.getByRole("button", { name: "Remove one adult" })).toBeDisabled();
+  await expect(dialog.getByRole("button", { name: "Add one infant" })).toBeEnabled();
+  await dialog.getByRole("button", { name: "Add one infant" }).click();
+  await expect(dialog.getByRole("button", { name: "Add one infant" })).toBeDisabled(); // one lap infant per adult
+  await dialog.getByRole("button", { name: "Add one child" }).click();
+  await dialog.getByText("Business", { exact: true }).click();
+  await dialog.getByRole("button", { name: "Done" }).click();
+  await expect(page.getByRole("button", { name: /3 travellers, Business/ })).toBeVisible();
+});
+
+test("origin chips filter the deals rail", async ({ page }) => {
+  await page.goto("/");
+  const panel = page.locator("#deals-panel");
+  await expect(panel.getByRole("link", { name: /London.*NYC → LHR/ })).toBeVisible();
+  await page.getByRole("tab", { name: "Los Angeles" }).click();
+  await expect(panel.getByRole("link", { name: /Tokyo.*LAX → HND/ })).toBeVisible();
+  await expect(panel.getByRole("link", { name: /NYC → LHR/ })).toHaveCount(0);
+});
+
+test("region tabs swap destinations", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("tab", { name: "Asia & Pacific" }).click();
+  await expect(page.locator("#region-panel").getByRole("link", { name: /Tokyo/ })).toBeVisible();
+});
+
+test("faq accordion toggles", async ({ page }) => {
+  await page.goto("/");
+  const q = page.getByRole("button", { name: "Are the prices on the site final?" });
+  await expect(q).toHaveAttribute("aria-expanded", "false");
+  await q.click();
+  await expect(q).toHaveAttribute("aria-expanded", "true");
+  await expect(page.getByText(/Airline prices change throughout the day/)).toBeVisible();
+});
+
+test("fare alert form validates and confirms", async ({ page }) => {
+  await page.goto("/");
+  const section = page.locator("section", { has: page.getByRole("heading", { name: "Get fare alerts in your inbox" }) });
+  await section.getByRole("button", { name: "Sign up" }).click();
+  await expect(section.getByRole("alert")).toHaveText(/Enter an email address/);
+  await section.getByLabel("Email address").fill("traveller@example.com");
+  await section.getByRole("button", { name: "Sign up" }).click();
+  await expect(section.getByRole("status")).toContainText("You’re signed up");
+});
+
+test("mobile menu opens and closes", async ({ page, isMobile }) => {
+  test.skip(!isMobile, "drawer is mobile only");
+  await page.goto("/");
+  await page.getByRole("button", { name: "Open menu" }).click();
+  const drawer = page.getByRole("dialog", { name: "Menu" });
+  await expect(drawer.getByRole("link", { name: "Deals" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(drawer).toHaveCount(0);
+});
+
+test("no serious accessibility violations", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#board-title").scrollIntoViewIfNeeded();
+  await page.waitForTimeout(3200); // let the fare board settle
+  const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"]).analyze();
+  const serious = results.violations.filter((v) => v.impact === "serious" || v.impact === "critical");
+  expect(serious.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).slice(0, 3).join(", ")}`)).toEqual([]);
+});
+
+test.describe("reduced motion", () => {
+  test.use({ reducedMotion: "reduce" });
+  test("fare board shows final fares immediately", async ({ page }) => {
+    await page.goto("/");
+    await page.locator("#board-title").scrollIntoViewIfNeeded();
+    const board = page.locator("table", { has: page.locator("caption", { hasText: "Sample round-trip fares" }) });
+    const tiles = await board.locator("tbody tr").first().locator("td:nth-child(3) [aria-hidden] > span").allTextContents();
+    expect(tiles.join("").trim()).toBe("LONDON");
+  });
+});
+
+test("header height stays fixed while scrolling (no scroll-anchoring loop)", async ({ page }) => {
+  await page.goto("/");
+  const header = page.locator("header").first();
+  const before = (await header.boundingBox())!.height;
+  for (const y of [4, 9, 12, 300]) {
+    await page.evaluate((top) => window.scrollTo(0, top), y);
+    await page.waitForTimeout(150);
+    expect((await header.boundingBox())!.height).toBe(before);
+  }
+});

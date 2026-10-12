@@ -1,0 +1,50 @@
+# Homepage audit — Batch 1
+
+Run against the production build (`npm run build && npm start`).
+
+## Automated checks
+
+| Check | Result |
+|---|---|
+| `npm run typecheck` | Pass |
+| `npm run lint` (incl. React Compiler rules) | Pass, 0 warnings |
+| `npm run build` | Pass — `/` fully static (prerendered) |
+| Playwright e2e (desktop 1440 + Pixel 7) | 29 tests, all pass; stable across 3 repeated runs |
+| axe-core, WCAG 2.2 A/AA | 0 serious / critical violations (desktop + mobile) |
+| Horizontal overflow at 360 / 375 / 414 / 768 / 1024 / 1280 / 1440 | None |
+| Reduced motion | Fare board renders final values immediately; hero entrance disabled |
+
+## Lighthouse (local, photo CDN blocked in sandbox)
+
+| | Performance | Accessibility | Best practices | SEO | LCP | CLS |
+|---|---|---|---|---|---|---|
+| Mobile | 88 | 100 | 100 | 100 | 3.6 s (simulated 4G) | 0 |
+| Desktop | 99 | 100 | 96 | 100 | 0.9 s | 0 |
+
+- Desktop best-practices 96: console 404s from nav links prefetching pages that ship in
+  Batch 2 (`/flights`, `/deals`, …). Resolves itself when those pages exist.
+- Mobile LCP was measured on text because photos could not load here; re-measure once
+  photos are reachable (hero photo is `fetchPriority="high"`, sized via `sizes`).
+
+## Bugs found and fixed during test/audit
+
+1. **Header scroll-anchoring loop** — header shrank 8px after 8px of scroll; as an in-flow
+   sticky element this let scroll anchoring push scroll back under the threshold, so the page
+   jittered near the top on mobile. Header height is now fixed. Regression test added.
+2. **Fare board overflow** — table wider than the viewport at 375–768px, and its `sr-only`
+   labels escaped the clipping panel (no positioned ancestor), widening the page. Columns now
+   collapse by breakpoint; panel is `relative`. Regression tests added.
+3. **Label-in-name (WCAG 2.5.3)** — deal cards and the logo link had `aria-label`s that did
+   not contain their visible text. Visible text is now the accessible name.
+4. **Multi-city legs keyed by index** — removing a middle flight animated the wrong row.
+   Legs now have stable ids.
+5. **Hero headline hidden until hydration** — a JS entrance would SSR the H1 at opacity 0.
+   Replaced with a CSS entrance that starts at first paint.
+6. Copy claims not backed by data ("fares booked recently", "recent prices") removed.
+
+## Open items (need owner input)
+
+- Real phone, email, address, hours (`src/content/site.ts`, flagged `TODO(confirm)`).
+- Photos: verify and self-host once `images.unsplash.com` is reachable (`src/content/images.ts`).
+- Fare alerts endpoint validates only; connect an email provider (`src/app/api/fare-alerts/route.ts`).
+- Reviews section intentionally withheld until real reviews / Trustpilot are available.
