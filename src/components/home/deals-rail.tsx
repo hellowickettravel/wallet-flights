@@ -100,11 +100,11 @@ export function DealsRail() {
   );
 }
 
-function DealCard({ deal }: { deal: Deal }) {
+export function DealCard({ deal, href }: { deal: Deal; href?: string }) {
   const { destination: d } = deal;
   return (
     <Link
-      href={`/destinations/${d.slug}`}
+      href={href ?? `/destinations/${d.slug}`}
       className="group block rounded-(--radius-card) focus-visible:outline-offset-4"
     >
       <div className="relative aspect-[4/3] overflow-hidden rounded-(--radius-card)">

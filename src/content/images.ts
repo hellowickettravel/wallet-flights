@@ -1,48 +1,51 @@
-// Every photo on the site is listed here so it can be audited, swapped or
-// self-hosted in one place. All are from Unsplash (free to use under the
-// Unsplash License). `tone` is the colour shown while the photo loads or if
-// it fails, so a tile never renders as an empty box.
-// TODO(verify): confirm each photo visually once the build environment can
-// reach images.unsplash.com, then download into /public/photos.
+// Every photo on the site, chosen through the Unsplash search API (subject
+// confirmed from each photo's description) and free to use under the Unsplash
+// License. `tone` is Unsplash's dominant colour for the photo: it shows while
+// the photo loads, or if it fails, so a slot never renders empty.
+// `by` / `user` feed the photo credits page, as Unsplash's API guidelines ask.
 
-export type Photo = { id: string; alt: string; tone: string };
+export type Photo = { id: string; alt: string; tone: string; by: string; user: string };
 
-const p = (id: string, alt: string, tone: string): Photo => ({ id, alt, tone });
+const p = (id: string, alt: string, tone: string, by: string, user: string): Photo => ({ id, alt, tone, by, user });
 
 export const photos = {
-  hero: p("photo-1436491865332-7a61a109cc05", "Aircraft wing above the clouds at sunset", "#5a6f96"),
-  traveller: p("photo-1530521954074-e64f6810b32d", "Traveller with a suitcase in an airport terminal", "#7d8796"),
-  about: p("photo-1500835556837-99ac94a94552", "View of the wing from an aircraft window", "#6f86a6"),
+  hero: p("photo-1631742272329-eeca83cb6886", "The sun setting over the clouds, seen from an airplane", "#3a1f22", "Noorulabdeen Ahmad", "noorulabdeen"),
+  about: p("photo-1543797414-a0c3ad076f7c", "Looking out of an airplane window", "#4073a6", "@felirbe", "felirbe"),
+  traveller: p("photo-1574202141112-c3a90e1a3ce2", "Traveller walking through an airport with a black suitcase", "#9aa3ad", "Tim Mossholder", "timmossholder"),
 
-  london: p("photo-1513635269975-59663e0ac1ad", "Big Ben and Westminster Bridge in London", "#5d6c7f"),
-  paris: p("photo-1502602898657-3e91760cbb34", "The Eiffel Tower over Paris rooftops", "#8297b5"),
-  rome: p("photo-1552832230-c0197dd311b5", "The Colosseum in Rome", "#b38a5e"),
-  barcelona: p("photo-1583422409516-2895a77efded", "Sagrada Família in Barcelona", "#8f8070"),
-  lisbon: p("photo-1585208798174-6cedd86e019a", "Yellow tram on a Lisbon street", "#c29a54"),
+  london: p("photo-1681407979872-0a4cbde28391", "Big Ben and the Houses of Parliament on the Thames, London", "#7e95ad", "Jacob Diehl", "jacob_diehl_film"),
+  paris: p("photo-1502602898657-3e91760cbb34", "The Eiffel Tower above Paris", "#a99393", "Chris Karidis", "chriskaridis"),
+  rome: p("photo-1552832230-c0197dd311b5", "The Colosseum in Rome at blue hour", "#4f8fbf", "David Köhler", "davidkhlr"),
+  barcelona: p("photo-1583422409516-2895a77efded", "Aerial view of Barcelona's city blocks", "#735959", "Logan Armstrong", "loganstrongarms"),
+  lisbon: p("photo-1599069158346-684fee0e414a", "Yellow tram on the Elevador da Bica in Lisbon", "#b8a46a", "André Lergier", "andrelergier"),
 
-  tokyo: p("photo-1540959733332-eab4deabeeaf", "Tokyo street lit up at night", "#3c3555"),
-  bali: p("photo-1537996194471-e657df975ab4", "Temple gate in Bali", "#5d7a55"),
-  singapore: p("photo-1525625293386-3f8f99389edd", "Marina Bay skyline in Singapore", "#3d5a80"),
-  bangkok: p("photo-1508009603885-50cf7c579365", "Temple roofs in Bangkok", "#a3753d"),
-  sydney: p("photo-1506973035872-a4ec16b8e8d9", "Sydney Opera House across the harbour", "#5b88b5"),
+  tokyo: p("photo-1542051841857-5f90071e7989", "Neon-lit Shibuya crossing in Tokyo at night", "#0c5973", "Jezael Melgoza", "jezar"),
+  bali: p("photo-1711609110590-5ad5c4599e56", "Pura Ulun Danu Bratan temple on a lake in Bali at golden hour", "#a98f8f", "Katarzyna Zygnerska", "katasha"),
+  singapore: p("photo-1620033263019-f2ec2c738a60", "Boat on the water by Singapore's skyline", "#405959", "Danny de Groot", "dannydegroot"),
+  bangkok: p("photo-1563492065599-3520f775eeed", "Ornate temple roofs in Bangkok", "#0a8aa0", "Alejandro Cartagena", "cartayen"),
+  sydney: p("photo-1523428096881-5bd79d043006", "Sydney Opera House and Harbour Bridge", "#6c87a3", "April Pethybridge", "apriiil"),
 
-  dubai: p("photo-1512453979798-5ea266f8880c", "Dubai skyline with the Burj Khalifa", "#9a8b78"),
-  istanbul: p("photo-1524231757912-21f4fe3a7200", "Mosque domes on the Istanbul skyline", "#7d6c86"),
-  cairo: p("photo-1572252009286-268acec5ca0a", "Pyramids of Giza near Cairo", "#c09a63"),
-  capeTown: p("photo-1580060839134-75a5edca2e99", "Table Mountain above Cape Town", "#5f86a8"),
-  delhi: p("photo-1564507592333-c60657eea523", "The Taj Mahal at sunrise", "#c7a487"),
+  dubai: p("photo-1512453979798-5ea266f8880c", "Burj Khalifa above Downtown Dubai at sunrise", "#3a3a3a", "David Rodrigo", "david__r"),
+  istanbul: p("photo-1589561454226-796a8aa89b05", "Ferry crossing the Bosphorus by Eminönü, Istanbul", "#7f9a9a", "Engin Yapici", "yapici"),
+  cairo: p("photo-1503177119275-0aa32b3a9368", "The Pyramid of Khafre at Giza", "#c4a97e", "Jeremy Bishop", "jeremybishop"),
+  capeTown: p("photo-1588455471455-4b28e9ab3cd5", "Table Mountain above the water in Cape Town at sunset", "#735959", "Jaman Asad", "asadsnapper"),
+  delhi: p("photo-1564507592333-c60657eea523", "The Taj Mahal in Agra", "#40a6c0", "Jovyn Chamb", "jovynchamb"),
 
-  newYork: p("photo-1496442226666-8d4d0e62e6e9", "Manhattan skyline in New York", "#5a6b80"),
-  cancun: p("photo-1507525428034-b723cf961d3e", "Turquoise water on a white-sand beach", "#4aa3b5"),
-  rio: p("photo-1483729558449-99ef09a8c325", "Rio de Janeiro from above", "#4c7d6b"),
-  mexicoCity: p("photo-1518105779142-d975f22f1b0a", "Palacio de Bellas Artes in Mexico City", "#8e7b6a"),
-  cusco: p("photo-1526392060635-9d6019884377", "Machu Picchu above the clouds", "#5f7d5c"),
+  newYork: p("photo-1496588152823-86ff7695e68f", "Brooklyn Bridge with Manhattan in the distance", "#3a3a3a", "Luca Bravo", "lucabravo"),
+  cancun: p("photo-1602088113235-229c19758e9f", "Beach umbrellas on a white-sand beach by turquoise water", "#6fa3bd", "David Vives", "davidvives"),
+  rio: p("photo-1483729558449-99ef09a8c325", "Rio de Janeiro from above at sunset", "#b19a8a", "Agustin Diaz Gargiulo", "agustindiazg"),
+  mexicoCity: p("photo-1547686669-9a8cb1a22d91", "Aerial view of the Palacio de Bellas Artes dome, Mexico City", "#0c73a6", "Carlos Aguilar", "carlosaguilar"),
+  cusco: p("photo-1526392060635-9d6019884377", "Machu Picchu among misty mountains", "#a98f8f", "Willian Justen de Vasconcellos", "willianjusten"),
 
-  guidePlanning: p("photo-1488646953014-85cb44e25828", "Map, camera and passport laid out for trip planning", "#a8907a"),
-  guideAlps: p("photo-1476514525535-07fb3b4ae5f1", "Alpine lake below mountains", "#4f7b8a"),
-  guideRoad: p("photo-1469854523086-cc02fe5d8800", "Van on an open desert road", "#a0815e"),
+  guidePlanning: p("photo-1578894381163-e72c17f2d45f", "Camera and passport laid out before a trip", "#9a9a9a", "Charlotte Noelle", "charlottenoelle_"),
+  guideEurope: p("photo-1467269204594-9661b134dd2b", "Spring flowers on a railing in a European old town", "#9ab8b8", "Roman Kraft", "iamromankraft"),
+  guideCarryOn: p("photo-1526857240824-92be52581d9b", "Clothes and shoes packed in a suitcase", "#8ca6c0", "Arnel Hasanovic", "arnelhasanovic"),
 } satisfies Record<string, Photo>;
 
 export function unsplashUrl(id: string, width: number, quality = 72) {
   return `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${width}&q=${quality}`;
 }
+
+const UTM = "utm_source=wallet_flights&utm_medium=referral";
+export const photographerUrl = (user: string) => `https://unsplash.com/@${user}?${UTM}`;
+export const unsplashHomeUrl = `https://unsplash.com/?${UTM}`;

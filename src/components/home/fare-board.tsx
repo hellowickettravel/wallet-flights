@@ -65,13 +65,13 @@ export function FareBoard() {
               Sample round-trip fares from the US and UK. Search to compare live prices across providers.
             </p>
           </div>
-          <a
-            href="#search"
+          <Link
+            href="/#search"
             className="inline-flex h-12 items-center gap-2 self-start rounded-full bg-sun px-6 font-semibold text-ink transition-colors hover:bg-[#ffd666] md:self-auto"
           >
             <MagnifyingGlass className="size-5" weight="bold" aria-hidden />
             Search your route
-          </a>
+          </Link>
         </div>
 
         <div ref={ref} className="relative mt-10 overflow-hidden rounded-(--radius-panel) bg-[#0c1c38] p-3 ring-1 ring-white/10 sm:p-5 md:p-6">

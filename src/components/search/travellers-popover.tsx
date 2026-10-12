@@ -5,7 +5,8 @@ import { AnimatePresence, motion } from "motion/react";
 import { CaretDown, Minus, Plus, User } from "@phosphor-icons/react";
 import clsx from "clsx";
 
-export type Cabin = "economy" | "premium" | "business" | "first";
+import type { Cabin } from "@/lib/search-query";
+export type { Cabin };
 export type Travellers = { adults: number; children: number; infants: number };
 
 export const cabins: { id: Cabin; label: string }[] = [

@@ -109,3 +109,30 @@ Mobile: single column, form first, channels after.
 
 Review against defaults: no centered hero-on-photo for inner pages; no three-identical-card
 "values" grid; the only numbering is the real 3-step flow; no invented stats or team photos.
+
+---
+
+## Batch 3 — Results page & content pages
+
+**Results page signature:** while searching, a plane glides along a dotted arc between the two
+airport codes and the provider count ticks up ("Checking 12 providers"). Then results stagger in
+once. Everything after that is a response to user action (filters animate the list with layout,
+the details panel expands, the sort pill slides).
+
+```
+[modify search bar — compact, white on mist]
+[airline strip: ‹ EK £412  QR £428  TK £431 … ›]
+[Cheapest | Fastest | Best]                   [Filters (mobile)] [Cards | Table]
+filters (left, 280px, sticky) | 48 results · LHR → JFK · 12 Mar
+                              | ┌ card: mark · 08:10 ──✈── 16:45 · 8h 35m · Nonstop · £412  [View deal]
+                              | └ tags: cabin bag · checked bag · refundable   [Details ▾]
+```
+Airline marks are monogram tiles (IATA code on a brand-tinted tile), not trademarked logos.
+Price stays fare green, the cheapest card gets a "Cheapest" badge, and the CTA is action blue.
+
+**Destination guide:** full-bleed photo hero with ink scrim and the city name set large, a
+facts rail (airport, best time, flight time from NYC and LON), example fares from US and UK
+cities, a prefilled search panel, and related destinations.
+
+**Articles:** narrow measure (68ch), photo header, reading time, sticky table of contents on
+wide screens.

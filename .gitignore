@@ -48,3 +48,4 @@ next-env.d.ts
 # python caches (skill scripts)
 __pycache__/
 *.log
+!.env.example

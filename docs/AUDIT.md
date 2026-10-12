@@ -88,3 +88,55 @@ Desktop BP 96 is the same known cause as batch 1: prefetches of not-yet-built pa
 - `/flights` (search results with affiliate redirects) is not built yet; search submits there.
 - Photos still unverified (CDN blocked here).
 - No street address is published on the old site; only "London, United Kingdom" is shown.
+
+---
+
+# Batch 3 audit — search results, all remaining pages, launch readiness
+
+## Scope
+`/flights` (demo results), `/go` hand-off, `/deals`, `/destinations`, 20 × `/destinations/[slug]`,
+`/airlines`, `/travel-guides`, 3 × `/travel-guides/[slug]`, `/help`, `/privacy-policy`,
+`/terms-and-conditions`, `/cookie-policy`, `/photo-credits`; OG image, icons, manifest,
+sitemap, security headers, email delivery, Vercel analytics.
+
+## Automated checks
+
+| Check | Result |
+|---|---|
+| typecheck · lint · build | Pass — 50 routes, all static except `/api/*` |
+| Playwright (desktop + Pixel 7) | 110 tests; 220/220 across two repeated runs |
+| axe WCAG 2.2 AA, every page | 0 serious / critical |
+| Overflow at 360 / 768 / 1280, every page | None |
+| Internal links crawl | All resolve (<400) |
+| SEO endpoints (sitemap, robots, manifest, icons, OG) | 200 |
+| Security headers | nosniff, DENY framing, referrer and permissions policy, no `x-powered-by` |
+
+## Lighthouse (photo CDN blocked in sandbox)
+
+| Page | Mobile perf / a11y / BP / SEO | Desktop |
+|---|---|---|
+| /destinations/lisbon | 90 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| /deals | 89 / 100 / 100 / 100 | 99 / 100 / 100 / 100 |
+| /help | 91 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+
+## Photos
+All 26 photo slots now use photos chosen through the Unsplash API by their descriptions
+(the old guessed IDs are gone). Each has its Unsplash dominant colour as a loading tone and is
+credited on `/photo-credits` with Unsplash referral links.
+
+## Bugs found and fixed
+1. **Searching animation overflowed phones**: the plane moved along a pixel-space path while
+   the drawn arc scaled. The plane is now positioned in SVG coordinates each frame.
+2. **Mobile filter sheet: close button covered “Reset”**, so Reset couldn't be tapped.
+   The header is now in normal flow; regression test added.
+3. **Airline tiles KL / U2 below 4.5:1 contrast**: colours darkened.
+4. **`/deals` overflowed at 360px** (two selects side by side): now a two-column grid.
+5. **Vercel Analytics scripts 404 off Vercel**: rendered only when `VERCEL` is set.
+6. **`/deals` heading order**: result count is now the section's H2.
+7. **Unusual city pairs returned no results** in the demo engine: hub fallback added.
+8. **Fare-board CTA linked to `#search`** on pages without a search: now `/#search`.
+
+## Before launch (owner)
+- Add `RESEND_API_KEY` + `EMAIL_FROM` in Vercel (forms return a clear error without them in production).
+- Results are demo data with a visible notice; connect a fare API + affiliate links to go fully live.
+- Legal pages: add the registered company name/number and have them reviewed.

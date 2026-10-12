@@ -30,7 +30,7 @@ export function FareAlerts() {
       if (!res.ok) throw new Error();
       setState({ status: "done" });
     } catch {
-      setState({ status: "error", message: "We couldn’t sign you up just now. Try again in a moment." });
+      setState({ status: "error", message: "We couldn’t sign you up just now. Please try again in a moment." });
     }
   }
 

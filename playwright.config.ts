@@ -15,8 +15,9 @@ export default defineConfig({
   },
   webServer: {
     command: "npm run start -- -p 3100",
+    env: { EMAIL_DRY_RUN: "1" },
     url: "http://localhost:3100",
-    reuseExistingServer: true,
+    reuseExistingServer: !process.env.CI,
     timeout: 60_000,
   },
   projects: [

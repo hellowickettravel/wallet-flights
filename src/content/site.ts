@@ -56,7 +56,6 @@ export const footerNav = [
     title: "Company",
     links: [
       { label: "About us", href: "/about" },
-      { label: "Travel guides", href: "/travel-guides" },
       { label: "Help centre", href: "/help" },
       { label: "Contact", href: "/contact" },
     ],
@@ -67,6 +66,7 @@ export const footerNav = [
       { label: "Terms & conditions", href: "/terms-and-conditions" },
       { label: "Privacy policy", href: "/privacy-policy" },
       { label: "Cookie policy", href: "/cookie-policy" },
+      { label: "Photo credits", href: "/photo-credits" },
     ],
   },
 ] as const;

@@ -6,9 +6,8 @@ test.beforeEach(async ({ page }) => {
   await page.route("https://images.unsplash.com/**", (r) => r.abort());
 });
 
-// Pages from batch 2 (built after homepage approval). Nav links prefetch them,
-// so their 404s are expected until then. Delete this list once they exist.
-export const PENDING_ROUTES = ["/flights", "/deals", "/destinations", "/airlines", "/travel-guides", "/help", "/terms-and-conditions", "/privacy-policy", "/cookie-policy"];
+// Routes that exist but may 404 on prefetch in tests. All pages now exist.
+export const PENDING_ROUTES: string[] = [];
 
 test("renders every homepage section without errors", async ({ page }) => {
   const errors: string[] = [];

@@ -228,7 +228,7 @@ export function ContactForm() {
             </div>
             {status === "failed" && (
               <p role="alert" className="rounded-xl bg-red-50 p-4 text-[0.9375rem] font-medium text-red-800">
-                Your message didn’t send. Check your connection and try again, or email us at{" "}
+                Your message didn’t send. Please try again in a moment, or email us at{" "}
                 <a href={`mailto:${site.email}`} className="underline">
                   {site.email}
                 </a>

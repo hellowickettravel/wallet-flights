@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import { AirplaneLanding, AirplaneTakeoff, ArrowsLeftRight, MagnifyingGlass, Plus, X } from "@phosphor-icons/react";
 import clsx from "clsx";
-import { airports, type Airport } from "@/content/airports";
+import type { Airport } from "@/content/airports";
+import { airportByCode, serializeSearch, type SearchQuery, type TripType } from "@/lib/search-query";
 import { AirportField } from "./airport-field";
 import { DateField } from "./date-field";
 import { TravellersPopover, type Cabin, type Travellers } from "./travellers-popover";
 
-type TripType = "round" | "oneway" | "multi";
 type Leg = { id: number; from: Airport | null; to: Airport | null; date: string };
 type Errors = Record<string, string>;
 
@@ -21,7 +21,6 @@ const tripTypes: { id: TripType; label: string }[] = [
 ];
 
 const MAX_LEGS = 5;
-const byCode = (c: string) => airports.find((a) => a.code === c) ?? null;
 
 function isoDate(d: Date) {
   const off = d.getTimezoneOffset();
@@ -31,16 +30,34 @@ function isoDate(d: Date) {
 const noopSubscribe = () => () => {};
 const todayIso = () => isoDate(new Date());
 
-export function SearchPanel({ defaultFrom = "NYC" }: { defaultFrom?: string }) {
+type Props = {
+  /** Prefill from an existing search (results page "modify search"). */
+  initial?: Partial<SearchQuery>;
+  defaultFrom?: string;
+  defaultTo?: string;
+  /** "hero" floats over the homepage photo; "bar" sits flat at the top of a page. */
+  variant?: "hero" | "bar";
+};
+
+function initialLegs(initial: Props["initial"], defaultFrom: string, defaultTo?: string): Leg[] {
+  const given = initial?.legs ?? [];
+  const legs: Leg[] = given.map((l, i) => ({ id: i, from: l.from, to: l.to, date: l.date }));
+  if (!legs.length) legs.push({ id: 0, from: airportByCode(defaultFrom), to: airportByCode(defaultTo), date: "" });
+  if (legs.length < 2) legs.push({ id: legs.length, from: legs[0].to, to: null, date: "" });
+  return legs;
+}
+
+export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant = "hero" }: Props) {
   const router = useRouter();
-  const [trip, setTrip] = useState<TripType>("round");
-  const [legs, setLegs] = useState<Leg[]>([
-    { id: 0, from: byCode(defaultFrom), to: null, date: "" },
-    { id: 1, from: null, to: null, date: "" },
-  ]);
-  const [returnDate, setReturnDate] = useState("");
-  const [travellers, setTravellers] = useState<Travellers>({ adults: 1, children: 0, infants: 0 });
-  const [cabin, setCabin] = useState<Cabin>("economy");
+  const [trip, setTrip] = useState<TripType>(initial?.trip ?? "round");
+  const [legs, setLegs] = useState<Leg[]>(() => initialLegs(initial, defaultFrom, defaultTo));
+  const [returnDate, setReturnDate] = useState(initial?.returnDate ?? "");
+  const [travellers, setTravellers] = useState<Travellers>({
+    adults: initial?.adults ?? 1,
+    children: initial?.children ?? 0,
+    infants: initial?.infants ?? 0,
+  });
+  const [cabin, setCabin] = useState<Cabin>(initial?.cabin ?? "economy");
   const [errors, setErrors] = useState<Errors>({});
   const [swapTurns, setSwapTurns] = useState(0);
   // Client-only value: the prerendered HTML never bakes in a date.
@@ -84,20 +101,26 @@ export function SearchPanel({ defaultFrom = "NYC" }: { defaultFrom?: string }) {
     const e = validate();
     setErrors(e);
     if (Object.keys(e).length) return;
-    const params = new URLSearchParams({ trip, cabin, adults: String(travellers.adults) });
-    if (travellers.children) params.set("children", String(travellers.children));
-    if (travellers.infants) params.set("infants", String(travellers.infants));
-    visibleLegs.forEach((l, i) => {
-      params.set(`from${i}`, l.from!.code);
-      params.set(`to${i}`, l.to!.code);
-      params.set(`date${i}`, l.date);
-    });
-    if (trip === "round") params.set("return", returnDate);
-    router.push(`/flights?${params.toString()}`);
+    const query: SearchQuery = {
+      trip,
+      cabin,
+      ...travellers,
+      legs: visibleLegs.map((l) => ({ from: l.from!, to: l.to!, date: l.date })),
+      returnDate: trip === "round" ? returnDate : undefined,
+    };
+    router.push(`/flights?${serializeSearch(query)}`);
   }
 
   return (
-    <form onSubmit={submit} noValidate aria-label="Search flights" className="rounded-(--radius-panel) bg-white p-4 shadow-(--shadow-float) ring-1 ring-line/70 sm:p-6">
+    <form
+      onSubmit={submit}
+      noValidate
+      aria-label="Search flights"
+      className={clsx(
+        "rounded-(--radius-panel) bg-white ring-1",
+        variant === "hero" ? "p-4 shadow-(--shadow-float) ring-line/70 sm:p-6" : "p-3 shadow-[0_8px_24px_-18px_rgb(15_31_61/0.35)] ring-line sm:p-4",
+      )}
+    >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <LayoutGroup id="trip-type">
           <div role="radiogroup" aria-label="Trip type" className="flex rounded-full bg-mist p-1">

@@ -135,3 +135,32 @@ disclosure to the footer. Deals rail gains UK departure cities priced in GBP.
 - Direct channels: email, phone, location, socials.
 - A note that bookings are made with the provider, who handles changes/refunds — so travellers
   know who to contact first.
+
+---
+
+# Batch 3 — Search results, remaining pages, launch readiness
+
+## `/flights` — search results (demo data until a live fare API is connected)
+Reference supplied by the owner (results list with airline strip, sort, filters, details, book).
+Adapted to the comparison model: no agent fare/commission; each result shows the cheapest
+provider and the other providers' prices, and "View deal" hands off to the provider.
+
+- Modify-search bar (prefilled from the URL), collapsible on mobile.
+- Airline price strip: cheapest price per airline; clicking filters to that airline.
+- Sort tabs: Cheapest · Fastest · Best (price/duration blend), with counts.
+- Filters: stops, airlines, departure time bands, max price; mobile bottom sheet; reset.
+- View toggle: cards / compact table.
+- Result card: airline mark, times, duration, stops arc, baggage + fare tags, price,
+  "View deal"; expandable details (segments, layover, baggage, provider prices).
+- States: searching (animated route, ~1s), results, no results after filters, invalid search.
+- `/go` hand-off page: "Taking you to {provider}" (demo: no external redirect).
+- Clear "Demo results" notice until live prices are connected.
+
+## Remaining pages
+/deals · /destinations · /destinations/[slug] (20 guides) · /airlines · /travel-guides ·
+/travel-guides/[slug] (3 articles) · /help · /privacy-policy · /terms-and-conditions · /cookie-policy
+
+## Launch readiness (Vercel)
+Email delivery for contact + alerts via Resend (env vars; graceful fallback), `.env.example`,
+generated OG image + icons + manifest, security headers, Vercel Analytics (cookieless),
+sitemap for every page, README deploy steps. Legal pages are templates flagged for review.

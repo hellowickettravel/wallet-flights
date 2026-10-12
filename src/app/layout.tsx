@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, JetBrains_Mono, Onest } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { MotionProvider } from "@/components/motion-provider";
@@ -51,6 +53,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </main>
           <Footer />
         </MotionProvider>
+        {/* Only on Vercel, where the /_vercel/* endpoints exist (cookieless). */}
+        {process.env.VERCEL && (
+          <>
+            <Analytics />
+            <SpeedInsights />
+          </>
+        )}
       </body>
     </html>
   );
