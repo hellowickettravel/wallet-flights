@@ -94,3 +94,44 @@ Content rules:
 4. Real customer reviews or Trustpilot account.
 5. Network access for image hosts (images.unsplash.com, images.pexels.com) so photos
    can be downloaded, checked and self-hosted.
+
+---
+
+# Batch 2 — About, Contact, and business-model corrections
+
+## Confirmed business facts (from the existing WordPress site + owner)
+
+| Fact | Value | Source |
+|---|---|---|
+| Model | Travel **comparison** (meta-search): results from many providers in one place, sorted cheapest → most expensive; "Book" redirects to the chosen provider via an affiliate link. Wallet Flights does not sell tickets. | Owner, old About page |
+| Market | US **and** UK travellers; prices in each departure city's currency | Owner |
+| Location | London, UK (no street address published) | Old Contact/About pages |
+| Email | info@walletflights.com | Old Contact page |
+| Phone | +44 7417 564704 | Old Contact page |
+| Response time | "We will respond within 24 hours" | Old Contact page |
+| Social | Instagram, X: @walletflights · Facebook page | Search results |
+
+## Homepage copy corrections (design unchanged)
+
+Anything implying we book, issue e-tickets, take payment, or staff "travel experts" is removed:
+hero subtitle, assurance strip, agent band → "How Wallet Flights works", fare-board CTA,
+FAQ answers, header/footer phone labels, metadata title, JSON-LD type. Add an affiliate
+disclosure to the footer. Deals rail gains UK departure cities priced in GBP.
+
+## About (`/about`) — two sections + footer
+
+1. **Intro**: what Wallet Flights is, in one headline and short story; photo; key facts
+   (based in London, serving US and UK travellers, results sorted by price).
+2. **How it works & how we're paid**: the real 3-step sequence (search → compare cheapest
+   first → book with the provider you choose), plus a plain-language affiliate explanation.
+   Ends with a search CTA.
+
+## Contact (`/contact`)
+
+- Page header with the 24-hour reply promise.
+- Contact form: name, email, topic (deal question / problem with a booking / partnerships /
+  feedback / other), message; inline validation; success state. `/api/contact` validates
+  (email provider hookup is a TODO, like fare alerts).
+- Direct channels: email, phone, location, socials.
+- A note that bookings are made with the provider, who handles changes/refunds — so travellers
+  know who to contact first.

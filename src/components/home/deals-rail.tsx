@@ -7,9 +7,7 @@ import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 import clsx from "clsx";
 import { SmartImage } from "@/components/ui/smart-image";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { dealsByOrigin, origins, type Deal } from "@/content/deals";
-
-const usd = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+import { dealsByOrigin, formatPrice, origins, type Deal } from "@/content/deals";
 
 export function DealsRail() {
   const [origin, setOrigin] = useState(origins[0].code);
@@ -29,7 +27,7 @@ export function DealsRail() {
         <SectionHeading
           id="deals-title"
           title="Fares from your city"
-          intro="Example round-trip fares to places people love. Pick your departure city."
+          intro="Example round-trip fares from the US and UK. Pick your departure city."
         >
           <div className="hidden gap-2 md:flex">
             <RailButton label="Previous deals" onClick={() => scrollBy(-1)}>
@@ -94,7 +92,8 @@ export function DealsRail() {
           </AnimatePresence>
         </ul>
         <p className="mt-6 text-[0.8125rem] text-ink-soft">
-          Example fares in USD per person, economy, taxes included. Prices change often; your exact price is confirmed before you pay.
+          Example fares per person, economy, taxes included, in the departure city’s currency. Prices change often; the provider
+          confirms the final price when you book.
         </p>
       </div>
     </section>
@@ -126,7 +125,7 @@ function DealCard({ deal }: { deal: Deal }) {
           </p>
         </div>
         <div className="shrink-0 text-right">
-          <p className="tabular text-[1.25rem] leading-none font-bold text-fare">{usd.format(deal.price)}</p>
+          <p className="tabular text-[1.25rem] leading-none font-bold text-fare">{formatPrice(deal.price, deal.currency)}</p>
           <p className="mt-1 text-[0.75rem] text-ink-soft">round trip</p>
         </div>
       </div>

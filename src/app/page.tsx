@@ -3,7 +3,7 @@ import { AssuranceStrip } from "@/components/home/assurance-strip";
 import { DealsRail } from "@/components/home/deals-rail";
 import { FareBoard } from "@/components/home/fare-board";
 import { DestinationsMosaic } from "@/components/home/destinations-mosaic";
-import { AgentBand } from "@/components/home/agent-band";
+import { HowItWorksBand } from "@/components/home/how-it-works-band";
 import { GuidesSection } from "@/components/home/guides-section";
 import { FaqSection } from "@/components/home/faq-section";
 import { FareAlerts } from "@/components/home/fare-alerts";
@@ -14,11 +14,19 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "TravelAgency",
+      "@type": "Organization",
       name: site.name,
       url: site.url,
-      telephone: site.phone.display,
+      description: site.description,
       email: site.email,
+      telephone: site.phone.display,
+      address: { "@type": "PostalAddress", addressLocality: "London", addressCountry: "GB" },
+      sameAs: site.social.map((s) => s.href),
+    },
+    {
+      "@type": "WebSite",
+      name: site.name,
+      url: site.url,
     },
     {
       "@type": "FAQPage",
@@ -39,7 +47,7 @@ export default function HomePage() {
       <DealsRail />
       <FareBoard />
       <DestinationsMosaic />
-      <AgentBand />
+      <HowItWorksBand />
       <GuidesSection />
       <FaqSection />
       <FareAlerts />

@@ -20,15 +20,11 @@ export function FaqSection() {
             Questions before you book
           </h2>
           <p className="mt-4 max-w-md text-[1.0625rem] leading-relaxed text-ink-soft">
-            Can’t find your answer? Visit the{" "}
-            <Link href="/help" className="font-semibold text-action underline underline-offset-4">
-              help centre
+            Can’t find your answer?{" "}
+            <Link href="/contact" className="font-semibold text-action underline underline-offset-4">
+              Contact us
             </Link>{" "}
-            or call{" "}
-            <a href={site.phone.href} className="tabular font-semibold whitespace-nowrap text-action underline underline-offset-4">
-              {site.phone.display}
-            </a>
-            .
+            — {site.responseTime.toLowerCase()}.
           </p>
         </div>
 

@@ -89,7 +89,7 @@ export function Header() {
               <Phone weight="fill" className="size-4" aria-hidden />
             </span>
             <span className="leading-tight">
-              <span className="block text-[0.75rem] text-ink-soft">Talk to a travel expert</span>
+              <span className="block text-[0.75rem] text-ink-soft">Questions? Call us</span>
               <span className="tabular block text-[0.9375rem] font-semibold text-ink">{site.phone.display}</span>
             </span>
           </a>
@@ -165,7 +165,7 @@ export function Header() {
                 </ul>
               </nav>
               <div className="border-t border-line p-5">
-                <p className="text-sm text-ink-soft">Talk to a travel expert · {site.hours}</p>
+                <p className="text-sm text-ink-soft">Questions? {site.responseTime}.</p>
                 <a
                   href={site.phone.href}
                   className="mt-3 flex h-14 items-center justify-center gap-2 rounded-full bg-fare text-base font-semibold text-white"

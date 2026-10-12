@@ -1,38 +1,45 @@
 // Business facts used across the site.
-// TODO(confirm): phone, email, address and hours are placeholders until the
-// owner supplies the real details. 555-01xx numbers are reserved for fiction.
+// Business facts, taken from the existing walletflights.com WordPress site
+// (Contact and About pages) and confirmed by the owner. No street address is
+// published, so only the city is shown.
 export const site = {
   name: "Wallet Flights",
   url: "https://walletflights.com",
-  tagline: "Flights that fit your wallet",
+  tagline: "Compare cheap flights in one place",
   description:
-    "Search and book cheap flights worldwide, online or with a travel expert who helps with seats, baggage and changes.",
+    "Wallet Flights compares flight prices from airlines and travel sites in one search, sorted from cheapest to most expensive, so you can book the best deal directly with the provider.",
   phone: {
-    display: "+1 (888) 555-0142",
-    href: "tel:+18885550142",
+    display: "+44 7417 564704",
+    href: "tel:+447417564704",
   },
-  email: "support@walletflights.com",
-  hours: "Every day, 6am – midnight ET",
-  address: "Address to be confirmed",
+  email: "info@walletflights.com",
+  location: "London, United Kingdom",
+  responseTime: "We reply within 24 hours",
+  markets: "Travellers in the US and UK",
+  social: [
+    { label: "Instagram", handle: "@walletflights", href: "https://www.instagram.com/walletflights/" },
+    { label: "X", handle: "@walletflights", href: "https://x.com/walletflights" },
+    { label: "Facebook", handle: "Walletflights", href: "https://www.facebook.com/people/Walletflights/61565184123183/" },
+  ],
 } as const;
 
 export const mainNav = [
   { label: "Flights", href: "/flights" },
   { label: "Deals", href: "/deals" },
   { label: "Destinations", href: "/destinations" },
-  { label: "Airlines", href: "/airlines" },
   { label: "Travel guides", href: "/travel-guides" },
-  { label: "Help", href: "/help" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
 ] as const;
 
 export const footerNav = [
   {
-    title: "Book",
+    title: "Search",
     links: [
       { label: "Flights", href: "/flights" },
       { label: "Flight deals", href: "/deals" },
       { label: "Destinations", href: "/destinations" },
-      { label: "Airlines we book", href: "/airlines" },
+      { label: "Airlines", href: "/airlines" },
     ],
   },
   {

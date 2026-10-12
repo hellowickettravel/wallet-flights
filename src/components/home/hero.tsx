@@ -5,7 +5,7 @@ import { Reveal } from "./reveal";
 
 export function Hero() {
   return (
-    <section aria-labelledby="hero-title" className="container-page pt-3 md:pt-5">
+    <section id="search" aria-labelledby="hero-title" className="container-page pt-3 md:pt-5">
       <div className="relative isolate overflow-hidden rounded-(--radius-frame) bg-ink">
         <SmartImage photo={photos.hero} sizes="(min-width: 1280px) 1216px, 100vw" priority imgClassName="object-[center_62%]" />
         {/* Scrim keeps the headline at AA contrast over any part of the photo. */}
@@ -25,8 +25,8 @@ export function Hero() {
             </Reveal>
             <Reveal delay={0.1}>
               <p className="mt-5 max-w-[34rem] text-[1.0625rem] leading-relaxed text-white/85 md:text-[1.1875rem]">
-                Search flights worldwide, then book online or with a travel expert who can sort seats, bags and
-                changes for you.
+                Compare prices from airlines and travel sites in one search, sorted cheapest first. Then book your
+                pick directly with the provider.
               </p>
             </Reveal>
           </div>

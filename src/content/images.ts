@@ -11,7 +11,8 @@ const p = (id: string, alt: string, tone: string): Photo => ({ id, alt, tone });
 
 export const photos = {
   hero: p("photo-1436491865332-7a61a109cc05", "Aircraft wing above the clouds at sunset", "#5a6f96"),
-  agent: p("photo-1573497019940-1c28c88b4f3e", "Smiling travel expert at her desk", "#8a7d73"),
+  traveller: p("photo-1530521954074-e64f6810b32d", "Traveller with a suitcase in an airport terminal", "#7d8796"),
+  about: p("photo-1500835556837-99ac94a94552", "View of the wing from an aircraft window", "#6f86a6"),
 
   london: p("photo-1513635269975-59663e0ac1ad", "Big Ben and Westminster Bridge in London", "#5d6c7f"),
   paris: p("photo-1502602898657-3e91760cbb34", "The Eiffel Tower over Paris rooftops", "#8297b5"),

@@ -18,7 +18,7 @@ const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrai
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.name} — Cheap flights, booked by real people`,
+    default: `${site.name} — Compare cheap flights in one place`,
     template: `%s | ${site.name}`,
   },
   description: site.description,
@@ -26,7 +26,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: site.name,
-    locale: "en_US",
+    locale: "en_GB",
+    alternateLocale: ["en_US"],
     url: "/",
   },
   twitter: { card: "summary_large_image" },

@@ -1,22 +1,22 @@
 export const homeFaqs = [
   {
-    q: "Do I have to book online, or can I book by phone?",
-    a: "Either. You can search here and request your fare online, or call a travel expert who will compare routes and book it for you. You'll receive the same e-ticket either way.",
+    q: "Do I book through Wallet Flights?",
+    a: "No. We compare prices from airlines and travel sites in one place. When you choose a deal, we take you to that provider's website, and you book and pay with them directly.",
   },
   {
-    q: "Are the prices on the site final?",
-    a: "Fares shown on the homepage are recent examples. Airline prices change throughout the day, so the exact price is confirmed with you, including taxes and fees, before anything is charged.",
+    q: "Does it cost anything to use?",
+    a: "No. Searching and comparing is free. Some providers pay us a commission when you book through our links; the price you pay is the provider's own price.",
   },
   {
-    q: "Can you help if I need to change or cancel my flight?",
-    a: "Yes. Contact us with your booking reference and we'll explain the airline's change and refund rules for your ticket, then make the change for you if you decide to go ahead.",
+    q: "How are results sorted?",
+    a: "From cheapest to most expensive, so the lowest price is at the top. You can then compare times, stops and baggage before you choose.",
   },
   {
-    q: "Can you book seats, extra baggage or special assistance?",
-    a: "Yes, where the airline allows it. Tell your agent what you need — seat preferences, checked bags, wheelchair assistance or meals — and we'll add it to the booking.",
+    q: "Are the prices final?",
+    a: "Prices come from the providers and can change quickly. The provider confirms the final price, including taxes and fees, before you pay.",
   },
   {
-    q: "Is it safe to pay?",
-    a: "Payments are processed over an encrypted connection and your card details are never stored on this website.",
+    q: "Who do I contact about changes or refunds?",
+    a: "The provider you booked with, because they hold your booking. If you're not sure which provider that was, contact us and we'll help you find out.",
   },
 ];

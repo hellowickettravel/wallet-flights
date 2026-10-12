@@ -1,8 +1,17 @@
 import Link from "next/link";
-import { EnvelopeSimple, Phone, Clock } from "@phosphor-icons/react/dist/ssr";
+import {
+  EnvelopeSimple,
+  FacebookLogo,
+  InstagramLogo,
+  MapPin,
+  Phone,
+  XLogo,
+} from "@phosphor-icons/react/dist/ssr";
 import { footerNav, site } from "@/content/site";
 import { CurrentYear } from "@/components/ui/current-year";
 import { Logo } from "./logo";
+
+const socialIcons = { Instagram: InstagramLogo, X: XLogo, Facebook: FacebookLogo } as const;
 
 export function Footer() {
   return (
@@ -11,26 +20,44 @@ export function Footer() {
         <div>
           <Logo tone="light" />
           <p className="mt-5 max-w-sm leading-relaxed text-white/70">
-            Flights worldwide, found and booked by people who answer the phone. Search online or call a travel
-            expert any day of the week.
+            Compare flight prices from airlines and travel sites in one search, sorted cheapest first. Based in London,
+            for travellers in the US and UK.
           </p>
           <ul className="mt-8 space-y-3 text-[0.9375rem]">
             <li>
-              <a href={site.phone.href} className="inline-flex items-center gap-3 font-semibold hover:text-sun">
-                <Phone weight="fill" className="size-5 text-sun" aria-hidden />
-                <span className="tabular">{site.phone.display}</span>
-              </a>
-            </li>
-            <li>
-              <a href={`mailto:${site.email}`} className="inline-flex items-center gap-3 text-white/85 hover:text-sun">
+              <a href={`mailto:${site.email}`} className="inline-flex items-center gap-3 font-semibold hover:text-sun">
                 <EnvelopeSimple className="size-5 text-sun" aria-hidden />
                 {site.email}
               </a>
             </li>
-            <li className="inline-flex items-center gap-3 text-white/70">
-              <Clock className="size-5 text-sun" aria-hidden />
-              {site.hours}
+            <li>
+              <a href={site.phone.href} className="inline-flex items-center gap-3 text-white/85 hover:text-sun">
+                <Phone className="size-5 text-sun" aria-hidden />
+                <span className="tabular">{site.phone.display}</span>
+              </a>
             </li>
+            <li className="inline-flex items-center gap-3 text-white/70">
+              <MapPin className="size-5 text-sun" aria-hidden />
+              {site.location}
+            </li>
+          </ul>
+          <ul className="mt-7 flex gap-2" aria-label="Wallet Flights on social media">
+            {site.social.map((s) => {
+              const Icon = socialIcons[s.label];
+              return (
+                <li key={s.label}>
+                  <a
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${s.label} (opens in a new tab)`}
+                    className="grid size-11 place-items-center rounded-full text-white/80 ring-1 ring-white/20 transition-colors hover:bg-white/10 hover:text-white"
+                  >
+                    <Icon className="size-5" aria-hidden />
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         </div>
 
@@ -54,12 +81,19 @@ export function Footer() {
 
       <div className="border-t border-white/10">
         <div className="container-page flex flex-col gap-4 py-8 text-[0.8125rem] leading-relaxed text-white/55 md:flex-row md:justify-between">
-          <p className="max-w-3xl">
-            Fares shown are examples of round-trip economy prices per person, including taxes, and are subject
-            to availability. Your final price is confirmed before payment. {site.name} is a travel agency and is not
-            an airline.
+          <div className="max-w-3xl space-y-2">
+            <p>
+              {site.name} is a comparison site and doesn’t sell tickets. When you choose a deal, you book and pay with
+              that provider, who handles your booking, changes and refunds.
+            </p>
+            <p>
+              Some providers pay us a commission when you book through our links. Prices shown on this site are examples;
+              the provider confirms the final price.
+            </p>
+          </div>
+          <p className="shrink-0">
+            © <CurrentYear /> {site.name}
           </p>
-          <p className="shrink-0">© <CurrentYear /> {site.name}</p>
         </div>
       </div>
     </footer>

@@ -71,3 +71,41 @@ SmartImage (photo with tinted fallback ground) · Button · Container.
 | Testimonials carousel with stock names | Fabricated trust | Withheld until real reviews exist |
 | Numbered 01/02/03 markers on features | Decoration | Numbers used only on the agent booking steps, which are a real sequence |
 | Purple/teal gradient accents | AI tell | Functional OTA colour coding, photography carries the colour |
+
+---
+
+## Batch 2 — About & Contact
+
+**Shared:** `PageHeader` — breadcrumb (Home / Page, with BreadcrumbList JSON-LD), H1 and one
+line of intro, left aligned on white, no hero frame: inner pages lead with content rather than
+repeating the homepage's photo frame.
+
+**About**
+```
+[breadcrumb]
+H1 + story (left, 6 cols)      | photo frame (right) with an overlaid "price ladder" card:
+key facts row (4 items, line)  | example results sorted cheapest → priciest, cheapest in fare green
+------------------------------------------------------------------------------------------
+mist band: "How Wallet Flights works"
+ (1)----dotted route----(2)----dotted route----(3)      ← real sequence, so numbered
+ board-navy panel: "How we make money" (plain text) + Search / Contact buttons
+```
+The price ladder is the page's one memorable element: it shows the product's core idea
+(every provider, sorted by price) instead of describing it. Labelled as an example.
+Motion: ladder rows settle into price order once on view (layout animation); nothing else moves.
+
+**Contact**
+```
+[breadcrumb] H1 "Get in touch" · "We reply within 24 hours"
+form panel (white, float shadow, 7 cols)     | direct channels (email, phone, London UK)
+ name · email                                | socials
+ topic (segmented choices)                   | callout: "Booked through a provider?"
+ message (counter)                           |
+ [Send message]                              |
+```
+Topic uses large selectable chips (radio group) rather than a select — faster to scan, and the
+"Problem with a booking" choice reveals a hint that changes/refunds are handled by the provider.
+Mobile: single column, form first, channels after.
+
+Review against defaults: no centered hero-on-photo for inner pages; no three-identical-card
+"values" grid; the only numbering is the real 3-step flow; no invented stats or team photos.

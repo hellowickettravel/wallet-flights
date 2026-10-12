@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
 
 // Pages from batch 2 (built after homepage approval). Nav links prefetch them,
 // so their 404s are expected until then. Delete this list once they exist.
-const PENDING_ROUTES = ["/flights", "/deals", "/destinations", "/airlines", "/travel-guides", "/help", "/contact", "/about"];
+export const PENDING_ROUTES = ["/flights", "/deals", "/destinations", "/airlines", "/travel-guides", "/help", "/terms-and-conditions", "/privacy-policy", "/cookie-policy"];
 
 test("renders every homepage section without errors", async ({ page }) => {
   const errors: string[] = [];
@@ -21,7 +21,7 @@ test("renders every homepage section without errors", async ({ page }) => {
   });
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Where to next? We’ll find the fare.");
-  for (const name of ["Fares from your city", "Departures worth a look", "Trending destinations", "Prefer to book with a person?", "Travel guides", "Questions before you book", "Get fare alerts in your inbox"]) {
+  for (const name of ["Fares from your city", "Departures worth a look", "Trending destinations", "How Wallet Flights works", "Travel guides", "Questions before you book", "Get fare alerts in your inbox"]) {
     await expect(page.getByRole("heading", { name, level: 2 })).toBeVisible();
   }
   await page.waitForLoadState("networkidle");
@@ -103,6 +103,12 @@ test("travellers popover enforces limits", async ({ page }) => {
   await expect(page.getByRole("button", { name: /3 travellers, Business/ })).toBeVisible();
 });
 
+test("UK departure cities show prices in pounds", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("tab", { name: "London" }).click();
+  await expect(page.locator("#deals-panel").getByRole("link", { name: /New York.*LON → JFK.*£389/ })).toBeVisible();
+});
+
 test("origin chips filter the deals rail", async ({ page }) => {
   await page.goto("/");
   const panel = page.locator("#deals-panel");
@@ -120,11 +126,11 @@ test("region tabs swap destinations", async ({ page }) => {
 
 test("faq accordion toggles", async ({ page }) => {
   await page.goto("/");
-  const q = page.getByRole("button", { name: "Are the prices on the site final?" });
+  const q = page.getByRole("button", { name: "Are the prices final?" });
   await expect(q).toHaveAttribute("aria-expanded", "false");
   await q.click();
   await expect(q).toHaveAttribute("aria-expanded", "true");
-  await expect(page.getByText(/Airline prices change throughout the day/)).toBeVisible();
+  await expect(page.getByText(/Prices come from the providers/)).toBeVisible();
 });
 
 test("fare alert form validates and confirms", async ({ page }) => {
@@ -163,7 +169,7 @@ test.describe("reduced motion", () => {
     await page.locator("#board-title").scrollIntoViewIfNeeded();
     const board = page.locator("table", { has: page.locator("caption", { hasText: "Sample round-trip fares" }) });
     const tiles = await board.locator("tbody tr").first().locator("td:nth-child(3) [aria-hidden] > span").allTextContents();
-    expect(tiles.join("").trim()).toBe("LONDON");
+    expect(tiles.join("").replace(/\u00a0/g, " ").trim()).toBe("NEW YORK");
   });
 });
 

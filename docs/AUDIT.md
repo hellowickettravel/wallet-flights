@@ -48,3 +48,43 @@ Run against the production build (`npm run build && npm start`).
 - Photos: verify and self-host once `images.unsplash.com` is reachable (`src/content/images.ts`).
 - Fare alerts endpoint validates only; connect an email provider (`src/app/api/fare-alerts/route.ts`).
 - Reviews section intentionally withheld until real reviews / Trustpilot are available.
+
+---
+
+# Batch 2 audit — About, Contact, business-model corrections
+
+## Automated checks
+
+| Check | Result |
+|---|---|
+| typecheck · lint · build | Pass — `/about` and `/contact` prerendered static; `/api/contact` dynamic |
+| Playwright (desktop + Pixel 7) | 49 tests pass (96/96 across a repeated run before the last fix) |
+| axe WCAG 2.2 AA on `/about`, `/contact` | 0 serious / critical |
+| Horizontal overflow 360 / 768 / 1280 | None |
+
+## Lighthouse (photo CDN blocked in sandbox)
+
+| Page | Mobile perf / a11y / BP / SEO | Desktop perf / a11y / BP / SEO | CLS |
+|---|---|---|---|
+| /about | 88 / 100 / 100 / 100 | 100 / 100 / 96 / 100 | 0 |
+| /contact | 96 / 100 / 100 / 100 | 100 / 100 / 96 / 100 | 0 |
+
+Desktop BP 96 is the same known cause as batch 1: prefetches of not-yet-built pages.
+
+## Bugs found and fixed
+
+1. **About (mobile): price-ladder card covered the facts list.** The card was absolutely
+   positioned over a photo shorter than itself. Below `lg` it now flows under the photo.
+   Regression test `tests/e2e/overlap.spec.ts` checks 360–1440px.
+2. **Homepage copy contradicted the business model** (agents, booking, e-tickets, calling to
+   book). Replaced with comparison/affiliate wording; affiliate disclosure added to the footer.
+3. Single-word orphans in page headings and intros — `text-balance` / `text-pretty`.
+
+## Launch blockers / open items
+
+- **Contact form and fare alerts only validate.** Messages are not delivered until
+  `/api/contact` and `/api/fare-alerts` are connected to an email provider. Do not launch
+  without this.
+- `/flights` (search results with affiliate redirects) is not built yet; search submits there.
+- Photos still unverified (CDN blocked here).
+- No street address is published on the old site; only "London, United Kingdom" is shown.

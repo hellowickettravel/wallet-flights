@@ -2,13 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useInView, useReducedMotion } from "motion/react";
-import { ArrowRight } from "@phosphor-icons/react";
+import { ArrowRight, MagnifyingGlass } from "@phosphor-icons/react";
 import Link from "next/link";
 import clsx from "clsx";
-import { fareBoard } from "@/content/deals";
-import { site } from "@/content/site";
+import { currencySymbol, fareBoard } from "@/content/deals";
 
-const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$";
+const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$£";
 const pad = (s: string, n: number) => s.padEnd(n, " ").slice(0, n);
 
 const cols = [
@@ -21,7 +20,7 @@ const cols = [
 
 type Row = (typeof fareBoard)[number];
 const cellText = (r: Row, key: (typeof cols)[number]["key"]) =>
-  key === "fare" ? `$${r.fare}` : (r[key] as string);
+  key === "fare" ? `${currencySymbol(r.currency)}${r.fare}` : (r[key] as string);
 
 /**
  * Split-flap departure board: the homepage's one signature motion moment.
@@ -63,14 +62,15 @@ export function FareBoard() {
               Departures worth a look
             </h2>
             <p className="mt-3 text-[1.0625rem] leading-relaxed text-white/75">
-              Sample round-trip fares to show what’s possible. Live prices are confirmed when you search or call.
+              Sample round-trip fares from the US and UK. Search to compare live prices across providers.
             </p>
           </div>
           <a
-            href={site.phone.href}
+            href="#search"
             className="inline-flex h-12 items-center gap-2 self-start rounded-full bg-sun px-6 font-semibold text-ink transition-colors hover:bg-[#ffd666] md:self-auto"
           >
-            Call to book <span className="tabular">{site.phone.display}</span>
+            <MagnifyingGlass className="size-5" weight="bold" aria-hidden />
+            Search your route
           </a>
         </div>
 
@@ -116,7 +116,7 @@ export function FareBoard() {
                   <td className="w-full text-right align-middle">
                     <Link
                       href={`/flights?trip=round&from0=${r.from}&to0=${r.to}`}
-                      aria-label={`Search flights ${r.from} to ${r.to}`}
+                      aria-label={`Compare flights ${r.from} to ${r.to}`}
                       className="inline-grid size-10 place-items-center rounded-full text-white/70 ring-1 ring-white/15 transition-colors group-hover:bg-white/10 group-hover:text-white hover:bg-sun hover:text-ink"
                     >
                       <ArrowRight className="size-[1.125rem]" weight="bold" aria-hidden />
