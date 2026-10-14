@@ -19,7 +19,7 @@ test("renders every homepage section without errors", async ({ page }) => {
     errors.push(`${r.status()} ${r.url()}`);
   });
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Where to next? We’ll find the fare.");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("We compare thousands of flight providers to find your cheapest fare.");
   for (const name of ["Fares from your city", "Departures worth a look", "Trending destinations", "How Wallet Flights works", "Travel guides", "Questions before you book", "Get fare alerts in your inbox"]) {
     await expect(page.getByRole("heading", { name, level: 2 })).toBeVisible();
   }
@@ -239,4 +239,25 @@ test("header height stays fixed while scrolling (no scroll-anchoring loop)", asy
     await page.waitForTimeout(150);
     expect((await header.boundingBox())!.height).toBe(before);
   }
+});
+
+test("airline logos drift left to right, each named once for screen readers", async ({ page }) => {
+  await page.goto("/");
+  const strip = page.getByRole("region", { name: "Airlines we compare" });
+  await expect(strip.getByRole("img", { name: "Emirates" })).toHaveCount(1);
+  await expect(strip.getByRole("img", { name: "British Airways" })).toHaveAttribute("src", "https://pics.avs.io/240/80/BA@2x.png");
+  await expect(page.getByText("Compare fares from these airlines and hundreds more")).toBeVisible();
+  const track = strip.locator(".marquee-track");
+  const x = async () => (await track.boundingBox())!.x;
+  const before = await x();
+  await page.waitForTimeout(600);
+  expect(await x()).toBeGreaterThan(before);
+});
+
+test("reviews show only real Trustpilot reviews, otherwise invite one", async ({ page }) => {
+  await page.goto("/");
+  const section = page.locator("section", { has: page.getByRole("heading", { name: "What travellers say" }) });
+  // No reviews yet: no stars or score anywhere, just links to the profile.
+  await expect(section.getByRole("img", { name: /Rated/ })).toHaveCount(0);
+  await expect(section.getByRole("link", { name: /Write a review on Trustpilot/ })).toHaveAttribute("href", "https://www.trustpilot.com/review/walletflights.com");
 });

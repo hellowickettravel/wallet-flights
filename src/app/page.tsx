@@ -1,9 +1,11 @@
 import { Hero } from "@/components/home/hero";
+import { AirlineStrip } from "@/components/home/airline-strip";
 import { AssuranceStrip } from "@/components/home/assurance-strip";
 import { DealsRail } from "@/components/home/deals-rail";
 import { FareBoard } from "@/components/home/fare-board";
 import { DestinationsMosaic } from "@/components/home/destinations-mosaic";
 import { HowItWorksBand } from "@/components/home/how-it-works-band";
+import { ReviewsSection } from "@/components/home/reviews-section";
 import { GuidesSection } from "@/components/home/guides-section";
 import { FaqSection } from "@/components/home/faq-section";
 import { FareAlerts } from "@/components/home/fare-alerts";
@@ -45,11 +47,13 @@ export default async function HomePage() {
   return (
     <>
       <Hero />
+      <AirlineStrip />
       <AssuranceStrip />
       <DealsRail fares={fares} />
       <FareBoard fares={fares} />
       <DestinationsMosaic fares={tileFares} />
       <HowItWorksBand />
+      <ReviewsSection />
       <GuidesSection />
       <FaqSection />
       <FareAlerts />

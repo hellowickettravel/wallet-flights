@@ -238,3 +238,39 @@ Feedback came from the owner as WhatsApp screenshots of wallet-flights.vercel.ap
   Holidays, say so on the Terms page.
 - Links to partners still pass through the affiliate network's redirect domain, and the booking
   sites the widget opens are the partners' own. Both are outside our pages.
+
+---
+
+# Batch 6 — Hero order, airline logos, reviews (15 Oct 2026)
+
+## Changes
+| Request | Change |
+|---|---|
+| Move the four shortcut pills (Flight deals, Destinations, Hotels, Car hire) to the top of the hero | Pills first, then the headline, then search. On phones they stay on one line and scroll sideways. |
+| New headline about comparing thousands of providers | "We compare thousands of flight providers to find your cheapest fare." (the owner's positioning), with a shorter intro under it. |
+| Moving airline-logo strip | `AirlineStrip`: 18 airline logos ride as stops along a dashed flight path, left to right. Logos come from the affiliate network's public airline-logo service (`pics.avs.io`). |
+| Moving Trustpilot review carousel | `ReviewsSection`: reviews as boarding passes (quote on the main part, rating and link on a perforated stub), left to right, on the dark band. |
+| "Style them our own way", not like the samples | Both were redesigned in the site's own travel language (flight path, boarding pass) instead of the bordered cards in the reference. |
+
+Marquees (`src/components/ui/marquee.tsx`, CSS in `globals.css`): the items are rendered twice and the
+track slides half its width, so the loop is seamless. The copy is `aria-hidden` and `inert`, so each item
+is read and focused once. The marquee pauses on hover and focus. With reduced motion it stops and can be
+scrolled by hand.
+
+## Not done: mock reviews
+The owner asked for mock reviews. We didn't add any. The Trustpilot profile has **0 reviews**, and
+invented reviews presented as Trustpilot reviews are banned in the UK (DMCC Act 2024, Sch. 20, in force
+6 Apr 2025, fines up to 10% of global turnover). They also break the US FTC rule (16 CFR 465) and
+Trustpilot's terms. `src/content/reviews.ts` takes real reviews only, copied word for word with a link.
+The carousel appears once there are 3. Until then the section shows one pass inviting a review.
+
+## Bugs found and fixed
+1. The pills' hidden screen-reader labels are absolutely positioned, so they escaped the
+   scrolling row and widened the page at 360px. The pills are now `relative`.
+2. On mobile, the moving logo track painted over the travellers popover and blocked taps on it,
+   because transformed elements stack above earlier content. The hero is now `relative z-10`.
+
+## Test
+lint, typecheck, build: pass. e2e: **158 passed**, 24 skipped (demo-only). New tests check that the
+logos are named once and move left to right, and that the reviews section shows no stars or score
+while there are no reviews.

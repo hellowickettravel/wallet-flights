@@ -1,6 +1,6 @@
 // Airlines used by the demo results and the Airlines page. Facts (codes, main
-// hubs, alliances) are public; logos are not used — the site shows a monogram
-// tile in a brand-like colour instead of trademarked artwork.
+// hubs, alliances) are public. Those pages show a monogram tile in a
+// brand-like colour; only the homepage logo strip (below) uses airline logos.
 export type Alliance = "Star Alliance" | "oneworld" | "SkyTeam" | "None";
 
 export type Airline = {
@@ -38,3 +38,34 @@ export const airlines: Airline[] = [
 ];
 
 export const airlineByCode = Object.fromEntries(airlines.map((a) => [a.code, a])) as Record<string, Airline>;
+
+/**
+ * Logo strip on the homepage (owner request, 15 Oct 2026). Logos are the
+ * airlines' trademarks, shown to say whose fares we compare; artwork comes
+ * from the affiliate network's public airline-logo service (pics.avs.io),
+ * which partners may use. We don't claim any partnership with the airlines.
+ */
+export const logoStrip = {
+  caption: "Compare fares from these airlines and hundreds more",
+  logoUrl: (code: string) => `https://pics.avs.io/240/80/${code}@2x.png`,
+  airlines: [
+    { code: "BA", name: "British Airways" },
+    { code: "VS", name: "Virgin Atlantic" },
+    { code: "AI", name: "Air India" },
+    { code: "6E", name: "IndiGo" },
+    { code: "EK", name: "Emirates" },
+    { code: "QR", name: "Qatar Airways" },
+    { code: "GF", name: "Gulf Air" },
+    { code: "EY", name: "Etihad Airways" },
+    { code: "TK", name: "Turkish Airlines" },
+    { code: "LH", name: "Lufthansa" },
+    { code: "AF", name: "Air France" },
+    { code: "KL", name: "KLM" },
+    { code: "SQ", name: "Singapore Airlines" },
+    { code: "AA", name: "American Airlines" },
+    { code: "DL", name: "Delta Air Lines" },
+    { code: "UA", name: "United Airlines" },
+    { code: "U2", name: "easyJet" },
+    { code: "FR", name: "Ryanair" },
+  ],
+} as const;

@@ -147,7 +147,7 @@ We follow its *layout pattern* in our own tokens, type and brand (no Skyscanner 
 ```
 [header — unchanged]
 ████████████████████████ ink #0F1F3D, full bleed ████████████████████████
- H1 (Bricolage 800, left)  Where to next? We'll find the fare.
+ H1 (Bricolage 800, left)  We compare thousands of flight providers to find your cheapest fare.
  one-line intro (white/80)
  (Round trip)(One way)(Multi-city)          ← white pill on ink for the active trip
  ┌Leaving from─┐⇄┌Going to──┬Departing┬Returning┬Travellers & cabin┬────────────┐
