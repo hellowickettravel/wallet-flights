@@ -6,7 +6,7 @@
 import type { LegalSection } from "@/components/legal/legal-page";
 import { site } from "./site";
 
-export const legalUpdated = "14 October 2026";
+export const legalUpdated = "15 October 2026";
 
 export const privacy: { intro: string; sections: LegalSection[] } = {
   intro: `This policy explains what personal data ${site.name} collects, why, and the choices you have. ${site.name} is based in ${site.location} and is the controller of the data described here.`,
@@ -18,7 +18,7 @@ export const privacy: { intro: string; sections: LegalSection[] } = {
         [
           "Contact form: your name, email address, the topic you chose and your message.",
           "Fare alerts: your email address.",
-          "Searches: the routes, dates and number of travellers you search for. Live search on our Flights page is run by our partner Travelpayouts (Aviasales), which receives your search, IP address and device information to find prices, and measures searches and bookings with its own cookies. It only loads if you allow “Live flight search” cookies.",
+          "Searches: the routes, dates and number of travellers you search for. Live search on our Flights page is run by our flight search partner, which receives your search, IP address and device information to find prices, and measures searches and bookings with its own cookies. It only loads if you allow “Live flight search” cookies.",
           "Technical data: if you allow analytics, aggregated usage statistics (pages viewed, device type, country, page speed) from Vercel Analytics, which doesn’t identify you.",
           "Your cookie choice, stored in a cookie on your device.",
         ],
@@ -40,13 +40,13 @@ export const privacy: { intro: string; sections: LegalSection[] } = {
       heading: "When you go to a provider",
       body: [
         "When you select a deal, you leave Wallet Flights for the airline or travel site you chose. Their privacy policy applies to anything you share with them, including your booking and payment details.",
-        "Our links to providers are affiliate links run by Travelpayouts. The link carries our partner ID and the name of the page section you clicked (for example “deals”), so a booking can be credited to us. We don’t add your name, email or other personal details to these links. Travelpayouts and the provider may set cookies on their own sites to record the referral.",
+        "Our links to providers are affiliate links run by our affiliate network. The link carries our partner ID and the name of the page section you clicked (for example “deals”), so a booking can be credited to us. We don’t add your name, email or other personal details to these links. The network and the provider may set cookies on their own sites to record the referral.",
       ],
     },
     {
       heading: "Who we share data with",
       body: [
-        "We use trusted service providers to host the site (Vercel), deliver email (Resend) and, with your consent, measure site usage (Vercel Analytics). Travelpayouts provides our live search and affiliate links and acts as an independent controller for the data its search widget and links collect; see travelpayouts.com for its privacy policy. We don’t sell your personal data.",
+        "We use trusted service providers to host the site (Vercel), deliver email (Resend) and, with your consent, measure site usage (Vercel Analytics). Our flight search and affiliate partner provides our live search and affiliate links and acts as an independent controller for the data its search widget and links collect. Contact us and we’ll tell you who it is and where to find its privacy policy. We don’t sell your personal data.",
         "Some of these providers may store data outside the UK, for example in the United States. Where they do, we rely on recognised safeguards such as the UK International Data Transfer Addendum or adequacy regulations.",
       ],
     },
@@ -88,7 +88,7 @@ export const terms: { intro: string; sections: LegalSection[] } = {
       heading: "Prices and information",
       body: [
         "Prices, availability, schedules and baggage information come from providers or are examples, and can change at any time. We work to keep information accurate but can’t guarantee it. The provider confirms the final price and conditions before you pay, and their terms apply to your booking.",
-        "Fares shown on the homepage, deals, destination and route pages are the cheapest prices found recently on Aviasales by other travellers. They are not offers and may no longer be available; we hide a price rather than estimate one.",
+        "Fares shown on the homepage, deals, destination and route pages are the cheapest prices found recently by other travellers. They are not offers and may no longer be available; we hide a price rather than estimate one.",
       ],
     },
     {
@@ -148,11 +148,11 @@ export const cookies: { intro: string; sections: LegalSection[] } = {
     {
       heading: "Live flight search (optional)",
       body: [
-        "Our Flights page shows live prices with a search widget from our partner Travelpayouts (Aviasales White Label, loaded from tpwdg.com). It only loads after you allow this category. It sets:",
+        "Our Flights page shows live prices with a search widget from our flight search partner. It only loads after you allow this category. It sets:",
         [
           "tpwl_currency and tpwl_locale — remember the currency and language you picked in the search (up to 1 year).",
           "hide_hotels — remembers if you hid hotel suggestions.",
-          "_sp_id and _sp_ses (Snowplow) — Travelpayouts’ measurement of searches and clicks, so bookings made through the search can be credited to us (about 13 months / 30 minutes).",
+          "_sp_id and _sp_ses (Snowplow) — our partner’s measurement of searches and clicks, so bookings made through the search can be credited to us (about 13 months / 30 minutes).",
         ],
         "If you withdraw consent we delete these cookies from our domain and reload the page.",
       ],
@@ -166,7 +166,7 @@ export const cookies: { intro: string; sections: LegalSection[] } = {
     {
       heading: "Affiliate links and provider sites",
       body: [
-        "Links to airlines, travel sites, hotels, car rental, transfers, eSIMs and attractions go through Travelpayouts (tp.media) to the provider. Travelpayouts and the provider set their own cookies on their own sites to record that you came from Wallet Flights; those are covered by their cookie policies. We don’t set advertising cookies.",
+        "Links to airlines, travel sites, hotels, car rental, transfers, eSIMs and attractions go through our affiliate network to the provider. The network and the provider set their own cookies on their own sites to record that you came from Wallet Flights; those are covered by their cookie policies. We don’t set advertising cookies.",
       ],
     },
     {

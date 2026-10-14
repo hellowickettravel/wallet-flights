@@ -89,7 +89,7 @@ export function Header() {
               <Phone weight="fill" className="size-4" aria-hidden />
             </span>
             <span className="leading-tight">
-              <span className="block text-[0.75rem] text-ink-soft">Questions? Call us</span>
+              <span className="block text-[0.75rem] text-ink-soft">{site.phone.label}</span>
               <span className="tabular block text-[0.9375rem] font-semibold text-ink">{site.phone.display}</span>
             </span>
           </a>

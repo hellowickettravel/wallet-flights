@@ -12,6 +12,7 @@ export type ProgramId = "aviasales" | "tripcom" | "kiwitaxi" | "economybookings"
 
 export type Program = {
   id: ProgramId;
+  /** Shown to visitors (e.g. on /go). The owner asked us never to name the flight-search partner on the site. */
   name: string;
   campaignId: number;
   p: number;
@@ -20,7 +21,7 @@ export type Program = {
 };
 
 export const programs: Record<ProgramId, Program> = {
-  aviasales: { id: "aviasales", name: "Aviasales", campaignId: 100, p: 4114, hosts: ["www.aviasales.com", "aviasales.com"] },
+  aviasales: { id: "aviasales", name: "Flight results", campaignId: 100, p: 4114, hosts: ["www.aviasales.com", "aviasales.com"] },
   tripcom: { id: "tripcom", name: "Trip.com", campaignId: 121, p: 8980, hosts: ["www.trip.com", "uk.trip.com", "us.trip.com"] },
   kiwitaxi: { id: "kiwitaxi", name: "Kiwitaxi", campaignId: 1, p: 647, hosts: ["kiwitaxi.com"] },
   economybookings: { id: "economybookings", name: "Economybookings.com", campaignId: 10, p: 2018, hosts: ["www.economybookings.com"] },

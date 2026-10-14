@@ -95,7 +95,7 @@ export function DealsRail({ fares }: { fares: FareMap }) {
           </AnimatePresence>
         </ul>
         <p className="mt-6 text-[0.8125rem] text-ink-soft">
-          Lowest round-trip economy fares per person found on Aviasales in the last few days, in the departure city’s currency.
+          Lowest round-trip economy fares per person found in the last few days, in the departure city’s currency.
           Prices change often; the provider confirms the final price when you book.
         </p>
       </div>
@@ -139,7 +139,7 @@ export function DealCard({ route, fare, subId }: { route: Route; fare?: Fare; su
           <p className="shrink-0 pt-0.5 text-right text-[0.875rem] font-semibold text-action">Search dates</p>
         )}
       </div>
-      {link.external && <span className="sr-only"> (opens Aviasales in a new tab)</span>}
+      {link.external && <span className="sr-only"> (opens in a new tab)</span>}
     </>
   );
   const cls = "group block rounded-(--radius-card) focus-visible:outline-offset-4";

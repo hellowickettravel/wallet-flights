@@ -35,6 +35,14 @@ function loadScript() {
     window.location.reload();
     return;
   }
+  // Merged over the dashboard config by the widget. resultsURL keeps searches
+  // on this page (by default it sends them to the site root); no "Powered by"
+  // link; no hotels checkbox, since hotels go to the owner's own site.
+  (window as Window & { TPWL_CONFIGURATION?: object }).TPWL_CONFIGURATION = {
+    resultsURL: `${window.location.origin}/flights`,
+    showReferralLink: false,
+    showHotels: false,
+  };
   const s = document.createElement("script");
   s.type = "module";
   s.async = true;

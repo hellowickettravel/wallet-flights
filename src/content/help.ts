@@ -19,7 +19,7 @@ export const helpTopics: HelpTopic[] = [
     items: [
       { q: "Why did the price change on the provider’s site?", a: "Fares change quickly as seats sell. The provider confirms the final price, including taxes and fees, before you pay. If it’s higher than you expected, go back and compare other deals." },
       { q: "Which currency are prices shown in?", a: "In the currency of the city you’re flying from: pounds for UK departures and US dollars for US departures." },
-      { q: "Are the fares on the homepage live?", a: "They’re the cheapest prices other travellers found on Aviasales in the last few days, refreshed about every hour. They can sell out or change, so search your dates to compare current prices. Routes without a recent fare show no price." },
+      { q: "Are the fares on the homepage live?", a: "They’re the cheapest prices other travellers found in the last few days, refreshed about every hour. They can sell out or change, so search your dates to compare current prices. Routes without a recent fare show no price." },
       { q: "Do prices include baggage?", a: "It depends on the fare. Each result shows whether a cabin bag and checked bag are included; the provider confirms the details before you pay." },
     ],
   },

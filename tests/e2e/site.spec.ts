@@ -104,6 +104,18 @@ test("affiliate disclosure is on every page footer", async ({ page }) => {
   }
 });
 
+test("the footer carries the owner's notice, Trustpilot and no partner names", async ({ page }) => {
+  for (const path of ["/", "/flights", "/privacy-policy", "/cookie-policy", "/help"]) {
+    await page.goto(path);
+    const text = await page.locator("body").innerText();
+    expect(text).not.toMatch(/travelpayouts|aviasales/i);
+  }
+  const footer = page.getByRole("contentinfo");
+  await expect(footer).toContainText("Wallet Flights is a flight comparison site and does not sell tickets directly.");
+  await expect(footer).toContainText("Prices shown on our website are based on recently available fares.");
+  await expect(footer.getByRole("link", { name: /Review us on Trustpilot/ })).toHaveAttribute("href", "https://www.trustpilot.com/review/walletflights.com");
+});
+
 test("partner links are sponsored, open in a new tab and carry marker + sub_id", async ({ page }) => {
   await page.goto("/destinations/lisbon");
   const extras = page.locator("section", { has: page.getByRole("heading", { name: /Plan the rest of your trip/ }) });
@@ -111,9 +123,17 @@ test("partner links are sponsored, open in a new tab and carry marker + sub_id",
   expect(await links.count()).toBeGreaterThanOrEqual(4);
   for (const a of await links.all()) {
     const href = (await a.getAttribute("href"))!;
-    expect(await a.getAttribute("rel")).toBe("sponsored noopener");
     expect(await a.getAttribute("target")).toBe("_blank");
+    if (href === "https://www.wickettravelholidays.com/") {
+      // Hotels and car hire: the owner's own site, not an affiliate link.
+      expect(await a.getAttribute("rel")).toBe("noopener");
+      continue;
+    }
+    expect(await a.getAttribute("rel")).toBe("sponsored noopener");
     expect(href).toMatch(/^https:\/\/tp\.media\/r\?campaign_id=\d+&marker=567389&p=\d+&sub_id=destination_lisbon_[a-z]+&trs=344771&u=https%3A%2F%2F/);
+  }
+  for (const name of [/Find hotels/, /Compare cars/]) {
+    await expect(extras.getByRole("link", { name })).toHaveAttribute("href", "https://www.wickettravelholidays.com/");
   }
   expect(await extras.getByRole("link", { name: /Get an eSIM/ }).getAttribute("href")).toContain(encodeURIComponent("https://www.airalo.com/portugal-esim"));
 });

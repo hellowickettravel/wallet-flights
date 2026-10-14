@@ -118,7 +118,7 @@ export function DealsExplorer({ fares }: { fares: FareMap }) {
         </motion.ul>
       )}
       <p className="mt-8 text-[0.8125rem] text-ink-soft">
-        Lowest round-trip economy fares per person found on Aviasales in the last few days, in the departure city’s currency. Routes
+        Lowest round-trip economy fares per person found in the last few days, in the departure city’s currency. Routes
         without a recent fare show no price; search them for your dates.
       </p>
     </div>

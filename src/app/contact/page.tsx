@@ -15,7 +15,7 @@ const socialIcons = { Instagram: InstagramLogo, X: XLogo, Facebook: FacebookLogo
 
 const channels = [
   { icon: EnvelopeSimple, label: "Email", value: site.email, href: `mailto:${site.email}` },
-  { icon: Phone, label: "Phone", value: site.phone.display, href: site.phone.href },
+  { icon: Phone, label: site.phone.note, value: site.phone.display, href: site.phone.href },
   { icon: MapPin, label: "Based in", value: site.location },
 ];
 

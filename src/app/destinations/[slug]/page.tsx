@@ -173,7 +173,7 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
                           </span>
                         </span>
                         <span className="tabular text-[1.25rem] font-bold text-sun">{formatPrice(fare.price, fare.currency)}</span>
-                        {link.external && <span className="sr-only"> (opens Aviasales in a new tab)</span>}
+                        {link.external && <span className="sr-only"> (opens in a new tab)</span>}
                       </a>
                     </li>
                   );
@@ -183,7 +183,7 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
               <p className="mt-4 leading-relaxed text-white/75">No recent fares found for {d.city}. Search your dates to see live prices.</p>
             )}
             <p className="mt-4 text-[0.8125rem] leading-relaxed text-white/60">
-              Cheapest round trips per person found on Aviasales in the last few days. The provider confirms the final price.
+              Cheapest round trips per person found in the last few days. The provider confirms the final price.
             </p>
           </div>
         </aside>

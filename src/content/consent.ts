@@ -19,7 +19,7 @@ export const consentCopy = {
       id: "search",
       label: "Live flight search",
       description:
-        "Loads the Travelpayouts / Aviasales search on our Flights page, which sets cookies to remember your currency and language and to measure searches and bookings it sends to travel sites.",
+        "Loads the live search on our Flights page, run by our flight search partner, which sets cookies to remember your currency and language and to measure searches and bookings it sends to travel sites.",
       locked: false,
     },
     {
@@ -33,7 +33,7 @@ export const consentCopy = {
 
 export const searchGateCopy = {
   title: "Live prices need one cookie choice",
-  body: "Our live search is run by our partner Travelpayouts (Aviasales), which sets its own cookies. Allow live flight search to compare prices from airlines and travel sites here on Wallet Flights.",
+  body: "Our live search is run by our flight search partner, which sets its own cookies. Allow live flight search to compare prices from airlines and travel sites here on Wallet Flights.",
   allow: "Allow live search",
   settings: "Cookie settings",
 } as const;

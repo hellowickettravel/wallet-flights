@@ -73,7 +73,7 @@ export default async function RoutePage({ params }: PageProps<"/routes/[slug]">)
               >
                 View this fare
                 <ArrowUpRight className="size-4" weight="bold" aria-hidden />
-                <span className="sr-only"> on Aviasales (opens in a new tab)</span>
+                <span className="sr-only"> (opens in a new tab)</span>
               </a>
             </>
           ) : (
@@ -86,7 +86,7 @@ export default async function RoutePage({ params }: PageProps<"/routes/[slug]">)
             </>
           )}
           <p className="mt-6 text-[0.8125rem] leading-relaxed text-white/60">
-            Found on Aviasales in the last few days, per person, economy. The provider confirms the final price.
+            Found in the last few days, per person, economy. The provider confirms the final price.
           </p>
         </section>
 

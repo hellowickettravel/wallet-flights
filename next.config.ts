@@ -5,6 +5,12 @@ const nextConfig: NextConfig = {
   env: { NEXT_PUBLIC_BUILD_YEAR: String(new Date().getFullYear()) },
   partialPrefetching: true,
   poweredByHeader: false,
+  async redirects() {
+    // Live searches belong on /flights. The widget is told so (see
+    // white-label.tsx), but older links and its dashboard default point at "/".
+    // Query values pass through to the destination.
+    return [{ source: "/", has: [{ type: "query", key: "flightSearch" }], destination: "/flights", permanent: false }];
+  },
   async headers() {
     return [
       {

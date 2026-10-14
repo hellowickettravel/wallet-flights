@@ -83,7 +83,7 @@ export function FareBoard({ fares, subPrefix = "home_board" }: { fares: FareMap;
               Departures worth a look
             </h2>
             <p className="mt-3 text-[1.0625rem] leading-relaxed text-white/75">
-              Recent cheapest round trips from the US and UK, found on Aviasales. Search to compare live prices across providers.
+              Recent cheapest round trips from the US and UK. Search to compare live prices across providers.
             </p>
           </div>
           <Link
@@ -121,7 +121,7 @@ export function FareBoard({ fares, subPrefix = "home_board" }: { fares: FareMap;
             <tbody>
               {rows.map((r, ri) => {
                 const link = dealLink(r.fare, r.route.origin.code, r.route.destination.airport, `${subPrefix}_${r.route.slug}`);
-                const label = `${link.external ? "Book" : "Compare flights"} ${r.route.origin.city} to ${r.route.destination.city}${link.external ? " on Aviasales (opens in a new tab)" : ""}`;
+                const label = `${link.external ? "Book" : "Compare flights"} ${r.route.origin.city} to ${r.route.destination.city}${link.external ? " (opens in a new tab)" : ""}`;
                 const arrowCls =
                   "inline-grid size-10 place-items-center rounded-full text-white/70 ring-1 ring-white/15 transition-colors group-hover:bg-white/10 group-hover:text-white hover:bg-sun hover:text-ink";
                 return (

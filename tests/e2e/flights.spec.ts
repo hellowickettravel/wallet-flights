@@ -41,6 +41,20 @@ test.describe("with live search allowed", () => {
     await expect(page.locator("#tpwl-search")).toContainText("marker 567389.home_board");
   });
 
+  test("the widget keeps searches on /flights, without the partner link or hotels box", async ({ page, baseURL }) => {
+    await page.goto("/flights");
+    await expect(page.locator("#tpwl-search")).toContainText("White Label stub");
+    // The real widget wraps this object in a Proxy, so read it as JSON.
+    const config = await page.evaluate(() => JSON.parse(JSON.stringify((window as Window & { TPWL_CONFIGURATION?: object }).TPWL_CONFIGURATION ?? null)));
+    expect(config).toEqual({ resultsURL: `${new URL(baseURL!).origin}/flights`, showReferralLink: false, showHotels: false });
+  });
+
+  test("searches sent to the homepage land on /flights with their values", async ({ page }) => {
+    await page.goto("/?flightSearch=NYC1510LAX31101&destination_airports=1");
+    await expect(page).toHaveURL(/\/flights\?flightSearch=NYC1510LAX31101&destination_airports=1/);
+    await expect(page.locator("#tpwl-search")).toContainText("NYC1510LAX31101");
+  });
+
   test("a direct visit still tags the placement", async ({ page }) => {
     await page.goto("/flights");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Compare live flight prices");

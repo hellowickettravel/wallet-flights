@@ -67,7 +67,7 @@ export function MonthCalendar({ calendars, to, subPrefix }: { calendars: Calenda
               <span className="mt-2 text-[0.8125rem] text-ink-soft">{monthLabel(m.month)}</span>
               <span className={clsx("tabular text-[1.0625rem] font-bold", cheapest ? "text-fare" : "text-ink")}>{formatPrice(m.price, m.currency)}</span>
               {cheapest && <span className="text-[0.75rem] font-semibold text-fare">Cheapest month</span>}
-              {link.external && <span className="sr-only"> (opens Aviasales in a new tab)</span>}
+              {link.external && <span className="sr-only"> (opens in a new tab)</span>}
             </>
           );
           return (
@@ -86,7 +86,7 @@ export function MonthCalendar({ calendars, to, subPrefix }: { calendars: Calenda
         })}
       </ol>
       <p className="mt-3 text-[0.8125rem] text-ink-soft">
-        Lowest round-trip fare per person found on Aviasales for departures in each month, from {cal.origin.city}. Months with no recent fare aren’t shown.
+        Lowest round-trip fare per person found recently for departures in each month, from {cal.origin.city}. Months with no recent fare aren’t shown.
       </p>
     </div>
   );

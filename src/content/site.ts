@@ -11,16 +11,31 @@ export const site = {
   phone: {
     display: "+44 7417 564704",
     href: "tel:+447417564704",
+    /** The team also books flights and hotels by hand (owner, 15 Oct 2026). */
+    label: "Book or ask by phone",
+    note: "Our team can book flights and hotels for you",
   },
   email: "info@walletflights.com",
   location: "London, United Kingdom",
   responseTime: "We reply within 24 hours",
   markets: "Travellers in the US and UK",
+  /** Claimed Trustpilot profile (checked 15 Oct 2026: no reviews yet, so we show no score). */
+  trustpilot: "https://www.trustpilot.com/review/walletflights.com",
   social: [
     { label: "Instagram", handle: "@walletflights", href: "https://www.instagram.com/walletflights/" },
     { label: "X", handle: "@walletflights", href: "https://x.com/walletflights" },
     { label: "Facebook", handle: "Walletflights", href: "https://www.facebook.com/people/Walletflights/61565184123183/" },
   ],
+} as const;
+
+/** Footer notices. The first two paragraphs are the owner's wording (15 Oct 2026). */
+export const footerNotice = {
+  comparison:
+    "Wallet Flights is a flight comparison site and does not sell tickets directly. When you choose a flight, you book and pay through the selected provider, who manages your booking, changes, and refunds.",
+  prices:
+    "Prices shown on our website are based on recently available fares. Final prices and availability are confirmed by the provider at the time of booking.",
+  affiliate:
+    "Some links to airlines, travel sites and other partners are affiliate links. If you book, we may earn a commission at no extra cost to you. It never changes the order of results, which are sorted by price.",
 } as const;
 
 export const mainNav = [

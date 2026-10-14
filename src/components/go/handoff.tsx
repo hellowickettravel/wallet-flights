@@ -86,13 +86,13 @@ export function Handoff() {
         rel="sponsored noopener"
         className="mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-action px-6 font-semibold text-white hover:bg-action-deep"
       >
-        Continue to {program.name}
+        Continue
         <ArrowUpRight className="size-4" weight="bold" aria-hidden />
       </a>
 
       <p className="mt-6 flex items-center justify-center gap-2 text-[0.875rem] text-ink-soft">
         <ShieldCheck className="size-5 shrink-0 text-fare" aria-hidden />
-        You’ll check the final price and book directly with {program.name}.
+        You’ll check the final price and book directly with the provider.
       </p>
       <p className="mt-2 text-[0.8125rem] text-ink-soft">We may earn a commission if you book. It doesn’t change your price.</p>
 

@@ -200,3 +200,41 @@ no price + White Label search), so they pass with or without `TRAVELPAYOUTS_TOKE
   `/routes/[slug]`): `params` read outside Suspense. Both are fully prerendered via
   `generateStaticParams`; production navigation isn't affected.
 - Legal pages still need adviser review and the registered company details.
+
+---
+
+# Batch 5 — Client feedback (15 Oct 2026)
+
+Feedback came from the owner as WhatsApp screenshots of wallet-flights.vercel.app.
+
+## Plan → what changed
+| # | Feedback | Change |
+|---|---|---|
+| 1 | "Remove this" (boxed area under the search form on `/flights`) | It was the widget's "Powered by Travelpayouts" referral link (white on light, so nearly invisible). Turned off with `window.TPWL_CONFIGURATION.showReferralLink = false`; the "Show hotels" box is off too (hotels now go to the owner's site). |
+| 2 | Searching again on `/flights` sends you to the homepage and the values disappear | The widget's Search button pointed at the site root (`resultsURL` empty → `location.origin`). `TPWL_CONFIGURATION.resultsURL = origin + "/flights"` keeps searches on the page (it updates the URL in place). As a backstop, `/?flightSearch=…` now redirects to `/flights` with the query (`next.config.ts`). |
+| 3 | Put a flight icon on the wallet logo, going up | New mark: white wallet with a yellow plane climbing out of it (`src/components/layout/logo-mark.tsx`, Phosphor AirplaneTilt). Shared by the header, favicon, Apple icon and OG/Twitter images. |
+| 4 | Footer wording | The owner's two paragraphs verbatim (`footerNotice` in `src/content/site.ts`); the affiliate disclosure stays, without partner names. |
+| 5 | Never mention Travelpayouts or Aviasales | Removed from every page, screen-reader text, the cookie banner, help and legal pages. Legal pages name the *category* ("our flight search partner", "our affiliate network"), which UK GDPR allows (Art. 13(1)(e)), and offer the name on request. The `/go` hand-off says "Flight results" for that program. |
+| 6 | Trustpilot icon | "Review us on Trustpilot" in the footer, linking to the claimed profile. No stars or score: the profile has 0 reviews (checked 15 Oct 2026). |
+| 7 | "Europe and USA trips from $18" | Hero intro: "Trips within Europe and the USA can cost as little as $18." Owner-supplied claim, flagged in `src/content/home.ts`. |
+| 8 | Manual flight / hotel bookings by phone | Hero line "Want us to book a flight or hotel for you? Call +44 7417 564704"; header label "Book or ask by phone"; footer and Contact show "Our team can book flights and hotels for you". |
+| 9 | Hotels and cars → wickettravelholidays.com | `ownerLinks` set; hero pills and "Plan the rest of your trip" cards open it in a new tab (`rel="noopener"`, not sponsored). Its Hotels/Cars tabs have no URLs, so both open the homepage. |
+
+## Test
+- `npm run lint`, `typecheck`, `build`: pass.
+- `npm run test:e2e`: **154 passed**, 24 skipped (demo-only), desktop + mobile.
+- New tests: widget config (results URL, no referral, no hotels box); `/?flightSearch=` redirect;
+  hero phone + $18 line; owner links for hotels/cars; footer notice, Trustpilot link, and no
+  "Travelpayouts"/"Aviasales" in the visible text of `/`, `/flights`, privacy, cookies and help.
+- Real widget on localhost: changing the route and pressing Search stayed on `/flights`, kept the
+  values, updated the URL (marker kept) and loaded live results. No partner names in the
+  widget's own text.
+
+## Open items from this batch
+- **$18 claim:** UK advertising rules (CAP Code 3.22) expect "from" prices to be available in
+  reasonable numbers. Keep it only while searches really return fares around that level.
+- **Phone bookings vs "does not sell tickets directly":** the footer says we don't sell tickets,
+  and the site now offers bookings by phone. If the phone team books through Wicket Travel
+  Holidays, say so on the Terms page.
+- Links to partners still pass through the affiliate network's redirect domain, and the booking
+  sites the widget opens are the partners' own. Both are outside our pages.

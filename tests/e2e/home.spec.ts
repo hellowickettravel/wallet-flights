@@ -142,16 +142,24 @@ test("origin chips filter the deals rail", async ({ page }) => {
   await expect(panel.getByRole("link", { name: /New York → London/ })).toHaveCount(0);
 });
 
-test("hero shortcuts reach deals, destinations and partner hotels / car hire", async ({ page }) => {
+test("hero shortcuts reach deals, destinations and the owner's hotels / car hire site", async ({ page }) => {
   await page.goto("/");
   const nav = page.getByRole("navigation", { name: "More ways to plan" });
   await expect(nav.getByRole("link", { name: "Flight deals" })).toHaveAttribute("href", "/deals");
   await expect(nav.getByRole("link", { name: "Destinations" })).toHaveAttribute("href", "/destinations");
   for (const name of [/Hotels/, /Car hire/]) {
     const a = nav.getByRole("link", { name });
-    await expect(a).toHaveAttribute("rel", "sponsored noopener");
-    expect(await a.getAttribute("href")).toMatch(/^https:\/\/tp\.media\/r\?campaign_id=\d+&marker=567389&p=\d+&sub_id=home_hero_(hotels|cars)&trs=344771&u=/);
+    await expect(a).toHaveAttribute("href", "https://www.wickettravelholidays.com/");
+    await expect(a).toHaveAttribute("rel", "noopener");
+    await expect(a).toHaveAttribute("target", "_blank");
   }
+});
+
+test("hero offers phone bookings and the low-fare line", async ({ page }) => {
+  await page.goto("/");
+  const hero = page.locator("#search");
+  await expect(hero).toContainText("as little as $18");
+  await expect(hero.getByRole("link", { name: "Call +44 7417 564704" })).toHaveAttribute("href", "tel:+447417564704");
 });
 
 test("desktop search is one joined bar with travellers inside", async ({ page, isMobile }) => {

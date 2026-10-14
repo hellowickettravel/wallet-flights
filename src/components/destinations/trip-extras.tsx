@@ -1,14 +1,14 @@
 import { ArrowUpRight, Bed, Car, SimCard, Taxi, Ticket } from "@phosphor-icons/react/dist/ssr";
 import { programs } from "@/content/affiliates";
-import { crossSell, esimCountry, ownerLinks, type CrossSellKind } from "@/content/cross-sell";
+import { crossSell, esimCountry, ownerLinks, ownerSite, type CrossSellKind } from "@/content/cross-sell";
 import { affiliateUrl } from "@/lib/affiliate";
 
 const icons: Record<CrossSellKind, typeof Bed> = { hotels: Bed, cars: Car, transfers: Taxi, esim: SimCard, attractions: Ticket };
 
 function hrefFor(kind: CrossSellKind, url: string, program: keyof typeof programs, city: string, subId: string) {
   const own = kind === "hotels" ? ownerLinks.hotels : kind === "cars" ? ownerLinks.cars : null;
-  if (own) return { href: own.replace("{city}", encodeURIComponent(city)), partner: null };
-  return { href: affiliateUrl(program, url, subId), partner: programs[program].name };
+  if (own) return { href: own.replace("{city}", encodeURIComponent(city)), partner: ownerSite.name, rel: "noopener" };
+  return { href: affiliateUrl(program, url, subId), partner: programs[program].name, rel: "sponsored noopener" };
 }
 
 /** "Plan the rest of your trip": hotels, cars, transfers, eSIM and tickets for one city. */
@@ -26,12 +26,12 @@ export function TripExtras({ slug, city, subPrefix }: { slug: string; city: stri
             .filter((c) => c.kind !== "esim" || country)
             .map((c) => {
               const Icon = icons[c.kind];
-              const { href, partner } = hrefFor(c.kind, c.url(city, country), c.program, city, `${subPrefix}_${c.kind}`);
+              const { href, partner, rel } = hrefFor(c.kind, c.url(city, country), c.program, city, `${subPrefix}_${c.kind}`);
               return (
                 <li key={c.kind}>
                   <a
                     href={href}
-                    rel="sponsored noopener"
+                    rel={rel}
                     target="_blank"
                     data-sub={`${subPrefix}_${c.kind}`}
                     className="group flex h-full flex-col rounded-(--radius-card) p-5 ring-1 ring-line transition-colors hover:bg-mist hover:ring-ink/20"

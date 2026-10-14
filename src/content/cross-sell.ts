@@ -5,13 +5,16 @@ import type { ProgramId } from "./affiliates";
 // Deep links were checked by hand (Airalo country pages, Tiqets city search).
 
 /**
- * TODO(confirm): the owner will supply their own hotel and car-rental redirect
- * links. Put them here (full https URL; `{city}` is replaced with the city
- * name) and they replace the interim Travelpayouts programs below.
+ * Hotels and car hire go to the owner's own site, Wicket Travel Holidays
+ * (owner's instruction, 15 Oct 2026). Its Hotels / Cars tabs have no URLs of
+ * their own, so both open the homepage. Set to null to fall back to the
+ * partner programs below. `{city}` in a URL is replaced with the city name.
  */
+export const ownerSite = { name: "Wicket Travel Holidays", url: "https://www.wickettravelholidays.com/" } as const;
+
 export const ownerLinks: { hotels: string | null; cars: string | null } = {
-  hotels: null,
-  cars: null,
+  hotels: ownerSite.url,
+  cars: ownerSite.url,
 };
 
 export type CrossSellKind = "hotels" | "cars" | "transfers" | "esim" | "attractions";
@@ -21,7 +24,7 @@ export type CrossSellItem = {
   title: string;
   text: string;
   cta: string;
-  /** Interim/partner program used when no owner link is set. */
+  /** Partner program used when no owner link is set. */
   program: ProgramId;
   url: (city: string, esimCountry: string) => string;
 };

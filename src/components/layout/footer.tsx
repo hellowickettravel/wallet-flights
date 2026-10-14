@@ -7,7 +7,7 @@ import {
   Phone,
   XLogo,
 } from "@phosphor-icons/react/dist/ssr";
-import { footerNav, site } from "@/content/site";
+import { footerNav, footerNotice, site } from "@/content/site";
 import { CurrentYear } from "@/components/ui/current-year";
 import { CookieSettingsButton } from "@/components/consent/cookie-settings-button";
 import { Logo } from "./logo";
@@ -34,7 +34,10 @@ export function Footer() {
             <li>
               <a href={site.phone.href} className="inline-flex items-center gap-3 text-white/85 hover:text-sun">
                 <Phone className="size-5 text-sun" aria-hidden />
-                <span className="tabular">{site.phone.display}</span>
+                <span>
+                  <span className="tabular">{site.phone.display}</span>
+                  <span className="block text-[0.8125rem] text-white/60">{site.phone.note}</span>
+                </span>
               </a>
             </li>
             <li className="inline-flex items-center gap-3 text-white/70">
@@ -60,6 +63,16 @@ export function Footer() {
               );
             })}
           </ul>
+          <a
+            href={site.trustpilot}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 inline-flex h-11 items-center gap-2 rounded-full px-4 text-[0.9375rem] text-white/80 ring-1 ring-white/20 transition-colors hover:bg-white/10 hover:text-white"
+          >
+            <TrustpilotStar className="size-5" />
+            Review us on <span className="font-bold text-white">Trustpilot</span>
+            <span className="sr-only"> (opens in a new tab)</span>
+          </a>
         </div>
 
         <nav aria-label="Footer" className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-4">
@@ -83,15 +96,10 @@ export function Footer() {
       <div className="border-t border-white/10">
         <div className="container-page flex flex-col gap-4 py-8 text-[0.8125rem] leading-relaxed text-white/55 md:flex-row md:justify-between">
           <div className="max-w-3xl space-y-2">
-            <p>
-              {site.name} is a comparison site and doesn’t sell tickets. When you choose a deal, you book and pay with
-              that provider, who handles your booking, changes and refunds.
-            </p>
+            <p>{footerNotice.comparison}</p>
+            <p>{footerNotice.prices}</p>
             <p id="affiliate-disclosure">
-              <strong className="font-semibold text-white/75">Affiliate disclosure:</strong> links to airlines, travel sites
-              and other partners are affiliate links (via Travelpayouts). If you book, we may earn a commission at no extra
-              cost to you. It never changes the order of results, which are sorted by price. Fares on our pages are the
-              cheapest found recently on Aviasales; the provider confirms the final price.
+              <strong className="font-semibold text-white/75">Affiliate disclosure:</strong> {footerNotice.affiliate}
             </p>
           </div>
           <div className="flex shrink-0 flex-col gap-2 md:items-end">
@@ -103,5 +111,17 @@ export function Footer() {
         </div>
       </div>
     </footer>
+  );
+}
+
+/** Trustpilot's green star, for the "Review us" link (no score: we have no reviews yet). */
+function TrustpilotStar({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <polygon
+        points="12,1.6 14.59,9.04 22.46,9.2 16.18,13.96 18.47,21.5 12,17 5.53,21.5 7.82,13.96 1.54,9.2 9.41,9.04"
+        fill="#00b67a"
+      />
+    </svg>
   );
 }
