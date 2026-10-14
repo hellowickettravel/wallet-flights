@@ -11,10 +11,11 @@ type Props = {
   min?: string;
   error?: string;
   className?: string;
+  shellClassName?: string;
 };
 
 /** Native date input inside the shared field shell: reliable keyboard + mobile pickers. */
-export function DateField({ label, value, onChange, min, error, className }: Props) {
+export function DateField({ label, value, onChange, min, error, className, shellClassName }: Props) {
   const id = useId();
   const errId = `${id}-err`;
   const ref = useRef<HTMLInputElement>(null);
@@ -25,6 +26,7 @@ export function DateField({ label, value, onChange, min, error, className }: Pro
         className={clsx(
           "flex h-16 cursor-pointer items-center gap-3 rounded-xl bg-white px-3.5 ring-1 sm:px-4 transition-shadow focus-within:ring-2 focus-within:ring-action",
           error ? "ring-2 ring-red-600" : "ring-line hover:ring-ink/30",
+          shellClassName,
         )}
       >
         <CalendarBlank className="hidden size-5 shrink-0 text-ink-soft min-[420px]:block" aria-hidden />

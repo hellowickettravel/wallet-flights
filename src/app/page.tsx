@@ -9,6 +9,7 @@ import { FaqSection } from "@/components/home/faq-section";
 import { FareAlerts } from "@/components/home/fare-alerts";
 import { homeFaqs } from "@/content/faqs";
 import { site } from "@/content/site";
+import { destinationTileFares, routeFares } from "@/lib/fares";
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -39,14 +40,15 @@ const jsonLd = {
   ],
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [fares, tileFares] = await Promise.all([routeFares(), destinationTileFares()]);
   return (
     <>
       <Hero />
       <AssuranceStrip />
-      <DealsRail />
-      <FareBoard />
-      <DestinationsMosaic />
+      <DealsRail fares={fares} />
+      <FareBoard fares={fares} />
+      <DestinationsMosaic fares={tileFares} />
       <HowItWorksBand />
       <GuidesSection />
       <FaqSection />

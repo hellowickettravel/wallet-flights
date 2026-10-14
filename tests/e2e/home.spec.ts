@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 import AxeBuilder from "@axe-core/playwright";
 
 test.beforeEach(async ({ page }) => {
@@ -102,19 +102,69 @@ test("travellers popover enforces limits", async ({ page }) => {
   await expect(page.getByRole("button", { name: /3 travellers, Business/ })).toBeVisible();
 });
 
-test("UK departure cities show prices in pounds", async ({ page }) => {
+// Fares come from the Data API (hidden when there is none), so these checks hold
+// with or without TRAVELPAYOUTS_TOKEN at build time.
+test("UK departure cities price in pounds; no invented prices", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("tab", { name: "London" }).click();
-  await expect(page.locator("#deals-panel").getByRole("link", { name: /New York.*LON → JFK.*£389/ })).toBeVisible();
+  const panel = page.locator("#deals-panel");
+  await expect(panel.getByRole("link", { name: /New York.*London → New York/ })).toBeVisible();
+  const text = await panel.innerText();
+  expect(text).not.toContain("$");
+});
+
+test("deal cards: priced → Aviasales affiliate link, unpriced → live search with sub_id", async ({ page }) => {
+  await page.goto("/");
+  const cards = page.locator("#deals-panel").getByRole("link");
+  await expect(cards.first()).toBeVisible();
+  for (const card of await cards.all()) {
+    const href = (await card.getAttribute("href"))!;
+    const sub = (await card.getAttribute("data-sub"))!;
+    expect(sub).toMatch(/^home_deals_new-york-to-[a-z-]+$/);
+    if (href.startsWith("https://")) {
+      expect(href).toMatch(new RegExp(`^https://tp\.media/r\?campaign_id=100&marker=567389&p=4114&sub_id=${sub}&trs=344771&u=https%3A%2F%2Fwww\.aviasales\.com%2Fsearch%2F`));
+      expect(await card.getAttribute("rel")).toBe("sponsored noopener");
+      await expect(card).toContainText("$");
+    } else {
+      expect(href).toBe(`/flights?trip=round&cabin=economy&adults=1&from0=NYC&to0=${href.match(/to0=([A-Z]{3})/)![1]}&sub=${sub}`);
+      await expect(card).not.toContainText("$");
+      await expect(card).toContainText("Search dates");
+    }
+  }
 });
 
 test("origin chips filter the deals rail", async ({ page }) => {
   await page.goto("/");
   const panel = page.locator("#deals-panel");
-  await expect(panel.getByRole("link", { name: /London.*NYC → LHR/ })).toBeVisible();
+  await expect(panel.getByRole("link", { name: /London.*New York → London/ })).toBeVisible();
   await page.getByRole("tab", { name: "Los Angeles" }).click();
-  await expect(panel.getByRole("link", { name: /Tokyo.*LAX → HND/ })).toBeVisible();
-  await expect(panel.getByRole("link", { name: /NYC → LHR/ })).toHaveCount(0);
+  await expect(panel.getByRole("link", { name: /Tokyo.*Los Angeles → Tokyo/ })).toBeVisible();
+  await expect(panel.getByRole("link", { name: /New York → London/ })).toHaveCount(0);
+});
+
+test("hero shortcuts reach deals, destinations and partner hotels / car hire", async ({ page }) => {
+  await page.goto("/");
+  const nav = page.getByRole("navigation", { name: "More ways to plan" });
+  await expect(nav.getByRole("link", { name: "Flight deals" })).toHaveAttribute("href", "/deals");
+  await expect(nav.getByRole("link", { name: "Destinations" })).toHaveAttribute("href", "/destinations");
+  for (const name of [/Hotels/, /Car hire/]) {
+    const a = nav.getByRole("link", { name });
+    await expect(a).toHaveAttribute("rel", "sponsored noopener");
+    expect(await a.getAttribute("href")).toMatch(/^https:\/\/tp\.media\/r\?campaign_id=\d+&marker=567389&p=\d+&sub_id=home_hero_(hotels|cars)&trs=344771&u=/);
+  }
+});
+
+test("desktop search is one joined bar with travellers inside", async ({ page, isMobile }) => {
+  test.skip(isMobile, "joined bar is desktop only");
+  await page.goto("/");
+  const form = page.getByRole("form", { name: "Search flights" });
+  const from = await form.getByRole("combobox", { name: "Leaving from" }).boundingBox();
+  const travellers = await form.getByRole("button", { name: /1 traveller, Economy/ }).boundingBox();
+  const search = await form.getByRole("button", { name: "Search flights" }).boundingBox();
+  // Same row: the vertical centres line up within a few pixels.
+  expect(Math.abs(from!.y + from!.height / 2 - (search!.y + search!.height / 2))).toBeLessThan(12);
+  expect(Math.abs(travellers!.y + travellers!.height / 2 - (search!.y + search!.height / 2))).toBeLessThan(12);
+  expect(travellers!.x).toBeLessThan(search!.x);
 });
 
 test("region tabs swap destinations", async ({ page }) => {
@@ -166,7 +216,7 @@ test.describe("reduced motion", () => {
   test("fare board shows final fares immediately", async ({ page }) => {
     await page.goto("/");
     await page.locator("#board-title").scrollIntoViewIfNeeded();
-    const board = page.locator("table", { has: page.locator("caption", { hasText: "Sample round-trip fares" }) });
+    const board = page.locator("table", { has: page.locator("caption", { hasText: "Recent cheapest round-trip fares" }) });
     const tiles = await board.locator("tbody tr").first().locator("td:nth-child(3) [aria-hidden] > span").allTextContents();
     expect(tiles.join("").replace(/\u00a0/g, " ").trim()).toBe("NEW YORK");
   });

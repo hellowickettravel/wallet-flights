@@ -5,7 +5,10 @@ import { useInView, useReducedMotion } from "motion/react";
 import { ArrowRight, MagnifyingGlass } from "@phosphor-icons/react";
 import Link from "next/link";
 import clsx from "clsx";
-import { currencySymbol, fareBoard } from "@/content/deals";
+import { currencySymbol, fareBoardRoutes, routeBySlug, type Route } from "@/content/deals";
+import { dealLink } from "@/lib/deal-links";
+import type { FareMap } from "@/lib/fares";
+import type { Fare } from "@/lib/travelpayouts";
 
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$£";
 const pad = (s: string, n: number) => s.padEnd(n, " ").slice(0, n);
@@ -18,16 +21,34 @@ const cols = [
   { key: "fare", label: "Fare", width: 4, show: "all" },
 ] as const;
 
-type Row = (typeof fareBoard)[number];
-const cellText = (r: Row, key: (typeof cols)[number]["key"]) =>
-  key === "fare" ? `${currencySymbol(r.currency)}${r.fare}` : (r[key] as string);
+type Row = { route: Route; city: string; fare?: Fare };
+const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+
+// No fare → blank flaps: we never show a price we didn't find.
+function cellText(r: Row, key: (typeof cols)[number]["key"]) {
+  switch (key) {
+    case "from":
+      return r.route.origin.code;
+    case "to":
+      return r.route.destination.cityCode;
+    case "city":
+      return r.city;
+    case "month":
+      return r.fare ? MONTHS[new Date(r.fare.departureAt).getUTCMonth()] : "";
+    case "fare":
+      return r.fare ? `${currencySymbol(r.fare.currency)}${r.fare.price}` : "";
+  }
+}
+const srText = (r: Row, key: (typeof cols)[number]["key"]) =>
+  cellText(r, key) || (key === "fare" ? "No recent price" : key === "month" ? "Any month" : "");
 
 /**
  * Split-flap departure board: the homepage's one signature motion moment.
  * Each character cycles through random glyphs and settles left to right,
  * row by row, once when the board scrolls into view.
  */
-export function FareBoard() {
+export function FareBoard({ fares, subPrefix = "home_board" }: { fares: FareMap; subPrefix?: string }) {
+  const rows: Row[] = fareBoardRoutes.map((b) => ({ route: routeBySlug[b.route], city: b.city, fare: fares[b.route] }));
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.35 });
   const reduce = useReducedMotion();
@@ -62,7 +83,7 @@ export function FareBoard() {
               Departures worth a look
             </h2>
             <p className="mt-3 text-[1.0625rem] leading-relaxed text-white/75">
-              Sample round-trip fares from the US and UK. Search to compare live prices across providers.
+              Recent cheapest round trips from the US and UK, found on Aviasales. Search to compare live prices across providers.
             </p>
           </div>
           <Link
@@ -76,7 +97,7 @@ export function FareBoard() {
 
         <div ref={ref} className="relative mt-10 overflow-hidden rounded-(--radius-panel) bg-[#0c1c38] p-3 ring-1 ring-white/10 sm:p-5 md:p-6">
           <table className="w-full border-separate border-spacing-y-2">
-            <caption className="sr-only">Sample round-trip fares</caption>
+            <caption className="sr-only">Recent cheapest round-trip fares</caption>
             <thead>
               <tr>
                 {cols.map((c) => (
@@ -98,13 +119,18 @@ export function FareBoard() {
               </tr>
             </thead>
             <tbody>
-              {fareBoard.map((r, ri) => (
-                <tr key={`${r.from}-${r.to}`} className="group">
+              {rows.map((r, ri) => {
+                const link = dealLink(r.fare, r.route.origin.code, r.route.destination.airport, `${subPrefix}_${r.route.slug}`);
+                const label = `${link.external ? "Book" : "Compare flights"} ${r.route.origin.city} to ${r.route.destination.city}${link.external ? " on Aviasales (opens in a new tab)" : ""}`;
+                const arrowCls =
+                  "inline-grid size-10 place-items-center rounded-full text-white/70 ring-1 ring-white/15 transition-colors group-hover:bg-white/10 group-hover:text-white hover:bg-sun hover:text-ink";
+                return (
+                <tr key={r.route.slug} className="group">
                   {cols.map((c) => {
                     const text = pad(cellText(r, c.key), c.width);
                     return (
                       <td key={c.key} className={clsx("w-px pr-2.5 align-middle whitespace-nowrap md:pr-6 lg:pr-8", c.show === "lg" && "hidden lg:table-cell", c.show === "sm" && "hidden sm:table-cell")}>
-                        <span className="sr-only">{cellText(r, c.key)}</span>
+                        <span className="sr-only">{srText(r, c.key)}</span>
                         <span aria-hidden className="flex gap-[2px] sm:gap-[3px]">
                           {[...text].map((ch, i) => (
                             <Flap key={i} ch={glyph(ch, ri, i + (c.key === "fare" ? 14 : 0))} accent={c.key === "fare"} />
@@ -114,16 +140,19 @@ export function FareBoard() {
                     );
                   })}
                   <td className="w-full text-right align-middle">
-                    <Link
-                      href={`/flights?trip=round&from0=${r.from}&to0=${r.to}`}
-                      aria-label={`Compare flights ${r.from} to ${r.to}`}
-                      className="inline-grid size-10 place-items-center rounded-full text-white/70 ring-1 ring-white/15 transition-colors group-hover:bg-white/10 group-hover:text-white hover:bg-sun hover:text-ink"
-                    >
-                      <ArrowRight className="size-[1.125rem]" weight="bold" aria-hidden />
-                    </Link>
+                    {link.external ? (
+                      <a href={link.href} rel="sponsored noopener" target="_blank" aria-label={label} className={arrowCls}>
+                        <ArrowRight className="size-[1.125rem]" weight="bold" aria-hidden />
+                      </a>
+                    ) : (
+                      <Link href={link.href} aria-label={label} className={arrowCls}>
+                        <ArrowRight className="size-[1.125rem]" weight="bold" aria-hidden />
+                      </Link>
+                    )}
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>

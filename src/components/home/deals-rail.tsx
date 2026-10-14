@@ -3,16 +3,19 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
-import { CaretLeft, CaretRight } from "@phosphor-icons/react";
+import { ArrowUpRight, CaretLeft, CaretRight } from "@phosphor-icons/react";
 import clsx from "clsx";
 import { SmartImage } from "@/components/ui/smart-image";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { dealsByOrigin, formatPrice, origins, type Deal } from "@/content/deals";
+import { formatPrice, origins, routesByOrigin, type Route } from "@/content/deals";
+import { dealLink, fareDates, stopsText } from "@/lib/deal-links";
+import type { FareMap } from "@/lib/fares";
+import type { Fare } from "@/lib/travelpayouts";
 
-export function DealsRail() {
+export function DealsRail({ fares }: { fares: FareMap }) {
   const [origin, setOrigin] = useState(origins[0].code);
   const rail = useRef<HTMLUListElement>(null);
-  const deals = dealsByOrigin[origin];
+  const deals = routesByOrigin[origin];
 
   function scrollBy(dir: 1 | -1) {
     const el = rail.current;
@@ -27,7 +30,7 @@ export function DealsRail() {
         <SectionHeading
           id="deals-title"
           title="Fares from your city"
-          intro="Example round-trip fares from the US and UK. Pick your departure city."
+          intro="The cheapest round trips other travellers found recently from the US and UK. Pick your departure city."
         >
           <div className="hidden gap-2 md:flex">
             <RailButton label="Previous deals" onClick={() => scrollBy(-1)}>
@@ -79,56 +82,74 @@ export function DealsRail() {
           <AnimatePresence mode="popLayout" initial={false}>
             {deals.map((d, i) => (
               <motion.li
-                key={d.id}
+                key={d.slug}
                 layout
                 initial={{ opacity: 0, x: 24 }}
                 animate={{ opacity: 1, x: 0, transition: { delay: i * 0.04, duration: 0.35, ease: [0.22, 1, 0.36, 1] } }}
                 exit={{ opacity: 0, transition: { duration: 0.12 } }}
                 className="w-[78%] shrink-0 snap-start sm:w-[44%] lg:w-[calc((100%-3*1.25rem)/4)]"
               >
-                <DealCard deal={d} />
+                <DealCard route={d} fare={fares[d.slug]} subId={`home_deals_${d.slug}`} />
               </motion.li>
             ))}
           </AnimatePresence>
         </ul>
         <p className="mt-6 text-[0.8125rem] text-ink-soft">
-          Example fares per person, economy, taxes included, in the departure city’s currency. Prices change often; the provider
-          confirms the final price when you book.
+          Lowest round-trip economy fares per person found on Aviasales in the last few days, in the departure city’s currency.
+          Prices change often; the provider confirms the final price when you book.
         </p>
       </div>
     </section>
   );
 }
 
-export function DealCard({ deal, href }: { deal: Deal; href?: string }) {
-  const { destination: d } = deal;
-  return (
-    <Link
-      href={href ?? `/destinations/${d.slug}`}
-      className="group block rounded-(--radius-card) focus-visible:outline-offset-4"
-    >
+/** A featured route. Shows the recent cheapest fare when there is one; otherwise no price. */
+export function DealCard({ route, fare, subId }: { route: Route; fare?: Fare; subId: string }) {
+  const { destination: d, origin } = route;
+  const link = dealLink(fare, origin.code, d.airport, subId);
+  const body = (
+    <>
       <div className="relative aspect-[4/3] overflow-hidden rounded-(--radius-card)">
         <SmartImage
           photo={d.photo}
           sizes="(min-width: 1024px) 300px, (min-width: 640px) 44vw, 78vw"
           imgClassName="transition-transform duration-700 ease-(--ease-out-quint) group-hover:scale-[1.04]"
         />
-        <span className="absolute top-3 left-3 rounded-full bg-white/95 px-2.5 py-1 text-[0.75rem] font-semibold text-ink">
-          {deal.stops === 0 ? "Nonstop" : `${deal.stops} stop`}
-        </span>
+        {fare && (
+          <span className="absolute top-3 left-3 rounded-full bg-white/95 px-2.5 py-1 text-[0.75rem] font-semibold text-ink">{stopsText(fare.transfers)}</span>
+        )}
       </div>
       <div className="mt-3.5 flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className="truncate text-[1.0625rem] font-semibold text-ink group-hover:text-action">{d.city}</h3>
+          <h3 className="flex items-center gap-1 truncate text-[1.0625rem] font-semibold text-ink group-hover:text-action">
+            {d.city}
+            {link.external && <ArrowUpRight className="size-4 shrink-0 text-ink-soft" weight="bold" aria-hidden />}
+          </h3>
           <p className="truncate text-[0.875rem] text-ink-soft">
-            {deal.origin} → {d.airport} · {deal.travel}
+            {origin.city} → {d.city}
+            {fare && <> · {fareDates(fare)}</>}
           </p>
         </div>
-        <div className="shrink-0 text-right">
-          <p className="tabular text-[1.25rem] leading-none font-bold text-fare">{formatPrice(deal.price, deal.currency)}</p>
-          <p className="mt-1 text-[0.75rem] text-ink-soft">round trip</p>
-        </div>
+        {fare ? (
+          <div className="shrink-0 text-right">
+            <p className="tabular text-[1.25rem] leading-none font-bold text-fare">{formatPrice(fare.price, fare.currency)}</p>
+            <p className="mt-1 text-[0.75rem] text-ink-soft">round trip</p>
+          </div>
+        ) : (
+          <p className="shrink-0 pt-0.5 text-right text-[0.875rem] font-semibold text-action">Search dates</p>
+        )}
       </div>
+      {link.external && <span className="sr-only"> (opens Aviasales in a new tab)</span>}
+    </>
+  );
+  const cls = "group block rounded-(--radius-card) focus-visible:outline-offset-4";
+  return link.external ? (
+    <a href={link.href} rel="sponsored noopener" target="_blank" className={cls} data-sub={subId}>
+      {body}
+    </a>
+  ) : (
+    <Link href={link.href} className={cls} data-sub={subId}>
+      {body}
     </Link>
   );
 }

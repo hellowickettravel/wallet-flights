@@ -24,16 +24,17 @@ export const aboutEarn = {
   ],
 };
 
-// Illustration for the "price ladder": example results for one route, listed
-// out of order so the animation can sort them. Not live prices.
+// Illustration for the "price ladder": results for one route, listed out of
+// order so the animation can sort them. No prices — `rank` (1 = cheapest)
+// orders the rows and sets the length of each price bar.
 export const ladderExample = {
   route: "London → New York",
-  dates: "Example search, round trip",
+  dates: "Illustration, round trip",
   rows: [
-    { id: "c", label: "Travel site", detail: "1 stop · 10h 40m", price: 417 },
-    { id: "a", label: "Airline website", detail: "Nonstop · 8h 05m", price: 389 },
-    { id: "e", label: "Travel site", detail: "Nonstop · 7h 55m", price: 498 },
-    { id: "b", label: "Travel site", detail: "Nonstop · 8h 20m", price: 402 },
-    { id: "d", label: "Airline website", detail: "1 stop · 11h 15m", price: 455 },
+    { id: "c", label: "Travel site", detail: "1 stop · 10h 40m", rank: 3 },
+    { id: "a", label: "Airline website", detail: "Nonstop · 8h 05m", rank: 1 },
+    { id: "e", label: "Travel site", detail: "Nonstop · 7h 55m", rank: 5 },
+    { id: "b", label: "Travel site", detail: "Nonstop · 8h 20m", rank: 2 },
+    { id: "d", label: "Airline website", detail: "1 stop · 11h 15m", rank: 4 },
   ],
 };

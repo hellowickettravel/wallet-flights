@@ -68,3 +68,16 @@ export function serializeSearch(q: SearchQuery) {
 }
 
 export const travellerCount = (q: Pick<SearchQuery, "adults" | "children" | "infants">) => q.adults + q.children + q.infants;
+
+export function addDays(iso: string, days: number) {
+  const d = new Date(`${iso}T12:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
+/** Deep links (fare board, deals) may omit dates: default to 3 weeks out, 1 week stay. */
+export function withDefaultDates(q: SearchQuery, todayIso: string): SearchQuery {
+  const legs: QueryLeg[] = q.legs.map((l, i) => ({ ...l, date: l.date || addDays(todayIso, 21 + i * 5) }));
+  const returnDate = q.trip === "round" ? q.returnDate || addDays(legs[0].date, 7) : undefined;
+  return { ...q, legs, returnDate };
+}

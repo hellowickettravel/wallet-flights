@@ -1,11 +1,12 @@
 // Policy text written for how the site works today: comparison only, no
-// accounts, no payments, cookieless analytics, affiliate links to providers.
+// accounts, no payments, consent-gated live search (Travelpayouts White Label)
+// and analytics, affiliate links to providers via Travelpayouts.
 // TODO(confirm): add the registered company name and number once supplied,
 // and have a qualified adviser review before launch.
 import type { LegalSection } from "@/components/legal/legal-page";
 import { site } from "./site";
 
-export const legalUpdated = "12 October 2026";
+export const legalUpdated = "14 October 2026";
 
 export const privacy: { intro: string; sections: LegalSection[] } = {
   intro: `This policy explains what personal data ${site.name} collects, why, and the choices you have. ${site.name} is based in ${site.location} and is the controller of the data described here.`,
@@ -17,8 +18,9 @@ export const privacy: { intro: string; sections: LegalSection[] } = {
         [
           "Contact form: your name, email address, the topic you chose and your message.",
           "Fare alerts: your email address.",
-          "Searches: the routes, dates and number of travellers you search for, which are processed to show results and are not linked to your identity.",
-          "Technical data: anonymous, aggregated usage statistics (pages viewed, device type, country) from our privacy-friendly analytics, which does not use cookies.",
+          "Searches: the routes, dates and number of travellers you search for. Live search on our Flights page is run by our partner Travelpayouts (Aviasales), which receives your search, IP address and device information to find prices, and measures searches and bookings with its own cookies. It only loads if you allow “Live flight search” cookies.",
+          "Technical data: if you allow analytics, aggregated usage statistics (pages viewed, device type, country, page speed) from Vercel Analytics, which doesn’t identify you.",
+          "Your cookie choice, stored in a cookie on your device.",
         ],
         "We don’t ask for or store payment details. You pay providers directly on their own websites.",
       ],
@@ -29,20 +31,22 @@ export const privacy: { intro: string; sections: LegalSection[] } = {
         [
           "To reply to your messages (our legitimate interest in answering enquiries).",
           "To send fare alerts you asked for (your consent, which you can withdraw at any time).",
-          "To keep the site secure, fix problems and understand which features help travellers (our legitimate interests).",
+          "To keep the site secure and fix problems (our legitimate interests).",
+          "Live flight search and analytics (your consent, which you can change at any time under “Cookie settings” in the footer).",
         ],
       ],
     },
     {
       heading: "When you go to a provider",
       body: [
-        "When you select a deal, you leave Wallet Flights for the airline or travel site you chose. Their privacy policy applies to anything you share with them, including your booking and payment details. Some providers pay us a commission when you book; we share only the information needed to attribute that booking, not your personal details.",
+        "When you select a deal, you leave Wallet Flights for the airline or travel site you chose. Their privacy policy applies to anything you share with them, including your booking and payment details.",
+        "Our links to providers are affiliate links run by Travelpayouts. The link carries our partner ID and the name of the page section you clicked (for example “deals”), so a booking can be credited to us. We don’t add your name, email or other personal details to these links. Travelpayouts and the provider may set cookies on their own sites to record the referral.",
       ],
     },
     {
       heading: "Who we share data with",
       body: [
-        "We use trusted service providers to host the site, deliver email and measure site usage. They process data only on our instructions. We don’t sell your personal data.",
+        "We use trusted service providers to host the site (Vercel), deliver email (Resend) and, with your consent, measure site usage (Vercel Analytics). Travelpayouts provides our live search and affiliate links and acts as an independent controller for the data its search widget and links collect; see travelpayouts.com for its privacy policy. We don’t sell your personal data.",
         "Some of these providers may store data outside the UK, for example in the United States. Where they do, we rely on recognised safeguards such as the UK International Data Transfer Addendum or adequacy regulations.",
       ],
     },
@@ -53,6 +57,7 @@ export const privacy: { intro: string; sections: LegalSection[] } = {
           "Contact messages: up to 24 months, then deleted.",
           "Fare-alert emails: until you unsubscribe.",
           "Analytics: aggregated and anonymous, kept for reporting.",
+          "Your cookie choice: 6 months, then we ask again.",
         ],
       ],
     },
@@ -83,7 +88,7 @@ export const terms: { intro: string; sections: LegalSection[] } = {
       heading: "Prices and information",
       body: [
         "Prices, availability, schedules and baggage information come from providers or are examples, and can change at any time. We work to keep information accurate but can’t guarantee it. The provider confirms the final price and conditions before you pay, and their terms apply to your booking.",
-        "Fares shown on the homepage, deals and destination pages are examples for inspiration, not offers.",
+        "Fares shown on the homepage, deals, destination and route pages are the cheapest prices found recently on Aviasales by other travellers. They are not offers and may no longer be available; we hide a price rather than estimate one.",
       ],
     },
     {
@@ -125,30 +130,54 @@ export const terms: { intro: string; sections: LegalSection[] } = {
 };
 
 export const cookies: { intro: string; sections: LegalSection[] } = {
-  intro: "This page explains how cookies and similar technologies are used on Wallet Flights.",
+  intro: "This page explains the cookies and similar technologies used on Wallet Flights, and how to change your choice. Optional cookies are off until you allow them.",
   sections: [
     {
-      heading: "Cookies we use",
+      heading: "Your choice",
       body: [
-        "Wallet Flights doesn’t set advertising or tracking cookies. The site works without any non-essential cookies, so we don’t show a cookie banner.",
-        "Our analytics are cookieless: they count page views in aggregate and don’t identify you or follow you across sites.",
+        "When you first visit, we ask whether you allow optional cookies. You can accept all, reject all, or choose by category, and change your mind at any time with “Cookie settings” at the bottom of every page. Rejecting doesn’t stop you using the site; live search on the Flights page just stays off until you allow it.",
       ],
     },
     {
-      heading: "Cookies set by providers",
+      heading: "Necessary",
       body: [
-        "When you select a deal, the airline, travel site or affiliate network you’re sent to may set its own cookies, for example to remember your booking or to record that you came from Wallet Flights. Those cookies are covered by the provider’s own cookie policy.",
+        ["wf_consent — remembers your cookie choice. Set by Wallet Flights, kept for 6 months."],
+        "These are needed for the site to work and don’t require consent.",
       ],
     },
     {
-      heading: "Managing cookies",
+      heading: "Live flight search (optional)",
       body: [
-        "You can block or delete cookies in your browser settings. Doing so won’t stop Wallet Flights from working, though some provider sites may not work as expected.",
+        "Our Flights page shows live prices with a search widget from our partner Travelpayouts (Aviasales White Label, loaded from tpwdg.com). It only loads after you allow this category. It sets:",
+        [
+          "tpwl_currency and tpwl_locale — remember the currency and language you picked in the search (up to 1 year).",
+          "hide_hotels — remembers if you hid hotel suggestions.",
+          "_sp_id and _sp_ses (Snowplow) — Travelpayouts’ measurement of searches and clicks, so bookings made through the search can be credited to us (about 13 months / 30 minutes).",
+        ],
+        "If you withdraw consent we delete these cookies from our domain and reload the page.",
+      ],
+    },
+    {
+      heading: "Analytics (optional)",
+      body: [
+        "With your consent we use Vercel Analytics and Speed Insights to count page views and measure page speed. They don’t set cookies or identify you, but we still ask first.",
+      ],
+    },
+    {
+      heading: "Affiliate links and provider sites",
+      body: [
+        "Links to airlines, travel sites, hotels, car rental, transfers, eSIMs and attractions go through Travelpayouts (tp.media) to the provider. Travelpayouts and the provider set their own cookies on their own sites to record that you came from Wallet Flights; those are covered by their cookie policies. We don’t set advertising cookies.",
+      ],
+    },
+    {
+      heading: "Managing cookies in your browser",
+      body: [
+        "You can also block or delete cookies in your browser settings. If you delete wf_consent, we’ll ask for your choice again.",
       ],
     },
     {
       heading: "Changes",
-      body: [`If we add any non-essential cookies in future, we’ll ask for your consent first and update this page. Questions? Email ${site.email}.`],
+      body: [`If we add cookies, we’ll update this page and ask again where consent is needed. Questions? Email ${site.email}.`],
     },
   ],
 };

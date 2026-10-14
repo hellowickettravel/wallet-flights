@@ -9,6 +9,7 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import { footerNav, site } from "@/content/site";
 import { CurrentYear } from "@/components/ui/current-year";
+import { CookieSettingsButton } from "@/components/consent/cookie-settings-button";
 import { Logo } from "./logo";
 
 const socialIcons = { Instagram: InstagramLogo, X: XLogo, Facebook: FacebookLogo } as const;
@@ -86,14 +87,19 @@ export function Footer() {
               {site.name} is a comparison site and doesn’t sell tickets. When you choose a deal, you book and pay with
               that provider, who handles your booking, changes and refunds.
             </p>
-            <p>
-              Some providers pay us a commission when you book through our links. Prices shown on this site are examples;
-              the provider confirms the final price.
+            <p id="affiliate-disclosure">
+              <strong className="font-semibold text-white/75">Affiliate disclosure:</strong> links to airlines, travel sites
+              and other partners are affiliate links (via Travelpayouts). If you book, we may earn a commission at no extra
+              cost to you. It never changes the order of results, which are sorted by price. Fares on our pages are the
+              cheapest found recently on Aviasales; the provider confirms the final price.
             </p>
           </div>
-          <p className="shrink-0">
-            © <CurrentYear /> {site.name}
-          </p>
+          <div className="flex shrink-0 flex-col gap-2 md:items-end">
+            <CookieSettingsButton className="cursor-pointer text-left font-semibold text-white/75 underline-offset-4 hover:text-white hover:underline" />
+            <p>
+              © <CurrentYear /> {site.name}
+            </p>
+          </div>
         </div>
       </div>
     </footer>

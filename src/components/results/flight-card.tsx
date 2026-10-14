@@ -6,14 +6,27 @@ import { AirplaneTilt, ArrowSquareOut, Backpack, CaretDown, Check, Suitcase, X }
 import clsx from "clsx";
 import { formatPrice } from "@/content/deals";
 import { airportByCode } from "@/lib/search-query";
+import { searchString } from "@/lib/white-label";
 import { utcOffset } from "@/lib/geo";
 import { clock, dayOffset, durationLabel, stopsLabel, type Itinerary, type Journey } from "@/lib/demo-flights";
 import { AirlineMark } from "./airline-mark";
 
 const cityOf = (code: string) => airportByCode(code)?.city ?? code;
 
+/**
+ * Demo results (behind NEXT_PUBLIC_DEMO_RESULTS) hand off through /go to the
+ * same route on Aviasales, as a real affiliate link. Demo providers and prices
+ * are only shown on the hand-off screen, labelled as such.
+ */
 export function dealHref(it: Itinerary, provider: string, price: number) {
+  const path = searchString(
+    it.journeys.map((j) => ({ from: j.from, to: j.to, date: j.date })),
+    { cabin: "economy", adults: 1, children: 0, infants: 0 },
+  );
   const p = new URLSearchParams({
+    program: "aviasales",
+    url: `https://www.aviasales.com/search/${path}`,
+    sub: "demo_results",
     provider,
     airline: it.airline.name,
     price: String(price),

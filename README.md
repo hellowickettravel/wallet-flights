@@ -28,15 +28,21 @@ First-time Playwright setup locally: `npx playwright install chromium`.
    - `RESEND_API_KEY` and `EMAIL_FROM`: required for the contact form and fare alerts.
      Without them, production returns a friendly "unavailable" message instead of losing messages.
    - `CONTACT_TO` (defaults to info@walletflights.com), `RESEND_AUDIENCE_ID` (optional).
+   - `TRAVELPAYOUTS_TOKEN`: Travelpayouts API token for real cached fares (Production + Preview).
+     Without it the site works but shows no prices.
 3. Deploy. Every push to a branch gets a preview URL; `main` deploys to production.
 4. Domains: add `walletflights.com` and `www.walletflights.com`, then point DNS as Vercel shows.
 5. Optional: enable **Web Analytics** and **Speed Insights** in the project (already wired in code;
    both are cookieless).
 
+### Travelpayouts
+See [`docs/TRAVELPAYOUTS.md`](docs/TRAVELPAYOUTS.md): `/flights` runs White Label widget #23361
+(configured for `https://www.walletflights.com`), prices come from the Aviasales Data API, and every
+partner link is a `tp.media` affiliate link with marker 567389 and a placement `sub_id`.
+
 ### Before switching DNS from WordPress
-- Connect a live fare API in `src/lib/demo-flights.ts` (results are demo data until then), or keep
-  the "Demo results" notice visible.
-- Replace provider hand-off in `src/components/go/handoff.tsx` with real affiliate links.
+- Serve the site on `www.walletflights.com` (the White Label's configured domain), or change the
+  widget's domain in the dashboard to match.
 - Have the legal pages (`src/content/legal.ts`) reviewed and add the registered company details.
 
 ## Design skills

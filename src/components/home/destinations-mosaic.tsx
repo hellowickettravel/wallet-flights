@@ -6,11 +6,11 @@ import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import clsx from "clsx";
 import { SmartImage } from "@/components/ui/smart-image";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { formatPrice } from "@/content/deals";
 import { destinations, regions, type Region } from "@/content/destinations";
+import type { TileFare } from "@/lib/fares";
 
-const usd = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
-
-export function DestinationsMosaic() {
+export function DestinationsMosaic({ fares }: { fares: Record<string, TileFare> }) {
   const [region, setRegion] = useState<Region>("europe");
   const list = destinations.filter((d) => d.region === region).slice(0, 5);
 
@@ -20,7 +20,7 @@ export function DestinationsMosaic() {
         <SectionHeading
           id="dest-title"
           title="Trending destinations"
-          intro="Popular places to fly this season, with an example round-trip fare from the US."
+          intro="Popular places to fly this season, with the cheapest round trip found recently from New York."
         >
           <Link href="/destinations" className="text-[0.9375rem] font-semibold text-action underline-offset-4 hover:underline">
             See all destinations
@@ -69,7 +69,9 @@ export function DestinationsMosaic() {
               transition={{ duration: 0.2 }}
               className="grid auto-rows-[11.5rem] grid-cols-2 gap-3 sm:auto-rows-[14rem] sm:gap-4 lg:auto-rows-[15.5rem] lg:grid-cols-4"
             >
-              {list.map((d, i) => (
+              {list.map((d, i) => {
+                const fare = fares[d.slug];
+                return (
                 <li key={d.slug} className={clsx(i === 0 && "col-span-2 lg:row-span-2")}>
                   <Link
                     href={`/destinations/${d.slug}`}
@@ -81,9 +83,12 @@ export function DestinationsMosaic() {
                       imgClassName="transition-transform duration-700 ease-(--ease-out-quint) group-hover:scale-[1.04]"
                     />
                     <span aria-hidden className="absolute inset-0 bg-[linear-gradient(0deg,rgb(15_31_61/0.82)_0%,rgb(15_31_61/0.25)_45%,transparent_70%)]" />
-                    <span className="absolute top-3 right-3 rounded-full bg-white px-2.5 py-1 text-[0.75rem] font-semibold text-ink sm:top-4 sm:right-4 sm:px-3 sm:py-1.5 sm:text-[0.8125rem]">
-                      from <span className="tabular text-fare">{usd.format(d.fromPrice)}</span>
-                    </span>
+                    {fare && (
+                      <span className="absolute top-3 right-3 rounded-full bg-white px-2.5 py-1 text-[0.75rem] font-semibold text-ink sm:top-4 sm:right-4 sm:px-3 sm:py-1.5 sm:text-[0.8125rem]">
+                        <span className="sr-only">Round trip from {fare.originCity} </span>
+                        from <span className="tabular text-fare">{formatPrice(fare.price, fare.currency)}</span>
+                      </span>
+                    )}
                     <span className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
                       <span
                         className={clsx(
@@ -97,7 +102,8 @@ export function DestinationsMosaic() {
                     </span>
                   </Link>
                 </li>
-              ))}
+                );
+              })}
             </motion.ul>
           </AnimatePresence>
         </div>

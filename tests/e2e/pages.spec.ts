@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 import AxeBuilder from "@axe-core/playwright";
 
 test.beforeEach(async ({ page }) => {
@@ -38,9 +38,9 @@ test("about: price ladder settles cheapest first", async ({ page }) => {
   const ladder = page.getByRole("list", { name: "Example results" });
   await ladder.scrollIntoViewIfNeeded();
   await expect(ladder.getByText("Cheapest")).toBeVisible();
-  const prices = await ladder.locator("li .tabular").allTextContents();
-  const nums = prices.map((p) => Number(p.replace(/[^\d]/g, "")));
-  expect(nums).toEqual([...nums].sort((a, b) => a - b));
+  // No invented prices: rows carry a rank, cheapest first once settled.
+  await expect(ladder.locator("li").first()).toContainText("Lowest price");
+  await expect(ladder).not.toContainText(/[£$]\d/);
 });
 
 test("contact: shows business details from the existing site", async ({ page }) => {
