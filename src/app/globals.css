@@ -1,3 +1,7 @@
+/* The Travelpayouts White Label (/flights) injects a global reset inside
+   `@layer isolation`. Layers rank by first declaration, so naming it first
+   keeps that reset below Tailwind's layers instead of overriding our styles. */
+@layer isolation;
 @import "tailwindcss";
 
 @theme {

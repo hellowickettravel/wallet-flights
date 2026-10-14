@@ -22,6 +22,9 @@ type Props = {
   travellers: Travellers;
   cabin: Cabin;
   onChange: (t: Travellers, c: Cabin) => void;
+  /** "pill" sits beside the trip tabs; "field" is a full-height segment of the search bar. */
+  variant?: "pill" | "field";
+  className?: string;
 };
 
 export function summary(t: Travellers, c: Cabin) {
@@ -29,7 +32,7 @@ export function summary(t: Travellers, c: Cabin) {
   return `${n} traveller${n === 1 ? "" : "s"}, ${cabins.find((x) => x.id === c)!.label}`;
 }
 
-export function TravellersPopover({ travellers, cabin, onChange }: Props) {
+export function TravellersPopover({ travellers, cabin, onChange, variant = "pill", className }: Props) {
   const [open, setOpen] = useState(false);
   const wrap = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -75,19 +78,36 @@ export function TravellersPopover({ travellers, cabin, onChange }: Props) {
   }
 
   return (
-    <div ref={wrap} className="relative">
-      <button
-        ref={triggerRef}
-        type="button"
-        aria-expanded={open}
-        aria-controls={panelId}
-        onClick={() => setOpen((o) => !o)}
-        className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-full px-3.5 text-[0.9375rem] font-medium text-ink ring-1 ring-line transition-colors hover:bg-mist"
-      >
-        <User className="size-[1.125rem] text-ink-soft" aria-hidden />
-        {summary(travellers, cabin)}
-        <CaretDown className={clsx("size-4 text-ink-soft transition-transform", open && "rotate-180")} aria-hidden />
-      </button>
+    <div ref={wrap} className={clsx("relative", className)}>
+      {variant === "field" ? (
+        <button
+          ref={triggerRef}
+          type="button"
+          aria-expanded={open}
+          aria-controls={panelId}
+          onClick={() => setOpen((o) => !o)}
+          className="flex h-16 w-full cursor-pointer items-center gap-3 rounded-xl bg-white px-4 text-left ring-1 ring-line transition-shadow hover:ring-ink/30 focus-visible:ring-2 focus-visible:ring-action lg:rounded-none"
+        >
+          <span className="min-w-0 flex-1">
+            <span className="block text-[0.75rem] font-medium text-ink-soft">Travellers and cabin class</span>
+            <span className="block truncate text-[1.0625rem] font-semibold text-ink">{summary(travellers, cabin)}</span>
+          </span>
+          <CaretDown className={clsx("size-4 shrink-0 text-ink-soft transition-transform", open && "rotate-180")} aria-hidden />
+        </button>
+      ) : (
+        <button
+          ref={triggerRef}
+          type="button"
+          aria-expanded={open}
+          aria-controls={panelId}
+          onClick={() => setOpen((o) => !o)}
+          className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-full px-3.5 text-[0.9375rem] font-medium text-ink ring-1 ring-line transition-colors hover:bg-mist"
+        >
+          <User className="size-[1.125rem] text-ink-soft" aria-hidden />
+          {summary(travellers, cabin)}
+          <CaretDown className={clsx("size-4 text-ink-soft transition-transform", open && "rotate-180")} aria-hidden />
+        </button>
+      )}
 
       <AnimatePresence>
         {open && (

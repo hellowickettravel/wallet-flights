@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
 // Regression: the About price-ladder card once covered the facts list on phones.
 test("about: price ladder never overlaps the facts list", async ({ page }) => {

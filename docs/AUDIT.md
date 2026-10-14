@@ -140,3 +140,63 @@ credited on `/photo-credits` with Unsplash referral links.
 - Add `RESEND_API_KEY` + `EMAIL_FROM` in Vercel (forms return a clear error without them in production).
 - Results are demo data with a visible notice; connect a fare API + affiliate links to go fully live.
 - Legal pages: add the registered company name/number and have them reviewed.
+
+---
+
+# Batch 4 audit — Travelpayouts integration + Skyscanner-style hero (14 Oct 2026)
+
+Branch `travelpayouts-integration`. Dashboard audit: [`docs/TRAVELPAYOUTS.md`](TRAVELPAYOUTS.md).
+
+## Housekeeping
+- `npm audit --omit=dev`: **0 vulnerabilities**. The 5 high findings from `npm audit` are all in
+  dev dependencies; no production upgrade needed (and no `audit fix --force`).
+
+## Automated checks
+
+| Check | Result |
+|---|---|
+| `npm run lint` | Pass, 0 warnings |
+| `npm run typecheck` | Pass |
+| `npm run build` | Pass — 88 routes (+37 `/routes/*`); priced pages revalidate hourly (`cacheLife("hours")`) |
+| `npm run test:e2e` (desktop 1440 + Pixel 7) | **146 passed**, 24 skipped (demo-only + one-platform tests) |
+| Demo build (`NEXT_PUBLIC_DEMO_RESULTS=true`) + `flights-demo.spec.ts` | 21 passed |
+| axe WCAG 2.2 AA on every page incl. `/routes/*`, `/flights` gate and widget, `/go` | 0 serious / critical |
+| Overflow 360 / 768 / 1280 on every page | None |
+| Link format vs dashboard generator (6 programs) | Byte-for-byte identical (`tests/e2e/links.spec.ts`) |
+| Real redirect | `tp.media/r?campaign_id=100&marker=567389&p=4114&sub_id=deals_rail…` → `aviasales.com/search/LON1503NYC20031` with live results (checked in Chrome) |
+| White Label on localhost | Live LON⇄NYC results in GBP, `marker=567389.home_hero` passed through |
+
+Tests stub `tpwdg.com` and `tp.media` (`tests/e2e/fixtures.ts`) so CI never depends on, or clicks
+through, third-party services. Price tests assert both branches (priced → affiliate link; unpriced →
+no price + White Label search), so they pass with or without `TRAVELPAYOUTS_TOKEN`.
+
+## Bugs found and fixed
+1. **White Label restyled the whole page.** Its CSS reset lives in `@layer isolation`, declared after
+   Tailwind's layers, so it out-ranked every utility (serif text, lost layout). `globals.css` now
+   declares `@layer isolation;` first, ranking it lowest.
+2. **The widget mounts once per document.** Coming back to `/flights` by client navigation left
+   empty containers; the page now reloads itself in that case.
+3. **Trip.com city deep link** (`hotels/list?city=-1&cityName=…`) returns "0 properties" — dropped;
+   the interim hotels link goes to Trip.com hotels. Airalo country pages and Tiqets `search?q=` were
+   each checked (HTTP 200, correct city).
+4. **Hero date fields clipped `mm/dd/yyyy`** in the joined bar at 1440px — columns rebalanced, date
+   icon hidden inside the bar.
+5. Price ladder (About) used invented prices → relative bars, no amounts.
+6. Policy text: Snowplow cookie lifetimes measured in the browser (`_sp_id` ≈ 13 months), not assumed.
+
+## Known / open items
+- **`TRAVELPAYOUTS_TOKEN` isn't set yet**, so builds show no prices (by design). Add it in Vercel
+  and `.env.local`; prices appear on the next build/revalidation.
+- **Headless desktop Chromium gets 403** from the widget's search API (bot protection); real
+  browsers and the mobile profile work. We don't work around it. The desktop `/flights`
+  screenshot was taken in real Chrome.
+- White Label domain is `https://www.walletflights.com`; `site.url` is the apex. Serve on `www` or
+  change the widget domain so they match.
+- The widget's "Powered by Travelpayouts" referral line renders white on our light background
+  (invisible). Turn it off in the widget's Content settings, or keep it for referral income.
+- Programs to join (needs owner OK): see TRAVELPAYOUTS.md. EKTA (insurance) is closing.
+- Owner hotel / car-rental links: drop into `ownerLinks` in `src/content/cross-sell.ts`.
+- Pre-existing dev-only "instant navigation" insight on `/destinations/[slug]` (now also
+  `/routes/[slug]`): `params` read outside Suspense. Both are fully prerendered via
+  `generateStaticParams`; production navigation isn't affected.
+- Legal pages still need adviser review and the registered company details.

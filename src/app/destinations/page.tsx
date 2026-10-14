@@ -2,19 +2,21 @@ import type { Metadata } from "next";
 import { PageHeader } from "@/components/ui/page-header";
 import { DestinationTile } from "@/components/destinations/destination-tile";
 import { destinations, regions } from "@/content/destinations";
+import { destinationTileFares } from "@/lib/fares";
 
 export const metadata: Metadata = {
   title: "Destinations",
-  description: "Travel guides and example flight prices for 20 popular destinations across Europe, Asia, the Middle East, Africa and the Americas.",
+  description: "Travel guides and recent flight prices for 20 popular destinations across Europe, Asia, the Middle East, Africa and the Americas.",
   alternates: { canonical: "/destinations" },
 };
 
-export default function DestinationsPage() {
+export default async function DestinationsPage() {
+  const fares = await destinationTileFares();
   return (
     <div className="pb-18 md:pb-28">
       <PageHeader
         title="Where will you go next?"
-        intro="Short guides to popular destinations, with the best time to visit and example fares from the US and UK."
+        intro="Short guides to popular destinations, with the best time to visit and recent fares from the US and UK."
         crumbs={[{ label: "Destinations", href: "/destinations" }]}
       />
       <nav aria-label="Regions" className="container-page mt-8">
@@ -41,7 +43,7 @@ export default function DestinationsPage() {
             <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {list.map((d, i) => (
                 <li key={d.slug} className={i === 0 ? "sm:col-span-2 lg:col-span-1 lg:row-span-1" : undefined}>
-                  <DestinationTile d={d} priority={ri === 0 && i < 3} />
+                  <DestinationTile d={d} fare={fares[d.slug]} priority={ri === 0 && i < 3} />
                 </li>
               ))}
             </ul>

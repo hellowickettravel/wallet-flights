@@ -37,6 +37,8 @@ type Props = {
   defaultTo?: string;
   /** "hero" floats over the homepage photo; "bar" sits flat at the top of a page. */
   variant?: "hero" | "bar";
+  /** Placement name passed on as the affiliate sub_id (e.g. "home_hero"). */
+  subId?: string;
 };
 
 function initialLegs(initial: Props["initial"], defaultFrom: string, defaultTo?: string): Leg[] {
@@ -47,7 +49,7 @@ function initialLegs(initial: Props["initial"], defaultFrom: string, defaultTo?:
   return legs;
 }
 
-export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant = "hero" }: Props) {
+export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant = "hero", subId = "search_form" }: Props) {
   const router = useRouter();
   const [trip, setTrip] = useState<TripType>(initial?.trip ?? "round");
   const [legs, setLegs] = useState<Leg[]>(() => initialLegs(initial, defaultFrom, defaultTo));
@@ -64,6 +66,9 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
   const today = useSyncExternalStore(noopSubscribe, todayIso, () => undefined);
 
   const visibleLegs = trip === "multi" ? legs : legs.slice(0, 1);
+  const hero = variant === "hero";
+  // Hero, single leg: one joined bar (From | To | Dates | Travellers | Search) on desktop.
+  const seg = hero && trip !== "multi";
 
   function updateLeg(i: number, patch: Partial<Omit<Leg, "id">>) {
     setLegs((ls) => ls.map((l, j) => (j === i ? { ...l, ...patch } : l)));
@@ -108,7 +113,7 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
       legs: visibleLegs.map((l) => ({ from: l.from!, to: l.to!, date: l.date })),
       returnDate: trip === "round" ? returnDate : undefined,
     };
-    router.push(`/flights?${serializeSearch(query)}`);
+    router.push(`/flights?${serializeSearch(query)}&sub=${encodeURIComponent(subId)}`);
   }
 
   return (
@@ -117,13 +122,14 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
       noValidate
       aria-label="Search flights"
       className={clsx(
-        "rounded-(--radius-panel) bg-white ring-1",
-        variant === "hero" ? "p-4 shadow-(--shadow-float) ring-line/70 sm:p-6" : "p-3 shadow-[0_8px_24px_-18px_rgb(15_31_61/0.35)] ring-line sm:p-4",
+        hero
+          ? "text-white [&_p[id$='-err']]:text-[#ffb4ab]"
+          : "rounded-(--radius-panel) bg-white p-3 shadow-[0_8px_24px_-18px_rgb(15_31_61/0.35)] ring-1 ring-line sm:p-4",
       )}
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <LayoutGroup id="trip-type">
-          <div role="radiogroup" aria-label="Trip type" className="flex rounded-full bg-mist p-1">
+          <div role="radiogroup" aria-label="Trip type" className={clsx("flex rounded-full p-1", hero ? "bg-white/10" : "bg-mist")}>
             {tripTypes.map((t) => {
               const active = trip === t.id;
               return (
@@ -138,13 +144,13 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
                   }}
                   className={clsx(
                     "relative h-9 cursor-pointer rounded-full px-3.5 text-[0.875rem] font-semibold transition-colors sm:px-4 sm:text-[0.9375rem]",
-                    active ? "text-white" : "text-ink-soft hover:text-ink",
+                    hero ? (active ? "text-ink" : "text-white/80 hover:text-white") : active ? "text-white" : "text-ink-soft hover:text-ink",
                   )}
                 >
                   {active && (
                     <motion.span
                       layoutId="trip-pill"
-                      className="absolute inset-0 rounded-full bg-ink"
+                      className={clsx("absolute inset-0 rounded-full", hero ? "bg-white" : "bg-ink")}
                       transition={{ type: "spring", stiffness: 420, damping: 34 }}
                     />
                   )}
@@ -154,14 +160,16 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
             })}
           </div>
         </LayoutGroup>
-        <TravellersPopover
-          travellers={travellers}
-          cabin={cabin}
-          onChange={(t, c) => {
-            setTravellers(t);
-            setCabin(c);
-          }}
-        />
+        {!seg && (
+          <TravellersPopover
+            travellers={travellers}
+            cabin={cabin}
+            onChange={(t, c) => {
+              setTravellers(t);
+              setCabin(c);
+            }}
+          />
+        )}
       </div>
 
       <div className="mt-4 space-y-3">
@@ -175,13 +183,16 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
               className={clsx(
-                "grid gap-3",
-                trip === "round" && "lg:grid-cols-[1fr_1fr_0.72fr_0.72fr_auto]",
-                trip === "oneway" && "lg:grid-cols-[1fr_1fr_0.9fr_auto]",
+                "grid",
+                seg ? "gap-2 lg:gap-0.5" : "gap-3",
+                seg && trip === "round" && "lg:grid-cols-[1.2fr_1.2fr_0.9fr_0.9fr_1fr_auto]",
+                seg && trip === "oneway" && "lg:grid-cols-[1.2fr_1.2fr_0.9fr_1.1fr_auto]",
+                !seg && trip === "round" && "lg:grid-cols-[1fr_1fr_0.72fr_0.72fr_auto]",
+                !seg && trip === "oneway" && "lg:grid-cols-[1fr_1fr_0.9fr_auto]",
                 trip === "multi" && "lg:grid-cols-[1fr_1fr_0.9fr_auto]",
               )}
             >
-              <div className="relative grid gap-3 sm:grid-cols-2 lg:col-span-2">
+              <div className={clsx("relative grid sm:grid-cols-2 lg:col-span-2", seg ? "gap-2 lg:gap-0.5" : "gap-3")}>
                 <AirportField
                   label={trip === "multi" ? `Flight ${i + 1} · from` : "Leaving from"}
                   icon={<AirplaneTakeoff className="size-5" aria-hidden />}
@@ -189,7 +200,7 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
                   value={leg.from}
                   error={errors[`from${i}`]}
                   onChange={(a) => updateLeg(i, { from: a })}
-                  shellClassName={i === 0 && trip !== "multi" ? "sm:pr-8" : undefined}
+                  shellClassName={clsx(i === 0 && trip !== "multi" && "sm:pr-8", seg && "lg:rounded-r-none")}
                 />
                 <AirportField
                   label="Going to"
@@ -198,7 +209,7 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
                   value={leg.to}
                   error={errors[`to${i}`]}
                   onChange={(a) => updateLeg(i, { to: a })}
-                  shellClassName={i === 0 && trip !== "multi" ? "sm:pl-8" : undefined}
+                  shellClassName={clsx(i === 0 && trip !== "multi" && "sm:pl-8", seg && "lg:rounded-none")}
                 />
                 {i === 0 && trip !== "multi" && (
                   <motion.button
@@ -214,9 +225,10 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
                 )}
               </div>
 
-              <div className={clsx("grid gap-3", trip === "round" ? "grid-cols-2 lg:col-span-2" : "")}>
+              <div className={clsx("grid", seg ? "gap-2 lg:gap-0.5" : "gap-3", trip === "round" ? "grid-cols-2 lg:col-span-2" : "")}>
                 <DateField
                   label={trip === "multi" ? "Date" : "Departing"}
+                  shellClassName={seg ? "lg:rounded-none lg:[&>svg]:hidden!" : undefined}
                   value={leg.date}
                   min={i > 0 ? visibleLegs[i - 1].date || today : today}
                   error={errors[`date${i}`]}
@@ -225,6 +237,7 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
                 {trip === "round" && (
                   <DateField
                     label="Returning"
+                    shellClassName={seg ? "lg:rounded-none lg:[&>svg]:hidden!" : undefined}
                     value={returnDate}
                     min={leg.date || today}
                     error={errors.return}
@@ -236,8 +249,20 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
                 )}
               </div>
 
+              {seg && (
+                <TravellersPopover
+                  variant="field"
+                  travellers={travellers}
+                  cabin={cabin}
+                  onChange={(t, c) => {
+                    setTravellers(t);
+                    setCabin(c);
+                  }}
+                />
+              )}
+
               {trip !== "multi" ? (
-                <SearchButton />
+                <SearchButton className={seg ? "lg:rounded-l-none lg:px-6" : undefined} />
               ) : (
                 <div className="flex items-start">
                   {i > 1 ? (
@@ -248,7 +273,10 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
                         setErrors({});
                       }}
                       aria-label={`Remove flight ${i + 1}`}
-                      className="grid size-16 cursor-pointer place-items-center rounded-xl text-ink-soft ring-1 ring-line hover:bg-mist hover:text-ink max-lg:h-11 max-lg:w-full"
+                      className={clsx(
+                        "grid size-16 cursor-pointer place-items-center rounded-xl ring-1 max-lg:h-11 max-lg:w-full",
+                        hero ? "text-white ring-white/30 hover:bg-white/10" : "text-ink-soft ring-line hover:bg-mist hover:text-ink",
+                      )}
                     >
                       <X className="size-5" aria-hidden />
                     </button>
@@ -270,7 +298,10 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
             onClick={() =>
               setLegs((ls) => [...ls, { id: Math.max(...ls.map((l) => l.id)) + 1, from: ls[ls.length - 1].to, to: null, date: "" }])
             }
-            className="inline-flex h-11 cursor-pointer items-center gap-2 self-start rounded-full px-4 font-semibold text-action ring-1 ring-line hover:bg-mist disabled:cursor-not-allowed disabled:opacity-50"
+            className={clsx(
+              "inline-flex h-11 cursor-pointer items-center gap-2 self-start rounded-full px-4 font-semibold ring-1 disabled:cursor-not-allowed disabled:opacity-50",
+              hero ? "text-white ring-white/30 hover:bg-white/10" : "text-action ring-line hover:bg-mist",
+            )}
           >
             <Plus className="size-4" weight="bold" aria-hidden />
             Add another flight

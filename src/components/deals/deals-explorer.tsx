@@ -4,22 +4,32 @@ import { useMemo, useState } from "react";
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import clsx from "clsx";
 import { DealCard } from "@/components/home/deals-rail";
-import { dealsByOrigin, origins } from "@/content/deals";
+import { origins, routes } from "@/content/deals";
 import { regions, type Region } from "@/content/destinations";
+import type { FareMap } from "@/lib/fares";
 
 type Sort = "price" | "city";
 
-export function DealsExplorer() {
+export function DealsExplorer({ fares }: { fares: FareMap }) {
   const [origin, setOrigin] = useState<string>("all");
   const [region, setRegion] = useState<Region | "all">("all");
   const [sort, setSort] = useState<Sort>("price");
 
   const list = useMemo(() => {
-    const all = Object.values(dealsByOrigin).flat();
-    return all
-      .filter((d) => (origin === "all" || d.origin === origin) && (region === "all" || d.destination.region === region))
-      .sort((a, b) => (sort === "price" ? (a.currency === b.currency ? a.price - b.price : a.currency === "GBP" ? -1 : 1) : a.destination.city.localeCompare(b.destination.city)));
-  }, [origin, region, sort]);
+    // Priced routes first (GBP, then USD, cheapest first); unpriced routes last.
+    const rank = (slug: string) => {
+      const f = fares[slug];
+      return f ? [0, f.currency === "GBP" ? 0 : 1, f.price] : [1, 0, 0];
+    };
+    return routes
+      .filter((d) => (origin === "all" || d.origin.code === origin) && (region === "all" || d.destination.region === region))
+      .sort((a, b) => {
+        if (sort === "city") return a.destination.city.localeCompare(b.destination.city);
+        const ra = rank(a.slug);
+        const rb = rank(b.slug);
+        return ra[0] - rb[0] || ra[1] - rb[1] || ra[2] - rb[2];
+      });
+  }, [origin, region, sort, fares]);
 
   const chips = [{ code: "all", city: "All cities" }, ...origins];
 
@@ -79,12 +89,12 @@ export function DealsExplorer() {
       </div>
 
       <h2 className="mt-6 text-[0.9375rem] font-normal text-ink" aria-live="polite">
-        <strong className="font-semibold">{list.length}</strong> example fares
+        <strong className="font-semibold">{list.length}</strong> {list.length === 1 ? "route" : "routes"}
       </h2>
 
       {list.length === 0 ? (
         <div className="mt-4 rounded-(--radius-panel) bg-mist px-6 py-12 text-center">
-          <p className="font-display-tight text-[1.375rem] font-bold text-ink">No example fares for this combination</p>
+          <p className="font-display-tight text-[1.375rem] font-bold text-ink">No featured routes for this combination</p>
           <button type="button" onClick={() => { setOrigin("all"); setRegion("all"); }} className="mt-4 h-11 cursor-pointer rounded-full bg-action px-6 font-semibold text-white">
             Show all deals
           </button>
@@ -94,21 +104,22 @@ export function DealsExplorer() {
           <AnimatePresence mode="popLayout" initial={false}>
             {list.map((d) => (
               <motion.li
-                key={d.id}
+                key={d.slug}
                 layout
                 initial={{ opacity: 0, scale: 0.97 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.97, transition: { duration: 0.12 } }}
                 transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
               >
-                <DealCard deal={d} href={`/flights?trip=round&cabin=economy&adults=1&from0=${d.origin}&to0=${d.destination.airport}`} />
+                <DealCard route={d} fare={fares[d.slug]} subId={`deals_${d.slug}`} />
               </motion.li>
             ))}
           </AnimatePresence>
         </motion.ul>
       )}
       <p className="mt-8 text-[0.8125rem] text-ink-soft">
-        Example round-trip economy fares per person, taxes included, in the departure city’s currency. Select a deal to compare live prices.
+        Lowest round-trip economy fares per person found on Aviasales in the last few days, in the departure city’s currency. Routes
+        without a recent fare show no price; search them for your dates.
       </p>
     </div>
   );

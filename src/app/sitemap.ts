@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { routes } from "@/content/deals";
 import { destinations } from "@/content/destinations";
 import { guides } from "@/content/guides";
 import { site } from "@/content/site";
@@ -14,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page("/deals", 0.9, "daily"),
     page("/destinations", 0.8, "weekly"),
     ...destinations.map((d) => page(`/destinations/${d.slug}`, 0.7, "monthly")),
+    ...routes.map((r) => page(`/routes/${r.slug}`, 0.6, "daily")),
     page("/airlines", 0.6, "monthly"),
     page("/travel-guides", 0.6, "weekly"),
     ...guides.map((g) => ({ ...page(`/travel-guides/${g.slug}`, 0.6, "monthly"), lastModified: g.published })),

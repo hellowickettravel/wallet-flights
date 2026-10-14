@@ -5,7 +5,7 @@ import { airlines, airlineByCode, type Airline } from "@/content/airlines";
 import { airports } from "@/content/airports";
 import type { Currency } from "@/content/deals";
 import { distanceKm, utcOffset } from "@/lib/geo";
-import type { Cabin, QueryLeg, SearchQuery } from "@/lib/search-query";
+import type { Cabin, SearchQuery } from "@/lib/search-query";
 
 export type Segment = {
   from: string;
@@ -74,11 +74,6 @@ const flightMinutes = (km: number) => Math.round(km / 13.5 + 35); // ~810 km/h +
 const countryByCode = Object.fromEntries(airports.map((a) => [a.code, a.country]));
 const countryOf = (code: string) => countryByCode[code];
 
-function addDays(iso: string, days: number) {
-  const d = new Date(`${iso}T12:00:00Z`);
-  d.setUTCDate(d.getUTCDate() + days);
-  return d.toISOString().slice(0, 10);
-}
 
 type Route = { airline: Airline; via: string[] };
 
@@ -148,11 +143,7 @@ function buildJourney(leg: { from: string; to: string; date: string }, route: Ro
 }
 
 /** Departure dates may be missing for deep links; fill sensible defaults. */
-export function withDefaultDates(q: SearchQuery, todayIso: string): SearchQuery {
-  const legs: QueryLeg[] = q.legs.map((l, i) => ({ ...l, date: l.date || addDays(todayIso, 21 + i * 5) }));
-  const returnDate = q.trip === "round" ? q.returnDate || addDays(legs[0].date, 7) : undefined;
-  return { ...q, legs, returnDate };
-}
+export { withDefaultDates } from "@/lib/search-query";
 
 export function generateDemoResults(q: SearchQuery): DemoResults {
   const origin = q.legs[0].from.code;

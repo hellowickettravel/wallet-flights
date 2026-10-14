@@ -136,3 +136,44 @@ cities, a prefilled search panel, and related destinations.
 
 **Articles:** narrow measure (68ch), photo header, reading time, sticky table of contents on
 wide screens.
+
+---
+
+## Batch 4 — Skyscanner-style hero, consent, live search
+
+**Owner direction:** homepage hero and search widget "like Skyscanner, because users find it easy".
+We follow its *layout pattern* in our own tokens, type and brand (no Skyscanner assets or colours).
+
+```
+[header — unchanged]
+████████████████████████ ink #0F1F3D, full bleed ████████████████████████
+ H1 (Bricolage 800, left)  Where to next? We'll find the fare.
+ one-line intro (white/80)
+ (Round trip)(One way)(Multi-city)          ← white pill on ink for the active trip
+ ┌Leaving from─┐⇄┌Going to──┬Departing┬Returning┬Travellers & cabin┬────────────┐
+ │New York NYC │ │City/airp.│mm/dd    │mm/dd    │1 traveller, Econ.│Search fl. │ ← action blue
+ └─────────────┘ └──────────┴─────────┴─────────┴──────────────────┴────────────┘
+ [Flight deals] [Destinations] [Hotels ↗] [Car hire ↗]   ← white/10 pills, sun icons
+██████████████████████████████████████████████████████████████████████████████
+```
+- Desktop: one joined bar — segments 2px apart (the ink shows through as dividers), outer corners
+  rounded 12px, inner corners square; travellers moves *into* the bar; Search is the last segment.
+- Mobile: the same fields stacked as white 12px blocks, full-width Search.
+- Multi-city keeps stacked rows (as Skyscanner does). Errors switch to `#FFB4AB` on ink (9:1).
+- Motion: the existing CSS `rise` entrance only (headline → intro → bar). Nothing else moves.
+
+Review against defaults: the old rounded photo frame + floating panel is replaced, per the brief; the
+one memorable element is the joined bar. No stats row, no gradient, no eyebrow labels.
+
+**White Label** (Travelpayouts widget on `/flights`): styled in the dashboard with our tokens —
+Manrope (closest available to Onest), radius 12, `action` buttons/icons/links, `fare` prices,
+`ink` text, `line` strokes. Its CSS reset ships inside `@layer isolation`; `globals.css` declares
+that layer *first* so it ranks below Tailwind's layers and can't restyle our page.
+
+**Consent banner:** bottom card (radius 20, pop shadow), Accept and Reject in the same ink style so
+neither is nudged; "Manage choices" reveals switches (Necessary locked, Live flight search,
+Analytics). `/flights` shows a "Live prices need one cookie choice" panel until search is allowed.
+
+**Prices:** green `fare` only for real Data API prices. No fare → no price (cards say "Search
+dates", the board shows blank flaps). Cheapest-month calendar: one cell per month with a fare,
+bar height relative to that city's range, cheapest month in `fare` green.

@@ -1,109 +1,66 @@
 import { destinationBySlug, type Destination } from "./destinations";
 
-// Example fares for the homepage rail and fare board.
-// Prices are illustrative round-trip economy fares per person, in the
-// departure city's currency, and are labelled as examples in the UI.
-// Replace with live data from the comparison feed when available.
+// Featured routes: an editorial choice of where we show fares from each
+// departure city. There are no prices here — fares come from the Aviasales
+// Data API (src/lib/travelpayouts.ts) and are hidden when none was found.
 
 export type Currency = "USD" | "GBP";
-export type Origin = { code: string; city: string; currency: Currency };
+export type Origin = {
+  /** Airport/city code used for searches on /flights. */
+  code: string;
+  /** City code for the Data API (cities aggregate all their airports). */
+  apiCode: string;
+  city: string;
+  slug: string;
+  currency: Currency;
+};
 
 export const origins: Origin[] = [
-  { code: "NYC", city: "New York", currency: "USD" },
-  { code: "LON", city: "London", currency: "GBP" },
-  { code: "LAX", city: "Los Angeles", currency: "USD" },
-  { code: "MAN", city: "Manchester", currency: "GBP" },
-  { code: "ORD", city: "Chicago", currency: "USD" },
-  { code: "ATL", city: "Atlanta", currency: "USD" },
+  { code: "NYC", apiCode: "NYC", city: "New York", slug: "new-york", currency: "USD" },
+  { code: "LON", apiCode: "LON", city: "London", slug: "london", currency: "GBP" },
+  { code: "LAX", apiCode: "LAX", city: "Los Angeles", slug: "los-angeles", currency: "USD" },
+  { code: "MAN", apiCode: "MAN", city: "Manchester", slug: "manchester", currency: "GBP" },
+  { code: "ORD", apiCode: "CHI", city: "Chicago", slug: "chicago", currency: "USD" },
+  { code: "ATL", apiCode: "ATL", city: "Atlanta", slug: "atlanta", currency: "USD" },
 ];
+export const originByCode = Object.fromEntries(origins.map((o) => [o.code, o])) as Record<string, Origin>;
 
-export type Deal = {
-  id: string;
-  origin: string;
+const table: Record<string, string[]> = {
+  NYC: ["london", "lisbon", "cancun", "rome", "tokyo", "dubai", "delhi"],
+  LAX: ["tokyo", "mexico-city", "sydney", "bangkok", "london", "bali"],
+  ORD: ["paris", "cancun", "istanbul", "barcelona", "delhi", "tokyo"],
+  LON: ["new-york", "dubai", "lisbon", "rome", "delhi", "cape-town"],
+  MAN: ["barcelona", "dubai", "new-york", "istanbul", "bangkok", "cancun"],
+  ATL: ["paris", "rome", "cape-town", "cancun", "cairo", "singapore"],
+};
+
+export type Route = {
+  /** "london-to-lisbon" — also the /routes/[slug] path. */
+  slug: string;
+  origin: Origin;
   destination: Destination;
-  price: number;
-  currency: Currency;
-  travel: string; // travel window
-  stops: 0 | 1 | 2;
 };
 
-const table: Record<string, [slug: string, price: number, travel: string, stops: 0 | 1 | 2][]> = {
-  NYC: [
-    ["london", 489, "Jan – Mar", 0],
-    ["lisbon", 467, "Feb – Apr", 0],
-    ["cancun", 289, "Jan – May", 0],
-    ["rome", 548, "Mar – May", 0],
-    ["tokyo", 812, "Feb – Apr", 0],
-    ["dubai", 689, "Jan – Mar", 0],
-    ["delhi", 812, "Jan – Mar", 0],
-  ],
-  LAX: [
-    ["tokyo", 698, "Jan – Mar", 0],
-    ["mexico-city", 268, "Feb – May", 0],
-    ["sydney", 1094, "Apr – Jun", 0],
-    ["bangkok", 745, "Feb – Apr", 1],
-    ["london", 579, "Jan – Mar", 0],
-    ["bali", 912, "Apr – Jun", 1],
-  ],
-  ORD: [
-    ["paris", 538, "Jan – Mar", 0],
-    ["cancun", 318, "Jan – Apr", 0],
-    ["istanbul", 618, "Feb – Apr", 0],
-    ["barcelona", 559, "Mar – May", 1],
-    ["delhi", 829, "Jan – Mar", 0],
-    ["tokyo", 864, "Feb – Apr", 0],
-  ],
-  LON: [
-    ["new-york", 389, "Jan – Mar", 0],
-    ["dubai", 418, "Feb – Apr", 0],
-    ["lisbon", 98, "Mar – May", 0],
-    ["rome", 112, "Mar – May", 0],
-    ["delhi", 529, "Jan – Mar", 0],
-    ["cape-town", 689, "Feb – Apr", 0],
-  ],
-  MAN: [
-    ["barcelona", 104, "Apr – Jun", 0],
-    ["dubai", 436, "Jan – Mar", 0],
-    ["new-york", 412, "Mar – May", 0],
-    ["istanbul", 189, "Apr – Jun", 0],
-    ["bangkok", 612, "Jan – Mar", 1],
-    ["cancun", 579, "Feb – Apr", 0],
-  ],
-  ATL: [
-    ["paris", 512, "Jan – Mar", 0],
-    ["rome", 598, "Mar – May", 0],
-    ["cape-town", 956, "Feb – Apr", 0],
-    ["cancun", 268, "Jan – May", 0],
-    ["cairo", 734, "Jan – Mar", 1],
-    ["singapore", 989, "Feb – Apr", 1],
-  ],
-};
-
-export const dealsByOrigin: Record<string, Deal[]> = Object.fromEntries(
-  Object.entries(table).map(([origin, rows]) => [
-    origin,
-    rows.map(([slug, price, travel, stops]) => ({
-      id: `${origin}-${slug}`,
-      origin,
-      destination: destinationBySlug[slug],
-      price,
-      currency: origins.find((o) => o.code === origin)!.currency,
-      travel,
-      stops,
-    })),
-  ]),
+export const routes: Route[] = Object.entries(table).flatMap(([code, slugs]) =>
+  slugs.map((s) => {
+    const origin = originByCode[code];
+    return { slug: `${origin.slug}-to-${s}`, origin, destination: destinationBySlug[s] };
+  }),
 );
+export const routesByOrigin = Object.fromEntries(origins.map((o) => [o.code, routes.filter((r) => r.origin.code === o.code)])) as Record<string, Route[]>;
+export const routeBySlug = Object.fromEntries(routes.map((r) => [r.slug, r])) as Record<string, Route>;
 
-// Rows for the split-flap fare board: origin airport, destination airport,
-// city label (max 8 chars to fit the board), travel month and fare in the
-// origin's currency.
-export const fareBoard = [
-  { from: "LHR", to: "JFK", city: "NEW YORK", month: "FEB", fare: 389, currency: "GBP" },
-  { from: "JFK", to: "LHR", city: "LONDON", month: "FEB", fare: 489, currency: "USD" },
-  { from: "MAN", to: "DXB", city: "DUBAI", month: "MAR", fare: 436, currency: "GBP" },
-  { from: "LAX", to: "HND", city: "TOKYO", month: "MAR", fare: 698, currency: "USD" },
-  { from: "LHR", to: "LIS", city: "LISBON", month: "APR", fare: 98, currency: "GBP" },
-  { from: "ORD", to: "IST", city: "ISTANBUL", month: "APR", fare: 618, currency: "USD" },
+/** Key used for fare lookups: "<origin api code>-<destination api code>". */
+export const routeKey = (r: Pick<Route, "origin" | "destination">) => `${r.origin.apiCode}-${r.destination.cityCode}`;
+
+// Rows for the split-flap fare board. City label max 8 characters.
+export const fareBoardRoutes = [
+  { route: "london-to-new-york", city: "NEW YORK" },
+  { route: "new-york-to-london", city: "LONDON" },
+  { route: "manchester-to-dubai", city: "DUBAI" },
+  { route: "los-angeles-to-tokyo", city: "TOKYO" },
+  { route: "london-to-lisbon", city: "LISBON" },
+  { route: "chicago-to-istanbul", city: "ISTANBUL" },
 ] as const;
 
 const symbols: Record<Currency, string> = { USD: "$", GBP: "£" };
