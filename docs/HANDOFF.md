@@ -9,7 +9,7 @@ Read first: `CLAUDE.md`, `AGENTS.md`, `docs/IMPROVEMENT-PLAN.md` (the 4-phase pl
 | 1 Indexing foundations | Done, live, verified on www.walletflights.com (commit 2c8a19f) |
 | 2 Structured data, AI search, on-page SEO | Done, live, verified (commit 025b8cf) |
 | 3 Performance, UX, accessibility, security | Done: part 1 (3.1 to 3.8, 3.17) and part 2 (3.9 to 3.23). See `docs/AUDIT.md`. |
-| 4 Content depth, E-E-A-T, claims | Part 1 done (4.1 to 4.4: booking model, Wicket Travel Limited details, "hundreds", live from-price, editorial policy). Left: 4.5 content depth, 4.6 legal review, 4.7. |
+| 4 Content depth, E-E-A-T, claims | Part 1 done (4.1 to 4.4). Part 2 (4.5): guides expanded with sources, destination pages expanded; route pages get calculated facts (part 3; nonstop airlines still TODO(confirm)); new guides proposed in `docs/GUIDE-PROPOSALS.md` awaiting sign-off. Also: skip-link fix, 20 search currencies, Hotels ↗ in the menu. Left: 4.6 legal review, 4.7. |
 
 ## Next steps
 1. Push (from the user's terminal), let Vercel deploy, then verify on www:

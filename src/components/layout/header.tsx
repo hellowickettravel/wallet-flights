@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, m } from "motion/react";
-import { List, WhatsappLogo, X } from "@phosphor-icons/react";
+import { ArrowUpRight, List, WhatsappLogo, X } from "@phosphor-icons/react";
 import clsx from "clsx";
 import { mainNav, site } from "@/content/site";
 import { Logo } from "./logo";
@@ -78,7 +78,9 @@ export function Header() {
     >
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-white"
+        // :focus-visible, not :focus: keyboard users still get it on Tab, but the
+        // back-to-top button's focus hand-off after a mouse click doesn't show it.
+        className="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:top-3 focus-visible:left-3 focus-visible:z-50 focus-visible:rounded-full focus-visible:bg-ink focus-visible:px-4 focus-visible:py-2 focus-visible:text-white"
       >
         Skip to content
       </a>
@@ -93,6 +95,22 @@ export function Header() {
         <nav aria-label="Main" className="ml-4 hidden lg:block">
           <ul className="flex items-center gap-1">
             {mainNav.map((item) => {
+              if ("external" in item)
+                return (
+                  <li key={item.href}>
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener"
+                      title={item.external}
+                      className="relative inline-flex items-center gap-1 rounded-full px-3.5 py-2 text-[0.9375rem] font-medium whitespace-nowrap text-ink/80 transition-colors hover:bg-mist hover:text-ink"
+                    >
+                      {item.label}
+                      <ArrowUpRight className="size-3 text-ink-soft" weight="bold" aria-hidden />
+                      <span className="sr-only"> ({item.external.toLowerCase()}, opens in a new tab)</span>
+                    </a>
+                  </li>
+                );
               const active = pathname === item.href || pathname.startsWith(item.href + "/");
               return (
                 <li key={item.href}>
@@ -191,13 +209,30 @@ export function Header() {
                 <ul>
                   {mainNav.map((item) => (
                     <li key={item.href}>
-                      <Link
-                        href={item.href}
-                        onClick={() => setOpen(false)}
-                        className="flex items-center rounded-xl px-3 py-3.5 font-display-tight text-[1.375rem] font-semibold text-ink hover:bg-mist"
-                      >
-                        {item.label}
-                      </Link>
+                      {"external" in item ? (
+                        <a
+                          href={item.href}
+                          target="_blank"
+                          rel="noopener"
+                          onClick={() => setOpen(false)}
+                          className="flex flex-col rounded-xl px-3 py-3 hover:bg-mist"
+                        >
+                          <span className="flex items-center gap-1.5 font-display-tight text-[1.375rem] font-semibold text-ink">
+                            {item.label}
+                            <ArrowUpRight className="size-4 text-ink-soft" weight="bold" aria-hidden />
+                          </span>
+                          <span className="text-[0.875rem] text-ink-soft">{item.external}</span>
+                          <span className="sr-only"> (opens in a new tab)</span>
+                        </a>
+                      ) : (
+                        <Link
+                          href={item.href}
+                          onClick={() => setOpen(false)}
+                          className="flex items-center rounded-xl px-3 py-3.5 font-display-tight text-[1.375rem] font-semibold text-ink hover:bg-mist"
+                        >
+                          {item.label}
+                        </Link>
+                      )}
                     </li>
                   ))}
                 </ul>

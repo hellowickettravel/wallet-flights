@@ -8,6 +8,18 @@ export const travelpayouts = {
   whiteLabelId: "23361",
 } as const;
 
+/**
+ * Currencies offered in the live search's currency menu (owner's request,
+ * 16 Oct 2026: add INR, EUR and other widely used ones). The widget keeps
+ * only codes its price service supports and always adds the dashboard's
+ * default. Ordered by our audience: UK and US first, then the currencies of
+ * the countries our visitors and destinations cover most.
+ */
+export const searchCurrencies = [
+  "USD", "GBP", "EUR", "INR", "CAD", "AUD", "AED", "SAR", "PKR", "NGN",
+  "ZAR", "SGD", "JPY", "CNY", "MXN", "BRL", "TRY", "CHF", "NZD", "THB",
+] as const;
+
 export type ProgramId = "aviasales" | "tripcom" | "kiwitaxi" | "economybookings" | "airalo" | "tiqets";
 
 export type Program = {

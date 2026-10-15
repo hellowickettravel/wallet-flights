@@ -73,7 +73,7 @@ export function llmsFullTxt() {
         `### ${d.city}, ${d.country}`,
         `Page: ${url(`/destinations/${d.slug}`)}`,
         `Main airport: ${d.airport}`,
-        ...(g ? [g.intro, `Best time to visit: ${g.bestTime}.`, `Highlights: ${g.highlights.join("; ")}.`, `Tip: ${g.tip}`] : []),
+        ...(g ? [g.intro, `Best time to visit: ${g.bestTime}.`, g.whenToGo, `Highlights: ${g.highlights.join("; ")}.`, `Flying there: ${g.flying}`, `Tip: ${g.tip}`, `Entry requirements: ${g.entry.label} (${g.entry.url})`] : []),
         "",
       ];
     }),
@@ -83,8 +83,9 @@ export function llmsFullTxt() {
     "## Travel guides",
     ...guides.flatMap((g) => [
       `### ${g.title}`,
-      `Page: ${url(`/travel-guides/${g.slug}`)} (published ${g.published})`,
+      `Page: ${url(`/travel-guides/${g.slug}`)} (published ${g.published}${g.updated ? `, updated ${g.updated}` : ""})`,
       ...g.sections.flatMap((s) => [`#### ${s.heading}`, ...s.paragraphs, ...(s.list ?? []).map((li) => `- ${li}`), ""]),
+      ...(g.sources ? ["#### Sources", ...g.sources.map((s) => `- [${s.label}](${s.url})`), ""] : []),
     ]),
   ].join("\n");
 }

@@ -447,3 +447,51 @@ byline. The hero from-price is absent, as expected without `TRAVELPAYOUTS_TOKEN`
 mobile, home:** Performance 99, Accessibility 100, Best Practices 100, SEO 100; FCP 1.2 s, LCP 2.0 s,
 TBT 20 ms, CLS 0, SI 2.0 s (Phase 3 baseline: 74–84, LCP 3.2–5.7 s). The PSI API was over its daily quota
 and the web tool stalled on further runs, so /deals and the route pages are still to measure.
+
+## Phase 4, part 2: content depth (plan item 4.5, 16 Oct 2026)
+| Area | Change |
+|---|---|
+| Guides | All three rewritten and expanded in `src/content/guides.ts`, `updated: 2026-10-16`. Word counts (as `readingMinutes` counts them, before the excerpts were shortened by a few words): when-to-book **about 1,230** (6 min, was ~250), shoulder season **about 1,110** (5 min), carry-on **about 1,040** (5 min). New sections: booking windows by trip type, peak dates for UK and US travellers, when waiting pays, US 24-hour rule and refunds, UK cancellation rights; shoulder-season fares, weather, getting around, Schengen 90/180, UK passport dates, EES, ETIAS; choosing a bag, what to leave behind, UK and US liquids, batteries and power banks, gate-checked bags. |
+| Sources | Every rule or figure maps to an official page in the guide's `sources`, each opened and read on 16 Oct 2026: US DOT refunds (24-hour rule, 6-hour international significant change), CAA cancellations (refund or reroute, compensation with under 14 days' notice), GOV.UK school term dates, GOV.UK Spain and Türkiye entry requirements (passport issue/expiry, 90 in 180, EES fingerprints and photo, under-12s photo only), EC short-stay calculator, EU ETIAS site (not in operation, EUR 20), GOV.UK hand luggage and liquids (100ml at most airports, some allow 2 litres, 1-litre bag where asked, 2-litre medical/dietary/baby exemption), TSA 3.4 oz / quart bag, CAA what-to-pack (two power banks, no recharging on board), FAA PackSafe (100 Wh, 101–160 Wh with approval, max two). DOT and FAA block scripted fetches, so they were read in the browser. Not used: airline cabin-bag sizes (pages render client-side; the guide says to check the airline), travel.state.gov (Cloudflare bot check; named in text, not linked). Corrected from memory while checking: the UK ETA now costs £20 (not used in copy). |
+| Destinations | `src/content/destination-guides.ts` gains `whenToGo`, `flying` (which airports serve the city, how people usually fly from the UK and US) and `entry` (GOV.UK entry requirements per country, all 18 URLs checked; the UK ETA page for London and CBP's ESTA page for New York). Rendered as "Visiting {city}" on each destination page, with a US-passport pointer outside the UK and US; also in llms-full.txt. No prices, schedules or journey times. Airport-to-city transport is left out: airport sites mostly block automated checks, and only Rome's Leonardo Express was confirmed (adr.it), so it's the only one named. |
+| New guides | Proposed, not published: `docs/GUIDE-PROPOSALS.md` (refund and compensation rights, cheap-flight routine, bag fees, last-minute flights, optional first long-haul). Each lists the legacy URLs it replaces and the redirect change to make once it's live. Redirects unchanged until the owner signs off. |
+| llms-full.txt | Guides show their updated date and a Sources list. |
+
+**Not done:** route pages enriched with per-route facts (needs per-route checking, a follow-up); the new
+guides (waiting for topic sign-off); airport transfer details per destination (check each on the airport's
+own site in a real browser).
+
+**Test:** lint, typecheck, build: pass. e2e: **261 passed**, 29 skipped. New in `tests/e2e/trust.spec.ts`:
+each guide reads 4+ minutes, shows the 16 Oct 2026 update and has 3+ sources, all on official domains;
+the Lisbon page has "Visiting Lisbon" with When to go / Flying to Lisbon / Before you go, the GOV.UK
+Portugal link and the US-passport pointer; New York links CBP's ESTA page without that pointer. The first
+run caught the when-to-book excerpt (the page's meta description) at 190 characters; all three excerpts
+are now 128–155. Checked by hand in the browser: the new destination section on /destinations/lisbon.
+
+## Phase 4, part 3: route pages (plan item 4.5, 16 Oct 2026)
+Each `/routes/[slug]` page gets an "About this route" section. Only facts that are certain or calculated:
+| Fact | Where it comes from |
+|---|---|
+| Distance | Great-circle km and miles between the main airports (`src/lib/geo.ts`), rounded to 10, labelled "in a straight line". |
+| Time difference | IANA time zones per city (`src/content/route-facts.ts`) read through `Intl`, so clock changes come from the runtime's tz data. Shows the difference now plus the other values in the year ("because of daylight saving time"). Cached for hours in `routeTimeDifference()` (`"use cache"`: with Cache Components the current time can only be read in a cache scope). Checked for all 37 routes, e.g. Mexico City and Cancún have no DST; LA to Sydney is 17, 18 or 19 hours. |
+| Airports | Which airports serve each departure city (content), plus the destination's main airport and a link to its guide. |
+| Rights | UK departures: CAA rules (refund or reroute, compensation with under 14 days' notice) and the CAA distance band, **omitted within 5% of a band edge** (London–Lisbon 1,570 km, London–Rome 1,440 km), because our coordinates are approximate and other London airports differ. US departures: DOT refund rule (6-hour international significant change). |
+| Entry | UK departures: the destination's GOV.UK page (or CBP ESTA for New York). US departures: the UK ETA for London, otherwise a pointer to travel.state.gov. |
+
+**Not done:** nonstop airlines per route. Airport sites (Manchester's A–Z list, others) don't say whether a
+route is nonstop, airline timetables need a real browser per route, and search results were second-hand
+booking sites. Left as `TODO(confirm)` in `src/content/route-facts.ts`. Route pages stay `noindex` without a
+fare (unchanged); with this section they are less thin, so the owner may want to index them anyway.
+
+## Owner requests (16 Oct 2026): skip link, currencies, Hotels in the menu
+| Request | Change |
+|---|---|
+| "Skip to content" showed after pressing back to top | Cause: the back-to-top button moved focus to the first header link, the skip link, which showed on any `:focus`. Now the button moves focus only when pressed from the keyboard (`detail === 0`), and the skip link shows on `:focus-visible` only. Kept for keyboard and screen-reader users (WCAG 2.4.1 Bypass Blocks); mouse users never see it. |
+| More currencies in live search | The widget reads `availableCurrencies` from `TPWL_CONFIGURATION` (found in its `main-*.js`: it filters the list against its price service and always adds the dashboard default). We pass `searchCurrencies` (`src/content/affiliates.ts`): USD, GBP, EUR, INR, CAD, AUD, AED, SAR, PKR, NGN, ZAR, SGD, JPY, CNY, MXN, BRL, TRY, CHF, NZD, THB. No extra requests or script weight. |
+| Hotels in the menu | A `/hotels` page was drafted, then dropped at the owner's instruction ("the hotels page itself will be redirected to Wicket Travel Holidays"). The main menu (desktop and mobile) now has **Hotels ↗**, linking straight to the sister company's site in a new tab (no redirect hop), disclosed as "With our sister company, Wicket Travel Holidays" (tooltip and screen readers on desktop, visible in the mobile menu). `/hotels` keeps its existing temporary redirect to the same site. Nothing added to the sitemap. |
+
+**Test:** lint, typecheck, build: pass. e2e: **266 passed**, 30 skipped. New: route facts (distance, time
+difference, CAA band and its omission near an edge, DOT link, entry links by direction), back-to-top by
+mouse leaves the skip link hidden and by keyboard focuses it, widget config carries the currencies, Hotels
+in the desktop and mobile menus. Checked by hand on a local production build: header at 1024px (one line,
+nothing clipped) and the live widget's currency menu listing all 20 currencies.

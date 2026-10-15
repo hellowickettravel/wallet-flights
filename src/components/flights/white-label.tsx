@@ -3,7 +3,7 @@
 import { useEffect, useSyncExternalStore } from "react";
 import { useSearchParams } from "next/navigation";
 import { ShieldCheck } from "@phosphor-icons/react";
-import { travelpayouts } from "@/content/affiliates";
+import { searchCurrencies, travelpayouts } from "@/content/affiliates";
 import { searchGateCopy } from "@/content/consent";
 import { openConsentSettings, saveConsent, useConsent } from "@/lib/consent";
 import { parseSearch, withDefaultDates } from "@/lib/search-query";
@@ -37,11 +37,13 @@ function loadScript() {
   }
   // Merged over the dashboard config by the widget. resultsURL keeps searches
   // on this page (by default it sends them to the site root); no "Powered by"
-  // link; no hotels checkbox, since hotels go to the owner's own site.
+  // link; no hotels checkbox, since hotels go to the owner's own site; a
+  // currency menu wider than the dashboard's USD and GBP.
   (window as Window & { TPWL_CONFIGURATION?: object }).TPWL_CONFIGURATION = {
     resultsURL: `${window.location.origin}/flights`,
     showReferralLink: false,
     showHotels: false,
+    availableCurrencies: [...searchCurrencies],
   };
   const s = document.createElement("script");
   s.type = "module";

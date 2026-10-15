@@ -35,10 +35,12 @@ export function BackToTop() {
       type="button"
       aria-label="Back to top"
       title="Back to top"
-      onClick={() => {
+      onClick={(e) => {
         window.scrollTo({ top: 0 });
-        // Keyboard users carry on from the top too.
-        document.querySelector<HTMLElement>("header a")?.focus({ preventScroll: true });
+        // Keyboard users carry on from the top too (a keyboard-activated click
+        // has detail 0). After a mouse click focus stays put, so the skip link
+        // that heads the page doesn't flash up.
+        if (e.detail === 0) document.querySelector<HTMLElement>("header a")?.focus({ preventScroll: true });
       }}
       className={clsx(
         "group fixed right-4 bottom-4 z-40 grid size-12 cursor-pointer place-items-center rounded-full bg-ink text-sun shadow-(--shadow-pop) ring-2 ring-white transition-[opacity,translate,visibility,background-color] duration-200 hover:bg-action sm:right-6 sm:bottom-6 sm:size-14",

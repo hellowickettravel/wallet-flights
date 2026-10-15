@@ -283,6 +283,22 @@ test("back to top button appears after scrolling and returns to the top", async 
   await btn.click();
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
   await expect(btn).toBeHidden();
+  // A mouse click doesn't bring up the skip link (owner's report, 16 Oct 2026).
+  const skip = page.getByRole("link", { name: "Skip to content" });
+  await expect.poll(() => skip.evaluate((el) => el.getBoundingClientRect().width)).toBeLessThanOrEqual(1);
+});
+
+test("back to top from the keyboard moves focus to the top, where the skip link shows", async ({ page, isMobile }) => {
+  test.skip(isMobile, "keyboard flow");
+  await page.goto("/");
+  await page.evaluate(() => window.scrollTo({ top: 3000, behavior: "instant" }));
+  const btn = page.getByRole("button", { name: "Back to top" });
+  await expect(btn).toBeVisible();
+  await btn.focus();
+  await page.keyboard.press("Enter");
+  const skip = page.getByRole("link", { name: "Skip to content" });
+  await expect(skip).toBeFocused();
+  await expect.poll(() => skip.evaluate((el) => el.getBoundingClientRect().width)).toBeGreaterThan(50);
 });
 
 test("desktop search is one joined bar with travellers inside", async ({ page, isMobile }) => {

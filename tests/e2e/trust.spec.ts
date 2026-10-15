@@ -89,3 +89,65 @@ test("sitemap lists the editorial policy and guides by their last update", async
   expect(xml).toContain("<loc>https://www.walletflights.com/editorial-policy</loc>");
   expect(xml).toMatch(/carry-on-only-checklist<\/loc>\s*<lastmod>2026-10-16/);
 });
+
+// Plan item 4.5: content depth.
+test("every guide is about 1,000+ words, lists official sources and shows the update date", async ({ page }) => {
+  for (const slug of ["when-to-book-international-flights", "europe-shoulder-season", "carry-on-only-checklist"]) {
+    await page.goto(`/travel-guides/${slug}`);
+    const minutes = Number((await page.getByText(/\d+ min read/).first().textContent())?.match(/(\d+) min read/)?.[1]);
+    expect(minutes, slug).toBeGreaterThanOrEqual(4);
+    await expect(page.getByTestId("guide-byline").locator("time[datetime='2026-10-16']"), slug).toBeVisible();
+    const sources = page.locator("section", { has: page.getByRole("heading", { name: "Sources" }) }).locator("a[target=_blank]");
+    expect(await sources.count(), slug).toBeGreaterThanOrEqual(3);
+    for (const href of await sources.evaluateAll((as) => as.map((a) => a.getAttribute("href") ?? ""))) {
+      expect(href, slug).toMatch(/^https:\/\/(www\.)?(gov\.uk|caa\.co\.uk|tsa\.gov|faa\.gov|transportation\.gov|home-affairs\.ec\.europa\.eu|travel-europe\.europa\.eu)\//);
+    }
+  }
+});
+
+test("destination pages have a trip-planning section with official entry requirements", async ({ page }) => {
+  await page.goto("/destinations/lisbon");
+  await expect(page.getByRole("heading", { level: 2, name: "Visiting Lisbon" })).toBeVisible();
+  for (const h of ["When to go", "Flying to Lisbon", "Before you go"]) await expect(page.getByRole("heading", { level: 3, name: h })).toBeVisible();
+  await expect(page.getByRole("link", { name: /GOV\.UK: Portugal entry requirements/ })).toHaveAttribute("href", "https://www.gov.uk/foreign-travel-advice/portugal/entry-requirements");
+  await expect(page.locator("main")).toContainText("Travelling on a US passport?");
+
+  await page.goto("/destinations/new-york");
+  await expect(page.getByRole("link", { name: /ESTA/ })).toHaveAttribute("href", "https://www.cbp.gov/travel/international-visitors/esta");
+  await expect(page.locator("main")).not.toContainText("Travelling on a US passport?");
+});
+
+test("route pages show calculated facts, passenger rights and the right entry link", async ({ page }) => {
+  await page.goto("/routes/manchester-to-istanbul");
+  const facts = page.locator("section", { has: page.getByRole("heading", { level: 2, name: "About this route" }) });
+  await expect(facts).toContainText(/About 2,6\d0 km \(1,6\d0 miles\)/);
+  await expect(facts).toContainText(/Istanbul is \d hours? ahead of Manchester/);
+  await expect(facts).toContainText("1,500km to 3,500km band");
+  await expect(facts.getByRole("link", { name: /Civil Aviation Authority/ })).toHaveAttribute("href", /caa\.co\.uk/);
+  await expect(facts.getByRole("link", { name: /GOV\.UK: Türkiye entry requirements/ })).toHaveAttribute("href", "https://www.gov.uk/foreign-travel-advice/turkey/entry-requirements");
+
+  // Near a CAA band edge, no band is named.
+  await page.goto("/routes/london-to-lisbon");
+  await expect(page.locator("main")).not.toContainText(" band.");
+  await expect(page.locator("main")).toContainText("Lisbon is on the same time as London.");
+
+  await page.goto("/routes/new-york-to-tokyo");
+  const us = page.locator("section", { has: page.getByRole("heading", { level: 2, name: "About this route" }) });
+  await expect(us.getByRole("link", { name: /Department of Transportation/ })).toHaveAttribute("href", /transportation\.gov/);
+  await expect(us).toContainText("Travelling on a US passport?");
+  await expect(us).toContainText("because of daylight saving time");
+
+  await page.goto("/routes/los-angeles-to-london");
+  await expect(page.getByRole("link", { name: /Electronic travel authorisation/ })).toHaveAttribute("href", "https://www.gov.uk/eta");
+});
+
+test("Hotels in the main menu goes straight to the sister company in a new tab", async ({ page, isMobile }) => {
+  await page.goto("/");
+  if (isMobile) await page.getByRole("button", { name: /menu/i }).click();
+  const nav = isMobile ? page.getByRole("dialog") : page.getByRole("navigation", { name: "Main" });
+  const hotels = nav.getByRole("link", { name: /^Hotels/ });
+  await expect(hotels).toHaveAttribute("href", "https://www.wickettravelholidays.com/");
+  await expect(hotels).toHaveAttribute("target", "_blank");
+  await expect(hotels).toHaveAttribute("rel", "noopener");
+  await expect(hotels).toContainText("our sister company");
+});

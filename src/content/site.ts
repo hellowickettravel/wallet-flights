@@ -74,6 +74,9 @@ export const mainNav = [
   { label: "Flights", href: "/flights" },
   { label: "Deals", href: "/deals" },
   { label: "Destinations", href: "/destinations" },
+  // Hotels are booked with the sister company (owner, 16 Oct 2026): the menu
+  // links straight to its site, opening in a new tab like the hero shortcut.
+  { label: "Hotels", href: company.sister.url, external: `With our sister company, ${company.sister.name}` },
   { label: "Travel guides", href: "/travel-guides" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },

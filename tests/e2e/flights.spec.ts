@@ -52,12 +52,14 @@ test.describe("with live search allowed", () => {
     await expect(page.locator("#tpwl-search")).toContainText("marker 567389.home_board");
   });
 
-  test("the widget keeps searches on /flights, without the partner link or hotels box", async ({ page, baseURL }) => {
+  test("the widget keeps searches on /flights, without the partner link or hotels box, with a wide currency menu", async ({ page, baseURL }) => {
     await page.goto("/flights");
     await expect(page.locator("#tpwl-search")).toContainText("White Label stub");
     // The real widget wraps this object in a Proxy, so read it as JSON.
     const config = await page.evaluate(() => JSON.parse(JSON.stringify((window as Window & { TPWL_CONFIGURATION?: object }).TPWL_CONFIGURATION ?? null)));
-    expect(config).toEqual({ resultsURL: `${new URL(baseURL!).origin}/flights`, showReferralLink: false, showHotels: false });
+    expect(config).toMatchObject({ resultsURL: `${new URL(baseURL!).origin}/flights`, showReferralLink: false, showHotels: false });
+    // More currencies than the dashboard's USD and GBP (owner's request).
+    expect(config.availableCurrencies).toEqual(expect.arrayContaining(["USD", "GBP", "EUR", "INR", "CAD", "AUD", "AED"]));
   });
 
   test("searches sent to the homepage land on /flights with their values", async ({ page }) => {

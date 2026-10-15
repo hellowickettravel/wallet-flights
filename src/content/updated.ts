@@ -4,8 +4,8 @@
 export const updated = {
   home: "2026-10-15",
   deals: "2026-10-15",
-  destinations: "2026-10-15",
-  routes: "2026-10-15",
+  destinations: "2026-10-16",
+  routes: "2026-10-16",
   airlines: "2026-10-15",
   travelGuides: "2026-10-15",
   about: "2026-10-16",

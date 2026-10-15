@@ -3,7 +3,7 @@ import { pageMetadata, unsplashShareImage } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { AirplaneTakeoff, CalendarCheck, CaretRight, Lightbulb, MapPin } from "@phosphor-icons/react/dist/ssr";
+import { AirplaneTakeoff, ArrowUpRight, CalendarCheck, CaretRight, Lightbulb, MapPin } from "@phosphor-icons/react/dist/ssr";
 import { ParallaxHero } from "@/components/destinations/parallax-hero";
 import { DestinationTile } from "@/components/destinations/destination-tile";
 import { SearchPanel } from "@/components/search/search-panel";
@@ -11,7 +11,7 @@ import { airports } from "@/content/airports";
 import { MonthCalendar } from "@/components/destinations/month-calendar";
 import { TripExtras } from "@/components/destinations/trip-extras";
 import { formatPrice, originByCode, routes } from "@/content/deals";
-import { destinationGuides } from "@/content/destination-guides";
+import { destinationGuides, entryNote, usPassportNote } from "@/content/destination-guides";
 import { destinationBySlug, destinations, regions } from "@/content/destinations";
 import { site } from "@/content/site";
 import { approxFlightTime } from "@/lib/demo-flights";
@@ -142,6 +142,22 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
               </li>
             ))}
           </ol>
+
+          <h2 className="mt-12 font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">Visiting {d.city}</h2>
+          <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">When to go</h3>
+          <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">{guide.whenToGo}</p>
+          <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">Flying to {d.city}</h3>
+          <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">{guide.flying}</p>
+          <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">Before you go</h3>
+          <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">
+            <a href={guide.entry.url} target="_blank" rel="noopener" className="inline-flex items-center gap-1 font-semibold text-action hover:underline">
+              {guide.entry.label}
+              <ArrowUpRight className="size-3.5" weight="bold" aria-hidden />
+              <span className="sr-only"> (opens in a new tab)</span>
+            </a>
+            . {entryNote}
+            {d.country !== "United Kingdom" && d.country !== "United States" && ` ${usPassportNote}`}
+          </p>
 
           {routes.some((r) => r.destination.slug === slug) && (
             <>
