@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -21,11 +22,11 @@ export async function generateMetadata({ params }: PageProps<"/routes/[slug]">):
   const { slug } = await params;
   const r = routeBySlug[slug];
   if (!r) return {};
-  return {
+  return pageMetadata({
     title: `Cheap flights from ${r.origin.city} to ${r.destination.city}`,
     description: `Recent cheapest round trips from ${r.origin.city} to ${r.destination.city}, the cheapest month to fly, and a live price comparison.`,
-    alternates: { canonical: `/routes/${r.slug}` },
-  };
+    path: `/routes/${r.slug}`,
+  });
 }
 
 export default async function RoutePage({ params }: PageProps<"/routes/[slug]">) {

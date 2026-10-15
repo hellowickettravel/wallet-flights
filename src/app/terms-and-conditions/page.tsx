@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { LegalPage } from "@/components/legal/legal-page";
 import { terms, legalUpdated } from "@/content/legal";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Terms and conditions",
-  description: "Terms and conditions for Wallet Flights.",
-  alternates: { canonical: "/terms-and-conditions" },
-};
+  description:
+    "The terms for using Wallet Flights: how our flight price comparison works, booking with providers, affiliate links, liability and governing law.",
+  path: "/terms-and-conditions",
+});
 
 export default function Page() {
   return <LegalPage title="Terms and conditions" href="/terms-and-conditions" updated={legalUpdated} intro={terms.intro} sections={terms.sections} />;

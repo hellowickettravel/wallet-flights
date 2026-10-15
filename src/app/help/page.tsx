@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { EnvelopeSimple } from "@phosphor-icons/react/dist/ssr";
 import { PageHeader } from "@/components/ui/page-header";
 import { ButtonLink } from "@/components/ui/button";
@@ -6,11 +6,12 @@ import { HelpCenter } from "@/components/help/help-center";
 import { helpTopics } from "@/content/help";
 import { site } from "@/content/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Help centre",
-  description: "Answers about comparing flights, prices, booking with providers, changes and refunds, and fare alerts.",
-  alternates: { canonical: "/help" },
-};
+  description:
+    "Answers about comparing flights, prices, booking with providers, changes and refunds, and fare alerts.",
+  path: "/help",
+});
 
 export default function HelpPage() {
   const jsonLd = {

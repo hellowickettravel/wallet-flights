@@ -26,15 +26,16 @@ export const metadata: Metadata = {
   },
   description: site.description,
   applicationName: site.name,
+  // Defaults only. Each page sets its own canonical and og:url through
+  // pageMetadata() (src/lib/seo.ts); nothing here may point at "/", or pages
+  // without their own value would claim to be the homepage.
   openGraph: {
     type: "website",
     siteName: site.name,
     locale: "en_GB",
     alternateLocale: ["en_US"],
-    url: "/",
   },
   twitter: { card: "summary_large_image" },
-  alternates: { canonical: "/" },
 };
 
 export const viewport: Viewport = {

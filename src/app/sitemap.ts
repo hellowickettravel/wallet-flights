@@ -3,28 +3,26 @@ import { routes } from "@/content/deals";
 import { destinations } from "@/content/destinations";
 import { guides } from "@/content/guides";
 import { site } from "@/content/site";
+import { updated } from "@/content/updated";
 
+// Google uses only <loc> and an accurate <lastmod>; priority and changefreq are ignored.
 export default function sitemap(): MetadataRoute.Sitemap {
-  const page = (path: string, priority: number, changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"]) => ({
-    url: `${site.url}${path}`,
-    priority,
-    changeFrequency,
-  });
+  const page = (path: string, lastModified: string) => ({ url: `${site.url}${path}`, lastModified });
   return [
-    page("", 1, "daily"),
-    page("/deals", 0.9, "daily"),
-    page("/destinations", 0.8, "weekly"),
-    ...destinations.map((d) => page(`/destinations/${d.slug}`, 0.7, "monthly")),
-    ...routes.map((r) => page(`/routes/${r.slug}`, 0.6, "daily")),
-    page("/airlines", 0.6, "monthly"),
-    page("/travel-guides", 0.6, "weekly"),
-    ...guides.map((g) => ({ ...page(`/travel-guides/${g.slug}`, 0.6, "monthly"), lastModified: g.published })),
-    page("/about", 0.5, "monthly"),
-    page("/contact", 0.5, "yearly"),
-    page("/help", 0.5, "monthly"),
-    page("/privacy-policy", 0.2, "yearly"),
-    page("/terms-and-conditions", 0.2, "yearly"),
-    page("/cookie-policy", 0.2, "yearly"),
-    page("/photo-credits", 0.1, "yearly"),
+    page("", updated.home),
+    page("/deals", updated.deals),
+    page("/destinations", updated.destinations),
+    ...destinations.map((d) => page(`/destinations/${d.slug}`, updated.destinations)),
+    ...routes.map((r) => page(`/routes/${r.slug}`, updated.routes)),
+    page("/airlines", updated.airlines),
+    page("/travel-guides", updated.travelGuides),
+    ...guides.map((g) => page(`/travel-guides/${g.slug}`, g.published)),
+    page("/about", updated.about),
+    page("/contact", updated.contact),
+    page("/help", updated.help),
+    page("/privacy-policy", updated.legal),
+    page("/terms-and-conditions", updated.legal),
+    page("/cookie-policy", updated.legal),
+    page("/photo-credits", updated.photoCredits),
   ];
 }

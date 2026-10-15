@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { PageHeader } from "@/components/ui/page-header";
 import { SmartImage } from "@/components/ui/smart-image";
 import { guides } from "@/content/guides";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Travel guides",
-  description: "Practical advice on booking flights, when to travel and what to pack.",
-  alternates: { canonical: "/travel-guides" },
-};
+  description:
+    "Practical advice on booking flights, when to travel and what to pack.",
+  path: "/travel-guides",
+});
 
 const date = (iso: string) => new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 

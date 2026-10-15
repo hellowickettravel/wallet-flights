@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo";
 import { Hero } from "@/components/home/hero";
 import { AirlineStrip } from "@/components/home/airline-strip";
 import { AssuranceStrip } from "@/components/home/assurance-strip";
@@ -12,6 +13,12 @@ import { FareAlerts } from "@/components/home/fare-alerts";
 import { homeFaqs } from "@/content/faqs";
 import { site } from "@/content/site";
 import { destinationTileFares, routeFares } from "@/lib/fares";
+
+export const metadata = pageMetadata({
+  title: { absolute: `${site.name} — ${site.tagline}` },
+  description: site.description,
+  path: "/",
+});
 
 const jsonLd = {
   "@context": "https://schema.org",

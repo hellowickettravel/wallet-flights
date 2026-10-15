@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { PageHeader } from "@/components/ui/page-header";
 import { DealsExplorer } from "@/components/deals/deals-explorer";
 import { FareBoard } from "@/components/home/fare-board";
 import { routeFares } from "@/lib/fares";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Flight deals",
-  description: "Recent cheapest round-trip fares from New York, London, Los Angeles, Manchester, Chicago and Atlanta. Pick a deal to book or compare live prices.",
-  alternates: { canonical: "/deals" },
-};
+  description:
+    "Recent cheapest round-trip fares from New York, London, Los Angeles, Manchester, Chicago and Atlanta. Pick a deal to book or compare live prices.",
+  path: "/deals",
+});
 
 export default async function DealsPage() {
   const fares = await routeFares();

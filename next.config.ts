@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { legacyOwnerRedirects, legacyRedirects } from "./src/content/legacy-redirects";
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
@@ -9,7 +10,13 @@ const nextConfig: NextConfig = {
     // Live searches belong on /flights. The widget is told so (see
     // white-label.tsx), but older links and its dashboard default point at "/".
     // Query values pass through to the destination.
-    return [{ source: "/", has: [{ type: "query", key: "flightSearch" }], destination: "/flights", permanent: false }];
+    return [
+      // The production .vercel.app address duplicates the site: send it to the real domain.
+      { source: "/:path*", has: [{ type: "host", value: "wallet-flights.vercel.app" }], destination: "https://www.walletflights.com/:path*", permanent: true },
+      { source: "/", has: [{ type: "query", key: "flightSearch" }], destination: "/flights", permanent: false },
+      ...legacyRedirects.map((r) => ({ ...r, permanent: true })),
+      ...legacyOwnerRedirects.map((r) => ({ ...r, permanent: false })),
+    ];
   },
   async headers() {
     return [

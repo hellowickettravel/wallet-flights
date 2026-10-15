@@ -4,10 +4,13 @@
 // published, so only the city is shown.
 export const site = {
   name: "Wallet Flights",
-  url: "https://walletflights.com",
+  // www is the host Vercel serves (the apex redirects to it) and the one the
+  // search widget is registered to. Canonicals, sitemap and schema use this.
+  url: "https://www.walletflights.com",
   tagline: "Compare cheap flights in one place",
+  // Also the homepage meta description: keep it under 155 characters.
   description:
-    "Wallet Flights compares flight prices from airlines and travel sites in one search, sorted from cheapest to most expensive, so you can book the best deal directly with the provider.",
+    "Compare flight prices from airlines and travel sites in one search, cheapest first, then book direct with the provider. Free for UK and US travellers.",
   phone: {
     display: "+44 7417 564704",
     href: "tel:+447417564704",

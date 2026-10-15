@@ -1,3 +1,4 @@
+import { pageMetadata, unsplashShareImage } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -16,12 +17,14 @@ export async function generateMetadata({ params }: PageProps<"/travel-guides/[sl
   const { slug } = await params;
   const g = guideBySlug[slug];
   if (!g) return {};
-  return {
+  return pageMetadata({
     title: g.title,
     description: g.excerpt,
-    alternates: { canonical: `/travel-guides/${g.slug}` },
-    openGraph: { type: "article", publishedTime: g.published, images: [{ url: `https://images.unsplash.com/${g.photo.id}?auto=format&fit=crop&w=1200&h=630&q=70`, width: 1200, height: 630, alt: g.photo.alt }] },
-  };
+    path: `/travel-guides/${g.slug}`,
+    image: unsplashShareImage(g.photo),
+    type: "article",
+    publishedTime: g.published,
+  });
 }
 
 const anchor = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");

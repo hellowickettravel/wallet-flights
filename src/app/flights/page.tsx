@@ -1,16 +1,17 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { Suspense } from "react";
 import { FlightResults } from "@/components/results/flight-results";
 import { ResultsSkeleton } from "@/components/results/results-skeleton";
 import { WhiteLabel } from "@/components/flights/white-label";
 import { demoResults } from "@/lib/flags";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Compare flight prices",
-  description: "Compare live flight prices from airlines and travel sites, sorted cheapest first.",
+  description:
+    "Compare live flight prices from airlines and travel sites, sorted cheapest first.",
+  path: "/flights",
   robots: { index: false, follow: true },
-  alternates: { canonical: "/flights" },
-};
+});
 
 export default function FlightsPage() {
   if (demoResults) {

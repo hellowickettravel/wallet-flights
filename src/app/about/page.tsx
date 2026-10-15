@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { Envelope, MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
 import { PageHeader } from "@/components/ui/page-header";
 import { SmartImage } from "@/components/ui/smart-image";
@@ -8,12 +8,12 @@ import { aboutEarn, aboutIntro } from "@/content/about";
 import { howItWorks } from "@/content/how-it-works";
 import { photos } from "@/content/images";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "About us",
   description:
     "Wallet Flights is a London-based flight comparison site for US and UK travellers. We show prices from airlines and travel sites in one list, cheapest first.",
-  alternates: { canonical: "/about" },
-};
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (

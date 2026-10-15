@@ -1,15 +1,16 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { MapPin, UsersThree } from "@phosphor-icons/react/dist/ssr";
 import { PageHeader } from "@/components/ui/page-header";
 import { AirlineMark } from "@/components/results/airline-mark";
 import { airlines, type Alliance } from "@/content/airlines";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Airlines we compare",
-  description: "Compare fares from British Airways, Virgin Atlantic, Emirates, Qatar Airways, Turkish Airlines and more, alongside online travel sites.",
-  alternates: { canonical: "/airlines" },
-};
+  description:
+    "Compare fares from British Airways, Virgin Atlantic, Emirates, Qatar Airways, Turkish Airlines and more, alongside online travel sites.",
+  path: "/airlines",
+});
 
 const groups: { alliance: Alliance; blurb: string }[] = [
   { alliance: "oneworld", blurb: "Includes British Airways, American Airlines, Qatar Airways, Iberia and Japan Airlines." },

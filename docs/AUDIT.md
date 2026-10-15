@@ -295,3 +295,29 @@ regional suggestions plus a worldwide place (stubbed lookup) going into the URL 
 the live `/api/places` answer for "karachi"; the WhatsApp link and Trustpilot badge in the hero; the
 headline on one line on desktop; back to top appears and returns to the top. The contact test checks both
 the WhatsApp and the call link.
+
+# Site audit, 15 Oct 2026, and improvement plan
+Four audits ran: technical SEO, content and AI search, performance, and UX, accessibility and backend.
+The plan is in `docs/IMPROVEMENT-PLAN.md` (4 phases).
+
+## Phase 1: indexing foundations (done)
+| Item | Change |
+|---|---|
+| Search Console | `public/google4df2a790d730b8df.html` is served at the root. |
+| Canonical host | `site.url` = `https://www.walletflights.com` (Vercel serves www; the apex 308s to it). Canonicals, sitemap, robots, OG and JSON-LD all point at www. |
+| Metadata | `pageMetadata()` in `src/lib/seo.ts` gives every page its own canonical, matching `og:url`, `og:title`/`og:description`, site name, locale and Twitter tags. The layout no longer sets `canonical`/`og:url` = "/" (pages used to inherit the homepage's). A page-level `openGraph` drops the file-based share image, so the helper names it explicitly. Destination and guide pages use their photo for both OG and Twitter. |
+| 404 and /go | `not-found.tsx` has its own title and `noindex`. Neither page has a canonical. |
+| Duplicate host | `wallet-flights.vercel.app/*` 308s to `www.walletflights.com/*` (host-matched redirect; previews untouched). |
+| robots.txt | www sitemap; `/go$` and `/go?` (exact); `/flights` crawlable so its `noindex` is seen; search, answer and training crawlers named explicitly. |
+| Legacy URLs | `src/content/legacy-redirects.ts`: 35 permanent redirects from the old WordPress site (policies, blog and categories, booking tips, refunds, country pages), plus hotels and car rentals (temporary, to the owner's travel site). Tag, shop and listicle URLs stay 404. |
+| Sitemap | `lastmod` on every URL from `src/content/updated.ts`. Priority and changefreq dropped (Google ignores them). |
+| Small fixes | Home description is 150 characters (was 181). Real descriptions on legal pages. Destination descriptions don't say "flight times from London" on the London page. `/favicon.ico`, 192, 512 and maskable icons in the manifest. `twitter-image` re-exports the OG image. |
+
+**Test:** lint, typecheck, build: pass. e2e: **211 passed**, 25 skipped. The new `tests/e2e/seo.spec.ts`
+checks canonical = `og:url` = www on 14 page types, the full share tags, description lengths, the
+404/`/go` metadata, robots rules, sitemap `lastmod`, every legacy redirect, the vercel.app host redirect
+and the icons.
+
+**Owner actions:** add `TRAVELPAYOUTS_TOKEN` in Vercel → Production (the pages show no fares without it).
+Verify Search Console (Domain property, or URL-prefix for https://www.walletflights.com/). Submit the
+sitemap. Import into Bing.

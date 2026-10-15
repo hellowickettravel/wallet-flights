@@ -1,15 +1,16 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { EnvelopeSimple, FacebookLogo, InstagramLogo, MapPin, Phone, WhatsappLogo, XLogo, Receipt } from "@phosphor-icons/react/dist/ssr";
 import { PageHeader } from "@/components/ui/page-header";
 import { ContactForm } from "@/components/contact/contact-form";
 import { bookingNote } from "@/content/contact";
 import { site } from "@/content/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Contact us",
-  description: `Questions about a deal, a booking or partnering with ${site.name}? Send us a message. ${site.responseTime}.`,
-  alternates: { canonical: "/contact" },
-};
+  description:
+    `Questions about a deal, a booking or partnering with ${site.name}? Send us a message. ${site.responseTime}.`,
+  path: "/contact",
+});
 
 const socialIcons = { Instagram: InstagramLogo, X: XLogo, Facebook: FacebookLogo } as const;
 

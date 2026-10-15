@@ -1,13 +1,14 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { PageHeader } from "@/components/ui/page-header";
 import { SmartImage } from "@/components/ui/smart-image";
 import { photographerUrl, photos, unsplashHomeUrl } from "@/content/images";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Photo credits",
-  description: "The photographers whose work appears on Wallet Flights, via Unsplash.",
-  alternates: { canonical: "/photo-credits" },
-};
+  description:
+    "The photographers whose work appears on Wallet Flights, via Unsplash.",
+  path: "/photo-credits",
+});
 
 export default function PhotoCreditsPage() {
   const list = Object.values(photos);

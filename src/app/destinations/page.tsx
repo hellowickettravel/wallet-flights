@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { PageHeader } from "@/components/ui/page-header";
 import { DestinationTile } from "@/components/destinations/destination-tile";
 import { destinations, regions } from "@/content/destinations";
 import { destinationTileFares } from "@/lib/fares";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Destinations",
-  description: "Travel guides and recent flight prices for 20 popular destinations across Europe, Asia, the Middle East, Africa and the Americas.",
-  alternates: { canonical: "/destinations" },
-};
+  description:
+    "Travel guides and recent flight prices for 20 popular destinations across Europe, Asia, the Middle East, Africa and the Americas.",
+  path: "/destinations",
+});
 
 export default async function DestinationsPage() {
   const fares = await destinationTileFares();

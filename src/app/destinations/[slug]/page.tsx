@@ -1,3 +1,4 @@
+import { pageMetadata, unsplashShareImage } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -25,12 +26,14 @@ export async function generateMetadata({ params }: PageProps<"/destinations/[slu
   const { slug } = await params;
   const d = destinationBySlug[slug];
   if (!d) return {};
-  return {
+  // Flight times are shown from the other gateway city, never from the city itself.
+  const from = ["New York", "London"].filter((c) => c !== d.city).join(" and ");
+  return pageMetadata({
     title: `Cheap flights to ${d.city}`,
-    description: `Compare flights to ${d.city}, ${d.country}. Best time to visit, flight times from New York and London, recent fares and the cheapest month to fly.`,
-    alternates: { canonical: `/destinations/${d.slug}` },
-    openGraph: { images: [{ url: `https://images.unsplash.com/${d.photo.id}?auto=format&fit=crop&w=1200&h=630&q=70`, width: 1200, height: 630, alt: d.photo.alt }] },
-  };
+    description: `Compare flights to ${d.city}, ${d.country}. Best time to visit, flight times from ${from}, recent fares and the cheapest month to fly.`,
+    path: `/destinations/${d.slug}`,
+    image: unsplashShareImage(d.photo),
+  });
 }
 
 export default async function DestinationPage({ params }: PageProps<"/destinations/[slug]">) {
