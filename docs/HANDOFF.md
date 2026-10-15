@@ -17,7 +17,7 @@ Read first: `CLAUDE.md`, `AGENTS.md`, `docs/IMPROVEMENT-PLAN.md` (the 4-phase pl
      `Content-Security-Policy` header, and a live search on /flights still shows fares
    - the header at 1024px, the swap button on a phone, the marquee pause button
    - fare-alert sign-up (needs `RESEND_API_KEY`; without it the form says the service is unavailable)
-2. Re-measure with PageSpeed Insights (mobile) on `/`, `/deals`, `/routes/new-york-to-london`.
+2. PageSpeed Insights (mobile): home measured 16 Oct (99, LCP 2.0 s). Still to measure: `/deals`, `/routes/new-york-to-london`.
 3. **CSP (enforced 16 Oct 2026, without the report-only period, at the owner's request):** for the
    first days after deploy, read the `CSP violation` lines in the Vercel logs. These are now real
    blocks. Add any legitimate host to `cspHosts` in `src/lib/csp.ts` (ignore browser-extension

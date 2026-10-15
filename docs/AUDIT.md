@@ -439,3 +439,11 @@ sister-company label, help and FAQ, editorial policy, guide byline, dates and so
 Updated: H1 text, hero (no "as little as", from-price format when present, sister note), About, footer
 notice, contact note, Organization schema, `/editorial-policy` in the a11y and canonical sweeps. Checked
 by hand at 1280px: About company section and guide byline.
+
+**Live check (16 Oct 2026, after pushing 42ce750):** www serves the new H1 ("hundreds"), no "as little
+as", the company line in the footer, `legalName` and `publishingPrinciples` in the Organization schema,
+the sister-company note, `/editorial-policy` (200, in the sitemap), the llms.txt company line and the guide
+byline. The hero from-price is absent, as expected without `TRAVELPAYOUTS_TOKEN`. **PageSpeed Insights,
+mobile, home:** Performance 99, Accessibility 100, Best Practices 100, SEO 100; FCP 1.2 s, LCP 2.0 s,
+TBT 20 ms, CLS 0, SI 2.0 s (Phase 3 baseline: 74–84, LCP 3.2–5.7 s). The PSI API was over its daily quota
+and the web tool stalled on further runs, so /deals and the route pages are still to measure.
