@@ -72,7 +72,7 @@ test("seo endpoints respond", async ({ request }) => {
   const sitemap = await (await request.get("/sitemap.xml")).text();
   expect(sitemap).toContain("/destinations/lisbon");
   expect(sitemap).toContain("/travel-guides/europe-shoulder-season");
-  expect(sitemap).toContain("/routes/london-to-lisbon");
+  // Route pages are listed only while they have a fare (see seo.spec.ts).
 });
 
 test("security headers are set", async ({ request }) => {

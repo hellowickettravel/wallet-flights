@@ -2,10 +2,10 @@ import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { PageHeader } from "@/components/ui/page-header";
 import { SmartImage } from "@/components/ui/smart-image";
-import { guides } from "@/content/guides";
+import { guides, readingMinutes } from "@/content/guides";
 
 export const metadata = pageMetadata({
-  title: "Travel guides",
+  title: "Flight booking tips and travel guides",
   description:
     "Practical advice on booking flights, when to travel and what to pack.",
   path: "/travel-guides",
@@ -25,7 +25,7 @@ export default function GuidesPage() {
           </div>
           <div className="flex flex-col justify-center p-7 sm:p-10">
             <p className="text-[0.875rem] font-medium text-sun">
-              {lead.category} · {lead.minutes} min read
+              {lead.category} · {readingMinutes(lead)} min read
             </p>
             <h2 className="mt-3 font-display-tight text-[1.875rem] leading-[1.12] font-bold md:text-[2.375rem]">{lead.title}</h2>
             <p className="mt-4 leading-relaxed text-white/75">{lead.excerpt}</p>
@@ -40,7 +40,7 @@ export default function GuidesPage() {
                   <SmartImage photo={g.photo} sizes="(min-width: 768px) 600px, 100vw" imgClassName="transition-transform duration-700 ease-(--ease-out-quint) group-hover:scale-[1.04]" />
                 </div>
                 <p className="mt-4 text-[0.875rem] font-medium text-action">
-                  {g.category} · {g.minutes} min read
+                  {g.category} · {readingMinutes(g)} min read
                 </p>
                 <h2 className="mt-2 font-display-tight text-[1.5rem] leading-tight font-bold text-ink group-hover:text-action">{g.title}</h2>
                 <p className="mt-2 leading-relaxed text-ink-soft">{g.excerpt}</p>

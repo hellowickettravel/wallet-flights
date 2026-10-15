@@ -20,7 +20,10 @@ test("renders every homepage section without errors", async ({ page }) => {
   });
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("We compare thousands of flight providers and show the cheapest fare.");
-  for (const name of ["Fares from your city", "Departures worth a look", "Trending destinations", "How Wallet Flights works", "Travel guides", "Questions before you book", "Get fare alerts in your inbox"]) {
+  // The fare board only appears with real fares (none without the Data API token).
+  const hasBoard = (await page.locator("#board-title").count()) > 0;
+  if (!hasBoard) await expect(page.getByText("No recent price")).toHaveCount(0);
+  for (const name of ["Fares from your city", ...(hasBoard ? ["Departures worth a look"] : []), "Trending destinations", "How Wallet Flights works", "Travel guides", "Questions before you book", "Get fare alerts in your inbox"]) {
     await expect(page.getByRole("heading", { name, level: 2 })).toBeVisible();
   }
   await page.waitForLoadState("networkidle");
@@ -38,6 +41,7 @@ test("has no horizontal scroll at common widths", async ({ page }) => {
 
 test("fare board fits its panel", async ({ page }) => {
   await page.goto("/");
+  test.skip((await page.locator("#board-title").count()) === 0, "no fares in this environment, so no board");
   for (const width of [375, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     const spill = await page.evaluate(() => {
@@ -115,7 +119,9 @@ test("UK departure cities price in pounds; no invented prices", async ({ page })
 
 test("deal cards: priced → Aviasales affiliate link, unpriced → live search with sub_id", async ({ page }) => {
   await page.goto("/");
-  const cards = page.locator("#deals-panel").getByRole("link");
+  const cards = page.locator("#deals-panel a[data-sub]");
+  // Every card also links its route page, for crawlers and readers.
+  await expect(page.locator('#deals-panel a[href^="/routes/new-york-to-"]').first()).toBeVisible();
   await expect(cards.first()).toBeVisible();
   for (const card of await cards.all()) {
     const href = (await card.getAttribute("href"))!;
@@ -199,7 +205,9 @@ test("places API returns airports worldwide", async ({ request }) => {
   const res = await request.get("/api/places?q=karachi");
   expect(res.ok()).toBe(true);
   const list = (await res.json()) as { code: string; country: string }[];
-  expect(list[0]).toMatchObject({ code: "KHI", country: "Pakistan" });
+  // Live upstream: when it's unavailable the answer is empty and must not be cached.
+  if (list.length === 0) expect(res.headers()["cache-control"]).toBe("no-store");
+  else expect(list[0]).toMatchObject({ code: "KHI", country: "Pakistan" });
   expect(await (await request.get("/api/places?q=k")).json()).toEqual([]);
 });
 
@@ -217,14 +225,26 @@ test("back to top button appears after scrolling and returns to the top", async 
 test("desktop search is one joined bar with travellers inside", async ({ page, isMobile }) => {
   test.skip(isMobile, "joined bar is desktop only");
   await page.goto("/");
-  const form = page.getByRole("form", { name: "Search flights" });
-  const from = await form.getByRole("combobox", { name: "Leaving from" }).boundingBox();
-  const travellers = await form.getByRole("button", { name: /1 traveller, Economy/ }).boundingBox();
-  const search = await form.getByRole("button", { name: "Search flights" }).boundingBox();
-  // Same row: the vertical centres line up within a few pixels.
-  expect(Math.abs(from!.y + from!.height / 2 - (search!.y + search!.height / 2))).toBeLessThan(12);
-  expect(Math.abs(travellers!.y + travellers!.height / 2 - (search!.y + search!.height / 2))).toBeLessThan(12);
-  expect(travellers!.x).toBeLessThan(search!.x);
+  // Measure once the hero has finished sliding in, all boxes in one frame.
+  await page.evaluate(() => Promise.all(document.getAnimations().filter((a) => a.effect?.getComputedTiming().iterations !== Infinity).map((a) => a.finished)));
+  const boxes = await page.evaluate(() => {
+    const f = document.querySelector('form[aria-label="Search flights"]')!;
+    const box = (el: Element) => {
+      const r = el.getBoundingClientRect();
+      return { top: r.top, height: r.height, x: r.x };
+    };
+    return {
+      from: box(f.querySelector('[role="combobox"]')!.closest(".h-16")!),
+      travellers: box([...f.querySelectorAll("button")].find((b) => /1 traveller, Economy/.test(b.textContent ?? ""))!),
+      search: box(f.querySelector('button[type="submit"]')!),
+    };
+  });
+  // Same row, same height: the fields and the button line up exactly (client feedback).
+  for (const k of ["from", "travellers"] as const) {
+    expect(Math.abs(boxes[k].top - boxes.search.top), k).toBeLessThanOrEqual(1);
+    expect(Math.abs(boxes[k].height - boxes.search.height), k).toBeLessThanOrEqual(1);
+  }
+  expect(boxes.travellers.x).toBeLessThan(boxes.search.x);
 });
 
 test("region tabs swap destinations", async ({ page }) => {
@@ -264,8 +284,12 @@ test("mobile menu opens and closes", async ({ page, isMobile }) => {
 
 test("no serious accessibility violations", async ({ page }) => {
   await page.goto("/");
-  await page.locator("#board-title").scrollIntoViewIfNeeded();
-  await page.waitForTimeout(3200); // let the fare board settle
+  if (await page.locator("#board-title").count()) {
+    await page.locator("#board-title").scrollIntoViewIfNeeded();
+    await page.waitForTimeout(3200); // let the fare board settle
+  }
+  // Let entrance animations finish, so contrast is measured on final colours.
+  await page.evaluate(() => Promise.all(document.getAnimations().filter((a) => a.effect?.getComputedTiming().iterations !== Infinity).map((a) => a.finished)));
   const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"]).analyze();
   const serious = results.violations.filter((v) => v.impact === "serious" || v.impact === "critical");
   expect(serious.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).slice(0, 3).join(", ")}`)).toEqual([]);
@@ -275,6 +299,7 @@ test.describe("reduced motion", () => {
   test.use({ reducedMotion: "reduce" });
   test("fare board shows final fares immediately", async ({ page }) => {
     await page.goto("/");
+    test.skip((await page.locator("#board-title").count()) === 0, "no fares in this environment, so no board");
     await page.locator("#board-title").scrollIntoViewIfNeeded();
     const board = page.locator("table", { has: page.locator("caption", { hasText: "Recent cheapest round-trip fares" }) });
     const tiles = await board.locator("tbody tr").first().locator("td:nth-child(3) [aria-hidden] > span").allTextContents();

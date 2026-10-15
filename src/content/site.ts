@@ -63,7 +63,7 @@ export const footerNav = [
     ],
   },
   {
-    title: "Popular routes",
+    title: "Popular destinations",
     links: [
       { label: "Flights to London", href: "/destinations/london" },
       { label: "Flights to Paris", href: "/destinations/paris" },

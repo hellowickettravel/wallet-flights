@@ -321,3 +321,21 @@ and the icons.
 **Owner actions:** add `TRAVELPAYOUTS_TOKEN` in Vercel → Production (the pages show no fares without it).
 Verify Search Console (Domain property, or URL-prefix for https://www.walletflights.com/). Submit the
 sitemap. Import into Bing.
+
+## Phase 2: structured data, AI search and on-page SEO (done)
+| Item | Change |
+|---|---|
+| FAQ answers in the HTML | `DisclosurePanel` (`src/components/ui/disclosure-panel.tsx`): answers are always rendered, collapsed with a CSS grid-rows transition and `inert` when closed. Home (5) and Help (15) answers are now readable without JavaScript, and FAQPage markup matches visible text. motion/react removed from both accordions. |
+| One entity | `src/lib/schema.ts`: Organization (`/#organization`, logo, E.164 `contactPoint`, `areaServed` GB/US, Trustpilot in `sameAs`) and WebSite (`/#website`, publisher). Articles reference it as author and publisher, with ISO `datePublished`/`dateModified`. Destination pages add a BreadcrumbList. One `jsonLdHtml()` escaper. |
+| AI search | `/llms.txt` and `/llms-full.txt` generated from `src/content` (facts, how we make money, destinations, guides, help answers, policies). |
+| Keywords | Hub titles carry intent ("Cheap flight deals from the US and UK", "Flight destinations: guides and fares", "Flight booking tips and travel guides", "Airlines we compare for cheap flights"). Destination H1 is "Flights to London" (the city stays the big display line). "Things to do in X". Shorter guide `seoTitle`s. |
+| Internal links | Every deal card links its route page ("New York to London flights"). /deals lists all 37 routes by departure city. Guides link the destinations they mention (first mention). The footer group is renamed "Popular destinations". |
+| Thin pages | The fare board is hidden when there are no fares (no rows of "No recent price"). Route pages without a fare are `noindex, follow` and left out of the sitemap. Both come back by themselves once fares flow (Data API token). |
+| Data and copy | Delhi moved to Asia & Pacific with a Delhi photo (Humayun’s Tomb); "More in {region}" replaces "More places nearby". "Approx. flying time". Fare-board letters `data-nosnippet`. "Questions? We reply…" fixed. Curly apostrophes in FAQs. "Car hire" everywhere. "US" not "USA". Reading time computed from word count. Guides intro claim removed and moved into content. Cookie policy says hotel and car-hire links go to the owner's travel site. |
+| Also fixed (from Phase 3.17) | `/api/places` never caches a failed or empty lookup (`no-store`); a brief upstream outage had blanked a search term. |
+
+**Test:** lint, typecheck, build: pass. e2e: **219 passed**, 29 skipped (demo-only, plus fare-board checks
+that need fares). New checks: every FAQ/help answer in the server HTML, the entity graph, llms.txt
+files, destination H1, region links, route links from /deals, route noindex = not in sitemap, guide
+links. The search-bar alignment test now measures field boxes after the entrance animation (it was
+flaky) and is stricter: same top and height within 1px.

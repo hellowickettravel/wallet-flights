@@ -1,3 +1,4 @@
+import { jsonLdHtml } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
 import { EnvelopeSimple } from "@phosphor-icons/react/dist/ssr";
 import { PageHeader } from "@/components/ui/page-header";
@@ -15,7 +16,6 @@ export const metadata = pageMetadata({
 
 export default function HelpPage() {
   const jsonLd = {
-    "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: helpTopics.flatMap((t) => t.items).map((i) => ({ "@type": "Question", name: i.q, acceptedAnswer: { "@type": "Answer", text: i.a } })),
   };
@@ -35,7 +35,7 @@ export default function HelpPage() {
           </ButtonLink>
         </div>
       </div>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(jsonLd)} />
     </div>
   );
 }

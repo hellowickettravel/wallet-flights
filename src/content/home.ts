@@ -7,7 +7,7 @@ export const heroCopy = {
   // Owner-supplied claim (client message, 15 Oct 2026). UK advertising rules
   // expect "from" prices to be genuinely available, so keep it in line with
   // what searches actually return.
-  lowFares: "Trips within Europe and the USA can cost as little as $18.",
+  lowFares: "Trips within Europe and the US can cost as little as $18.",
   // Manual bookings: the owner's team books flights and hotels by hand. The
   // number opens WhatsApp, where they can also call.
   phoneLead: "Want us to book a flight or hotel for you manually?",

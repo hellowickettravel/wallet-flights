@@ -1,3 +1,5 @@
+import { linkDestinations } from "@/components/guides/linked-text";
+import { jsonLdHtml, orgRef } from "@/lib/schema";
 import { pageMetadata, unsplashShareImage } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -6,7 +8,7 @@ import { ArrowLeft, MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
 import { PageHeader } from "@/components/ui/page-header";
 import { SmartImage } from "@/components/ui/smart-image";
 import { ButtonLink } from "@/components/ui/button";
-import { guideBySlug, guides } from "@/content/guides";
+import { guideBySlug, guides, readingMinutes } from "@/content/guides";
 import { site } from "@/content/site";
 
 export function generateStaticParams() {
@@ -18,7 +20,7 @@ export async function generateMetadata({ params }: PageProps<"/travel-guides/[sl
   const g = guideBySlug[slug];
   if (!g) return {};
   return pageMetadata({
-    title: g.title,
+    title: g.seoTitle ?? g.title,
     description: g.excerpt,
     path: `/travel-guides/${g.slug}`,
     image: unsplashShareImage(g.photo),
@@ -35,22 +37,27 @@ export default async function GuidePage({ params }: PageProps<"/travel-guides/[s
   const g = guideBySlug[slug];
   if (!g) notFound();
   const more = guides.filter((x) => x.slug !== g.slug);
+  const linked = new Set<string>();
+  // Written by the Wallet Flights team: the organisation is the author until
+  // a named person is confirmed (never invent a byline).
   const jsonLd = {
-    "@context": "https://schema.org",
     "@type": "Article",
     headline: g.title,
     description: g.excerpt,
-    datePublished: g.published,
-    image: `https://images.unsplash.com/${g.photo.id}?auto=format&fit=crop&w=1200&q=70`,
-    publisher: { "@type": "Organization", name: site.name, url: site.url },
+    datePublished: `${g.published}T09:00:00+01:00`,
+    dateModified: `${g.updated ?? g.published}T09:00:00+01:00`,
+    image: [unsplashShareImage(g.photo).url],
+    author: { ...orgRef, "@type": "Organization", name: site.name, url: site.url },
+    publisher: orgRef,
     mainEntityOfPage: `${site.url}/travel-guides/${g.slug}`,
+    inLanguage: "en-GB",
   };
 
   return (
     <article className="pb-18 md:pb-28">
       <PageHeader
         title={g.title}
-        intro={`${g.category} · ${g.minutes} min read · ${date(g.published)}`}
+        intro={`${g.category} · ${readingMinutes(g)} min read · ${date(g.published)}`}
         crumbs={[
           { label: "Travel guides", href: "/travel-guides" },
           { label: g.title, href: `/travel-guides/${g.slug}` },
@@ -67,7 +74,8 @@ export default async function GuidePage({ params }: PageProps<"/travel-guides/[s
           <nav aria-label="In this guide" className="sticky top-28">
             <p className="text-[0.875rem] font-semibold text-ink">In this guide</p>
             <ol className="mt-3 space-y-2 border-l-2 border-line">
-              {g.sections.map((s) => (
+              {/* Destinations named in the guide link to their pages, once each. */}
+          {g.sections.map((s) => (
                 <li key={s.heading}>
                   <a href={`#${anchor(s.heading)}`} className="-ml-0.5 block border-l-2 border-transparent pl-4 text-[0.9375rem] text-ink-soft hover:border-action hover:text-ink">
                     {s.heading}
@@ -80,6 +88,7 @@ export default async function GuidePage({ params }: PageProps<"/travel-guides/[s
 
         <div className="max-w-[68ch]">
           <p className="text-[1.25rem] leading-relaxed text-ink">{g.excerpt}</p>
+          {/* Destinations named in the guide link to their pages, once each. */}
           {g.sections.map((s) => (
             <section key={s.heading} aria-labelledby={anchor(s.heading)} className="mt-10">
               <h2 id={anchor(s.heading)} className="scroll-mt-28 font-display-tight text-[1.625rem] leading-tight font-bold text-ink md:text-[1.875rem]">
@@ -87,7 +96,7 @@ export default async function GuidePage({ params }: PageProps<"/travel-guides/[s
               </h2>
               {s.paragraphs.map((p, i) => (
                 <p key={i} className="mt-4 text-[1.0625rem] leading-[1.75] text-ink/85">
-                  {p}
+                  {linkDestinations(p, linked)}
                 </p>
               ))}
               {s.list && (
@@ -95,7 +104,7 @@ export default async function GuidePage({ params }: PageProps<"/travel-guides/[s
                   {s.list.map((li) => (
                     <li key={li} className="flex gap-3 text-[1.0625rem] leading-relaxed text-ink/85">
                       <span className="mt-2.5 size-2 shrink-0 rounded-full bg-action" aria-hidden />
-                      {li}
+                      <span>{linkDestinations(li, linked)}</span>
                     </li>
                   ))}
                 </ul>
@@ -136,7 +145,7 @@ export default async function GuidePage({ params }: PageProps<"/travel-guides/[s
           ))}
         </ul>
       </section>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(jsonLd)} />
     </article>
   );
 }

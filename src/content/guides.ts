@@ -5,10 +5,13 @@ export type GuideSection = { heading: string; paragraphs: string[]; list?: strin
 export type Guide = {
   slug: string;
   title: string;
+  /** Shorter title for search results (about 45 characters, before " | Wallet Flights"). */
+  seoTitle?: string;
   excerpt: string;
   category: string;
-  minutes: number;
   published: string; // ISO date
+  /** ISO date of the last real content change, when after `published`. */
+  updated?: string;
   photo: Photo;
   sections: GuideSection[];
 };
@@ -17,10 +20,10 @@ export const guides: Guide[] = [
   {
     slug: "when-to-book-international-flights",
     title: "When to book an international flight (and when waiting pays off)",
+    seoTitle: "When to book an international flight",
     excerpt:
       "How far ahead to book for long-haul and short-haul trips, why flexible dates matter more than the day you book, and the dates to avoid.",
     category: "Booking tips",
-    minutes: 6,
     published: "2026-09-18",
     photo: photos.guidePlanning,
     sections: [
@@ -59,9 +62,9 @@ export const guides: Guide[] = [
   {
     slug: "europe-shoulder-season",
     title: "Europe in shoulder season: better weather, lower fares",
+    seoTitle: "Europe in shoulder season: cheaper flights",
     excerpt: "Why April, May, September and October are the sweet spot for city breaks, and where to go.",
     category: "Destinations",
-    minutes: 5,
     published: "2026-08-30",
     photo: photos.guideEurope,
     sections: [
@@ -94,9 +97,9 @@ export const guides: Guide[] = [
   {
     slug: "carry-on-only-checklist",
     title: "The carry-on only checklist for a two-week trip",
+    seoTitle: "Carry-on only checklist for two weeks",
     excerpt: "What to pack, what to leave behind, and how to check your airline’s cabin bag rules before you fly.",
     category: "Packing",
-    minutes: 4,
     published: "2026-08-12",
     photo: photos.guideCarryOn,
     sections: [
@@ -128,5 +131,13 @@ export const guides: Guide[] = [
     ],
   },
 ];
+
+/** Reading time from the real word count (about 220 words a minute), never a guess. */
+export function readingMinutes(g: Guide) {
+  const words = [g.excerpt, ...g.sections.flatMap((s) => [s.heading, ...s.paragraphs, ...(s.list ?? [])])].join(" ").split(/\s+/).length;
+  return Math.max(1, Math.round(words / 220));
+}
+
+export const guidesIntro = "Practical advice on when to book, where to go and what to pack.";
 
 export const guideBySlug = Object.fromEntries(guides.map((g) => [g.slug, g])) as Record<string, Guide>;

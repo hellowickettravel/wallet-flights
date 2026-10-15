@@ -5,7 +5,7 @@ import { destinations, regions } from "@/content/destinations";
 import { destinationTileFares } from "@/lib/fares";
 
 export const metadata = pageMetadata({
-  title: "Destinations",
+  title: "Flight destinations: guides and fares",
   description:
     "Travel guides and recent flight prices for 20 popular destinations across Europe, Asia, the Middle East, Africa and the Americas.",
   path: "/destinations",

@@ -40,7 +40,7 @@ export const crossSell: CrossSellItem[] = [
   },
   {
     kind: "cars",
-    title: "Car rental",
+    title: "Car hire",
     text: "Compare rental cars from the airport or the city.",
     cta: "Compare cars",
     program: "economybookings",

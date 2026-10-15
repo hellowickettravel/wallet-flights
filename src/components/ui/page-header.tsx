@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { CaretRight } from "@phosphor-icons/react/dist/ssr";
 import type { ReactNode } from "react";
-import { site } from "@/content/site";
+import { breadcrumbList, jsonLdHtml } from "@/lib/schema";
 
 type Props = {
   title: ReactNode;
@@ -13,16 +13,7 @@ type Props = {
 /** Inner-page header: breadcrumb, H1, one-line intro. Emits BreadcrumbList JSON-LD. */
 export function PageHeader({ title, intro, crumbs, id = "page-title" }: Props) {
   const trail = [{ label: "Home", href: "/" }, ...crumbs];
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: trail.map((c, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      name: c.label,
-      item: `${site.url}${c.href === "/" ? "" : c.href}`,
-    })),
-  };
+  const jsonLd = breadcrumbList(trail);
   return (
     <div className="container-page pt-8 md:pt-12">
       <nav aria-label="Breadcrumb">
@@ -52,7 +43,7 @@ export function PageHeader({ title, intro, crumbs, id = "page-title" }: Props) {
         {title}
       </h1>
       {intro && <p className="mt-4 max-w-2xl text-pretty text-[1.0625rem] leading-relaxed text-ink-soft md:text-[1.1875rem]">{intro}</p>}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(jsonLd)} />
     </div>
   );
 }

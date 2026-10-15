@@ -143,14 +143,22 @@ export function DealCard({ route, fare, subId }: { route: Route; fare?: Fare; su
     </>
   );
   const cls = "group block rounded-(--radius-card) focus-visible:outline-offset-4";
-  return link.external ? (
-    <a href={link.href} rel="sponsored noopener" target="_blank" className={cls} data-sub={subId}>
-      {body}
-    </a>
-  ) : (
-    <Link href={link.href} className={cls} data-sub={subId}>
-      {body}
-    </Link>
+  return (
+    <>
+      {link.external ? (
+        <a href={link.href} rel="sponsored noopener" target="_blank" className={cls} data-sub={subId}>
+          {body}
+        </a>
+      ) : (
+        <Link href={link.href} className={cls} data-sub={subId}>
+          {body}
+        </Link>
+      )}
+      {/* Crawlable link to the route's own page (the card itself goes to booking or search). */}
+      <Link href={`/routes/${route.slug}`} className="mt-1.5 inline-block text-[0.8125rem] font-medium text-ink-soft underline decoration-line underline-offset-4 hover:text-action">
+        {origin.city} to {d.city} flights
+      </Link>
+    </>
   );
 }
 

@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { useId, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
 import { MagnifyingGlass, Plus } from "@phosphor-icons/react";
 import clsx from "clsx";
 import { helpTopics } from "@/content/help";
+import { DisclosurePanel } from "@/components/ui/disclosure-panel";
 
 export function HelpCenter() {
   const id = useId();
@@ -73,12 +73,17 @@ export function HelpCenter() {
               {t.items.map((item) => {
                 const key = `${t.id}-${item.q}`;
                 const isOpen = open === key || !!query;
+                const n = t.items.indexOf(item);
+                const btn = `${id}-${t.id}-q${n}`;
+                const panel = `${id}-${t.id}-a${n}`;
                 return (
                   <li key={key}>
                     <h3>
                       <button
+                        id={btn}
                         type="button"
                         aria-expanded={isOpen}
+                        aria-controls={panel}
                         onClick={() => setOpen(open === key ? null : key)}
                         className="flex w-full cursor-pointer items-center justify-between gap-6 py-5 text-left text-[1.0625rem] font-semibold text-ink hover:text-action"
                       >
@@ -88,19 +93,9 @@ export function HelpCenter() {
                         </span>
                       </button>
                     </h3>
-                    <AnimatePresence initial={false}>
-                      {isOpen && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                          className="overflow-hidden"
-                        >
-                          <p className="max-w-3xl pr-12 pb-6 leading-relaxed text-ink-soft">{item.a}</p>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                    <DisclosurePanel id={panel} labelledBy={btn} open={isOpen}>
+                      <p className="max-w-3xl pr-12 pb-6 leading-relaxed text-ink-soft">{item.a}</p>
+                    </DisclosurePanel>
                   </li>
                 );
               })}

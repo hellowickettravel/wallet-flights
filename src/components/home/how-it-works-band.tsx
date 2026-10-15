@@ -14,7 +14,7 @@ export function HowItWorksBand() {
             <SmartImage photo={photos.traveller} sizes="(min-width: 1024px) 480px, 90vw" />
           </div>
           <div className="absolute right-4 -bottom-6 left-4 rounded-2xl bg-white p-4 shadow-(--shadow-float) sm:right-auto sm:-left-6 sm:w-72 lg:-left-10">
-            <p className="text-[0.8125rem] text-ink-soft">Questions? {site.responseTime.toLowerCase()}.</p>
+            <p className="text-[0.8125rem] text-ink-soft">Questions? {site.responseTime}.</p>
             <a href={`mailto:${site.email}`} className="mt-1.5 flex items-center gap-2.5 text-[1.0625rem] font-bold text-ink hover:text-action">
               <span className="grid size-9 shrink-0 place-items-center rounded-full bg-action text-white">
                 <EnvelopeSimple weight="fill" className="size-[1.125rem]" aria-hidden />

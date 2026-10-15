@@ -166,7 +166,7 @@ export const cookies: { intro: string; sections: LegalSection[] } = {
     {
       heading: "Affiliate links and provider sites",
       body: [
-        "Links to airlines, travel sites, hotels, car rental, transfers, eSIMs and attractions go through our affiliate network to the provider. The network and the provider set their own cookies on their own sites to record that you came from Wallet Flights; those are covered by their cookie policies. We don’t set advertising cookies.",
+        "Links to airlines, travel sites, transfers, eSIMs and attractions go through our affiliate network to the provider. The network and the provider set their own cookies on their own sites to record that you came from Wallet Flights; those are covered by their cookie policies. Hotel and car hire links go straight to Wicket Travel Holidays, our owner’s travel site, which has its own cookie policy. We don’t set advertising cookies.",
       ],
     },
     {

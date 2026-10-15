@@ -22,7 +22,11 @@ export async function generateMetadata({ params }: PageProps<"/routes/[slug]">):
   const { slug } = await params;
   const r = routeBySlug[slug];
   if (!r) return {};
+  // A route page is only worth indexing with a real fare on it; without one
+  // it's a thin template. It comes back by itself once fares flow.
+  const fare = await cheapestFare(r.origin.apiCode, r.destination.cityCode, r.origin.currency);
   return pageMetadata({
+    robots: fare ? undefined : { index: false, follow: true },
     title: `Cheap flights from ${r.origin.city} to ${r.destination.city}`,
     description: `Recent cheapest round trips from ${r.origin.city} to ${r.destination.city}, the cheapest month to fly, and a live price comparison.`,
     path: `/routes/${r.slug}`,
@@ -95,7 +99,7 @@ export default async function RoutePage({ params }: PageProps<"/routes/[slug]">)
           <dl className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-(--radius-card) bg-mist p-5">
               <AirplaneTakeoff className="size-6 text-action" aria-hidden />
-              <dt className="mt-3 text-[0.8125rem] text-ink-soft">Flight time</dt>
+              <dt className="mt-3 text-[0.8125rem] text-ink-soft">Approx. flying time</dt>
               <dd className="mt-1 font-semibold text-ink">
                 About {time.label}
                 {time.longHaul ? " with a connection" : ""}

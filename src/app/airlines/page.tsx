@@ -6,7 +6,7 @@ import { AirlineMark } from "@/components/results/airline-mark";
 import { airlines, type Alliance } from "@/content/airlines";
 
 export const metadata = pageMetadata({
-  title: "Airlines we compare",
+  title: "Airlines we compare for cheap flights",
   description:
     "Compare fares from British Airways, Virgin Atlantic, Emirates, Qatar Airways, Turkish Airlines and more, alongside online travel sites.",
   path: "/airlines",

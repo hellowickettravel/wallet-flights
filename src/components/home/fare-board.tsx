@@ -131,7 +131,7 @@ export function FareBoard({ fares, subPrefix = "home_board" }: { fares: FareMap;
                     return (
                       <td key={c.key} className={clsx("w-px pr-2.5 align-middle whitespace-nowrap md:pr-6 lg:pr-8", c.show === "lg" && "hidden lg:table-cell", c.show === "sm" && "hidden sm:table-cell")}>
                         <span className="sr-only">{srText(r, c.key)}</span>
-                        <span aria-hidden className="flex gap-[2px] sm:gap-[3px]">
+                        <span aria-hidden data-nosnippet className="flex gap-[2px] sm:gap-[3px]">
                           {[...text].map((ch, i) => (
                             <Flap key={i} ch={glyph(ch, ri, i + (c.key === "fare" ? 14 : 0))} accent={c.key === "fare"} />
                           ))}

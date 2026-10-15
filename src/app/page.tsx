@@ -1,3 +1,4 @@
+import { jsonLdHtml, organization, website } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
 import { Hero } from "@/components/home/hero";
 import { AirlineStrip } from "@/components/home/airline-strip";
@@ -21,23 +22,9 @@ export const metadata = pageMetadata({
 });
 
 const jsonLd = {
-  "@context": "https://schema.org",
   "@graph": [
-    {
-      "@type": "Organization",
-      name: site.name,
-      url: site.url,
-      description: site.description,
-      email: site.email,
-      telephone: site.phone.display,
-      address: { "@type": "PostalAddress", addressLocality: "London", addressCountry: "GB" },
-      sameAs: site.social.map((s) => s.href),
-    },
-    {
-      "@type": "WebSite",
-      name: site.name,
-      url: site.url,
-    },
+    organization,
+    website,
     {
       "@type": "FAQPage",
       mainEntity: homeFaqs.map((f) => ({
@@ -57,14 +44,15 @@ export default async function HomePage() {
       <AirlineStrip />
       <AssuranceStrip />
       <DealsRail fares={fares} />
-      <FareBoard fares={fares} />
+      {/* Only with real fares: a board of "No recent price" rows is empty content. */}
+      {Object.keys(fares).length > 0 && <FareBoard fares={fares} />}
       <DestinationsMosaic fares={tileFares} />
       <HowItWorksBand />
       <ReviewsSection />
       <GuidesSection />
       <FaqSection />
       <FareAlerts />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(jsonLd)} />
     </>
   );
 }

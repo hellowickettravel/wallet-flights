@@ -38,7 +38,7 @@ export const destinations: Destination[] = [
   { slug: "istanbul", city: "Istanbul", country: "Türkiye", airport: "IST", cityCode: "IST", region: "middle-east-africa", photo: photos.istanbul, blurb: "Two continents, one Bosphorus ferry ride apart." },
   { slug: "cairo", city: "Cairo", country: "Egypt", airport: "CAI", cityCode: "CAI", region: "middle-east-africa", photo: photos.cairo, blurb: "The pyramids at sunrise, then the Nile by felucca." },
   { slug: "cape-town", city: "Cape Town", country: "South Africa", airport: "CPT", cityCode: "CPT", region: "middle-east-africa", photo: photos.capeTown, blurb: "Table Mountain, penguins and the winelands nearby." },
-  { slug: "delhi", city: "Delhi", country: "India", airport: "DEL", cityCode: "DEL", region: "middle-east-africa", photo: photos.delhi, blurb: "Your gateway to Agra, Jaipur and the Golden Triangle." },
+  { slug: "delhi", city: "Delhi", country: "India", airport: "DEL", cityCode: "DEL", region: "asia-pacific", photo: photos.delhi, blurb: "Your gateway to Agra, Jaipur and the Golden Triangle." },
 
   { slug: "cancun", city: "Cancún", country: "Mexico", airport: "CUN", cityCode: "CUN", region: "americas", photo: photos.cancun, blurb: "Caribbean water, cenotes and Mayan ruins within a day trip." },
   { slug: "rio-de-janeiro", city: "Rio de Janeiro", country: "Brazil", airport: "GIG", cityCode: "RIO", region: "americas", photo: photos.rio, blurb: "Beaches, samba and the view from Sugarloaf." },

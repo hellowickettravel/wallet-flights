@@ -84,7 +84,8 @@ test("robots.txt: www sitemap, exact /go block, /flights crawlable, AI crawlers 
 test("sitemap: every URL on www with a lastmod date", async ({ request }) => {
   const xml = await (await request.get("/sitemap.xml")).text();
   const urls = [...xml.matchAll(/<url>([\s\S]*?)<\/url>/g)].map((m) => m[1]);
-  expect(urls.length).toBeGreaterThan(60);
+  // 35 core pages, plus route pages while they have fares.
+  expect(urls.length).toBeGreaterThanOrEqual(35);
   for (const u of urls) {
     expect(u).toMatch(new RegExp(`<loc>${HOST.replace(/\./g, "\\.")}`));
     expect(u).toMatch(/<lastmod>\d{4}-\d{2}-\d{2}/);
@@ -120,4 +121,83 @@ test("favicon and install icons are served", async ({ request }) => {
   }
   const manifest = await (await request.get("/manifest.webmanifest")).json();
   expect(manifest.icons.map((i: { sizes: string }) => i.sizes)).toEqual(expect.arrayContaining(["192x192", "512x512"]));
+});
+
+// Phase 2: structured data, AI search and on-page SEO.
+const jsonLd = (html: string) =>
+  [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].flatMap((m) => {
+    const data = JSON.parse(m[1]);
+    return data["@graph"] ?? [data];
+  });
+
+test("every FAQ and help answer is in the server HTML", async ({ request }) => {
+  const help = await (await request.get("/help")).text();
+  const helpFaq = jsonLd(help).find((d) => d["@type"] === "FAQPage");
+  expect(helpFaq.mainEntity.length).toBeGreaterThan(10);
+  const visible = help.replace(/<script[\s\S]*?<\/script>/g, "").replace(/&#x27;|&apos;/g, "'").replace(/&amp;/g, "&").replace(/&quot;/g, '"');
+  for (const q of helpFaq.mainEntity) expect(visible, q.name).toContain(q.acceptedAnswer.text.slice(0, 40));
+
+  const home = await (await request.get("/")).text();
+  const homeFaq = jsonLd(home).find((d) => d["@type"] === "FAQPage");
+  const homeVisible = home.replace(/<script[\s\S]*?<\/script>/g, "").replace(/&#x27;|&apos;/g, "'").replace(/&amp;/g, "&").replace(/&quot;/g, '"');
+  for (const q of homeFaq.mainEntity) expect(homeVisible, q.name).toContain(q.acceptedAnswer.text.slice(0, 40));
+});
+
+test("one organisation entity, referenced by the website and articles", async ({ request }) => {
+  const home = jsonLd(await (await request.get("/")).text());
+  const org = home.find((d) => d["@type"] === "Organization");
+  expect(org["@id"]).toBe(`${HOST}/#organization`);
+  expect(org.logo.url).toBe(`${HOST}/icon-512.png`);
+  expect(org.contactPoint.telephone).toBe("+447417564704");
+  expect(org.sameAs).toContain("https://www.trustpilot.com/review/walletflights.com");
+  expect(home.find((d) => d["@type"] === "WebSite").publisher["@id"]).toBe(org["@id"]);
+
+  const guide = jsonLd(await (await request.get("/travel-guides/when-to-book-international-flights")).text()).find((d) => d["@type"] === "Article");
+  expect(guide.author["@id"]).toBe(org["@id"]);
+  expect(guide.publisher["@id"]).toBe(org["@id"]);
+  expect(guide.dateModified).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+
+  const dest = jsonLd(await (await request.get("/destinations/london")).text());
+  const crumbs = dest.find((d) => d["@type"] === "BreadcrumbList");
+  expect(crumbs.itemListElement.map((i: { name: string }) => i.name)).toEqual(["Home", "Destinations", "London"]);
+});
+
+test("llms.txt and llms-full.txt describe the site in plain text", async ({ request }) => {
+  const short = await request.get("/llms.txt");
+  expect(short.status()).toBe(200);
+  expect(short.headers()["content-type"]).toContain("text/plain");
+  const txt = await short.text();
+  expect(txt).toMatch(/^# Wallet Flights\n\n> /);
+  expect(txt).toContain(`(${HOST}/destinations/london)`);
+  expect(txt).toContain(`(${HOST}/llms-full.txt)`);
+  expect(txt).not.toMatch(/travelpayouts|aviasales/i);
+  const full = await (await request.get("/llms-full.txt")).text();
+  expect(full).toContain("## Help centre");
+  expect(full).toContain("Best time to visit:");
+});
+
+test("destination pages: keyword H1, region-mates, approximate flying time", async ({ page }) => {
+  await page.goto("/destinations/london");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Flights to London");
+  await expect(page.getByText("Approx. flying time")).toBeVisible();
+  await page.goto("/destinations/delhi");
+  await expect(page.getByRole("heading", { name: "More in Asia & Pacific" })).toBeVisible();
+});
+
+test("route pages: linked from /deals, indexable only when they appear in the sitemap", async ({ request }) => {
+  const deals = await (await request.get("/deals")).text();
+  const routeLinks = new Set([...deals.matchAll(/href="(\/routes\/[^"]+)"/g)].map((m) => m[1]));
+  expect(routeLinks.size).toBeGreaterThanOrEqual(30);
+  const sitemap = await (await request.get("/sitemap.xml")).text();
+  for (const path of ["/routes/new-york-to-london", "/routes/london-to-lisbon"]) {
+    const html = await (await request.get(path)).text();
+    const noindex = (meta(html, "name", "robots") ?? "").includes("noindex");
+    expect(sitemap.includes(`${HOST}${path}<`), path).toBe(!noindex);
+  }
+});
+
+test("guides link the destinations they mention", async ({ request }) => {
+  const html = await (await request.get("/travel-guides/europe-shoulder-season")).text();
+  expect(html).toContain('href="/destinations/lisbon"');
+  expect(html).toMatch(/\d+ min read/);
 });

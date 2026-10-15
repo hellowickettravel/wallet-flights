@@ -29,7 +29,7 @@ export const photos = {
   istanbul: p("photo-1589561454226-796a8aa89b05", "Ferry crossing the Bosphorus by Eminönü, Istanbul", "#7f9a9a", "Engin Yapici", "yapici"),
   cairo: p("photo-1503177119275-0aa32b3a9368", "The Pyramid of Khafre at Giza", "#c4a97e", "Jeremy Bishop", "jeremybishop"),
   capeTown: p("photo-1588455471455-4b28e9ab3cd5", "Table Mountain above the water in Cape Town at sunset", "#735959", "Jaman Asad", "asadsnapper"),
-  delhi: p("photo-1564507592333-c60657eea523", "The Taj Mahal in Agra", "#40a6c0", "Jovyn Chamb", "jovynchamb"),
+  delhi: p("photo-1580188712482-63ce8922d28c", "Humayun’s Tomb among green gardens in Delhi", "#0c260c", "Sagar Dwivedi", "sd5g14"),
 
   newYork: p("photo-1496588152823-86ff7695e68f", "Brooklyn Bridge with Manhattan in the distance", "#3a3a3a", "Luca Bravo", "lucabravo"),
   cancun: p("photo-1602088113235-229c19758e9f", "Beach umbrellas on a white-sand beach by turquoise water", "#6fa3bd", "David Vives", "davidvives"),

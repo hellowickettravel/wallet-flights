@@ -1,3 +1,4 @@
+import { breadcrumbList, jsonLdHtml } from "@/lib/schema";
 import { pageMetadata, unsplashShareImage } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -11,7 +12,7 @@ import { MonthCalendar } from "@/components/destinations/month-calendar";
 import { TripExtras } from "@/components/destinations/trip-extras";
 import { formatPrice, originByCode, routes } from "@/content/deals";
 import { destinationGuides } from "@/content/destination-guides";
-import { destinationBySlug, destinations } from "@/content/destinations";
+import { destinationBySlug, destinations, regions } from "@/content/destinations";
 import { site } from "@/content/site";
 import { approxFlightTime } from "@/lib/demo-flights";
 import { dealLink, fareDates, stopsText } from "@/lib/deal-links";
@@ -61,7 +62,7 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
     { icon: CalendarCheck, label: "Best time to visit", value: guide.bestTime },
     {
       icon: AirplaneTakeoff,
-      label: "Flight time",
+      label: "Approx. flying time",
       value: [
         d.city !== "New York" && `About ${fromNyc.label} from New York${fromNyc.longHaul ? " with a connection" : ""}`,
         d.city !== "London" && `About ${fromLon.label} from London${fromLon.longHaul ? " with a connection" : ""}`,
@@ -72,12 +73,21 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
   ];
 
   const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "TouristDestination",
-    name: d.city,
-    description: guide.intro,
-    url: `${site.url}/destinations/${d.slug}`,
-    containedInPlace: { "@type": "Country", name: d.country },
+    "@graph": [
+      {
+        "@type": "TouristDestination",
+        name: d.city,
+        description: guide.intro,
+        url: `${site.url}/destinations/${d.slug}`,
+        image: unsplashShareImage(d.photo).url,
+        containedInPlace: { "@type": "Country", name: d.country },
+      },
+      breadcrumbList([
+        { label: "Home", href: "/" },
+        { label: "Destinations", href: "/destinations" },
+        { label: d.city, href: `/destinations/${d.slug}` },
+      ]),
+    ],
   };
 
   return (
@@ -98,7 +108,11 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
             </ol>
           </nav>
           <p className="mt-6 text-[1.0625rem] font-medium text-sun">{d.country}</p>
-          <h1 className="font-display-tight text-[3.25rem] leading-[0.95] font-extrabold text-white sm:text-[4.5rem] lg:text-[6rem]">{d.city}</h1>
+          {/* "Flights to London" for search engines; the city stays the big display line. */}
+          <h1 className="font-display-tight text-[3.25rem] leading-[0.95] font-extrabold text-white sm:text-[4.5rem] lg:text-[6rem]">
+            <span className="mb-1 block font-sans text-[1.25rem] leading-tight font-semibold tracking-normal text-white/85 sm:text-[1.5rem]">Flights to</span>{" "}
+            {d.city}
+          </h1>
           <p className="mt-4 max-w-2xl text-pretty text-[1.0625rem] leading-relaxed text-white/85 md:text-[1.1875rem]">{guide.intro}</p>
         </div>
       </ParallaxHero>
@@ -119,7 +133,7 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
             ))}
           </dl>
 
-          <h2 className="mt-12 font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">Don’t miss</h2>
+          <h2 className="mt-12 font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">Things to do in {d.city}</h2>
           <ol className="mt-6 space-y-4">
             {guide.highlights.map((h, i) => (
               <li key={h} className="flex gap-4">
@@ -210,7 +224,7 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
       {related.length > 0 && (
         <section aria-labelledby="related-title" className="border-t border-line bg-mist py-14 md:py-20">
           <div className="container-page">
-            <h2 id="related-title" className="font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">More places nearby</h2>
+            <h2 id="related-title" className="font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">More in {regions.find((x) => x.id === d.region)?.label}</h2>
             <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((r) => (
                 <li key={r.slug}>
@@ -221,7 +235,7 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
           </div>
         </section>
       )}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(jsonLd)} />
     </article>
   );
 }
