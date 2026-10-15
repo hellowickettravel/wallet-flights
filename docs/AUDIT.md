@@ -388,3 +388,27 @@ and too-fast sign-ups get no link), 415/403 on non-JSON and cross-site posts, co
 contact name, CSP header and report endpoint, /go ignoring free-text params, "Find us on Trustpilot".
 Also checked by hand in the browser: header at 1024/1280, 320px form, sun focus ring on the hero, the
 rate limit (429 after 5), and the widget's real hosts on /flights.
+
+## CSP enforced (16 Oct 2026)
+The owner chose to skip the planned few days of report-only collection on www and enforce straight
+away, using the hosts recorded from the 15 Oct live search. `next.config.ts` now sends
+`Content-Security-Policy` (production builds only); `report-uri`/`report-to` stay, and
+`/api/csp-report` now logs `CSP violation {directive, blocked, page}`. `cspHosts` is unchanged.
+
+**Checked in the browser** (local production build on :3200, `wf_consent=s1.a0.<timestamp>`, LHR→JFK
+round trip): the live search ran and showed fares. Hosts loaded: `tpwdg.com`, `api.`, `www.`,
+`autocomplete.`, `tickets-api.` and `tickets-api.eu-north-1.apistp.com`, `img.avs.io`,
+`fonts.googleapis.com`; no broken images. The only console CSP errors were the widget's Snowplow
+calls to `http://avsplow.com/a/j`: the widget picks `http` or `https` from the page's own protocol
+(`document.location.protocol === "https:" ? "https" : "http"` in `main-*.js`), so this happens only on
+the plain-http local server; on www it calls `https://avsplow.com`, which is allowed. Not added.
+Not checked: browser-sent reports reaching `/api/csp-report` locally (Chrome sends Reporting-API
+reports later, outside the page; none arrived in the local log). The endpoint itself is covered by the
+e2e test.
+
+**Risk:** without real-visitor reports, a host the widget uses only on some screens (other routes,
+filters, booking steps, mobile) or that Vercel Analytics uses would now be blocked, not just reported.
+After deploy, check the Vercel logs for `CSP violation` lines and add any legitimate host to `cspHosts`.
+
+**Test:** lint, typecheck, build: pass. e2e: **237 passed**, 29 skipped. "security headers are set" now
+reads `content-security-policy` and checks the report-only header is gone.

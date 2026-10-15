@@ -13,13 +13,16 @@ Read first: `CLAUDE.md`, `AGENTS.md`, `docs/IMPROVEMENT-PLAN.md` (the 4-phase pl
 
 ## Next steps
 1. Push (from the user's terminal), let Vercel deploy, then verify on www:
-   - `curl -sI https://www.walletflights.com/ | grep -i content-security` shows the Report-Only header
+   - `curl -sI https://www.walletflights.com/ | grep -i content-security` shows the enforced
+     `Content-Security-Policy` header, and a live search on /flights still shows fares
    - the header at 1024px, the swap button on a phone, the marquee pause button
    - fare-alert sign-up (needs `RESEND_API_KEY`; without it the form says the service is unavailable)
 2. Re-measure with PageSpeed Insights (mobile) on `/`, `/deals`, `/routes/new-york-to-london`.
-3. **CSP:** after a few days, read the `CSP report-only violation` lines in the Vercel logs. Add any
-   legitimate host to `cspHosts` in `src/lib/csp.ts`; once clean, rename the header in `next.config.ts`
-   to `Content-Security-Policy` to enforce it. Re-run a live search on /flights after enforcing.
+3. **CSP (enforced 16 Oct 2026, without the report-only period, at the owner's request):** for the
+   first days after deploy, read the `CSP violation` lines in the Vercel logs. These are now real
+   blocks. Add any legitimate host to `cspHosts` in `src/lib/csp.ts` (ignore browser-extension
+   noise such as `chrome-extension:`). Locally, `http://avsplow.com` errors are expected (plain-http
+   page); see `docs/AUDIT.md`, "CSP enforced".
 4. Phase 4 (owner input, see the plan).
 
 ## Owner actions added by Phase 3

@@ -1,7 +1,6 @@
-// Content-Security-Policy, sent as Report-Only for now (next.config.ts):
-// browsers report what it would block to /api/csp-report (Vercel logs)
-// without blocking anything. Once a few days of reports are clean, rename the
-// header to Content-Security-Policy to enforce it.
+// Content-Security-Policy, enforced (next.config.ts). Browsers still report
+// what it blocks to /api/csp-report (Vercel logs): a host missing here shows
+// up there as a "CSP violation" line, and is broken for visitors until added.
 //
 // Scripts keep 'unsafe-inline': pages are prerendered (cacheComponents), so
 // per-request nonces aren't possible, and Next writes its page data as inline

@@ -23,6 +23,6 @@ export async function POST(req: Request) {
   } catch {
     return new Response(null, { status: 400 });
   }
-  for (const r of reports.slice(0, 10)) if (r) console.warn("CSP report-only violation", JSON.stringify(summarise(r)));
+  for (const r of reports.slice(0, 10)) if (r) console.warn("CSP violation", JSON.stringify(summarise(r)));
   return new Response(null, { status: 204 });
 }
