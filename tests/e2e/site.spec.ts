@@ -18,6 +18,7 @@ const PAGES = [
   "/privacy-policy",
   "/terms-and-conditions",
   "/cookie-policy",
+  "/editorial-policy",
   "/photo-credits",
   "/flights?trip=round&cabin=economy&adults=1&from0=LHR&to0=JFK&date0=2030-03-10&return=2030-03-17",
   "/go",
@@ -124,7 +125,8 @@ test("the footer carries the owner's notice, Trustpilot and no partner names", a
     expect(text).not.toMatch(/travelpayouts|aviasales/i);
   }
   const footer = page.getByRole("contentinfo");
-  await expect(footer).toContainText("Wallet Flights is a flight comparison site and does not sell tickets directly.");
+  await expect(footer).toContainText("Wallet Flights is a flight comparison site and does not sell tickets on this website.");
+  await expect(footer).toContainText("our team can book a flight for you on WhatsApp");
   await expect(footer).toContainText("Prices shown on our website are based on recently available fares.");
   await expect(footer.getByRole("link", { name: /Review us on Trustpilot/ })).toHaveAttribute("href", "https://www.trustpilot.com/review/walletflights.com");
 });

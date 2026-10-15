@@ -7,7 +7,7 @@ import {
   WhatsappLogo,
   XLogo,
 } from "@phosphor-icons/react/dist/ssr";
-import { footerNav, footerNotice, site } from "@/content/site";
+import { companyLine, footerNav, footerNotice, site } from "@/content/site";
 import { CurrentYear } from "@/components/ui/current-year";
 import { CookieSettingsButton } from "@/components/consent/cookie-settings-button";
 import { TrustpilotStar } from "@/components/ui/trustpilot-star";
@@ -101,10 +101,12 @@ export function Footer() {
         <div className="container-page flex flex-col gap-4 py-8 text-[0.8125rem] leading-relaxed text-white/55 md:flex-row md:justify-between">
           <div className="max-w-3xl space-y-2">
             <p>{footerNotice.comparison}</p>
+            <p>{footerNotice.manual}</p>
             <p>{footerNotice.prices}</p>
             <p id="affiliate-disclosure">
               <strong className="font-semibold text-white/75">Affiliate disclosure:</strong> {footerNotice.affiliate}
             </p>
+            <p id="company-details">{companyLine}</p>
           </div>
           <div className="flex shrink-0 flex-col gap-2 md:items-end">
             <CookieSettingsButton className="cursor-pointer text-left font-semibold text-white/75 underline-offset-4 hover:text-white hover:underline" />

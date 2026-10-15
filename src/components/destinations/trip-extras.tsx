@@ -1,13 +1,13 @@
 import { ArrowUpRight, Bed, Car, SimCard, Taxi, Ticket } from "@phosphor-icons/react/dist/ssr";
 import { programs } from "@/content/affiliates";
-import { crossSell, esimCountry, ownerLinks, ownerSite, type CrossSellKind } from "@/content/cross-sell";
+import { crossSell, esimCountry, ownerLinks, ownerSiteLabel, type CrossSellKind } from "@/content/cross-sell";
 import { affiliateUrl } from "@/lib/affiliate";
 
 const icons: Record<CrossSellKind, typeof Bed> = { hotels: Bed, cars: Car, transfers: Taxi, esim: SimCard, attractions: Ticket };
 
 function hrefFor(kind: CrossSellKind, url: string, program: keyof typeof programs, city: string, subId: string) {
   const own = kind === "hotels" ? ownerLinks.hotels : kind === "cars" ? ownerLinks.cars : null;
-  if (own) return { href: own.replace("{city}", encodeURIComponent(city)), partner: ownerSite.name, rel: "noopener" };
+  if (own) return { href: own.replace("{city}", encodeURIComponent(city)), partner: ownerSiteLabel, rel: "noopener" };
   return { href: affiliateUrl(program, url, subId), partner: programs[program].name, rel: "sponsored noopener" };
 }
 

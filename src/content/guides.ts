@@ -14,6 +14,8 @@ export type Guide = {
   updated?: string;
   photo: Photo;
   sections: GuideSection[];
+  /** Official pages the guide relies on for specific rules or figures (see the editorial policy). */
+  sources?: { label: string; url: string }[];
 };
 
 export const guides: Guide[] = [
@@ -101,6 +103,7 @@ export const guides: Guide[] = [
     excerpt: "What to pack, what to leave behind, and how to check your airline’s cabin bag rules before you fly.",
     category: "Packing",
     published: "2026-08-12",
+    updated: "2026-10-16",
     photo: photos.guideCarryOn,
     sections: [
       {
@@ -128,6 +131,11 @@ export const guides: Guide[] = [
           "Roll clothes instead of folding them, use packing cubes to keep things organised, and wear your bulkiest items on the plane. Leave a little space for anything you pick up on the way.",
         ],
       },
+    ],
+    // Checked 16 Oct 2026.
+    sources: [
+      { label: "GOV.UK: Hand luggage restrictions at UK airports", url: "https://www.gov.uk/hand-luggage-restrictions" },
+      { label: "TSA: Liquids, aerosols and gels rule (US airports)", url: "https://www.tsa.gov/travel/security-screening/liquids-aerosols-gels-rule" },
     ],
   },
 ];

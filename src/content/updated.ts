@@ -8,9 +8,10 @@ export const updated = {
   routes: "2026-10-15",
   airlines: "2026-10-15",
   travelGuides: "2026-10-15",
-  about: "2026-10-14",
+  about: "2026-10-16",
   contact: "2026-10-15",
   help: "2026-10-15",
-  legal: "2026-10-15",
+  legal: "2026-10-16",
+  editorial: "2026-10-16",
   photoCredits: "2026-10-12",
 } as const;

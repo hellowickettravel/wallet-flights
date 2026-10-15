@@ -5,7 +5,7 @@ import { terms, legalUpdated } from "@/content/legal";
 export const metadata = pageMetadata({
   title: "Terms and conditions",
   description:
-    "The terms for using Wallet Flights: how our flight price comparison works, booking with providers, affiliate links, liability and governing law.",
+    "Terms for using Wallet Flights: how our flight comparison works, booking with providers or through our team, affiliate links, liability and governing law.",
   path: "/terms-and-conditions",
 });
 

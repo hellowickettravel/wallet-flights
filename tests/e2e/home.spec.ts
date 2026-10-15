@@ -19,7 +19,7 @@ test("renders every homepage section without errors", async ({ page }) => {
     errors.push(`${r.status()} ${r.url()}`);
   });
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("We compare thousands of flight providers and show the cheapest fare.");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("We compare hundreds of flight providers and show the cheapest fare.");
   // The fare board only appears with real fares (none without the Data API token).
   const hasBoard = (await page.locator("#board-title").count()) > 0;
   if (!hasBoard) await expect(page.getByText("No recent price")).toHaveCount(0);
@@ -220,11 +220,15 @@ test("hero shortcuts reach deals, destinations and the owner's hotels / car hire
   }
 });
 
-test("hero offers manual bookings on WhatsApp, the low-fare line and Trustpilot", async ({ page }) => {
+test("hero offers manual bookings on WhatsApp, real from-prices only, the sister company and Trustpilot", async ({ page }) => {
   await page.goto("/");
   const hero = page.locator("#search");
-  await expect(hero).toContainText("as little as $18");
-  await expect(hero).toContainText("Want us to book a flight or hotel for you manually?");
+  // No unqualified "as little as" claim: from-prices come from fare data, with route and trip type.
+  await expect(hero).not.toContainText("as little as");
+  const from = hero.getByTestId("hero-from-prices");
+  if ((await from.count()) > 0) await expect(from).toHaveText(/^Round trips found recently: .+ to .+ from [£$][\d,]+(, .+ to .+ from [£$][\d,]+)?\.$/);
+  await expect(hero).toContainText("Prefer not to book online? Our team can book a flight for you.");
+  await expect(hero).toContainText("Hotels and car hire are booked with our sister company, Wicket Travel Holidays.");
   const wa = hero.getByRole("link", { name: /Call or WhatsApp \+44 7417 564704/ });
   await expect(wa).toHaveAttribute("href", "https://wa.me/447417564704");
   await expect(wa).toHaveAttribute("target", "_blank");

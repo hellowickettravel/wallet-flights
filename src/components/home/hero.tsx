@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { ArrowUpRight, Bed, Car, MapPin, Tag, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
 import { SearchPanel } from "@/components/search/search-panel";
-import { crossSell, ownerLinks } from "@/content/cross-sell";
+import { crossSell, ownerLinks, ownerSite } from "@/content/cross-sell";
+import { formatPrice, type Route } from "@/content/deals";
+import type { Fare } from "@/lib/travelpayouts";
 import { heroCopy } from "@/content/home";
 import { site } from "@/content/site";
 import { TrustpilotStar } from "@/components/ui/trustpilot-star";
@@ -23,7 +25,10 @@ const pill =
  * Search-first hero on a full-bleed ink band (Skyscanner-style): shortcuts to
  * the other verticals on top, then the headline, then one joined search bar.
  */
-export function Hero() {
+export function Hero({ lowFares = [] }: { lowFares?: { route: Route; fare: Fare }[] }) {
+  const fromPrices = lowFares.map(({ route, fare }) =>
+    heroCopy.lowFares.item(route.origin.city, route.destination.city, formatPrice(fare.price, fare.currency)),
+  );
   return (
     <section id="search" aria-labelledby="hero-title" className="relative z-10 bg-ink">
       <div className="container-page pt-6 pb-12 md:pt-8 md:pb-16 lg:pt-10 lg:pb-20">
@@ -69,7 +74,15 @@ export function Hero() {
         </Reveal>
         <Reveal text delay={0.08} className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
           <p className="max-w-[40rem] text-[1.0625rem] leading-relaxed text-pretty text-white/80 md:text-[1.1875rem]">
-            {heroCopy.intro} <strong className="font-semibold text-white">{heroCopy.lowFares}</strong>
+            {heroCopy.intro}
+            {fromPrices.length > 0 && (
+              <>
+                {" "}
+                <strong data-testid="hero-from-prices" className="font-semibold text-white">
+                  {heroCopy.lowFares.lead} {fromPrices.join(", ")}.
+                </strong>
+              </>
+            )}
           </p>
           <a
             href={site.trustpilot}
@@ -102,6 +115,7 @@ export function Hero() {
             <span className="sr-only"> (opens WhatsApp)</span>
           </a>
         </p>
+        {(ownerLinks.hotels || ownerLinks.cars) && <p className="mt-2 text-[0.875rem] text-white/60">{heroCopy.sisterNote(ownerSite.name)}</p>}
       </div>
     </section>
   );

@@ -1,4 +1,4 @@
-# Handoff: where the improvement plan stands (15 Oct 2026, after Phase 3)
+# Handoff: where the improvement plan stands (16 Oct 2026, Phase 4 part 1)
 
 Read first: `CLAUDE.md`, `AGENTS.md`, `docs/IMPROVEMENT-PLAN.md` (the 4-phase plan),
 `docs/SITE-AUDIT.md` (audit findings with evidence) and the end of `docs/AUDIT.md` (what each phase changed).
@@ -9,7 +9,7 @@ Read first: `CLAUDE.md`, `AGENTS.md`, `docs/IMPROVEMENT-PLAN.md` (the 4-phase pl
 | 1 Indexing foundations | Done, live, verified on www.walletflights.com (commit 2c8a19f) |
 | 2 Structured data, AI search, on-page SEO | Done, live, verified (commit 025b8cf) |
 | 3 Performance, UX, accessibility, security | Done: part 1 (3.1 to 3.8, 3.17) and part 2 (3.9 to 3.23). See `docs/AUDIT.md`. |
-| 4 Content depth, E-E-A-T, claims | Not started. Needs owner input (see plan). |
+| 4 Content depth, E-E-A-T, claims | Part 1 done (4.1 to 4.4: booking model, Wicket Travel Limited details, "hundreds", live from-price, editorial policy). Left: 4.5 content depth, 4.6 legal review, 4.7. |
 
 ## Next steps
 1. Push (from the user's terminal), let Vercel deploy, then verify on www:
@@ -23,7 +23,7 @@ Read first: `CLAUDE.md`, `AGENTS.md`, `docs/IMPROVEMENT-PLAN.md` (the 4-phase pl
    blocks. Add any legitimate host to `cspHosts` in `src/lib/csp.ts` (ignore browser-extension
    noise such as `chrome-extension:`). Locally, `http://avsplow.com` errors are expected (plain-http
    page); see `docs/AUDIT.md`, "CSP enforced".
-4. Phase 4 (owner input, see the plan).
+4. Phase 4: 4.5 content depth (guides to ~1,000 words with sources, richer route and destination pages, new guides for the best legacy topics), then 4.6 and 4.7.
 
 ## Owner actions added by Phase 3
 - **Rate limit:** the built-in limit is per server instance. For a site-wide limit, add a Vercel
@@ -53,4 +53,10 @@ Read first: `CLAUDE.md`, `AGENTS.md`, `docs/IMPROVEMENT-PLAN.md` (the 4-phase pl
    - submit `/sitemap.xml`
    - import into Bing Webmaster Tools
    - export the Pages and Links reports to extend `src/content/legacy-redirects.ts`
-3. Phase 4 decisions: booking model vs "we don't sell tickets"; legal entity; evidence for "thousands of providers" and "as little as $18"; author names; legal review.
+3. Legal review of the terms and privacy policy, above all: does the team need an **ATOL** for flights it books
+   (UK flight sales usually need one unless the airline issues the ticket immediately), which payment methods
+   it takes, and whether to name the flight-search partner as an independent controller. Also confirm the
+   new terms wording "we confirm the total price and fare rules with you before we book".
+4. The registered office (15 Lampton Avenue, Hounslow) now shows in every footer, as UK trading-disclosure
+   rules require of a company website. If the owner prefers another address for notices, change `company` in
+   `src/content/site.ts`.

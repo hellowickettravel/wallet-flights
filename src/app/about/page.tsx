@@ -1,17 +1,17 @@
 import { pageMetadata } from "@/lib/seo";
-import { Envelope, MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
+import { ArrowUpRight, Buildings, Envelope, MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
 import { PageHeader } from "@/components/ui/page-header";
 import { SmartImage } from "@/components/ui/smart-image";
 import { ButtonLink } from "@/components/ui/button";
 import { PriceLadder } from "@/components/about/price-ladder";
-import { aboutEarn, aboutIntro } from "@/content/about";
+import { aboutCompany, aboutEarn, aboutIntro } from "@/content/about";
 import { howItWorks } from "@/content/how-it-works";
 import { photos } from "@/content/images";
 
 export const metadata = pageMetadata({
   title: "About us",
   description:
-    "Wallet Flights is a London-based flight comparison site for US and UK travellers. We show prices from airlines and travel sites in one list, cheapest first.",
+    "Wallet Flights, a trading brand of Wicket Travel Limited, compares flight prices from airlines and travel sites for US and UK travellers, cheapest first.",
   path: "/about",
 });
 
@@ -47,6 +47,56 @@ export default function AboutPage() {
             </div>
             {/* Below lg the card flows under the photo (overlapping its edge) so it can't cover the text above. */}
             <PriceLadder className="relative z-10 mx-3 -mt-20 sm:mr-6 sm:ml-auto sm:w-[22rem] lg:absolute lg:-bottom-10 lg:-left-12 lg:m-0" />
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="company-title" className="border-t border-line py-18 md:py-24">
+        <div className="container-page grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
+          <div className="max-w-[38rem]">
+            <h2 id="company-title" className="font-display-tight text-[2rem] leading-[1.08] font-bold text-ink md:text-[2.75rem]">
+              {aboutCompany.title}
+            </h2>
+            <div className="mt-6 space-y-4 text-[1.0625rem] leading-relaxed text-ink-soft">
+              {aboutCompany.paragraphs.map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
+            </div>
+            <a
+              href={aboutCompany.sisterLink.href}
+              target="_blank"
+              rel="noopener"
+              className="mt-6 inline-flex items-center gap-1.5 font-semibold text-action hover:underline"
+            >
+              {aboutCompany.sisterLink.label}
+              <ArrowUpRight className="size-4" weight="bold" aria-hidden />
+              <span className="sr-only"> (opens in a new tab)</span>
+            </a>
+          </div>
+
+          <div className="self-start rounded-(--radius-panel) bg-mist p-6 sm:p-8">
+            <p className="inline-flex items-center gap-2 text-[0.9375rem] font-semibold text-ink">
+              <Buildings className="size-5 text-action" weight="duotone" aria-hidden />
+              Company details
+            </p>
+            <dl className="mt-5 space-y-4">
+              {aboutCompany.facts.map((f) => (
+                <div key={f.label} className="grid gap-0.5 sm:grid-cols-[10rem_1fr] sm:gap-4">
+                  <dt className="text-[0.875rem] text-ink-soft">{f.label}</dt>
+                  <dd className="font-semibold text-ink">{f.value}</dd>
+                </div>
+              ))}
+            </dl>
+            <a
+              href={aboutCompany.registerLink.href}
+              target="_blank"
+              rel="noopener"
+              className="mt-6 inline-flex items-center gap-1.5 text-[0.9375rem] font-semibold text-action hover:underline"
+            >
+              {aboutCompany.registerLink.label}
+              <ArrowUpRight className="size-4" weight="bold" aria-hidden />
+              <span className="sr-only"> (opens in a new tab)</span>
+            </a>
           </div>
         </div>
       </section>

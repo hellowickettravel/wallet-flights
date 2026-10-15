@@ -6,7 +6,7 @@ test("about: price ladder never overlaps the facts list", async ({ page }) => {
   await page.goto("/about");
   for (const width of [360, 390, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 });
-    const facts = await page.locator("dl").boundingBox();
+    const facts = await page.locator("dl").first().boundingBox();
     const ladder = await page.getByRole("figure").boundingBox();
     const overlaps =
       facts!.x < ladder!.x + ladder!.width &&

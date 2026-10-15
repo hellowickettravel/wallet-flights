@@ -1,16 +1,19 @@
 import type { ProgramId } from "./affiliates";
+import { company } from "./site";
 
 // "Plan the rest of your trip" on destination guides and route pages.
 // Flights are the product; these are helpful extras from programs we've joined.
 // Deep links were checked by hand (Airalo country pages, Tiqets city search).
 
 /**
- * Hotels and car hire go to the owner's own site, Wicket Travel Holidays
- * (owner's instruction, 15 Oct 2026). Its Hotels / Cars tabs have no URLs of
+ * Hotels and car hire go to the sister company, Wicket Travel Holidays
+ * (owner's instruction, 15 Oct 2026; relationship confirmed 16 Oct 2026). Its Hotels / Cars tabs have no URLs of
  * their own, so both open the homepage. Set to null to fall back to the
  * partner programs below. `{city}` in a URL is replaced with the city name.
  */
-export const ownerSite = { name: "Wicket Travel Holidays", url: "https://www.wickettravelholidays.com/" } as const;
+export const ownerSite = company.sister;
+/** Shown wherever the sister company is linked, so the relationship is disclosed. */
+export const ownerSiteLabel = `our sister company, ${ownerSite.name}`;
 
 export const ownerLinks: { hotels: string | null; cars: string | null } = {
   hotels: ownerSite.url,

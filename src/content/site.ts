@@ -16,9 +16,9 @@ export const site = {
     href: "tel:+447417564704",
     /** The number on the site opens a WhatsApp chat (owner, 15 Oct 2026); calls still work from the contact page. */
     whatsapp: "https://wa.me/447417564704",
-    /** The team also books flights and hotels by hand (owner, 15 Oct 2026). */
+    /** The team books flights by hand on WhatsApp; hotels go through the sister company (owner, 16 Oct 2026). */
     label: "Book or ask on WhatsApp",
-    note: "Our team can book flights and hotels for you",
+    note: "Our team can book a flight for you",
   },
   email: "info@walletflights.com",
   location: "London, United Kingdom",
@@ -33,10 +33,37 @@ export const site = {
   ],
 } as const;
 
-/** Footer notices. The first two paragraphs are the owner's wording (15 Oct 2026). */
+/**
+ * The legal entity behind the brand (owner, 16 Oct 2026; checked against the
+ * Companies House register the same day). UK trading-disclosure rules ask a
+ * company's website to show its registered name, number, place of
+ * registration and registered office address.
+ */
+export const company = {
+  legalName: "Wicket Travel Limited",
+  number: "17001759",
+  registeredIn: "England and Wales",
+  type: "private limited company",
+  incorporated: "2026-01-30",
+  registeredOffice: "15 Lampton Avenue, Hounslow, England, TW3 4EW",
+  address: { street: "15 Lampton Avenue", locality: "Hounslow", postalCode: "TW3 4EW", country: "GB" },
+  register: "https://find-and-update.company-information.service.gov.uk/company/17001759",
+  /** Sister company that takes hotel bookings; the Hotels and Car hire links go to its site. */
+  sister: { name: "Wicket Travel Holidays", url: "https://www.wickettravelholidays.com/" },
+} as const;
+
+/** One line for the footer and legal pages. */
+export const companyLine = `${site.name} is a trading name of ${company.legalName}, a ${company.type} registered in ${company.registeredIn} (company number ${company.number}). Registered office: ${company.registeredOffice}.`;
+
+/**
+ * Footer notices. The first two paragraphs are the owner's wording (15 Oct
+ * 2026); `comparison` now says "on this website" and `manual` covers the
+ * flights the team books on WhatsApp (owner, 16 Oct 2026).
+ */
 export const footerNotice = {
   comparison:
-    "Wallet Flights is a flight comparison site and does not sell tickets directly. When you choose a flight, you book and pay through the selected provider, who manages your booking, changes, and refunds.",
+    "Wallet Flights is a flight comparison site and does not sell tickets on this website. When you choose a flight here, you book and pay through the selected provider, who manages your booking, changes, and refunds.",
+  manual: `If you’d rather not book online, our team can book a flight for you on WhatsApp. ${company.legalName} then makes the booking with the airline or travel provider on your behalf, and we confirm the price and fare rules with you before you pay. Hotel bookings are handled by our sister company, ${company.sister.name}.`,
   prices:
     "Prices shown on our website are based on recently available fares. Final prices and availability are confirmed by the provider at the time of booking.",
   affiliate:
@@ -77,6 +104,7 @@ export const footerNav = [
     links: [
       { label: "About us", href: "/about" },
       { label: "Help centre", href: "/help" },
+      { label: "Editorial policy", href: "/editorial-policy" },
       { label: "Contact", href: "/contact" },
     ],
   },

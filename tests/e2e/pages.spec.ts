@@ -28,7 +28,8 @@ for (const path of ["/about", "/contact"]) {
 test("about: explains the comparison model and affiliate links", async ({ page }) => {
   await page.goto("/about");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Every flight price, side by side");
-  await expect(page.getByText("We don’t sell tickets.", { exact: false })).toBeVisible();
+  await expect(page.getByText("We don’t sell tickets on this website.", { exact: false })).toBeVisible();
+  await expect(page.getByText("our team can book a flight for you", { exact: false }).first()).toBeVisible();
   await expect(page.getByRole("heading", { name: "How we make money" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "How Wallet Flights works" })).toBeVisible();
 });
@@ -64,7 +65,7 @@ test("contact: validates, focuses the first error, then sends", async ({ page })
   await form.getByLabel("Your name").fill("Sam Taylor");
   await form.getByLabel("Email address").fill("sam@example.com");
   await form.getByText("A booking I made").click();
-  await expect(form.getByText(/Bookings are made and managed by the provider/)).toBeVisible();
+  await expect(form.getByText(/the provider you chose manages the booking/)).toBeVisible();
   await form.getByLabel("Message").fill("My flight time changed, who should I contact?");
   await form.getByRole("button", { name: "Send message" }).click();
   await expect(page.getByRole("status")).toContainText("Message sent, Sam");

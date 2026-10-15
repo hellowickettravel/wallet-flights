@@ -31,6 +31,7 @@ const pages = [
   "/privacy-policy",
   "/terms-and-conditions",
   "/cookie-policy",
+  "/editorial-policy",
 ];
 
 for (const path of pages) {
@@ -150,6 +151,10 @@ test("one organisation entity, referenced by the website and articles", async ({
   expect(org.logo.url).toBe(`${HOST}/icon-512.png`);
   expect(org.contactPoint.telephone).toBe("+447417564704");
   expect(org.sameAs).toContain("https://www.trustpilot.com/review/walletflights.com");
+  expect(org.legalName).toBe("Wicket Travel Limited");
+  expect(org.identifier.value).toBe("17001759");
+  expect(org.sameAs).toContain("https://find-and-update.company-information.service.gov.uk/company/17001759");
+  expect(org.publishingPrinciples).toBe(`${HOST}/editorial-policy`);
   expect(home.find((d) => d["@type"] === "WebSite").publisher["@id"]).toBe(org["@id"]);
 
   const guide = jsonLd(await (await request.get("/travel-guides/when-to-book-international-flights")).text()).find((d) => d["@type"] === "Article");

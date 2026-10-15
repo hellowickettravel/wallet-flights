@@ -7,7 +7,7 @@ import { destinationGuides } from "@/content/destination-guides";
 import { destinations } from "@/content/destinations";
 import { guides } from "@/content/guides";
 import { helpTopics } from "@/content/help";
-import { footerNotice, site } from "@/content/site";
+import { company, companyLine, footerNotice, site } from "@/content/site";
 
 const url = (path: string) => `${site.url}${path}`;
 
@@ -15,13 +15,15 @@ function header() {
   return [
     `# ${site.name}`,
     "",
-    `> ${site.name} (${site.url.replace("https://", "")}) is a flight price comparison site based in London for travellers in the UK and US. It searches airlines and travel sites and lists fares from cheapest to most expensive; travellers then book and pay with the provider they choose. Searching is free.`,
+    `> ${site.name} (${site.url.replace("https://", "")}) is a flight price comparison site based in London for travellers in the UK and US. It searches airlines and travel sites and lists fares from cheapest to most expensive; travellers then book and pay with the provider they choose, or ask the team on WhatsApp to book a flight for them. Searching is free. ${site.name} is a trading name of ${company.legalName}.`,
     "",
     "## Key facts",
     `- Based in: ${site.location}`,
     `- For: ${site.markets}`,
     `- Contact: ${site.email}, phone or WhatsApp ${site.phone.display} (${site.phone.note.toLowerCase()}). ${site.responseTime}.`,
     `- How it works: ${aboutIntro.paragraphs[2]}`,
+    `- Booking by phone: ${footerNotice.manual}`,
+    `- Company: ${companyLine}`,
     `- How we make money: ${aboutEarn.paragraphs.join(" ")}`,
     `- Prices: ${footerNotice.prices}`,
     `- Reviews: ${site.trustpilot}`,
@@ -51,6 +53,7 @@ export function llmsTxt() {
     `- [Terms and conditions](${url("/terms-and-conditions")})`,
     `- [Privacy policy](${url("/privacy-policy")})`,
     `- [Cookie policy](${url("/cookie-policy")})`,
+    `- [Editorial policy](${url("/editorial-policy")})`,
     "",
     "## Optional",
     `- [Full text of help, destinations and guides](${url("/llms-full.txt")})`,

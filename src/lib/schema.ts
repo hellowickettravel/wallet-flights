@@ -1,7 +1,7 @@
 // schema.org building blocks. The organisation and website are defined once,
 // with stable @ids, and every other block points at them, so search engines
 // and AI engines see one consistent entity. Facts come from src/content only.
-import { site } from "@/content/site";
+import { company, site } from "@/content/site";
 
 export const orgId = `${site.url}/#organization`;
 export const websiteId = `${site.url}/#website`;
@@ -18,12 +18,20 @@ export const organization = {
   "@id": orgId,
   name: site.name,
   alternateName: "WalletFlights",
+  legalName: company.legalName,
+  identifier: { "@type": "PropertyValue", propertyID: "Companies House company number", value: company.number },
   url: site.url,
   logo: { "@type": "ImageObject", url: `${site.url}/icon-512.png`, width: 512, height: 512 },
   description: site.description,
   email: site.email,
   telephone,
-  address: { "@type": "PostalAddress", addressLocality: "London", addressCountry: "GB" },
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: company.address.street,
+    addressLocality: company.address.locality,
+    postalCode: company.address.postalCode,
+    addressCountry: company.address.country,
+  },
   areaServed: countries,
   contactPoint: {
     "@type": "ContactPoint",
@@ -33,7 +41,8 @@ export const organization = {
     areaServed: ["GB", "US"],
     availableLanguage: "English",
   },
-  sameAs: [...site.social.map((s) => s.href), site.trustpilot],
+  publishingPrinciples: `${site.url}/editorial-policy`,
+  sameAs: [...site.social.map((s) => s.href), site.trustpilot, company.register],
 };
 
 export const website = {

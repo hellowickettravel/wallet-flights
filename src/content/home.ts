@@ -1,16 +1,23 @@
 // Homepage hero copy. Wallet Flights compares many providers so travellers
 // see the cheapest fares without checking each site themselves.
 export const heroCopy = {
-  // Owner's wording (15 Oct 2026), one line on desktop.
-  title: "We compare thousands of flight providers and show the cheapest fare.",
+  // Owner's wording (15 Oct 2026), one line on desktop. "Hundreds", not
+  // "thousands", to match the logo strip (owner, 16 Oct 2026; CAP 3.7).
+  title: "We compare hundreds of flight providers and show the cheapest fare.",
   intro: "Airlines and travel sites in one search, cheapest first, so you don’t have to check them one by one.",
-  // Owner-supplied claim (client message, 15 Oct 2026). UK advertising rules
-  // expect "from" prices to be genuinely available, so keep it in line with
-  // what searches actually return.
-  lowFares: "Trips within Europe and the US can cost as little as $18.",
-  // Manual bookings: the owner's team books flights and hotels by hand. The
-  // number opens WhatsApp, where they can also call.
-  phoneLead: "Want us to book a flight or hotel for you manually?",
+  // Replaces the unqualified "as little as $18" (owner, 16 Oct 2026): the
+  // cheapest real round trip found recently on our featured routes, one per
+  // currency, with its route. UK advertising rules (CAP Code section 3) expect a
+  // "from" price to be real and its conditions clear. Hidden without fare data.
+  lowFares: {
+    lead: "Round trips found recently:",
+    item: (from: string, to: string, price: string) => `${from} to ${to} from ${price}`,
+  },
+  /** Disclosed next to the Hotels and Car hire shortcuts, which open the sister company's site. */
+  sisterNote: (name: string) => `Hotels and car hire are booked with our sister company, ${name}.`,
+  // Manual bookings: the owner's team books flights by hand on WhatsApp;
+  // hotels go through the sister company (owner, 16 Oct 2026).
+  phoneLead: "Prefer not to book online? Our team can book a flight for you.",
   phoneAction: "Call or WhatsApp",
 } as const;
 

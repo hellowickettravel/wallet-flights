@@ -412,3 +412,30 @@ After deploy, check the Vercel logs for `CSP violation` lines and add any legiti
 
 **Test:** lint, typecheck, build: pass. e2e: **237 passed**, 29 skipped. "security headers are set" now
 reads `content-security-policy` and checks the report-only header is gone.
+
+## Phase 4, part 1: booking model, legal entity, claims, editorial policy (16 Oct 2026)
+Owner's answers (16 Oct 2026): the team books **flights** by hand on WhatsApp; **hotels** go through the
+sister company Wicket Travel Holidays; Wallet Flights is the trading brand of **Wicket Travel Limited**
+(England and Wales, company 17001759); use "hundreds" of providers; replace "$18" with a live from-price;
+no named authors or separate policy, so write base-level policies from how the site works. The company
+was checked on the Companies House register the same day (active, incorporated 30 January 2026,
+registered office 15 Lampton Avenue, Hounslow, TW3 4EW).
+
+| Plan item | Change |
+|---|---|
+| 4.1 Booking model | One story everywhere: comparison on the site ("does not sell tickets **on this website**"), plus "our team can book a flight for you on WhatsApp", plus hotels via the sister company. Updated: footer notice (new `manual` paragraph), hero line, WhatsApp note, About, home FAQ, Help ("Can your team book a flight for me?", "Who do I pay?"), contact booking note, llms.txt. Terms: "Who we are", "Bookings made by our team" (price and fare rules confirmed before booking, airline conditions apply, changes follow fare rules), "Hotels and car hire". The old "we are not a travel agent / not a party to any booking" line is gone. Privacy: data for team bookings (passport names, date of birth, contact, travel details), contract and legal-obligation bases, sharing with airlines and WhatsApp (Meta), retention, no payment on the website. |
+| 4.2 Entity and people | `company` in `src/content/site.ts`. The footer shows the trading disclosure on every page (name, number, place of registration, registered office). About has a new "Who runs Wallet Flights" section with the owner's company description, a details card and a link to the Companies House register. The sister company is named wherever it's linked (hero note, "with our sister company, Wicket Travel Holidays" on destination and route extras, terms, editorial policy). Organization schema: `legalName`, Companies House `identifier`, registered-office `address`, the register in `sameAs`, `publishingPrinciples`. |
+| 4.3 Claims | H1 "We compare **hundreds** of flight providers…" (matches the logo strip). The "$18" sentence is replaced by `lowestFares()` (`src/lib/fares.ts`): the cheapest real round trip in pounds and in dollars from the featured routes, with route and trip type ("Round trips found recently: London to Lisbon from £…"). It's hidden without fare data, so it's absent until `TRAVELPAYOUTS_TOKEN` is set. |
+| 4.4 Editorial policy | New `/editorial-policy` (`src/content/editorial.ts`): who writes, facts and sources, where prices come from, ordering, how we make money, dates, corrections. In the footer, sitemap and llms.txt. Guides get a byline "By The Wallet Flights team" (linked to the policy), published and updated `<time>`s, `modifiedTime` in Open Graph, and an optional `sources` list (rendered plus Article `citation`). The carry-on guide cites GOV.UK and TSA liquids rules (both checked 16 Oct 2026). |
+| Also fixed | The sitemap used a guide's `published` date even when it had `updated`. |
+
+**Not done (needs owner or legal):** ATOL / financial protection for team bookings and accepted payment
+methods (`TODO(confirm)` in `src/content/legal.ts`; the terms promise no protection either way); naming the
+flight-search partner as an independent controller (4.6); 4.5 content depth; 4.7 GBP / GA4.
+
+**Test:** lint, typecheck, build: pass. e2e: **257 passed**, 29 skipped. New `tests/e2e/trust.spec.ts`
+(footer company line on 4 pages, About company section and register link, terms and privacy sections,
+sister-company label, help and FAQ, editorial policy, guide byline, dates and sources, llms.txt, sitemap).
+Updated: H1 text, hero (no "as little as", from-price format when present, sister note), About, footer
+notice, contact note, Organization schema, `/editorial-policy` in the a11y and canonical sweeps. Checked
+by hand at 1280px: About company section and guide byline.

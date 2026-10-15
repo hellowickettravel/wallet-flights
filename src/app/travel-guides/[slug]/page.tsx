@@ -4,12 +4,13 @@ import { pageMetadata, unsplashShareImage } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
+import { ArrowLeft, ArrowUpRight, MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
 import { PageHeader } from "@/components/ui/page-header";
 import { SmartImage } from "@/components/ui/smart-image";
 import { ButtonLink } from "@/components/ui/button";
 import { guideBySlug, guides, readingMinutes } from "@/content/guides";
 import { site } from "@/content/site";
+import { teamAuthor } from "@/content/editorial";
 
 export function generateStaticParams() {
   return guides.map((g) => ({ slug: g.slug }));
@@ -26,6 +27,7 @@ export async function generateMetadata({ params }: PageProps<"/travel-guides/[sl
     image: unsplashShareImage(g.photo),
     type: "article",
     publishedTime: g.published,
+    modifiedTime: g.updated,
   });
 }
 
@@ -48,6 +50,7 @@ export default async function GuidePage({ params }: PageProps<"/travel-guides/[s
     dateModified: `${g.updated ?? g.published}T09:00:00+01:00`,
     image: [unsplashShareImage(g.photo).url],
     author: { ...orgRef, "@type": "Organization", name: site.name, url: site.url },
+    ...(g.sources && { citation: g.sources.map((s) => s.url) }),
     publisher: orgRef,
     mainEntityOfPage: `${site.url}/travel-guides/${g.slug}`,
     inLanguage: "en-GB",
@@ -57,7 +60,7 @@ export default async function GuidePage({ params }: PageProps<"/travel-guides/[s
     <article className="pb-18 md:pb-28">
       <PageHeader
         title={g.title}
-        intro={`${g.category} · ${readingMinutes(g)} min read · ${date(g.published)}`}
+        intro={`${g.category} · ${readingMinutes(g)} min read`}
         crumbs={[
           { label: "Travel guides", href: "/travel-guides" },
           { label: g.title, href: `/travel-guides/${g.slug}` },
@@ -87,7 +90,19 @@ export default async function GuidePage({ params }: PageProps<"/travel-guides/[s
         </aside>
 
         <div className="max-w-[68ch]">
-          <p className="text-[1.25rem] leading-relaxed text-ink">{g.excerpt}</p>
+          <p data-testid="guide-byline" className="text-[0.9375rem] text-ink-soft">
+            By{" "}
+            <Link href={teamAuthor.href} className="font-semibold text-ink underline decoration-ink/25 underline-offset-4 hover:decoration-action">
+              {teamAuthor.name}
+            </Link>
+            {" · "}Published <time dateTime={g.published}>{date(g.published)}</time>
+            {g.updated && (
+              <>
+                {" · "}Updated <time dateTime={g.updated}>{date(g.updated)}</time>
+              </>
+            )}
+          </p>
+          <p className="mt-6 text-[1.25rem] leading-relaxed text-ink">{g.excerpt}</p>
           {/* Destinations named in the guide link to their pages, once each. */}
           {g.sections.map((s) => (
             <section key={s.heading} aria-labelledby={anchor(s.heading)} className="mt-10">
@@ -111,6 +126,28 @@ export default async function GuidePage({ params }: PageProps<"/travel-guides/[s
               )}
             </section>
           ))}
+
+          {g.sources && (
+            <section aria-labelledby="sources" className="mt-12 border-t border-line pt-8">
+              <h2 id="sources" className="font-display-tight text-[1.25rem] font-bold text-ink">
+                Sources
+              </h2>
+              <ul className="mt-3 space-y-2">
+                {g.sources.map((s) => (
+                  <li key={s.url}>
+                    <a href={s.url} target="_blank" rel="noopener" className="inline-flex items-center gap-1 text-[0.9375rem] text-action hover:underline">
+                      {s.label}
+                      <ArrowUpRight className="size-3.5" weight="bold" aria-hidden />
+                      <span className="sr-only"> (opens in a new tab)</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-3 text-[0.875rem] text-ink-soft">
+                Rules change: check with your airline before you fly. <Link href={teamAuthor.href} className="underline underline-offset-4 hover:text-ink">How we write our guides</Link>
+              </p>
+            </section>
+          )}
 
           <div className="mt-14 flex flex-col gap-4 rounded-(--radius-panel) bg-mist p-6 sm:flex-row sm:items-center sm:justify-between">
             <p className="font-display-tight text-[1.375rem] font-bold text-ink">Ready to compare fares?</p>
