@@ -11,8 +11,10 @@ export const site = {
   phone: {
     display: "+44 7417 564704",
     href: "tel:+447417564704",
+    /** The number on the site opens a WhatsApp chat (owner, 15 Oct 2026); calls still work from the contact page. */
+    whatsapp: "https://wa.me/447417564704",
     /** The team also books flights and hotels by hand (owner, 15 Oct 2026). */
-    label: "Book or ask by phone",
+    label: "Book or ask on WhatsApp",
     note: "Our team can book flights and hotels for you",
   },
   email: "info@walletflights.com",

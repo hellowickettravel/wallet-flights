@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { EnvelopeSimple, FacebookLogo, InstagramLogo, MapPin, Phone, XLogo, Receipt } from "@phosphor-icons/react/dist/ssr";
+import { EnvelopeSimple, FacebookLogo, InstagramLogo, MapPin, Phone, WhatsappLogo, XLogo, Receipt } from "@phosphor-icons/react/dist/ssr";
 import { PageHeader } from "@/components/ui/page-header";
 import { ContactForm } from "@/components/contact/contact-form";
 import { bookingNote } from "@/content/contact";
@@ -15,7 +15,8 @@ const socialIcons = { Instagram: InstagramLogo, X: XLogo, Facebook: FacebookLogo
 
 const channels = [
   { icon: EnvelopeSimple, label: "Email", value: site.email, href: `mailto:${site.email}` },
-  { icon: Phone, label: site.phone.note, value: site.phone.display, href: site.phone.href },
+  { icon: WhatsappLogo, label: `WhatsApp: ${site.phone.note.toLowerCase()}`, value: site.phone.display, href: site.phone.whatsapp },
+  { icon: Phone, label: "Call us", value: site.phone.display, href: site.phone.href },
   { icon: MapPin, label: "Based in", value: site.location },
 ];
 
@@ -46,8 +47,13 @@ export default function ContactPage() {
                 return (
                   <li key={label}>
                     {href ? (
-                      <a href={href} className="group flex items-center gap-4 py-4 hover:[&_.text-ink]:text-action">
+                      <a
+                        href={href}
+                        {...(href.startsWith("https:") && { target: "_blank", rel: "noopener" })}
+                        className="group flex items-center gap-4 py-4 hover:[&_.text-ink]:text-action"
+                      >
                         {body}
+                        {href.startsWith("https:") && <span className="sr-only"> (opens WhatsApp)</span>}
                       </a>
                     ) : (
                       <div className="flex items-center gap-4 py-4">{body}</div>

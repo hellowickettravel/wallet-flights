@@ -4,7 +4,7 @@ import {
   FacebookLogo,
   InstagramLogo,
   MapPin,
-  Phone,
+  WhatsappLogo,
   XLogo,
 } from "@phosphor-icons/react/dist/ssr";
 import { footerNav, footerNotice, site } from "@/content/site";
@@ -33,10 +33,11 @@ export function Footer() {
               </a>
             </li>
             <li>
-              <a href={site.phone.href} className="inline-flex items-center gap-3 text-white/85 hover:text-sun">
-                <Phone className="size-5 text-sun" aria-hidden />
+              <a href={site.phone.whatsapp} target="_blank" rel="noopener" className="inline-flex items-center gap-3 text-white/85 hover:text-sun">
+                <WhatsappLogo className="size-5 text-sun" aria-hidden />
                 <span>
                   <span className="tabular">{site.phone.display}</span>
+                  <span className="sr-only"> (opens WhatsApp)</span>
                   <span className="block text-[0.8125rem] text-white/60">{site.phone.note}</span>
                 </span>
               </a>
@@ -71,7 +72,9 @@ export function Footer() {
             className="mt-6 inline-flex h-11 items-center gap-2 rounded-full px-4 text-[0.9375rem] text-white/80 ring-1 ring-white/20 transition-colors hover:bg-white/10 hover:text-white"
           >
             <TrustpilotStar className="size-5" />
-            Review us on <span className="font-bold text-white">Trustpilot</span>
+            <span>
+              Review us on <span className="font-bold text-white">Trustpilot</span>
+            </span>
             <span className="sr-only"> (opens in a new tab)</span>
           </a>
         </div>

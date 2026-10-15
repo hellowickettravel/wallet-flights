@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, JetBrains_Mono, Onest } from "next/font/google";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { BackToTop } from "@/components/layout/back-to-top";
 import { MotionProvider } from "@/components/motion-provider";
 import { CookieBanner } from "@/components/consent/cookie-banner";
 import { ConsentedAnalytics } from "@/components/consent/consented-analytics";
@@ -52,6 +53,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             {children}
           </main>
           <Footer />
+          <BackToTop />
           <CookieBanner />
         </MotionProvider>
         {/* Only on Vercel, where the /_vercel/* endpoints exist, and only after consent. */}

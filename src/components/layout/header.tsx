@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { List, Phone, X } from "@phosphor-icons/react";
+import { List, WhatsappLogo, X } from "@phosphor-icons/react";
 import clsx from "clsx";
 import { mainNav, site } from "@/content/site";
 import { Logo } from "./logo";
@@ -82,23 +82,28 @@ export function Header() {
 
         <div className="ml-auto flex items-center gap-2">
           <a
-            href={site.phone.href}
+            href={site.phone.whatsapp}
+            target="_blank"
+            rel="noopener"
             className="group hidden items-center gap-3 rounded-full py-1.5 pr-4 pl-1.5 ring-1 ring-line transition-colors hover:bg-mist md:flex"
           >
             <span className="grid size-8 place-items-center rounded-full bg-fare text-white">
-              <Phone weight="fill" className="size-4" aria-hidden />
+              <WhatsappLogo weight="fill" className="size-4.5" aria-hidden />
             </span>
             <span className="leading-tight">
               <span className="block text-[0.75rem] text-ink-soft">{site.phone.label}</span>
               <span className="tabular block text-[0.9375rem] font-semibold text-ink">{site.phone.display}</span>
             </span>
+            <span className="sr-only"> (opens WhatsApp)</span>
           </a>
           <a
-            href={site.phone.href}
-            aria-label={`Call ${site.phone.display}`}
+            href={site.phone.whatsapp}
+            target="_blank"
+            rel="noopener"
+            aria-label={`WhatsApp ${site.phone.display} (opens WhatsApp)`}
             className="grid size-11 place-items-center rounded-full bg-fare text-white md:hidden"
           >
-            <Phone weight="fill" className="size-5" aria-hidden />
+            <WhatsappLogo weight="fill" className="size-6" aria-hidden />
           </a>
           <button
             type="button"
@@ -167,11 +172,14 @@ export function Header() {
               <div className="border-t border-line p-5">
                 <p className="text-sm text-ink-soft">Questions? {site.responseTime}.</p>
                 <a
-                  href={site.phone.href}
+                  href={site.phone.whatsapp}
+                  target="_blank"
+                  rel="noopener"
                   className="mt-3 flex h-14 items-center justify-center gap-2 rounded-full bg-fare text-base font-semibold text-white"
                 >
-                  <Phone weight="fill" className="size-5" aria-hidden />
+                  <WhatsappLogo weight="fill" className="size-5.5" aria-hidden />
                   <span className="tabular">{site.phone.display}</span>
+                  <span className="sr-only"> (opens WhatsApp)</span>
                 </a>
               </div>
             </motion.div>

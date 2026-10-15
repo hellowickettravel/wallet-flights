@@ -11,8 +11,8 @@ export default function NotFound() {
           This page has already departed
         </h1>
         <p className="mt-4 text-[1.0625rem] leading-relaxed text-ink-soft">
-          The page you’re looking for has moved or is still being built. Start a new search, or call us on{" "}
-          <a href={site.phone.href} className="tabular font-semibold text-action">
+          The page you’re looking for has moved or is still being built. Start a new search, or message us on WhatsApp at{" "}
+          <a href={site.phone.whatsapp} target="_blank" rel="noopener" className="tabular font-semibold text-action">
             {site.phone.display}
           </a>
           .

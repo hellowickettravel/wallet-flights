@@ -1,11 +1,9 @@
 import { travelpayouts } from "@/content/affiliates";
-import { airportByCode, type SearchQuery } from "@/lib/search-query";
+import type { SearchQuery } from "@/lib/search-query";
 
 export type Seg = { from: string; to: string; date: string };
 
 const ddMM = (iso: string) => `${iso.slice(8, 10)}${iso.slice(5, 7)}`;
-/** City codes ("NYC", "LON") are listed as "All airports"; everything else is a single airport. */
-const isAirport = (code: string) => airportByCode(code)?.name !== "All airports";
 const UK = new Set(["United Kingdom"]);
 
 function segments(q: SearchQuery): Seg[] {
@@ -24,6 +22,9 @@ function segments(q: SearchQuery): Seg[] {
  */
 export function toFlightSearch(q: SearchQuery) {
   const segs = segments(q);
+  // City codes ("NYC", "LON") are listed as "All airports"; everything else is a single airport.
+  const places = new Map(q.legs.flatMap((l) => [[l.from.code, l.from], [l.to.code, l.to]] as const));
+  const isAirport = (code: string) => places.get(code)?.name !== "All airports";
   const originAirports = segs.flatMap((s, i) => (isAirport(s.from) ? [i] : []));
   const destinationAirports = segs.flatMap((s, i) => (isAirport(s.to) ? [i] : []));
   return {
@@ -54,7 +55,7 @@ export function searchString(segs: Seg[], q: Pick<SearchQuery, "cabin" | "adults
 }
 
 /** Prices in GBP when the trip starts in the UK, otherwise the widget default (USD). */
-export const currencyFor = (q: SearchQuery) => (UK.has(airportByCode(q.legs[0]?.from.code)?.country ?? "") ? "GBP" : undefined);
+export const currencyFor = (q: SearchQuery) => (UK.has(q.legs[0]?.from.country ?? "") ? "GBP" : undefined);
 
 /**
  * Query string the White Label reads on load. `marker=567389.<sub_id>` makes

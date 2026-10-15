@@ -21,6 +21,11 @@ test.describe("with live search allowed", () => {
     await expect(page.locator("script[data-tpwl]")).toHaveAttribute("src", "https://tpwdg.com/wl_web/main.js?wl_id=23361");
   });
 
+  test("a place outside the built-in list reaches the White Label", async ({ page }) => {
+    await page.goto("/flights?trip=round&cabin=economy&adults=1&from0=NYC&to0=KHI&to0label=Karachi%7CAll+airports%7CPakistan&date0=2030-05-01&return=2030-05-09&sub=home_hero");
+    await expect(page).toHaveURL(/\/flights\?flightSearch=NYC0105KHI09051&marker=567389\.home_hero$/);
+  });
+
   test("UK departures price in pounds and airports are flagged", async ({ page }) => {
     await page.goto("/flights?trip=round&cabin=business&adults=2&children=1&from0=LHR&to0=JFK&date0=2030-03-10&return=2030-03-17&sub=test");
     await expect(page).toHaveURL(/flightSearch=LHR1003JFK1703c21&origin_airports=0%2C1&destination_airports=0%2C1&currency=GBP&marker=567389\.test/);

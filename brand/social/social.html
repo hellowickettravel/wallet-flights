@@ -1,0 +1,207 @@
+<!doctype html>
+<!--
+  Social media images for Wallet Flights (Instagram, Facebook, X).
+  Every artboard is drawn at its exact upload size; `npm run social` renders
+  each one to brand/social/png/<id>.png. Brand tokens match src/app/globals.css
+  and the mark matches src/components/layout/logo-mark.tsx.
+  No prices, ratings or reviews here: images get reshared long after a fare is gone.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Wallet Flights social images</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Onest:wght@400..700&display=block"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #0f1f3d;
+        --board: #13284d;
+        --tile: #1b345f;
+        --action: #1f5bd8;
+        --sun: #ffc83d;
+        --mist: #f3f6fb;
+        --fare: #0a7f4f;
+      }
+      * { box-sizing: border-box; margin: 0; }
+      body { background: #555; padding: 40px; display: flex; flex-direction: column; gap: 40px; align-items: flex-start; font-family: "Onest", sans-serif; }
+      .art { position: relative; overflow: hidden; background: var(--ink); color: #fff; flex: none; }
+      .display { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-variation-settings: "opsz" 96, "wdth" 94; letter-spacing: -0.02em; line-height: 1.02; text-wrap: balance; }
+      .muted { color: rgb(255 255 255 / 0.78); }
+      .abs { position: absolute; }
+      .wordmark { display: flex; align-items: center; font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; letter-spacing: -0.02em; font-variation-settings: "opsz" 48, "wdth" 96; }
+      .wordmark b { color: var(--sun); font-weight: 800; }
+      .board { display: flex; flex-direction: column; background: var(--board); border-radius: var(--r); padding: var(--pad); gap: var(--gap); }
+      .row { display: flex; align-items: center; gap: var(--gap); }
+      .code { display: flex; gap: calc(var(--t) * 0.14); }
+      /* Split-flap tile: two halves with a dark hinge, drawn behind the letter. */
+      .tile { position: relative; width: var(--t); height: calc(var(--t) * 1.38); background: linear-gradient(#21406f 0 49%, var(--ink) 49% 51%, var(--tile) 51%); border-radius: calc(var(--t) * 0.14); display: grid; place-items: center; font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: calc(var(--t) * 0.9); font-variation-settings: "opsz" 48, "wdth" 90; }
+      .hop { width: calc(var(--t) * 1.1); color: var(--sun); display: grid; place-items: center; }
+      .pill { display: inline-flex; align-items: center; border-radius: 999px; font-weight: 600; }
+    </style>
+  </head>
+  <body>
+    <div id="artboards"></div>
+    <script>
+      const PLANE =
+        "M215.52,197.26a8,8,0,0,1-1.86,8.39l-24,24A8,8,0,0,1,184,232a7.09,7.09,0,0,1-.79,0,8,8,0,0,1-5.87-3.52l-44.07-66.12L112,183.59V208a8,8,0,0,1-2.34,5.65s-14,14.06-15.88,15.88A7.91,7.91,0,0,1,91,231.41a8,8,0,0,1-10.41-4.35l-.06-.15-14.7-36.76L29,175.42a8,8,0,0,1-2.69-13.08l16-16A8,8,0,0,1,48,144H72.4l21.27-21.27L27.56,78.65a8,8,0,0,1-1.22-12.32l24-24a8,8,0,0,1,8.39-1.86l85.94,31.25L176.2,40.19a28,28,0,0,1,39.6,39.6l-31.53,31.53Z";
+      const WHATSAPP =
+        "M152.58,145.23l23,11.48A24,24,0,0,1,152,176a72.08,72.08,0,0,1-72-72A24,24,0,0,1,99.29,80.46l11.48,23L101,118a8,8,0,0,0-.73,7.51,56.47,56.47,0,0,0,30.15,30.15A8,8,0,0,0,138,155ZM232,128A104,104,0,0,1,79.12,219.82L45.07,231.17a16,16,0,0,1-20.24-20.24l11.35-34.05A104,104,0,1,1,232,128Zm-40,24a8,8,0,0,0-4.42-7.16l-32-16a8,8,0,0,0-8,.5l-14.69,9.8a40.55,40.55,0,0,1-16-16l9.8-14.69a8,8,0,0,0,.5-8l-16-32A8,8,0,0,0,104,64a40,40,0,0,0-40,40,88.1,88.1,0,0,0,88,88A40,40,0,0,0,192,152Z";
+      const SITE = "walletflights.com";
+      const PHONE = "+44 7417 564704";
+      const HEADLINE = "We compare thousands of flight providers and show the cheapest fare.";
+
+      // The brand mark (wallet + climbing plane). tile=false drops the blue square.
+      const mark = (size, tile = true, viewBox = "0 0 40 40") => `
+        <svg viewBox="${viewBox}" width="${size}" height="${size}" aria-hidden="true">
+          ${tile ? '<rect width="40" height="40" rx="11" fill="#1f5bd8"/>' : ""}
+          <rect x="6" y="19" width="25" height="14" rx="4" fill="#fff"/>
+          <rect x="22" y="23" width="11.5" height="6" rx="3" fill="#ffc83d"/>
+          <circle cx="26.2" cy="26" r="1.3" fill="#1f5bd8"/>
+          <path d="${PLANE}" transform="translate(17.5 1.2) scale(0.075)" fill="#ffc83d" stroke="#1f5bd8" stroke-width="22" stroke-linejoin="round" paint-order="stroke"/>
+        </svg>`;
+
+      const icon = (d, size, color = "currentColor") =>
+        `<svg viewBox="0 0 256 256" width="${size}" height="${size}" fill="${color}" aria-hidden="true"><path d="${d}"/></svg>`;
+
+      const wordmark = (size) => `
+        <div class="wordmark" style="gap:${size * 0.32}px;font-size:${size * 0.62}px">${mark(size)}<span>Wallet<b>Flights</b></span></div>`;
+
+      // Departure board of routes, codes only (no prices: they go stale).
+      const board = (routes, t) => `
+        <div class="board" style="--t:${t}px;--gap:${t * 0.32}px;--pad:${t * 0.5}px;--r:${t * 0.45}px">
+          ${routes
+            .map(
+              ([a, b]) => `<div class="row">
+                <div class="code">${[...a].map((c) => `<span class="tile">${c}</span>`).join("")}</div>
+                <span class="hop">${icon(PLANE, t * 0.8)}</span>
+                <div class="code">${[...b].map((c) => `<span class="tile">${c}</span>`).join("")}</div>
+              </div>`,
+            )
+            .join("")}
+        </div>`;
+
+      // A dotted flight path ending in a plane, drawn along a cubic curve.
+      function flightPath(w, h, [x0, y0, c1x, c1y, c2x, c2y, x1, y1], { width = 4, plane = 56, opacity = 1 } = {}) {
+        const angle = (Math.atan2(y1 - c2y, x1 - c2x) * 180) / Math.PI + 45; // the icon's nose points up-right
+        return `<svg class="abs" style="inset:0;opacity:${opacity}" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true">
+          <path d="M${x0} ${y0} C${c1x} ${c1y} ${c2x} ${c2y} ${x1} ${y1}" fill="none" stroke="#ffc83d" stroke-width="${width}" stroke-linecap="round" stroke-dasharray="0.1 ${width * 3.6}"/>
+          <g transform="translate(${x1} ${y1}) rotate(${angle}) translate(${-plane / 2} ${-plane / 2}) scale(${plane / 256})"><path d="${PLANE}" fill="#ffc83d"/></g>
+        </svg>`;
+      }
+
+      const routes = [["LON", "DXB"], ["NYC", "LIS"], ["MAN", "BKK"]];
+
+      const artboards = [
+        {
+          id: "profile-picture",
+          note: "Profile picture for Instagram, Facebook and X (shown as a circle)",
+          w: 1080, h: 1080, bg: "#1f5bd8",
+          html: `<div class="abs" style="inset:0;display:grid;place-items:center">${mark(760, false, "2.85 0.8 36 36")}</div>`,
+        },
+        {
+          id: "profile-picture-ink",
+          note: "Alternative profile picture on the dark brand colour",
+          w: 1080, h: 1080,
+          html: `<div class="abs" style="inset:0;display:grid;place-items:center">${mark(560)}</div>`,
+        },
+        {
+          id: "x-header",
+          note: "X (Twitter) header, 1500 × 500. The profile picture covers the bottom left, so the text sits right.",
+          w: 1500, h: 500,
+          html: `
+            ${flightPath(1500, 500, [-40, 540, 180, 420, 300, 200, 470, 130], { width: 5, plane: 54 })}
+            <div class="abs" style="right:110px;top:0;bottom:0;width:780px;display:flex;flex-direction:column;justify-content:center;gap:22px">
+              ${wordmark(54)}
+              <h1 class="display" style="font-size:56px">${HEADLINE}</h1>
+              <p class="muted" style="font-size:25px">Airlines and travel sites in one search, cheapest first. <b style="color:#fff">${SITE}</b></p>
+            </div>`,
+        },
+        {
+          id: "facebook-cover",
+          note: "Facebook page cover, 1640 × 624. Phones crop the sides, so everything sits in the middle 1100 px.",
+          w: 1640, h: 624,
+          html: `
+            ${flightPath(1640, 624, [-30, 660, 90, 520, 120, 300, 220, 170], { width: 5, plane: 56, opacity: 0.9 })}
+            <div class="abs" style="left:300px;top:0;bottom:0;width:600px;display:flex;flex-direction:column;justify-content:center;gap:26px">
+              ${wordmark(56)}
+              <h1 class="display" style="font-size:58px">${HEADLINE}</h1>
+              <p class="muted" style="font-size:24px">Search free at <b style="color:#fff">${SITE}</b></p>
+            </div>
+            <div class="abs" style="right:300px;top:50%;transform:translateY(-50%)">${board(routes, 44)}</div>`,
+        },
+        {
+          id: "instagram-post",
+          note: "Instagram feed post, 1080 × 1350 (4:5)",
+          w: 1080, h: 1350,
+          html: `
+            ${flightPath(1080, 1350, [-30, 1120, 140, 1060, 220, 880, 360, 760], { width: 6, plane: 64, opacity: 0.9 })}
+            <div class="abs" style="left:96px;top:96px">${wordmark(72)}</div>
+            <h1 class="display abs" style="left:96px;right:96px;top:230px;font-size:96px">${HEADLINE}</h1>
+            <div class="abs" style="right:96px;bottom:250px">${board(routes, 54)}</div>
+            <div class="abs" style="left:96px;right:96px;bottom:96px;display:flex;justify-content:space-between;align-items:center">
+              <p class="muted" style="font-size:30px;max-width:520px">Airlines and travel sites in one search, cheapest first.</p>
+              <span class="pill" style="height:72px;padding:0 32px;background:#fff;color:var(--ink);font-size:30px">${SITE}</span>
+            </div>`,
+        },
+        {
+          id: "book-with-us-post",
+          note: "Square post for Instagram, Facebook and X: manual bookings on WhatsApp",
+          w: 1080, h: 1080, bg: "#ffc83d",
+          html: `
+            <div class="abs" style="left:80px;top:80px;color:var(--ink)">${wordmark(64).replace("<b>", '<b style="color:#1f5bd8">')}</div>
+            <!-- Boarding pass: main part, perforation, stub. -->
+            <div class="abs" style="left:80px;right:80px;top:220px;bottom:80px;display:flex;background:#fff;border-radius:40px;color:var(--ink)">
+              <div style="flex:1;padding:64px;display:flex;flex-direction:column;justify-content:space-between">
+                <div>
+                  <h1 class="display" style="font-size:84px">Want us to book it for you?</h1>
+                  <p style="margin-top:28px;font-size:32px;line-height:1.4;color:#51607a">Our team books flights and hotels by hand. Send us your dates and where you want to go.</p>
+                </div>
+                <div style="display:flex;align-items:center;gap:20px">
+                  <span style="display:grid;place-items:center;width:84px;height:84px;border-radius:50%;background:var(--fare);color:#fff">${icon(WHATSAPP, 50)}</span>
+                  <span>
+                    <span style="display:block;font-size:24px;color:#51607a">Call or WhatsApp</span>
+                    <span class="display" style="display:block;font-size:48px;letter-spacing:0">${PHONE}</span>
+                  </span>
+                </div>
+              </div>
+              <div style="position:relative;width:0;border-left:4px dashed #dfe6f0;margin:40px 0">
+                <span class="abs" style="left:-30px;top:-70px;width:56px;height:56px;border-radius:50%;background:#ffc83d"></span>
+                <span class="abs" style="left:-30px;bottom:-70px;width:56px;height:56px;border-radius:50%;background:#ffc83d"></span>
+              </div>
+              <div style="width:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;color:var(--action)">
+                ${icon(PLANE, 72)}
+                <span style="writing-mode:vertical-rl;transform:rotate(180deg);font-weight:700;font-size:28px;color:var(--ink)">${SITE}</span>
+              </div>
+            </div>`,
+        },
+        {
+          id: "story",
+          note: "Instagram and Facebook story, 1080 × 1920. Top and bottom 250 px stay clear of the app's buttons.",
+          w: 1080, h: 1920,
+          html: `
+            ${flightPath(1080, 1920, [-40, 1440, 110, 1360, 190, 1170, 320, 1060], { width: 7, plane: 76, opacity: 0.9 })}
+            <div class="abs" style="left:90px;top:280px">${wordmark(80)}</div>
+            <h1 class="display abs" style="left:90px;right:90px;top:450px;font-size:112px">${HEADLINE}</h1>
+            <div class="abs" style="right:90px;top:1010px">${board(routes, 60)}</div>
+            <div class="abs" style="left:90px;right:90px;bottom:290px;display:flex;flex-direction:column;gap:22px;align-items:flex-start">
+              <p class="muted" style="font-size:36px">Search free, then book with the provider.</p>
+              <span class="pill" style="height:96px;padding:0 44px;background:#fff;color:var(--ink);font-size:40px">${SITE}</span>
+            </div>`,
+        },
+      ];
+
+      document.getElementById("artboards").outerHTML = artboards
+        .map(
+          (a) => `<figure style="display:flex;flex-direction:column;gap:12px">
+            <figcaption style="color:#fff;font:600 16px Onest">${a.id}.png: ${a.note}</figcaption>
+            <div class="art" data-asset="${a.id}" style="width:${a.w}px;height:${a.h}px;${a.bg ? `background:${a.bg}` : ""}">${a.html}</div>
+          </figure>`,
+        )
+        .join("");
+    </script>
+  </body>
+</html>

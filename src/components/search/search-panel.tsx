@@ -318,7 +318,8 @@ function SearchButton({ className }: { className?: string }) {
     <button
       type="submit"
       className={clsx(
-        "inline-flex h-16 cursor-pointer items-center justify-center gap-2.5 rounded-xl bg-action px-7 text-[1.0625rem] font-semibold text-white transition-colors hover:bg-action-deep active:scale-[0.99]",
+        // Same 1px ring as the fields so the button lines up with them exactly.
+        "inline-flex h-16 cursor-pointer items-center justify-center gap-2.5 rounded-xl bg-action px-7 ring-1 ring-action hover:ring-action-deep text-[1.0625rem] font-semibold text-white transition-colors hover:bg-action-deep active:scale-[0.99]",
         className,
       )}
     >

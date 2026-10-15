@@ -17,6 +17,20 @@ export type SearchQuery = {
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const cabins: Cabin[] = ["economy", "premium", "business", "first"];
 export const airportByCode = (c: string | null | undefined) => airports.find((a) => a.code === c?.toUpperCase()) ?? null;
+const isKnown = (a: Airport) => airports.some((k) => k.code === a.code);
+
+/**
+ * A place from the URL: our own list first, then any IATA code, described by
+ * the "city|name|country" label the form writes for places outside the list.
+ */
+function placeFrom(code: string | null, label: string | null): Airport | null {
+  const known = airportByCode(code);
+  const c = code?.toUpperCase() ?? "";
+  if (known || !/^[A-Z]{3}$/.test(c)) return known;
+  const [city, name, country] = (label ?? "").split("|");
+  return { code: c, city: city || c, name: name || "All airports", country: country || "" };
+}
+const labelOf = (a: Airport) => `${a.city}|${a.name}|${a.country}`;
 
 const int = (v: string | null, fallback: number, min: number, max: number) => {
   const n = Number.parseInt(v ?? "", 10);
@@ -33,8 +47,8 @@ export function parseSearch(params: URLSearchParams): ParseResult {
   const trip = (["round", "oneway", "multi"] as const).find((t) => t === params.get("trip")) ?? "round";
   const legs: QueryLeg[] = [];
   for (let i = 0; i < 5; i++) {
-    const from = airportByCode(params.get(`from${i}`));
-    const to = airportByCode(params.get(`to${i}`));
+    const from = placeFrom(params.get(`from${i}`), params.get(`from${i}label`));
+    const to = placeFrom(params.get(`to${i}`), params.get(`to${i}label`));
     if (!from || !to) break;
     const date = params.get(`date${i}`) ?? "";
     legs.push({ from, to, date: DATE.test(date) ? date : "" });
@@ -61,6 +75,8 @@ export function serializeSearch(q: SearchQuery) {
   q.legs.forEach((l, i) => {
     p.set(`from${i}`, l.from.code);
     p.set(`to${i}`, l.to.code);
+    if (!isKnown(l.from)) p.set(`from${i}label`, labelOf(l.from));
+    if (!isKnown(l.to)) p.set(`to${i}label`, labelOf(l.to));
     if (l.date) p.set(`date${i}`, l.date);
   });
   if (q.trip === "round" && q.returnDate) p.set("return", q.returnDate);

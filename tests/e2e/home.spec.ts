@@ -19,7 +19,7 @@ test("renders every homepage section without errors", async ({ page }) => {
     errors.push(`${r.status()} ${r.url()}`);
   });
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("We compare thousands of flight providers to find your cheapest fare.");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("We compare thousands of flight providers and show the cheapest fare.");
   for (const name of ["Fares from your city", "Departures worth a look", "Trending destinations", "How Wallet Flights works", "Travel guides", "Questions before you book", "Get fare alerts in your inbox"]) {
     await expect(page.getByRole("heading", { name, level: 2 })).toBeVisible();
   }
@@ -155,11 +155,63 @@ test("hero shortcuts reach deals, destinations and the owner's hotels / car hire
   }
 });
 
-test("hero offers phone bookings and the low-fare line", async ({ page }) => {
+test("hero offers manual bookings on WhatsApp, the low-fare line and Trustpilot", async ({ page }) => {
   await page.goto("/");
   const hero = page.locator("#search");
   await expect(hero).toContainText("as little as $18");
-  await expect(hero.getByRole("link", { name: "Call +44 7417 564704" })).toHaveAttribute("href", "tel:+447417564704");
+  await expect(hero).toContainText("Want us to book a flight or hotel for you manually?");
+  const wa = hero.getByRole("link", { name: /Call or WhatsApp \+44 7417 564704/ });
+  await expect(wa).toHaveAttribute("href", "https://wa.me/447417564704");
+  await expect(wa).toHaveAttribute("target", "_blank");
+  await expect(hero.getByRole("link", { name: /Review us on Trustpilot/ })).toHaveAttribute("href", "https://www.trustpilot.com/review/walletflights.com");
+});
+
+test("headline sits on one line on desktop", async ({ page, isMobile }) => {
+  test.skip(isMobile, "wraps on phones by design");
+  await page.goto("/");
+  const h1 = page.getByRole("heading", { level: 1 });
+  const { lines, overflow } = await h1.evaluate((el) => ({
+    lines: Math.round(el.getBoundingClientRect().height / parseFloat(getComputedStyle(el).lineHeight)),
+    overflow: el.scrollWidth - el.clientWidth,
+  }));
+  expect(lines).toBe(1);
+  expect(overflow).toBeLessThanOrEqual(0);
+});
+
+test("airport suggestions span regions, and any airport in the world can be searched", async ({ page }) => {
+  await page.goto("/");
+  const to = page.getByRole("combobox", { name: "Going to" });
+  await to.focus();
+  await expect(page.getByRole("option", { name: /Dubai/ })).toBeVisible();
+  await expect(page.getByRole("option", { name: /London/ })).toBeVisible();
+  // Not in the built-in list: comes from /api/places (stubbed in fixtures.ts).
+  await to.fill("karachi");
+  await page.getByRole("option", { name: /Karachi.*Pakistan/ }).click();
+  await expect(to).toHaveValue("Karachi (KHI)");
+  const form = page.getByRole("form", { name: "Search flights" });
+  await form.getByLabel("Departing").fill("2030-05-01");
+  await form.getByLabel("Returning").fill("2030-05-09");
+  await form.getByRole("button", { name: "Search flights" }).click();
+  await expect(page).toHaveURL(/to0=KHI.*to0label=Karachi%7CAll\+airports%7CPakistan/);
+});
+
+test("places API returns airports worldwide", async ({ request }) => {
+  const res = await request.get("/api/places?q=karachi");
+  expect(res.ok()).toBe(true);
+  const list = (await res.json()) as { code: string; country: string }[];
+  expect(list[0]).toMatchObject({ code: "KHI", country: "Pakistan" });
+  expect(await (await request.get("/api/places?q=k")).json()).toEqual([]);
+});
+
+test("back to top button appears after scrolling and returns to the top", async ({ page }) => {
+  await page.goto("/");
+  const btn = page.getByRole("button", { name: "Back to top" });
+  await expect(btn).toBeHidden();
+  await page.evaluate(() => window.scrollTo({ top: 3000, behavior: "instant" }));
+  await expect(btn).toBeVisible();
+  await btn.click();
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+  await expect(btn).toBeHidden();
 });
 
 test("desktop search is one joined bar with travellers inside", async ({ page, isMobile }) => {

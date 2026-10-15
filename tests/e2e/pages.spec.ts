@@ -47,7 +47,8 @@ test("contact: shows business details from the existing site", async ({ page }) 
   await page.goto("/contact");
   const aside = page.getByRole("complementary", { name: "Other ways to reach us" });
   await expect(aside.getByRole("link", { name: /info@walletflights\.com/ })).toHaveAttribute("href", "mailto:info@walletflights.com");
-  await expect(aside.getByRole("link", { name: /\+44 7417 564704/ })).toHaveAttribute("href", "tel:+447417564704");
+  await expect(aside.getByRole("link", { name: /WhatsApp.*\+44 7417 564704/ })).toHaveAttribute("href", "https://wa.me/447417564704");
+  await expect(aside.getByRole("link", { name: /Call us.*\+44 7417 564704/ })).toHaveAttribute("href", "tel:+447417564704");
   await expect(aside.getByText("London, United Kingdom")).toBeVisible();
   await expect(page.getByText("We reply within 24 hours").first()).toBeVisible();
 });

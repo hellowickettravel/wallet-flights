@@ -274,3 +274,24 @@ The carousel appears once there are 3. Until then the section shows one pass inv
 lint, typecheck, build: pass. e2e: **158 passed**, 24 skipped (demo-only). New tests check that the
 logos are named once and move left to right, and that the reviews section shows no stars or score
 while there are no reviews.
+
+# Batch 7: client feedback, 15 Oct 2026 (search, WhatsApp, hero, back to top, social images)
+
+| Request | Change |
+|---|---|
+| "Only USA airports appearing… can't we search all destinations?" | The form only knew 50 built-in airports, listed US first. It now looks up every city and airport worldwide through our own `/api/places` route (the affiliate network's public lookup, cached for a day, called server-side so visitors' IPs aren't shared). Before typing it suggests a spread of regions (London, New York, Dubai, Paris, Istanbul, Delhi, Barcelona, Bangkok). Places outside the built-in list travel in the URL with a `from0label`/`to0label`, so /flights and the White Label get them. |
+| Phone line: "Want us to book manually a flight or hotel for you?" | "Want us to book a flight or hotel for you manually?" (same meaning, reordered for grammar). |
+| Clicking the number should open WhatsApp | Header, mobile menu, hero, footer and 404 links go to `wa.me/447417564704` (new tab). The contact page lists WhatsApp and a plain "Call us" (`tel:`) line. |
+| Trustpilot badge in the hero (arrow in the screenshot) | "Review us on Trustpilot" pill to the right of the intro on desktop, under it on phones. |
+| Search text boxes and button not equal | The fields carry a 1px ring the button didn't, so the button looked 2px shorter. The button now has the same ring. |
+| Headline "…and show cheapest fare", single line, smaller | "We compare thousands of flight providers and show the cheapest fare." One line from 1024px up, sized to the viewport (28 to 36px). It wraps on phones and tablets. |
+| Top pills: white rounded border | Pills now have a solid white 1px border (a real border, not a ring, so the scrolling row can't clip it). |
+| Back to top button, bottom right | `BackToTop`: a sun-coloured plane on an ink circle that shows after the first screen. It uses the page's smooth scrolling (instant with reduced motion) and then moves focus to the top of the page. |
+| Social media profile pictures and banners | `brand/social/social.html`, rendered by `npm run social` into `brand/social/png/`: profile picture (blue and dark versions, circle-safe), X header 1500×500, Facebook cover 1640×624 (mobile-safe centre), Instagram post 1080×1350, story 1080×1920, and a square "book it for you" WhatsApp post. No prices, ratings or reviews, since images get reshared after fares change. |
+
+## Test
+lint, typecheck, build: pass. e2e: **167 passed**, 25 skipped (demo-only and phone-only skips). New tests:
+regional suggestions plus a worldwide place (stubbed lookup) going into the URL and on to the White Label;
+the live `/api/places` answer for "karachi"; the WhatsApp link and Trustpilot badge in the hero; the
+headline on one line on desktop; back to top appears and returns to the top. The contact test checks both
+the WhatsApp and the call link.

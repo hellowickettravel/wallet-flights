@@ -8,7 +8,13 @@ import { test as base, expect } from "@playwright/test";
  *   writes the search it received into #tpwl-search, so tests don't depend on a
  *   third-party service. tp.media affiliate redirects are stubbed the same way.
  * - Photos are blocked (CDN may be unreachable in CI).
+ * - The worldwide airport lookup (/api/places) answers from PLACES_STUB, so the
+ *   form falls back to its built-in list for anything else.
  */
+export const PLACES_STUB: Record<string, object[]> = {
+  karachi: [{ code: "KHI", city: "Karachi", name: "All airports", country: "Pakistan" }],
+};
+
 export const WIDGET_STUB = `
   const p = new URL(location.href).searchParams;
   const el = document.getElementById("tpwl-search");
@@ -26,6 +32,7 @@ export const test = base.extend<{ consent: "unset" | "rejected" | "search" }>({
     await context.route("https://tpwdg.com/**", (r) => r.fulfill({ contentType: "application/javascript", body: WIDGET_STUB }));
     await context.route("https://tp.media/**", (r) => r.fulfill({ contentType: "text/html", body: "<!doctype html><title>tp.media stub</title><h1>Partner</h1>" }));
     await context.route("https://images.unsplash.com/**", (r) => r.abort());
+    await context.route("**/api/places?**", (r) => r.fulfill({ json: PLACES_STUB[new URL(r.request().url()).searchParams.get("q") ?? ""] ?? [] }));
     await provide(context);
   },
 });
