@@ -48,6 +48,14 @@
     outline-offset: 2px;
     border-radius: 6px;
   }
+  /* Blue is 2.8:1 on navy and invisible on the blue band: dark sections get a
+     sun ring instead, and white cards inside them go back to blue. */
+  :is(.bg-ink, .bg-board, .bg-action) :focus-visible {
+    outline-color: var(--color-sun);
+  }
+  :is(.bg-ink, .bg-board, .bg-action) :is(.bg-white, .bg-mist) :focus-visible {
+    outline-color: var(--color-action);
+  }
   ::selection {
     background: var(--color-sun);
     color: var(--color-ink);
@@ -94,9 +102,19 @@
     transform: translateY(24px);
   }
 }
+/* Text that may be the LCP element only slides: an element at opacity 0 isn't
+   painted, so a fade-in pushed LCP back by the length of the animation. */
+@keyframes rise-text {
+  from {
+    transform: translateY(14px);
+  }
+}
 .rise {
   animation: rise 0.8s var(--ease-out-quint) both;
   animation-delay: var(--rise-delay, 0s);
+}
+.rise[data-text] {
+  animation-name: rise-text;
 }
 @media (prefers-reduced-motion: reduce) {
   .rise {
@@ -128,7 +146,8 @@
   animation: marquee-ltr var(--marquee-duration, 40s) linear infinite;
 }
 .marquee:hover .marquee-track,
-.marquee:focus-within .marquee-track {
+.marquee:focus-within .marquee-track,
+.marquee[data-paused] .marquee-track {
   animation-play-state: paused;
 }
 @media (prefers-reduced-motion: reduce) {

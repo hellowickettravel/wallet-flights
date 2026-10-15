@@ -35,6 +35,7 @@ import { AirlineMark } from "./airline-mark";
 import { FlightCard, dealHref } from "./flight-card";
 import { FiltersPanel, emptyFilters, timeBands, type FacetCounts, type Filters } from "./filters";
 import { Searching } from "./searching";
+import { onRovingKeyDown } from "@/lib/roving";
 
 type Sort = "cheapest" | "fastest" | "best";
 const PAGE = 10;
@@ -432,7 +433,7 @@ function SortTabs({
   ];
   return (
     <LayoutGroup id="sort">
-      <div role="tablist" aria-label="Sort results" className="grid grid-cols-3 rounded-(--radius-panel) bg-white p-1.5 ring-1 ring-line">
+      <div role="tablist" aria-label="Sort results" onKeyDown={(e) => onRovingKeyDown(e, (i) => onSort(tabs[i].id))} className="grid grid-cols-3 rounded-(--radius-panel) bg-white p-1.5 ring-1 ring-line">
         {tabs.map((t) => {
           const on = sort === t.id;
           return (
@@ -441,6 +442,7 @@ function SortTabs({
               role="tab"
               type="button"
               aria-selected={on}
+              tabIndex={on ? 0 : -1}
               onClick={() => onSort(t.id)}
               className="relative cursor-pointer rounded-[14px] px-3 py-2.5 text-left sm:px-4"
             >
@@ -495,7 +497,7 @@ function ResultsTable({ list, cheapestId }: { list: Itinerary[]; cheapestId?: st
                 </td>
                 <td className="px-4 py-3 text-right">
                   <Link
-                    href={dealHref(it, it.providers[0].provider, it.providers[0].price)}
+                    href={dealHref(it, it.providers[0].price)}
                     aria-label={`View ${it.airline.name} deal on ${it.providers[0].provider}`}
                     className="inline-flex h-9 items-center gap-1.5 rounded-full bg-action px-3.5 text-[0.875rem] font-semibold text-white hover:bg-action-deep"
                   >

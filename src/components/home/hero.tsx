@@ -61,13 +61,13 @@ export function Hero() {
           </ul>
         </nav>
 
-        <Reveal className="mt-6 md:mt-10">
+        <Reveal text className="mt-6 md:mt-10">
           {/* One line from lg up (owner's request); the size follows the viewport so it always fits. */}
           <h1 id="hero-title" className="max-w-[40rem] font-display-tight text-[1.875rem] leading-[1.1] font-extrabold text-balance text-white sm:text-[2.375rem] lg:max-w-none lg:text-[clamp(1.75rem,2.7vw,2.25rem)] lg:tracking-[-0.008em] lg:whitespace-nowrap lg:[font-variation-settings:'opsz'_36]">
             {heroCopy.title}
           </h1>
         </Reveal>
-        <Reveal delay={0.08} className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
+        <Reveal text delay={0.08} className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
           <p className="max-w-[40rem] text-[1.0625rem] leading-relaxed text-pretty text-white/80 md:text-[1.1875rem]">
             {heroCopy.intro} <strong className="font-semibold text-white">{heroCopy.lowFares}</strong>
           </p>

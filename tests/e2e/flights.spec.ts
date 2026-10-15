@@ -40,6 +40,12 @@ test.describe("with live search allowed", () => {
     await expect(page).toHaveURL(/flightSearch=LON0206FCO-BCN09061&/);
   });
 
+  test("past dates in an old link are replaced with future ones", async ({ page }) => {
+    await page.goto("/flights?trip=round&adults=1&from0=LON&to0=NYC&date0=2020-03-10&return=2020-03-17&sub=test");
+    await expect(page).toHaveURL(/flightSearch=LON\d{4}NYC\d{4}1&/);
+    await expect(page).not.toHaveURL(/LON1003NYC1703/);
+  });
+
   test("fare-board deep links without dates get default dates", async ({ page }) => {
     await page.goto("/flights?trip=round&from0=MAN&to0=DXB&sub=home_board");
     await expect(page).toHaveURL(/flightSearch=MAN\d{4}DXB\d{4}1&/);
@@ -85,6 +91,14 @@ test("/go builds a real affiliate link and forwards to it", async ({ page }) => 
   await page.waitForURL(
     "https://tp.media/r?campaign_id=100&marker=567389&p=4114&sub_id=deals_rail&trs=344771&u=https%3A%2F%2Fwww.aviasales.com%2Fsearch%2FLON1503NYC20031",
   );
+});
+
+test("/go never shows text from the URL", async ({ page }) => {
+  const dest = "https://www.aviasales.com/search/LON1503NYC20031";
+  await page.goto(`/go?program=aviasales&url=${encodeURIComponent(dest)}&provider=Call+0800+SCAM&airline=Fake+Air`);
+  const text = await page.locator("main").innerText();
+  expect(text).not.toContain("SCAM");
+  expect(text).not.toContain("Fake Air");
 });
 
 test("/go refuses destinations outside the program's own site", async ({ page }) => {

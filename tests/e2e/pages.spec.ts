@@ -77,6 +77,23 @@ test("contact api rejects invalid input and ignores honeypot spam", async ({ req
   expect(Object.keys(body.errors).sort()).toEqual(["email", "message", "name", "topic"]);
   const spam = await request.post("/api/contact", { data: { company: "Acme", name: "", email: "" } });
   expect(spam.status()).toBe(202);
+  // A line break in the name could add an email header; it's refused.
+  const header = await request.post("/api/contact", {
+    data: { name: "Sam\r\nBcc: someone@example.com", email: "sam@example.com", topic: "other", message: "A question about my search." },
+  });
+  expect(header.status()).toBe(400);
+  expect(Object.keys((await header.json()).errors)).toEqual(["name"]);
+});
+
+test("form APIs refuse non-JSON and cross-site posts (CSRF)", async ({ request, baseURL }) => {
+  for (const path of ["/api/contact", "/api/fare-alerts"]) {
+    const plain = await request.post(path, { headers: { "content-type": "text/plain" }, data: '{"email":"a@example.com"}' });
+    expect(plain.status()).toBe(415);
+    const foreign = await request.post(path, { headers: { origin: "https://evil.example" }, data: { email: "a@example.com" } });
+    expect(foreign.status()).toBe(403);
+  }
+  const sameSite = await request.post("/api/contact", { headers: { origin: new URL(baseURL!).origin }, data: { name: "" } });
+  expect(sameSite.status()).toBe(400);
 });
 
 test("header nav reaches About and Contact", async ({ page, isMobile }) => {

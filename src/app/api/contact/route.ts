@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import { contactTopics } from "@/content/contact";
+import { guardFormRequest } from "@/lib/api-guard";
 import { sendContactMessage } from "@/lib/email";
 import { validateContact, type ContactInput } from "@/lib/validate-contact";
 
 export async function POST(req: Request) {
+  const refused = guardFormRequest(req, "contact");
+  if (refused) return refused;
   const body = (await req.json().catch(() => null)) as Partial<ContactInput & { company: string }> | null;
   if (!body) return NextResponse.json({ error: "Invalid request" }, { status: 400 });
 

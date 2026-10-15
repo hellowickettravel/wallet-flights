@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import { legacyOwnerRedirects, legacyRedirects } from "./src/content/legacy-redirects";
+import { contentSecurityPolicy } from "./src/lib/csp";
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
@@ -27,6 +28,14 @@ const nextConfig: NextConfig = {
           { key: "X-Frame-Options", value: "DENY" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), browsing-topics=()" },
+          // Report-only while violations are collected (see src/lib/csp.ts). Not in
+          // development, where React's dev tooling needs eval.
+          ...(process.env.NODE_ENV === "production"
+            ? [
+                { key: "Content-Security-Policy-Report-Only", value: contentSecurityPolicy() },
+                { key: "Reporting-Endpoints", value: 'csp="/api/csp-report"' },
+              ]
+            : []),
         ],
       },
     ];

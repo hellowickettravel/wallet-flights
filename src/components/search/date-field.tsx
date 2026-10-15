@@ -6,6 +6,8 @@ import { CalendarBlank } from "@phosphor-icons/react";
 
 type Props = {
   label: string;
+  /** Read before the label by screen readers only, e.g. "Flight 2," in multi-city. */
+  labelPrefix?: string;
   value: string;
   onChange: (v: string) => void;
   min?: string;
@@ -15,7 +17,7 @@ type Props = {
 };
 
 /** Native date input inside the shared field shell: reliable keyboard + mobile pickers. */
-export function DateField({ label, value, onChange, min, error, className, shellClassName }: Props) {
+export function DateField({ label, labelPrefix, value, onChange, min, error, className, shellClassName }: Props) {
   const id = useId();
   const errId = `${id}-err`;
   const ref = useRef<HTMLInputElement>(null);
@@ -31,7 +33,10 @@ export function DateField({ label, value, onChange, min, error, className, shell
       >
         <CalendarBlank className="hidden size-5 shrink-0 text-ink-soft min-[420px]:block" aria-hidden />
         <span className="min-w-0 flex-1">
-          <span className="block text-[0.75rem] font-medium text-ink-soft">{label}</span>
+          <span className="block text-[0.75rem] font-medium text-ink-soft">
+            {labelPrefix && <span className="sr-only">{labelPrefix} </span>}
+            {label}
+          </span>
           <input
             ref={ref}
             id={id}

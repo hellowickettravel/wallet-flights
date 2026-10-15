@@ -15,7 +15,8 @@ export default defineConfig({
   },
   webServer: {
     command: "npm run start -- -p 3100",
-    env: { EMAIL_DRY_RUN: "1" },
+    // No real email; no rate limit (every test request comes from localhost).
+    env: { EMAIL_DRY_RUN: "1", RATE_LIMIT: "off" },
     url: "http://localhost:3100",
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,

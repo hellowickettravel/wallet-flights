@@ -340,7 +340,7 @@ files, destination H1, region links, route links from /deals, route noindex = no
 links. The search-bar alignment test now measures field boxes after the entrance animation (it was
 flaky) and is stricter: same top and height within 1px.
 
-## Phase 3, part 1: performance (done). Part 2 still open (see docs/HANDOFF.md)
+## Phase 3, part 1: performance (done)
 | Plan item | Change |
 |---|---|
 | 3.1 Cookie banner | Server-rendered, so it paints with the page instead of after hydration (it was the mobile LCP element). An inline `<head>` script (`src/lib/consent-flag.ts`) sets `html[data-consent]` for visitors who already chose, and CSS hides it before first paint, with no flash. `max-h` plus internal scroll with sticky buttons (usable at 320px and 400% zoom). First in the DOM, so keyboard users reach it first. Back-to-top hidden while it's up. |
@@ -354,3 +354,37 @@ flaky) and is stricter: same top and height within 1px.
 
 **Test:** lint, typecheck, build: pass. e2e: **219 passed**, 29 skipped. Re-measure PageSpeed/Lighthouse
 against https://www.walletflights.com after deploy.
+
+## Phase 3, part 2: UX, accessibility and security (done)
+| Plan item | Change |
+|---|---|
+| 3.9 Hero entrance | The headline and intro slide in without fading (`<Reveal text>`, `.rise[data-text]`), so the LCP text paints on the first frame instead of starting at opacity 0. The search panel keeps its fade. **`experimental.inlineCss` was tried and rejected:** home HTML went from 31 KB to 85 KB gzipped (the CSS is inlined twice: once in `<style>`, once escaped in the RSC payload), and local Lighthouse got slightly worse (median LCP 4.40 s vs 4.17 s, score 80 vs 82). |
+| 3.10 Header | Nav links `whitespace-nowrap`. Full WhatsApp pill from `md` to `lg` and from `xl`; icon-only between `lg` and `xl`. Checked at 1024 and 1280: one line, nothing clipped. |
+| 3.11 Search form | Listbox `tabIndex=-1`. Tab or blur keeps the highlighted airport (typed text no longer lost). The highlight is tracked by airport code, so it stays put when worldwide results arrive. A polite live region announces "N airports found". Past departure dates are refused ("Choose a date from today onwards") and `withDefaultDates` replaces past dates from old links. On a failed submit, focus moves to the first invalid field. Trip-type labels don't wrap at 320px. |
+| 3.12 Focus ring | Sun-coloured ring inside `.bg-ink`, `.bg-board` and `.bg-action` sections (was 2.8:1 on navy, invisible on the blue band); white cards inside them keep the blue ring. |
+| 3.13 Mobile menu | Everything outside the header, plus the header bar, is `inert` while the drawer is open. Closing with X, scrim or Escape returns focus to the menu button (after the re-render, because the bar is inert until then). |
+| 3.14 Marquee | Pause/play button on the logo and review marquees (`data-paused`); hidden under reduced motion, where nothing moves. |
+| 3.15 Keyboard | `onRovingKeyDown` (`src/lib/roving.ts`): arrow keys, Home and End, one Tab stop per group, on trip type, the deals-rail origins, region tabs, the month calendar and the demo sort tabs. Multi-city "Going to" and "Date" fields carry a screen-reader prefix ("Flight 2, Going to"). Placeholders use full `ink-soft` (was 3.99:1). |
+| 3.16 Form APIs | `src/lib/api-guard.ts`: JSON content type required (415), foreign `Origin` or cross-site `Sec-Fetch-Site` refused (403), per-IP limit of 5 per 10 minutes (429; per server instance; a site-wide limit needs a Vercel Firewall rule). Fare alerts: honeypot, a 1.5 s minimum fill time, and **double opt-in**: the sign-up emails an HMAC-signed link (`src/lib/opt-in.ts`, 7 days, no database), and `/fare-alerts/confirm` adds the address only after the visitor presses Confirm, so mail scanners that open links can't subscribe anyone. The contact name rejects control characters (it goes into the email subject). |
+| 3.18 Email | `EMAIL_DRY_RUN=1` is checked before the API key, so the test server never sends real email. |
+| 3.19 CSP and /go | `Content-Security-Policy-Report-Only` (`src/lib/csp.ts`) with violations logged by `/api/csp-report`. The live-search hosts were recorded from a real search (`*.apistp.com`, `avsplow.com`, `img.avs.io`, Google Fonts); the first draft would have blocked them, which is why it starts report-only. Scripts keep `'unsafe-inline'` (prerendered pages can't use nonces, and Next's inline page data can't be hashed). `/go` no longer displays the free-text `provider` and `airline` params, and demo links stop sending them. |
+| 3.20 Errors | `error.tsx` and `global-error.tsx` share `ErrorScreen`: "Try again" (`retry()`), a full-reload "New search", WhatsApp and the error reference. Copy in `src/content/errors.ts`. |
+| 3.21 Fare-alert copy | "Fare alerts are coming soon. Leave your email and we’ll tell you when they launch." No weekly-email promise. Copy moved to `src/content/home.ts`; the Help answer and privacy policy match. |
+| 3.22 Image hosts | Privacy policy ("Who we share data with") and a new cookie-policy section disclose that photos load from Unsplash and logos from the affiliate network's logo service, which receive IP address and browser details. |
+| 3.23 Small fixes | How-it-works email card no longer clipped at 1024/1280 (its offset was wider than the page gutter). Swap button on phones, on the shared edge of the stacked fields. Cabin note for premium economy and first (the live search only has economy and business). "Find us on Trustpilot" while there are no reviews. |
+
+**Measured (local Lighthouse 13.4, simulated mobile, home, 3 runs each, median):** previous commit
+score 83, LCP 3.94 s (LCP element: cookie-banner text); this batch score 82, LCP 4.17 s (LCP element: hero
+intro, which is now painted). Runs vary by about 300 ms, and every version shows the same ~2.2 s render
+delay in this headless harness, so it can't show a gain for 3.9. Re-measure with PageSpeed Insights on
+www after deploy.
+
+**Test:** lint, typecheck, build: pass. e2e: **237 passed**, 29 skipped (demo-only, plus fare-board checks
+that need fares). New checks: Tab keeps the highlighted airport, listbox not a Tab stop, live result
+count, past dates refused with focus on the first error, old links with past dates get future ones,
+arrow keys on trip type and region tabs, per-leg multi-city names, cabin note, mobile menu inert and
+focus return, marquee pause, fare-alert copy and the full double opt-in (forged link refused, honeypot
+and too-fast sign-ups get no link), 415/403 on non-JSON and cross-site posts, control characters in the
+contact name, CSP header and report endpoint, /go ignoring free-text params, "Find us on Trustpilot".
+Also checked by hand in the browser: header at 1024/1280, 320px form, sun focus ring on the hero, the
+rate limit (429 after 5), and the widget's real hosts on /flights.

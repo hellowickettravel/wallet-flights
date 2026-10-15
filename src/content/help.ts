@@ -37,7 +37,7 @@ export const helpTopics: HelpTopic[] = [
     id: "privacy",
     title: "Privacy, alerts and contact",
     items: [
-      { q: "How do I unsubscribe from fare alerts?", a: "Every fare-alert email has an unsubscribe link at the bottom. You can also email us and we’ll remove you." },
+      { q: "How do I unsubscribe from fare alerts?", a: "Fare alerts haven’t launched yet. When they do, every fare-alert email will have an unsubscribe link at the bottom. You can also email us at any time and we’ll remove you." },
       { q: "What do you do with my data?", a: "We only collect what you send us, such as your email for fare alerts or a contact message. See our privacy policy for the details." },
       { q: "How can I contact you?", a: `Email ${site.email} or use the contact form. ${site.responseTime}.` },
     ],

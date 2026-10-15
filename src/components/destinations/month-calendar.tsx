@@ -6,6 +6,7 @@ import clsx from "clsx";
 import { formatPrice } from "@/content/deals";
 import { dealLink, monthLabel } from "@/lib/deal-links";
 import type { MonthCalendar as Calendar } from "@/lib/fares";
+import { onRovingKeyDown } from "@/lib/roving";
 
 /**
  * Cheapest round trip per departure month, one tab per departure city. Bars
@@ -24,7 +25,7 @@ export function MonthCalendar({ calendars, to, subPrefix }: { calendars: Calenda
   return (
     <div>
       {calendars.length > 1 && (
-        <div role="tablist" aria-label="Departure city" className="flex flex-wrap gap-2">
+        <div role="tablist" aria-label="Departure city" onKeyDown={(e) => onRovingKeyDown(e, setActive)} className="flex flex-wrap gap-2">
           {calendars.map((c, i) => (
             <button
               key={c.origin.code}
@@ -32,6 +33,7 @@ export function MonthCalendar({ calendars, to, subPrefix }: { calendars: Calenda
               role="tab"
               type="button"
               aria-selected={i === active}
+              tabIndex={i === active ? 0 : -1}
               aria-controls={`${base}-panel`}
               onClick={() => setActive(i)}
               className={clsx(

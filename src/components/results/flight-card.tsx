@@ -15,10 +15,11 @@ const cityOf = (code: string) => airportByCode(code)?.city ?? code;
 
 /**
  * Demo results (behind NEXT_PUBLIC_DEMO_RESULTS) hand off through /go to the
- * same route on Aviasales, as a real affiliate link. Demo providers and prices
- * are only shown on the hand-off screen, labelled as such.
+ * same route on Aviasales, as a real affiliate link. The demo price is only
+ * shown on the hand-off screen, labelled as such. No free text (airline or
+ * provider names) goes in the URL: /go would display whatever it was given.
  */
-export function dealHref(it: Itinerary, provider: string, price: number) {
+export function dealHref(it: Itinerary, price: number) {
   const path = searchString(
     it.journeys.map((j) => ({ from: j.from, to: j.to, date: j.date })),
     { cabin: "economy", adults: 1, children: 0, infants: 0 },
@@ -27,8 +28,6 @@ export function dealHref(it: Itinerary, provider: string, price: number) {
     program: "aviasales",
     url: `https://www.aviasales.com/search/${path}`,
     sub: "demo_results",
-    provider,
-    airline: it.airline.name,
     price: String(price),
     currency: it.currency,
     from: it.journeys[0].from,
@@ -92,7 +91,7 @@ export function FlightCard({ it, badge, travellers, expanded, onToggle, journeyL
             <p className="mt-1 text-[0.8125rem] text-ink-soft">on {best.provider}</p>
           </div>
           <Link
-            href={dealHref(it, best.provider, best.price)}
+            href={dealHref(it, best.price)}
             className="inline-flex h-11 shrink-0 items-center gap-2 rounded-full bg-action px-5 font-semibold text-white transition-colors hover:bg-action-deep"
           >
             View deal
@@ -241,7 +240,7 @@ function Details({ it, journeyLabels }: { it: Itinerary; journeyLabels: string[]
               <span className="flex shrink-0 items-center gap-3">
                 <span className={clsx("tabular font-bold", i === 0 ? "text-fare" : "text-ink")}>{formatPrice(p.price, it.currency)}</span>
                 <Link
-                  href={dealHref(it, p.provider, p.price)}
+                  href={dealHref(it, p.price)}
                   aria-label={`View deal on ${p.provider} for ${formatPrice(p.price, it.currency)}`}
                   className="inline-flex h-9 items-center rounded-full px-3.5 text-[0.875rem] font-semibold text-action ring-1 ring-line hover:bg-mist"
                 >

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, m } from "motion/react";
 import { List, WhatsappLogo, X } from "@phosphor-icons/react";
 import clsx from "clsx";
@@ -13,6 +13,22 @@ export function Header() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+  const menuButton = useRef<HTMLButtonElement>(null);
+
+  // Closing with the X, the scrim or Escape gives focus back to the menu
+  // button; following a link doesn't (the new page takes over). The focus
+  // waits for the effect below, because the bar is inert until React re-renders.
+  const returnFocus = useRef(false);
+  function close() {
+    returnFocus.current = true;
+    setOpen(false);
+  }
+  useEffect(() => {
+    if (open || !returnFocus.current) return;
+    returnFocus.current = false;
+    menuButton.current?.focus();
+  }, [open]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -29,16 +45,32 @@ export function Header() {
     setOpen(false);
   }
 
-  // Lock page scroll while the drawer is open.
+  // While the drawer is open: lock page scroll, and make everything outside
+  // the header inert so Tab can't wander behind the scrim (aria-modal alone
+  // doesn't stop it). The header's own bar is made inert in the JSX below.
   useEffect(() => {
-    document.documentElement.style.overflow = open ? "hidden" : "";
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    if (!open) return;
+    document.documentElement.style.overflow = "hidden";
+    const outside = Array.from(document.body.children).filter(
+      (el) => !el.contains(headerRef.current) && el.localName !== "script" && el.localName !== "next-route-announcer",
+    );
+    outside.forEach((el) => el.setAttribute("inert", ""));
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      returnFocus.current = true;
+      setOpen(false);
+    };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      document.documentElement.style.overflow = "";
+      outside.forEach((el) => el.removeAttribute("inert"));
+      window.removeEventListener("keydown", onKey);
+    };
   }, [open]);
 
   return (
     <header
+      ref={headerRef}
       className={clsx(
         "sticky top-0 z-40 bg-white/95 backdrop-blur-md transition-shadow duration-300",
         scrolled ? "shadow-[0_1px_0_var(--color-line),0_8px_24px_-16px_rgb(15_31_61/0.25)]" : "shadow-[0_1px_0_transparent]",
@@ -52,7 +84,7 @@ export function Header() {
       </a>
       {/* Fixed height on purpose: resizing an in-flow sticky header on scroll
           makes scroll anchoring oscillate around the threshold. */}
-      <div className="container-page flex h-[4.5rem] items-center gap-6">
+      <div className="container-page flex h-[4.5rem] items-center gap-6" inert={open}>
         <Link href="/" className="shrink-0 rounded-lg">
           <Logo />
           <span className="sr-only"> home</span>
@@ -68,7 +100,7 @@ export function Header() {
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     className={clsx(
-                      "relative rounded-full px-3.5 py-2 text-[0.9375rem] font-medium transition-colors",
+                      "relative rounded-full px-3.5 py-2 text-[0.9375rem] font-medium whitespace-nowrap transition-colors",
                       active ? "text-action" : "text-ink/80 hover:bg-mist hover:text-ink",
                     )}
                   >
@@ -85,7 +117,7 @@ export function Header() {
             href={site.phone.whatsapp}
             target="_blank"
             rel="noopener"
-            className="group hidden items-center gap-3 rounded-full py-1.5 pr-4 pl-1.5 ring-1 ring-line transition-colors hover:bg-mist md:flex"
+            className="group hidden shrink-0 items-center gap-3 rounded-full py-1.5 pr-4 pl-1.5 whitespace-nowrap ring-1 ring-line transition-colors hover:bg-mist md:flex lg:hidden xl:flex"
           >
             <span className="grid size-8 place-items-center rounded-full bg-fare text-white">
               <WhatsappLogo weight="fill" className="size-4.5" aria-hidden />
@@ -101,12 +133,13 @@ export function Header() {
             target="_blank"
             rel="noopener"
             aria-label={`WhatsApp ${site.phone.display} (opens WhatsApp)`}
-            className="grid size-11 place-items-center rounded-full bg-fare text-white md:hidden"
+            className="grid size-11 shrink-0 place-items-center rounded-full bg-fare text-white md:hidden lg:grid xl:hidden"
           >
             <WhatsappLogo weight="fill" className="size-6" aria-hidden />
           </a>
           <button
             type="button"
+            ref={menuButton}
             onClick={() => setOpen(true)}
             aria-expanded={open}
             aria-controls="mobile-menu"
@@ -128,7 +161,7 @@ export function Header() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              onClick={() => setOpen(false)}
+              onClick={close}
             />
             <m.div
               key="drawer"
@@ -146,7 +179,7 @@ export function Header() {
                 <Logo />
                 <button
                   type="button"
-                  onClick={() => setOpen(false)}
+                  onClick={close}
                   aria-label="Close menu"
                   autoFocus
                   className="grid size-11 cursor-pointer place-items-center rounded-full ring-1 ring-line hover:bg-mist"

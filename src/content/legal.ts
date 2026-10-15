@@ -17,7 +17,7 @@ export const privacy: { intro: string; sections: LegalSection[] } = {
         "We only collect the information you choose to send us, and basic technical data needed to run the site:",
         [
           "Contact form: your name, email address, the topic you chose and your message.",
-          "Fare alerts: your email address.",
+          "Fare alerts: your email address, once you confirm it from the email we send. Fare alerts haven’t launched yet; until they do, we only use it to tell you when they launch.",
           "Searches: the routes, dates and number of travellers you search for. Live search on our Flights page is run by our flight search partner, which receives your search, IP address and device information to find prices, and measures searches and bookings with its own cookies. It only loads if you allow “Live flight search” cookies.",
           "Technical data: if you allow analytics, aggregated usage statistics (pages viewed, device type, country, page speed) from Vercel Analytics, which doesn’t identify you.",
           "Your cookie choice, stored in a cookie on your device.",
@@ -30,7 +30,7 @@ export const privacy: { intro: string; sections: LegalSection[] } = {
       body: [
         [
           "To reply to your messages (our legitimate interest in answering enquiries).",
-          "To send fare alerts you asked for (your consent, which you can withdraw at any time).",
+          "To tell you when fare alerts launch and then send the alerts you asked for (your consent, which you can withdraw at any time).",
           "To keep the site secure and fix problems (our legitimate interests).",
           "Live flight search and analytics (your consent, which you can change at any time under “Cookie settings” in the footer).",
         ],
@@ -47,6 +47,7 @@ export const privacy: { intro: string; sections: LegalSection[] } = {
       heading: "Who we share data with",
       body: [
         "We use trusted service providers to host the site (Vercel), deliver email (Resend) and, with your consent, measure site usage (Vercel Analytics). Our flight search and affiliate partner provides our live search and affiliate links and acts as an independent controller for the data its search widget and links collect. Contact us and we’ll tell you who it is and where to find its privacy policy. We don’t sell your personal data.",
+        "Photos on the site load from Unsplash’s image servers, and airline logos from our affiliate network’s logo service. As with any image on the web, those servers receive your IP address and browser details when your browser fetches the picture. They don’t set cookies on our site, and we don’t send them anything else about you.",
         "Some of these providers may store data outside the UK, for example in the United States. Where they do, we rely on recognised safeguards such as the UK International Data Transfer Addendum or adequacy regulations.",
       ],
     },
@@ -55,7 +56,7 @@ export const privacy: { intro: string; sections: LegalSection[] } = {
       body: [
         [
           "Contact messages: up to 24 months, then deleted.",
-          "Fare-alert emails: until you unsubscribe.",
+          "Fare-alert emails: until you unsubscribe. We don’t keep sign-ups that aren’t confirmed: the confirmation link carries the address itself and expires after 7 days.",
           "Analytics: aggregated and anonymous, kept for reporting.",
           "Your cookie choice: 6 months, then we ask again.",
         ],
@@ -161,6 +162,12 @@ export const cookies: { intro: string; sections: LegalSection[] } = {
       heading: "Analytics (optional)",
       body: [
         "With your consent we use Vercel Analytics and Speed Insights to count page views and measure page speed. They don’t set cookies or identify you, but we still ask first.",
+      ],
+    },
+    {
+      heading: "Images from other servers",
+      body: [
+        "Photos load from Unsplash’s image servers and airline logos from our affiliate network’s logo service. These don’t set cookies, but like any image on the web they receive your IP address and browser details when your browser fetches them. See “Who we share data with” in our privacy policy.",
       ],
     },
     {

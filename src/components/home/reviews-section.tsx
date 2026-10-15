@@ -35,7 +35,7 @@ export function ReviewsSection() {
           className="inline-flex items-center gap-2 self-start font-semibold text-white underline decoration-white/30 underline-offset-4 hover:decoration-sun md:self-auto"
         >
           <TrustpilotStar className="size-5" />
-          {reviewsCopy.readAll} on Trustpilot
+          {enough ? reviewsCopy.readAll : reviewsCopy.findUs} on Trustpilot
           <ArrowUpRight className="size-4" weight="bold" aria-hidden />
           <span className="sr-only"> (opens in a new tab)</span>
         </a>

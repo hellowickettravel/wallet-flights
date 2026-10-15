@@ -1,4 +1,4 @@
-# Handoff: where the improvement plan stands (15 Oct 2026)
+# Handoff: where the improvement plan stands (15 Oct 2026, after Phase 3)
 
 Read first: `CLAUDE.md`, `AGENTS.md`, `docs/IMPROVEMENT-PLAN.md` (the 4-phase plan),
 `docs/SITE-AUDIT.md` (audit findings with evidence) and the end of `docs/AUDIT.md` (what each phase changed).
@@ -8,47 +8,28 @@ Read first: `CLAUDE.md`, `AGENTS.md`, `docs/IMPROVEMENT-PLAN.md` (the 4-phase pl
 |---|---|
 | 1 Indexing foundations | Done, live, verified on www.walletflights.com (commit 2c8a19f) |
 | 2 Structured data, AI search, on-page SEO | Done, live, verified (commit 025b8cf) |
-| 3 Performance, UX, accessibility, security | Part 1 done (3.1 to 3.8, performance; 3.17 too). **Next: 3.9 onward.** |
+| 3 Performance, UX, accessibility, security | Done: part 1 (3.1 to 3.8, 3.17) and part 2 (3.9 to 3.23). See `docs/AUDIT.md`. |
 | 4 Content depth, E-E-A-T, claims | Not started. Needs owner input (see plan). |
 
-## Next steps (Phase 3, part 2), in order
-1. **3.9** Hero `.rise` entrance: don't start LCP text at opacity 0 (`src/app/globals.css` `.rise`, `src/components/home/reveal.tsx`). Try `experimental.inlineCss` in `next.config.ts` (check the Next 16 docs in `node_modules/next/dist/docs/` first).
-2. **3.10** Header at 1024px: nav links `whitespace-nowrap`; full WhatsApp pill only from `xl`, icon-only between `lg` and `xl` (`src/components/layout/header.tsx`).
-3. **3.11** Search form (`src/components/search/airport-field.tsx`, `search-panel.tsx`, `src/lib/search-query.ts`):
-   - listbox `tabIndex={-1}`
-   - Tab or blur picks the highlighted result
-   - keep the highlighted option (by code) when worldwide results arrive
-   - `aria-live` result count
-   - reject past dates in `validate()` and replace past dates in `parseSearch`/`withDefaultDates`
-   - focus the first invalid field on submit
-   - trip-type labels `whitespace-nowrap` at 320px
-4. **3.12** Focus ring visible on navy and blue sections: use the sun colour or white (`globals.css` `:focus-visible`).
-5. **3.13** Mobile menu: make `main` and `footer` `inert` while open; return focus to the menu button on close.
-6. **3.14** Pause/play button in `src/components/ui/marquee.tsx` (WCAG 2.2.2).
-7. **3.15** Arrow-key roving tabindex for the tabs and radio groups (trip type, deals origin, region tabs, month calendar); per-leg labels in multi-city; placeholder contrast.
-8. **3.16** `/api/contact` and `/api/fare-alerts`:
-   - require `application/json` and a same-site `Origin`
-   - rate limit (Vercel Firewall rule or Upstash; ask the owner before creating any account)
-   - honeypot and minimum fill time on fare alerts
-   - reject control characters in the name
-   - double opt-in for fare alerts
-9. **3.18** `src/lib/email.ts`: check `EMAIL_DRY_RUN` before the API key, so tests never send real email.
-10. **3.19** Content-Security-Policy in Report-Only first:
-    - hosts: tpwdg.com and its API hosts, images.unsplash.com, pics.avs.io, va.vercel-scripts.com
-    - the inline consent-flag script in `layout.tsx` needs a hash or nonce
-    - `/go`: drop the free-text `airline`/`provider` params
-11. **3.20** `src/app/error.tsx` and `global-error.tsx` (branded, with a "New search" link).
-12. **3.21** Fare-alert copy: don't promise weekly emails until a sender exists.
-13. **3.22** Disclose Unsplash and the airline-logo CDN in the privacy and cookie policies (`src/content/legal.ts`), or self-host them.
-14. **3.23** Small fixes:
-    - How-it-works card clipped at 1024/1280px
-    - swap button on phones
-    - cabin note (premium → economy, first → business)
-    - "Read our reviews on Trustpilot" → "Find us on Trustpilot" while there are no reviews
+## Next steps
+1. Push (from the user's terminal), let Vercel deploy, then verify on www:
+   - `curl -sI https://www.walletflights.com/ | grep -i content-security` shows the Report-Only header
+   - the header at 1024px, the swap button on a phone, the marquee pause button
+   - fare-alert sign-up (needs `RESEND_API_KEY`; without it the form says the service is unavailable)
+2. Re-measure with PageSpeed Insights (mobile) on `/`, `/deals`, `/routes/new-york-to-london`.
+3. **CSP:** after a few days, read the `CSP report-only violation` lines in the Vercel logs. Add any
+   legitimate host to `cspHosts` in `src/lib/csp.ts`; once clean, rename the header in `next.config.ts`
+   to `Content-Security-Policy` to enforce it. Re-run a live search on /flights after enforcing.
+4. Phase 4 (owner input, see the plan).
 
-Then: lint, typecheck, build, e2e, a `docs/AUDIT.md` entry, commit, push, verify live, and on to Phase 4.
-Re-measure with PageSpeed Insights or Lighthouse against https://www.walletflights.com (the
-`wallet-flights.vercel.app` address now redirects there).
+## Owner actions added by Phase 3
+- **Rate limit:** the built-in limit is per server instance. For a site-wide limit, add a Vercel
+  Firewall rate-limit rule on `/api/contact`, `/api/fare-alerts` and `/api/fare-alerts/confirm`
+  (owner's dashboard; ask before changing account settings).
+- **Fare alerts:** sign-ups now need `RESEND_API_KEY` and a verified `EMAIL_FROM` to send the
+  confirmation email. Optional `FARE_ALERT_SECRET` signs the links (falls back to the Resend key);
+  `RESEND_AUDIENCE_ID` collects confirmed addresses. Nothing sends alerts yet: the copy says
+  "coming soon" until the owner decides on a schedule.
 
 ## Working rules (from the owner and user)
 - Ask before joining any program, accepting terms, or changing payout or account settings.

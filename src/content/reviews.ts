@@ -24,5 +24,7 @@ export const reviewsCopy = {
   emptyTitle: "Searched with us? Tell other travellers how it went.",
   emptyText: "We’re new on Trustpilot. Your review helps other travellers find a good fare, and tells us what to improve.",
   emptyCta: "Write a review",
+  // The header link: "Find us" while there are no reviews to read.
   readAll: "Read our reviews",
+  findUs: "Find us",
 } as const;

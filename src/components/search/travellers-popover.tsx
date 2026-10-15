@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, m } from "motion/react";
 import { CaretDown, Minus, Plus, User } from "@phosphor-icons/react";
 import clsx from "clsx";
+import { cabinNotes } from "@/content/search";
 
 import type { Cabin } from "@/lib/search-query";
 export type { Cabin };
@@ -180,6 +181,10 @@ export function TravellersPopover({ travellers, cabin, onChange, variant = "pill
                   </label>
                 ))}
               </div>
+              {/* Always rendered, so the live region exists before its text changes. */}
+              <p aria-live="polite" className="mt-3 text-[0.8125rem] leading-snug text-ink-soft empty:hidden">
+                {cabinNotes[cabin]}
+              </p>
             </fieldset>
 
             <button

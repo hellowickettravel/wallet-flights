@@ -5,8 +5,9 @@ and backend. Each phase runs **plan → build → test → verify on the live si
 starts. Results are logged in `docs/AUDIT.md`. Items marked **Owner** need a decision or access only the
 owner has. They're listed so nothing gets lost, but code never invents the answer.
 
-**Status (15 Oct 2026):** Phases 1 and 2 done and live. Phase 3 part 1 (3.1–3.8, plus 3.17) done.
-Next is 3.9. See `docs/HANDOFF.md`.
+**Status (15 Oct 2026):** Phases 1, 2 and 3 done (Phase 3 part 2 waiting to be pushed and verified
+live). `experimental.inlineCss` (3.9) was measured and rejected; see `docs/AUDIT.md`. Next is Phase 4,
+which needs the owner's input. See `docs/HANDOFF.md`.
 
 | Phase | Theme | Why first |
 |---|---|---|

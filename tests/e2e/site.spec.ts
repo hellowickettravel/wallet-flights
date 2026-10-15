@@ -80,6 +80,18 @@ test("security headers are set", async ({ request }) => {
   expect(res.headers()["x-content-type-options"]).toBe("nosniff");
   expect(res.headers()["x-frame-options"]).toBe("DENY");
   expect(res.headers()["x-powered-by"]).toBeUndefined();
+  // Report-only while violations are collected (src/lib/csp.ts).
+  const csp = res.headers()["content-security-policy-report-only"];
+  for (const rule of ["object-src 'none'", "base-uri 'self'", "frame-ancestors 'none'", "form-action 'self'", "report-uri /api/csp-report"]) expect(csp).toContain(rule);
+  for (const host of ["https://tpwdg.com", "https://*.apistp.com", "https://images.unsplash.com", "https://pics.avs.io"]) expect(csp).toContain(host);
+});
+
+test("csp reports are accepted", async ({ request }) => {
+  const res = await request.post("/api/csp-report", {
+    headers: { "content-type": "application/csp-report" },
+    data: JSON.stringify({ "csp-report": { "violated-directive": "img-src", "blocked-uri": "https://x.example/a.png", "document-uri": "http://localhost/" } }),
+  });
+  expect(res.status()).toBe(204);
 });
 
 test.describe("live search page", () => {

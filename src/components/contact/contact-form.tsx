@@ -60,7 +60,7 @@ export function ContactForm() {
 
   const inputClass = (key: keyof ContactInput) =>
     clsx(
-      "w-full rounded-xl bg-white px-4 text-[1.0625rem] text-ink outline-none ring-1 transition-shadow placeholder:text-ink-soft/70 focus-visible:ring-2 focus-visible:ring-action",
+      "w-full rounded-xl bg-white px-4 text-[1.0625rem] text-ink outline-none ring-1 transition-shadow placeholder:text-ink-soft focus-visible:ring-2 focus-visible:ring-action",
       errors[key] ? "ring-2 ring-red-600" : "ring-line hover:ring-ink/30",
     );
 

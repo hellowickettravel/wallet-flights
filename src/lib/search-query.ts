@@ -91,9 +91,13 @@ export function addDays(iso: string, days: number) {
   return d.toISOString().slice(0, 10);
 }
 
-/** Deep links (fare board, deals) may omit dates: default to 3 weeks out, 1 week stay. */
+/**
+ * Deep links (fare board, deals) may omit dates: default to 3 weeks out, 1 week
+ * stay. Dates already in the past (an old link or bookmark) are replaced the
+ * same way, and so is a return before the outbound flight.
+ */
 export function withDefaultDates(q: SearchQuery, todayIso: string): SearchQuery {
-  const legs: QueryLeg[] = q.legs.map((l, i) => ({ ...l, date: l.date || addDays(todayIso, 21 + i * 5) }));
-  const returnDate = q.trip === "round" ? q.returnDate || addDays(legs[0].date, 7) : undefined;
-  return { ...q, legs, returnDate };
+  const legs: QueryLeg[] = q.legs.map((l, i) => ({ ...l, date: l.date && l.date >= todayIso ? l.date : addDays(todayIso, 21 + i * 5) }));
+  const ret = q.returnDate && q.returnDate >= legs[0].date ? q.returnDate : addDays(legs[0].date, 7);
+  return { ...q, legs, returnDate: q.trip === "round" ? ret : undefined };
 }

@@ -9,6 +9,7 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { formatPrice } from "@/content/deals";
 import { destinations, regions, type Region } from "@/content/destinations";
 import type { TileFare } from "@/lib/fares";
+import { onRovingKeyDown } from "@/lib/roving";
 
 export function DestinationsMosaic({ fares }: { fares: Record<string, TileFare> }) {
   const [region, setRegion] = useState<Region>("europe");
@@ -28,7 +29,7 @@ export function DestinationsMosaic({ fares }: { fares: Record<string, TileFare> 
         </SectionHeading>
 
         <LayoutGroup id="region">
-          <div role="tablist" aria-label="Region" className="scrollbar-none -mx-5 mt-8 flex gap-1 overflow-x-auto border-b border-line px-5 md:mx-0 md:px-0">
+          <div role="tablist" aria-label="Region" onKeyDown={(e) => onRovingKeyDown(e, (i) => setRegion(regions[i].id))} className="scrollbar-none -mx-5 mt-8 flex gap-1 overflow-x-auto border-b border-line px-5 md:mx-0 md:px-0">
             {regions.map((r) => {
               const active = r.id === region;
               return (
@@ -38,6 +39,7 @@ export function DestinationsMosaic({ fares }: { fares: Record<string, TileFare> 
                   type="button"
                   id={`region-tab-${r.id}`}
                   aria-selected={active}
+                  tabIndex={active ? 0 : -1}
                   aria-controls="region-panel"
                   onClick={() => setRegion(r.id)}
                   className={clsx(

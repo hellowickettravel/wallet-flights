@@ -6,6 +6,8 @@ import { airports, type Airport } from "@/content/airports";
 
 type Props = {
   label: string;
+  /** Read before the label by screen readers only, e.g. "Flight 2," in multi-city. */
+  labelPrefix?: string;
   icon: React.ReactNode;
   value: Airport | null;
   onChange: (a: Airport | null) => void;
@@ -39,14 +41,16 @@ function search(q: string) {
 }
 
 /** Accessible airport combobox (WAI-ARIA 1.2 combobox with listbox popup). */
-export function AirportField({ label, icon, value, onChange, placeholder, error, className, shellClassName }: Props) {
+export function AirportField({ label, labelPrefix, icon, value, onChange, placeholder, error, className, shellClassName }: Props) {
   const id = useId();
   const listId = `${id}-list`;
   const errId = `${id}-err`;
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState<string | null>(null); // null = not editing
   const [open, setOpen] = useState(false);
-  const [active, setActive] = useState(0);
+  // The highlighted option, by airport code, so it stays put when the
+  // worldwide results replace the instant ones (null = the first option).
+  const [activeCode, setActiveCode] = useState<string | null>(null);
 
   const term = (query ?? "").trim().toLowerCase();
   const [remote, setRemote] = useState<{ term: string; list: Airport[] } | null>(null);
@@ -54,6 +58,8 @@ export function AirportField({ label, icon, value, onChange, placeholder, error,
   const fresh = remote?.term === term ? remote.list : null;
   const results = fresh?.length ? fresh : local;
   const loading = term.length >= 2 && !fresh;
+  const active = Math.max(0, results.findIndex((a) => a.code === activeCode));
+  const setActive = (i: number) => setActiveCode(results[i]?.code ?? null);
 
   // Every airport in the world: ask our own API (debounced) once 2+ letters are typed.
   useEffect(() => {
@@ -62,10 +68,7 @@ export function AirportField({ label, icon, value, onChange, placeholder, error,
     const t = setTimeout(() => {
       fetch(`/api/places?q=${encodeURIComponent(term)}`, { signal: ctrl.signal })
         .then((r) => (r.ok ? (r.json() as Promise<Airport[]>) : []))
-        .then((list) => {
-          setRemote({ term, list });
-          setActive(0);
-        })
+        .then((list) => setRemote({ term, list }))
         .catch(() => {});
     }, 180);
     return () => {
@@ -81,17 +84,29 @@ export function AirportField({ label, icon, value, onChange, placeholder, error,
     setOpen(false);
   }
 
+  /** Leaving the field after typing keeps the highlighted airport instead of dropping the text. */
+  function commit() {
+    if (query?.trim() && results[active]) choose(results[active]);
+    else {
+      setOpen(false);
+      setQuery(null);
+    }
+  }
+
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "ArrowDown") {
       e.preventDefault();
       if (!open) setOpen(true);
-      setActive((i) => Math.min(i + 1, results.length - 1));
+      else setActive(Math.min(active + 1, results.length - 1));
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      setActive((i) => Math.max(i - 1, 0));
+      setActive(Math.max(active - 1, 0));
     } else if (e.key === "Enter" && open && results[active]) {
       e.preventDefault();
       choose(results[active]);
+    } else if (e.key === "Tab" && open) {
+      // No preventDefault: focus moves on to the next field as usual.
+      commit();
     } else if (e.key === "Escape") {
       setOpen(false);
       setQuery(null);
@@ -111,6 +126,7 @@ export function AirportField({ label, icon, value, onChange, placeholder, error,
         <span className="text-ink-soft">{icon}</span>
         <div className="min-w-0 flex-1">
           <label htmlFor={id} className="block text-[0.75rem] font-medium text-ink-soft">
+            {labelPrefix && <span className="sr-only">{labelPrefix} </span>}
             {label}
           </label>
           <input
@@ -131,7 +147,7 @@ export function AirportField({ label, icon, value, onChange, placeholder, error,
             onChange={(e) => {
               setQuery(e.target.value);
               setOpen(true);
-              setActive(0);
+              setActiveCode(null);
               if (value) onChange(null);
             }}
             onFocus={(e) => {
@@ -140,13 +156,10 @@ export function AirportField({ label, icon, value, onChange, placeholder, error,
             }}
             onBlur={() => {
               // Let a click on an option land before closing.
-              setTimeout(() => {
-                setOpen(false);
-                setQuery(null);
-              }, 120);
+              setTimeout(commit, 120);
             }}
             onKeyDown={onKeyDown}
-            className="w-full truncate bg-transparent text-[1.0625rem] font-semibold text-ink outline-none placeholder:font-normal placeholder:text-ink-soft/80"
+            className="w-full truncate bg-transparent text-[1.0625rem] font-semibold text-ink outline-none placeholder:font-normal placeholder:text-ink-soft"
           />
         </div>
       </div>
@@ -155,11 +168,16 @@ export function AirportField({ label, icon, value, onChange, placeholder, error,
           {error}
         </p>
       )}
+      {/* Always in the DOM, so screen readers pick up changes to it. */}
+      <p aria-live="polite" className="sr-only">
+        {open && !loading && results.length > 0 ? `${results.length} airport${results.length === 1 ? "" : "s"} found` : ""}
+      </p>
       {open && (
         <ul
           id={listId}
           role="listbox"
-          aria-label={`${label} airports`}
+          tabIndex={-1}
+          aria-label={`${labelPrefix ? `${labelPrefix} ` : ""}${label} airports`}
           className="absolute top-[calc(100%+6px)] left-0 z-30 max-h-80 w-full min-w-72 overflow-y-auto rounded-xl bg-white p-1.5 shadow-(--shadow-pop) ring-1 ring-line"
         >
           {results.length === 0 && (

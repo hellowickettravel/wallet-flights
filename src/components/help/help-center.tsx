@@ -34,7 +34,7 @@ export function HelpCenter() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search for refunds, baggage, currency…"
-          className="h-14 w-full rounded-full bg-white pr-5 pl-13 text-[1.0625rem] text-ink shadow-[0_8px_24px_-18px_rgb(15_31_61/0.35)] ring-1 ring-line outline-none placeholder:text-ink-soft/70 focus-visible:ring-2 focus-visible:ring-action"
+          className="h-14 w-full rounded-full bg-white pr-5 pl-13 text-[1.0625rem] text-ink shadow-[0_8px_24px_-18px_rgb(15_31_61/0.35)] ring-1 ring-line outline-none placeholder:text-ink-soft focus-visible:ring-2 focus-visible:ring-action"
         />
       </div>
       <p className="mt-3 text-[0.875rem] text-ink-soft" aria-live="polite">

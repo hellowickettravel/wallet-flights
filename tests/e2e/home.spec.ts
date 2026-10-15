@@ -85,11 +85,70 @@ test("trip type tabs change the form", async ({ page }) => {
   await page.getByRole("radio", { name: "One way" }).click();
   await expect(page.getByLabel("Returning")).toHaveCount(0);
   await page.getByRole("radio", { name: "Multi-city" }).click();
-  await expect(page.getByRole("combobox", { name: /Flight 2/ })).toBeVisible();
+  await expect(page.getByRole("combobox", { name: "Flight 2 · from" })).toBeVisible();
+  // Each leg's fields are named for screen readers, not just "Going to" again.
+  await expect(page.getByRole("combobox", { name: "Flight 2, Going to" })).toBeVisible();
+  await expect(page.getByLabel("Flight 2, Date")).toBeVisible();
   await page.getByRole("button", { name: "Add another flight" }).click();
-  await expect(page.getByRole("combobox", { name: /Flight 3/ })).toBeVisible();
+  await expect(page.getByRole("combobox", { name: "Flight 3 · from" })).toBeVisible();
   await page.getByRole("button", { name: "Remove flight 3" }).click();
-  await expect(page.getByRole("combobox", { name: /Flight 3/ })).toHaveCount(0);
+  await expect(page.getByRole("combobox", { name: "Flight 3 · from" })).toHaveCount(0);
+});
+
+test("airport field: Tab keeps the highlighted airport; the list isn't a Tab stop", async ({ page }) => {
+  await page.goto("/");
+  const to = page.getByRole("combobox", { name: "Going to" });
+  await to.fill("par");
+  await expect(page.getByRole("option", { name: /Paris/ }).first()).toBeVisible();
+  await expect(page.getByRole("listbox")).toHaveAttribute("tabindex", "-1");
+  await expect(page.locator("#search p[aria-live]").filter({ hasText: /airports? found/ })).toHaveCount(1);
+  // Whichever Paris option is highlighted is the one kept.
+  const code = (await to.getAttribute("aria-activedescendant"))!.split("-").pop();
+  await to.press("Tab");
+  await expect(to).toHaveValue(`Paris (${code})`);
+  await expect(page.getByRole("listbox")).toHaveCount(0);
+});
+
+test("past dates are refused and focus moves to the first problem", async ({ page }) => {
+  await page.goto("/");
+  const form = page.getByRole("form", { name: "Search flights" });
+  await form.getByRole("combobox", { name: "Going to" }).fill("lon");
+  await page.getByRole("option", { name: /London.*Heathrow/ }).click();
+  await form.getByLabel("Departing").fill("2020-03-10");
+  await form.getByLabel("Returning").fill("2020-03-20");
+  await form.getByRole("button", { name: "Search flights" }).click();
+  await expect(form.getByText("Choose a date from today onwards")).toBeVisible();
+  await expect(form.getByLabel("Departing")).toBeFocused();
+  await expect(page).toHaveURL(/\/$/);
+});
+
+test("trip type and tab groups move with arrow keys, one Tab stop each", async ({ page }) => {
+  await page.goto("/");
+  const round = page.getByRole("radio", { name: "Round trip" });
+  await expect(page.getByRole("radio", { name: "One way" })).toHaveAttribute("tabindex", "-1");
+  await round.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByRole("radio", { name: "One way" })).toHaveAttribute("aria-checked", "true");
+  await expect(page.getByRole("radio", { name: "One way" })).toBeFocused();
+  await page.keyboard.press("End");
+  await expect(page.getByRole("radio", { name: "Multi-city" })).toHaveAttribute("aria-checked", "true");
+  await page.keyboard.press("Home");
+  await expect(round).toHaveAttribute("aria-checked", "true");
+
+  const regions = page.getByRole("tablist", { name: "Region" }).getByRole("tab");
+  await regions.first().focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(regions.nth(1)).toHaveAttribute("aria-selected", "true");
+  await expect(regions.nth(1)).toBeFocused();
+});
+
+test("cabin classes the live search doesn't have are explained", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: /Travellers and cabin class/ }).click();
+  await page.getByText("Premium economy").click();
+  await expect(page.getByText(/Live results show economy fares for premium economy/)).toBeVisible();
+  await page.getByText("First", { exact: true }).click();
+  await expect(page.getByText(/Live results show business fares for first class/)).toBeVisible();
 });
 
 test("travellers popover enforces limits", async ({ page }) => {
@@ -262,14 +321,40 @@ test("faq accordion toggles", async ({ page }) => {
   await expect(page.getByText(/Prices come from the providers/)).toBeVisible();
 });
 
-test("fare alert form validates and confirms", async ({ page }) => {
+test("fare alert form validates and asks for confirmation (no weekly-email promise)", async ({ page }) => {
   await page.goto("/");
   const section = page.locator("section", { has: page.getByRole("heading", { name: "Get fare alerts in your inbox" }) });
+  await expect(section).toContainText("coming soon");
+  await expect(section).not.toContainText(/a week/);
   await section.getByRole("button", { name: "Sign up" }).click();
   await expect(section.getByRole("alert")).toHaveText(/Enter an email address/);
   await section.getByLabel("Email address").fill("traveller@example.com");
+  await page.waitForTimeout(1600); // the API ignores sign-ups faster than a person could type
   await section.getByRole("button", { name: "Sign up" }).click();
-  await expect(section.getByRole("status")).toContainText("You’re signed up");
+  await expect(section.getByRole("status")).toContainText("Check your inbox");
+});
+
+test("fare alerts are double opt-in, and bots get nothing", async ({ page, request }) => {
+  const res = await request.post("/api/fare-alerts", { data: { email: "traveller@example.com", startedAt: Date.now() - 5000 } });
+  expect(res.status()).toBe(202);
+  const { link } = await res.json();
+  expect(link).toMatch(/\/fare-alerts\/confirm\?t=/);
+  await page.goto(link);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Confirm your fare alerts");
+  await page.getByRole("button", { name: "Confirm my email" }).click();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("You’re on the list");
+
+  // A forged or edited link is refused.
+  await page.goto(`${link}x`);
+  await page.getByRole("button", { name: "Confirm my email" }).click();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("This link has expired");
+
+  // Honeypot filled, or submitted instantly: looks fine to the bot, but no email goes out.
+  for (const data of [{ email: "bot@example.com", company: "Acme", startedAt: Date.now() - 5000 }, { email: "bot@example.com", startedAt: Date.now() }]) {
+    const bot = await request.post("/api/fare-alerts", { data });
+    expect(bot.status()).toBe(202);
+    expect((await bot.json()).link).toBeUndefined();
+  }
 });
 
 test("mobile menu opens and closes", async ({ page, isMobile }) => {
@@ -278,8 +363,13 @@ test("mobile menu opens and closes", async ({ page, isMobile }) => {
   await page.getByRole("button", { name: "Open menu" }).click();
   const drawer = page.getByRole("dialog", { name: "Menu" });
   await expect(drawer.getByRole("link", { name: "Deals" })).toBeVisible();
+  // The page behind the drawer is out of reach while it's open.
+  await expect(page.locator("main")).toHaveAttribute("inert", "");
+  await expect(page.locator("footer")).toHaveAttribute("inert", "");
   await page.keyboard.press("Escape");
   await expect(drawer).toHaveCount(0);
+  await expect(page.locator("main")).not.toHaveAttribute("inert", "");
+  await expect(page.getByRole("button", { name: "Open menu" })).toBeFocused();
 });
 
 test("no serious accessibility violations", async ({ page }) => {
@@ -329,6 +419,14 @@ test("airline logos drift left to right, each named once for screen readers", as
   const before = await x();
   await page.waitForTimeout(600);
   expect(await x()).toBeGreaterThan(before);
+
+  // Keyboard and touch users can stop it (WCAG 2.2.2).
+  await page.getByRole("button", { name: "Pause airlines we compare" }).click();
+  await expect(page.getByRole("button", { name: "Play airlines we compare" })).toBeVisible();
+  await page.mouse.move(0, 0); // hover pauses it too; take that out of the picture
+  const stopped = await x();
+  await page.waitForTimeout(600);
+  expect(await x()).toBe(stopped);
 });
 
 test("reviews show only real Trustpilot reviews, otherwise invite one", async ({ page }) => {
@@ -337,4 +435,7 @@ test("reviews show only real Trustpilot reviews, otherwise invite one", async ({
   // No reviews yet: no stars or score anywhere, just links to the profile.
   await expect(section.getByRole("img", { name: /Rated/ })).toHaveCount(0);
   await expect(section.getByRole("link", { name: /Write a review on Trustpilot/ })).toHaveAttribute("href", "https://www.trustpilot.com/review/walletflights.com");
+  // Nothing to read yet, so the header link doesn't promise reviews.
+  await expect(section.getByRole("link", { name: /Find us on Trustpilot/ })).toBeVisible();
+  await expect(section.getByText("Read our reviews")).toHaveCount(0);
 });

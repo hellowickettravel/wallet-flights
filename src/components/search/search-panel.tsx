@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, LayoutGroup, m } from "motion/react";
-import { AirplaneLanding, AirplaneTakeoff, ArrowsLeftRight, MagnifyingGlass, Plus, X } from "@phosphor-icons/react";
+import { AirplaneLanding, AirplaneTakeoff, ArrowsDownUp, ArrowsLeftRight, MagnifyingGlass, Plus, X } from "@phosphor-icons/react";
 import clsx from "clsx";
 import type { Airport } from "@/content/airports";
 import { airportByCode, serializeSearch, type SearchQuery, type TripType } from "@/lib/search-query";
 import { AirportField } from "./airport-field";
 import { DateField } from "./date-field";
 import { TravellersPopover, type Cabin, type Travellers } from "./travellers-popover";
+import { onRovingKeyDown } from "@/lib/roving";
 
 type Leg = { id: number; from: Airport | null; to: Airport | null; date: string };
 type Errors = Record<string, string>;
@@ -62,6 +63,14 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
   const [cabin, setCabin] = useState<Cabin>(initial?.cabin ?? "economy");
   const [errors, setErrors] = useState<Errors>({});
   const [swapTurns, setSwapTurns] = useState(0);
+  const formRef = useRef<HTMLFormElement>(null);
+  // Set on a failed submit: once the errors render, focus the first invalid field.
+  const focusError = useRef(false);
+  useEffect(() => {
+    if (!focusError.current) return;
+    focusError.current = false;
+    formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
+  }, [errors]);
   // Client-only value: the prerendered HTML never bakes in a date.
   const today = useSyncExternalStore(noopSubscribe, todayIso, () => undefined);
 
@@ -91,6 +100,7 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
       if (!l.to) e[`to${i}`] = "Choose where you're going";
       if (l.from && l.to && l.from.code === l.to.code) e[`to${i}`] = "Pick a different destination";
       if (!l.date) e[`date${i}`] = "Add a departure date";
+      else if (today && l.date < today) e[`date${i}`] = "Choose a date from today onwards";
       const prev = visibleLegs[i - 1]?.date;
       if (l.date && prev && l.date < prev) e[`date${i}`] = "This flight is before the previous one";
     });
@@ -105,7 +115,10 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
     ev.preventDefault();
     const e = validate();
     setErrors(e);
-    if (Object.keys(e).length) return;
+    if (Object.keys(e).length) {
+      focusError.current = true;
+      return;
+    }
     const query: SearchQuery = {
       trip,
       cabin,
@@ -118,6 +131,7 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
 
   return (
     <form
+      ref={formRef}
       onSubmit={submit}
       noValidate
       aria-label="Search flights"
@@ -129,7 +143,17 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <LayoutGroup id="trip-type">
-          <div role="radiogroup" aria-label="Trip type" className={clsx("flex rounded-full p-1", hero ? "bg-white/10" : "bg-mist")}>
+          <div
+            role="radiogroup"
+            aria-label="Trip type"
+            onKeyDown={(e) =>
+              onRovingKeyDown(e, (i) => {
+                setTrip(tripTypes[i].id);
+                setErrors({});
+              })
+            }
+            className={clsx("flex rounded-full p-1", hero ? "bg-white/10" : "bg-mist")}
+          >
             {tripTypes.map((t) => {
               const active = trip === t.id;
               return (
@@ -138,12 +162,13 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
                   type="button"
                   role="radio"
                   aria-checked={active}
+                  tabIndex={active ? 0 : -1}
                   onClick={() => {
                     setTrip(t.id);
                     setErrors({});
                   }}
                   className={clsx(
-                    "relative h-9 cursor-pointer rounded-full px-3.5 text-[0.875rem] font-semibold transition-colors sm:px-4 sm:text-[0.9375rem]",
+                    "relative h-9 cursor-pointer rounded-full px-3 text-[0.875rem] font-semibold whitespace-nowrap transition-colors min-[360px]:px-3.5 sm:px-4 sm:text-[0.9375rem]",
                     hero ? (active ? "text-ink" : "text-white/80 hover:text-white") : active ? "text-white" : "text-ink-soft hover:text-ink",
                   )}
                 >
@@ -200,16 +225,17 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
                   value={leg.from}
                   error={errors[`from${i}`]}
                   onChange={(a) => updateLeg(i, { from: a })}
-                  shellClassName={clsx(i === 0 && trip !== "multi" && "sm:pr-8", seg && "lg:rounded-r-none")}
+                  shellClassName={clsx(i === 0 && trip !== "multi" && "max-sm:pr-16 sm:pr-8", seg && "lg:rounded-r-none")}
                 />
                 <AirportField
                   label="Going to"
+                  labelPrefix={trip === "multi" ? `Flight ${i + 1},` : undefined}
                   icon={<AirplaneLanding className="size-5" aria-hidden />}
                   placeholder="City or airport"
                   value={leg.to}
                   error={errors[`to${i}`]}
                   onChange={(a) => updateLeg(i, { to: a })}
-                  shellClassName={clsx(i === 0 && trip !== "multi" && "sm:pl-8", seg && "lg:rounded-none")}
+                  shellClassName={clsx(i === 0 && trip !== "multi" && "max-sm:pr-16 sm:pl-8", seg && "lg:rounded-none")}
                 />
                 {i === 0 && trip !== "multi" && (
                   <m.button
@@ -218,9 +244,15 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
                     aria-label="Swap origin and destination"
                     animate={{ rotate: swapTurns * 180 }}
                     transition={{ type: "spring", stiffness: 300, damping: 22 }}
-                    className="absolute top-8 left-1/2 z-10 hidden size-10 -translate-x-1/2 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-white text-action shadow-[0_2px_8px_rgb(15_31_61/0.12)] ring-1 ring-line transition-colors hover:bg-mist sm:grid"
+                    className={clsx(
+                      // Phones: the fields stack, so it sits on their shared edge at the right.
+                      "absolute right-4 z-10 grid size-10 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-white text-action shadow-[0_2px_8px_rgb(15_31_61/0.12)] ring-1 ring-line transition-colors hover:bg-mist",
+                      seg ? "top-[4.25rem]" : "top-[4.375rem]",
+                      "sm:top-8 sm:right-auto sm:left-1/2 sm:-translate-x-1/2",
+                    )}
                   >
-                    <ArrowsLeftRight className="size-[1.125rem]" weight="bold" aria-hidden />
+                    <ArrowsDownUp className="size-[1.125rem] sm:hidden" weight="bold" aria-hidden />
+                    <ArrowsLeftRight className="hidden size-[1.125rem] sm:block" weight="bold" aria-hidden />
                   </m.button>
                 )}
               </div>
@@ -228,6 +260,7 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
               <div className={clsx("grid", seg ? "gap-2 lg:gap-0.5" : "gap-3", trip === "round" ? "grid-cols-2 lg:col-span-2" : "")}>
                 <DateField
                   label={trip === "multi" ? "Date" : "Departing"}
+                  labelPrefix={trip === "multi" ? `Flight ${i + 1},` : undefined}
                   shellClassName={seg ? "lg:rounded-none lg:[&>svg]:hidden!" : undefined}
                   value={leg.date}
                   min={i > 0 ? visibleLegs[i - 1].date || today : today}

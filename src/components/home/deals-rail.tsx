@@ -11,6 +11,7 @@ import { formatPrice, origins, routesByOrigin, type Route } from "@/content/deal
 import { dealLink, fareDates, stopsText } from "@/lib/deal-links";
 import type { FareMap } from "@/lib/fares";
 import type { Fare } from "@/lib/travelpayouts";
+import { onRovingKeyDown } from "@/lib/roving";
 
 export function DealsRail({ fares }: { fares: FareMap }) {
   const [origin, setOrigin] = useState(origins[0].code);
@@ -43,7 +44,16 @@ export function DealsRail({ fares }: { fares: FareMap }) {
         </SectionHeading>
 
         <LayoutGroup id="origin">
-          <div role="tablist" aria-label="Departure city" className="scrollbar-none -mx-5 mt-8 flex gap-2 overflow-x-auto px-5 md:mx-0 md:px-0">
+          <div
+            role="tablist"
+            aria-label="Departure city"
+            onKeyDown={(e) =>
+              onRovingKeyDown(e, (i) => {
+                setOrigin(origins[i].code);
+                rail.current?.scrollTo({ left: 0 });
+              })
+            }
+            className="scrollbar-none -mx-5 mt-8 flex gap-2 overflow-x-auto px-5 md:mx-0 md:px-0">
             {origins.map((o) => {
               const active = o.code === origin;
               return (
@@ -53,6 +63,7 @@ export function DealsRail({ fares }: { fares: FareMap }) {
                   type="button"
                   id={`origin-tab-${o.code}`}
                   aria-selected={active}
+                  tabIndex={active ? 0 : -1}
                   aria-controls="deals-panel"
                   onClick={() => {
                     setOrigin(o.code);
