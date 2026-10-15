@@ -112,7 +112,7 @@ test("UK departure cities price in pounds; no invented prices", async ({ page })
   await page.goto("/");
   await page.getByRole("tab", { name: "London" }).click();
   const panel = page.locator("#deals-panel");
-  await expect(panel.getByRole("link", { name: /New York.*London → New York/ })).toBeVisible();
+  await expect(panel.getByRole("link", { name: /New York.*London to New York/ })).toBeVisible();
   const text = await panel.innerText();
   expect(text).not.toContain("$");
 });
@@ -142,10 +142,10 @@ test("deal cards: priced → Aviasales affiliate link, unpriced → live search 
 test("origin chips filter the deals rail", async ({ page }) => {
   await page.goto("/");
   const panel = page.locator("#deals-panel");
-  await expect(panel.getByRole("link", { name: /London.*New York → London/ })).toBeVisible();
+  await expect(panel.getByRole("link", { name: /London.*New York to London/ })).toBeVisible();
   await page.getByRole("tab", { name: "Los Angeles" }).click();
-  await expect(panel.getByRole("link", { name: /Tokyo.*Los Angeles → Tokyo/ })).toBeVisible();
-  await expect(panel.getByRole("link", { name: /New York → London/ })).toHaveCount(0);
+  await expect(panel.getByRole("link", { name: /Tokyo.*Los Angeles to Tokyo/ })).toBeVisible();
+  await expect(panel.getByRole("link", { name: /London.*New York to London/ })).toHaveCount(0);
 });
 
 test("hero shortcuts reach deals, destinations and the owner's hotels / car hire site", async ({ page }) => {

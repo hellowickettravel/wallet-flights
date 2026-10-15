@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useInView, useReducedMotion } from "motion/react";
+import { m, useInView, useReducedMotion } from "motion/react";
 import clsx from "clsx";
 import { ladderExample } from "@/content/about";
 const sorted = [...ladderExample.rows].sort((a, b) => a.rank - b.rank);
@@ -28,7 +28,7 @@ export function PriceLadder({ className }: { className?: string }) {
         {rows.map((r) => {
           const isCheapest = settled && r.id === cheapest;
           return (
-            <motion.li
+            <m.li
               key={r.id}
               layout
               transition={{ type: "spring", stiffness: 260, damping: 30, delay: 0.15 }}
@@ -48,7 +48,7 @@ export function PriceLadder({ className }: { className?: string }) {
                 <span className="sr-only">{r.rank === 1 ? "Lowest price" : `Price rank ${r.rank} of ${sorted.length}`}</span>
                 <span aria-hidden className={clsx("h-2 rounded-full", isCheapest ? "bg-fare" : "bg-ink/25")} style={{ width: `${30 + (r.rank - 1) * 17.5}%` }} />
               </span>
-            </motion.li>
+            </m.li>
           );
         })}
       </ol>

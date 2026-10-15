@@ -46,11 +46,21 @@ export default async function HomePage() {
       <DealsRail fares={fares} />
       {/* Only with real fares: a board of "No recent price" rows is empty content. */}
       {Object.keys(fares).length > 0 && <FareBoard fares={fares} />}
-      <DestinationsMosaic fares={tileFares} />
-      <HowItWorksBand />
-      <ReviewsSection />
-      <GuidesSection />
-      <FaqSection />
+      <div className="cv-auto">
+        <DestinationsMosaic fares={tileFares} />
+      </div>
+      <div className="cv-auto">
+        <HowItWorksBand />
+      </div>
+      <div className="cv-auto">
+        <ReviewsSection />
+      </div>
+      <div className="cv-auto">
+        <GuidesSection />
+      </div>
+      <div className="cv-auto">
+        <FaqSection />
+      </div>
       <FareAlerts />
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(jsonLd)} />
     </>

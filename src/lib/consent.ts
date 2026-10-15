@@ -11,6 +11,7 @@ export type Consent = { search: boolean; analytics: boolean; at: number };
 export type ConsentCategory = "search" | "analytics";
 
 export const CONSENT_COOKIE = "wf_consent";
+
 const MAX_AGE = 60 * 60 * 24 * 182;
 const CHANGE = "wf:consent";
 const OPEN = "wf:consent-open";
@@ -68,6 +69,7 @@ export function saveConsent(choice: Omit<Consent, "at">) {
   const secure = location.protocol === "https:" ? "; Secure" : "";
   document.cookie = `${CONSENT_COOKIE}=s${choice.search ? 1 : 0}.a${choice.analytics ? 1 : 0}.${Date.now()}; Max-Age=${MAX_AGE}; path=/; SameSite=Lax${secure}`;
   if (!choice.search) clearSearchCookies();
+  document.documentElement.dataset.consent = "1";
   window.dispatchEvent(new Event(CHANGE));
   // A loaded third-party script can't be unloaded: start a clean page.
   if (before?.search && !choice.search && document.querySelector("script[data-tpwl]")) location.reload();

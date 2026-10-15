@@ -1,9 +1,13 @@
 import { pageMetadata } from "@/lib/seo";
 import { Suspense } from "react";
-import { FlightResults } from "@/components/results/flight-results";
+import dynamic from "next/dynamic";
 import { ResultsSkeleton } from "@/components/results/results-skeleton";
 import { WhiteLabel } from "@/components/flights/white-label";
 import { demoResults } from "@/lib/flags";
+
+// Demo-only results UI: loaded only when demo mode is on, so the live site
+// doesn't ship it (about 30 KB of unused JavaScript on /flights).
+const FlightResults = dynamic(() => import("@/components/results/flight-results").then((m) => m.FlightResults));
 
 export const metadata = pageMetadata({
   title: "Compare flight prices",

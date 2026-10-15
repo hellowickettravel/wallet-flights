@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AirplaneTilt } from "@phosphor-icons/react";
 import clsx from "clsx";
+import { useConsent } from "@/lib/consent";
 
 /**
  * Bottom-right "back to top" button: a plane climbing to the top of the page.
@@ -10,13 +11,16 @@ import clsx from "clsx";
  * trip smooth, or instant with reduced motion.
  */
 export function BackToTop() {
-  const [shown, setShown] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const consent = useConsent();
+  // Hidden while the cookie banner is up: they share the bottom of the screen.
+  const shown = scrolled && !!consent;
 
   useEffect(() => {
     let frame = 0;
     const check = () => {
       cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => setShown(window.scrollY > window.innerHeight * 0.8));
+      frame = requestAnimationFrame(() => setScrolled(window.scrollY > window.innerHeight * 0.8));
     };
     check();
     window.addEventListener("scroll", check, { passive: true });

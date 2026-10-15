@@ -63,7 +63,7 @@ export function Hero() {
 
         <Reveal className="mt-6 md:mt-10">
           {/* One line from lg up (owner's request); the size follows the viewport so it always fits. */}
-          <h1 id="hero-title" className="max-w-[40rem] font-display-tight text-[1.875rem] leading-[1.1] font-extrabold text-balance text-white sm:text-[2.375rem] lg:max-w-none lg:text-[clamp(1.75rem,2.7vw,2.25rem)] lg:tracking-[-0.008em] lg:whitespace-nowrap lg:[font-variation-settings:'opsz'_36,'wdth'_100]">
+          <h1 id="hero-title" className="max-w-[40rem] font-display-tight text-[1.875rem] leading-[1.1] font-extrabold text-balance text-white sm:text-[2.375rem] lg:max-w-none lg:text-[clamp(1.75rem,2.7vw,2.25rem)] lg:tracking-[-0.008em] lg:whitespace-nowrap lg:[font-variation-settings:'opsz'_36]">
             {heroCopy.title}
           </h1>
         </Reveal>

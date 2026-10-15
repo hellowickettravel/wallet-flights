@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import { List, WhatsappLogo, X } from "@phosphor-icons/react";
 import clsx from "clsx";
 import { mainNav, site } from "@/content/site";
@@ -121,7 +121,7 @@ export function Header() {
       <AnimatePresence>
         {open && (
           <>
-            <motion.div
+            <m.div
               key="scrim"
               className="fixed inset-0 z-40 bg-ink/40 lg:hidden"
               initial={{ opacity: 0 }}
@@ -130,7 +130,7 @@ export function Header() {
               transition={{ duration: 0.2 }}
               onClick={() => setOpen(false)}
             />
-            <motion.div
+            <m.div
               key="drawer"
               id="mobile-menu"
               role="dialog"
@@ -182,7 +182,7 @@ export function Header() {
                   <span className="sr-only"> (opens WhatsApp)</span>
                 </a>
               </div>
-            </motion.div>
+            </m.div>
           </>
         )}
       </AnimatePresence>

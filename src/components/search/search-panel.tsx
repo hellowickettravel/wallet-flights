@@ -2,7 +2,7 @@
 
 import { useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
-import { AnimatePresence, LayoutGroup, motion } from "motion/react";
+import { AnimatePresence, LayoutGroup, m } from "motion/react";
 import { AirplaneLanding, AirplaneTakeoff, ArrowsLeftRight, MagnifyingGlass, Plus, X } from "@phosphor-icons/react";
 import clsx from "clsx";
 import type { Airport } from "@/content/airports";
@@ -148,7 +148,7 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
                   )}
                 >
                   {active && (
-                    <motion.span
+                    <m.span
                       layoutId="trip-pill"
                       className={clsx("absolute inset-0 rounded-full", hero ? "bg-white" : "bg-ink")}
                       transition={{ type: "spring", stiffness: 420, damping: 34 }}
@@ -175,7 +175,7 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
       <div className="mt-4 space-y-3">
         <AnimatePresence initial={false} mode="popLayout">
           {visibleLegs.map((leg, i) => (
-            <motion.div
+            <m.div
               key={leg.id}
               layout
               initial={{ opacity: 0, y: -8 }}
@@ -212,7 +212,7 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
                   shellClassName={clsx(i === 0 && trip !== "multi" && "sm:pl-8", seg && "lg:rounded-none")}
                 />
                 {i === 0 && trip !== "multi" && (
-                  <motion.button
+                  <m.button
                     type="button"
                     onClick={swap}
                     aria-label="Swap origin and destination"
@@ -221,7 +221,7 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
                     className="absolute top-8 left-1/2 z-10 hidden size-10 -translate-x-1/2 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-white text-action shadow-[0_2px_8px_rgb(15_31_61/0.12)] ring-1 ring-line transition-colors hover:bg-mist sm:grid"
                   >
                     <ArrowsLeftRight className="size-[1.125rem]" weight="bold" aria-hidden />
-                  </motion.button>
+                  </m.button>
                 )}
               </div>
 
@@ -285,7 +285,7 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
                   )}
                 </div>
               )}
-            </motion.div>
+            </m.div>
           ))}
         </AnimatePresence>
       </div>

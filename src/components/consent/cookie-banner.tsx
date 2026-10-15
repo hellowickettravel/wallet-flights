@@ -11,6 +11,11 @@ import { onConsentOpen, saveConsent, useConsent, type ConsentCategory } from "@/
  * UK/EU consent banner. Accept and Reject carry equal weight (ICO guidance);
  * nothing optional loads until the visitor opts in. Reopened from the footer's
  * "Cookie settings" or the /flights search notice.
+ *
+ * It is in the server HTML, so it paints with the page instead of popping in
+ * after hydration (it used to become the mobile LCP element). For visitors who
+ * already chose, an inline script in the layout sets html[data-consent] before
+ * first paint and CSS hides it until React removes it.
  */
 export function CookieBanner() {
   const consent = useConsent();
@@ -30,7 +35,8 @@ export function CookieBanner() {
     [],
   );
 
-  const open = consent === null || reopened;
+  // undefined = server render / hydration: render it, CSS decides visibility.
+  const open = consent == null || reopened;
 
   useEffect(() => {
     if (!reopened) return;
@@ -54,7 +60,9 @@ export function CookieBanner() {
       aria-labelledby={titleId}
       tabIndex={-1}
       data-testid="cookie-banner"
-      className="cookie-banner fixed inset-x-3 bottom-3 z-[60] mx-auto max-w-3xl rounded-(--radius-panel) bg-white p-5 shadow-(--shadow-pop) ring-1 ring-line outline-none sm:inset-x-5 sm:bottom-5 sm:p-6"
+      data-reopened={reopened || undefined}
+      // Never taller than the screen: the content scrolls, the buttons stay in view.
+      className="cookie-banner fixed inset-x-3 bottom-3 z-[60] mx-auto max-h-[calc(100dvh-1.5rem)] max-w-3xl overflow-y-auto overscroll-contain rounded-(--radius-panel) bg-white p-5 shadow-(--shadow-pop) ring-1 ring-line outline-none sm:inset-x-5 sm:bottom-5 sm:max-h-[calc(100dvh-2.5rem)] sm:p-6"
     >
       <div className="flex items-start gap-3">
         <Cookie className="mt-0.5 size-6 shrink-0 text-action" weight="duotone" aria-hidden />
@@ -107,7 +115,7 @@ export function CookieBanner() {
         </ul>
       )}
 
-      <div className="mt-5 grid gap-2.5 sm:flex sm:flex-wrap sm:justify-end">
+      <div className="sticky -bottom-5 -mx-5 -mb-5 mt-2 grid gap-2.5 bg-white px-5 pt-3 pb-5 sm:-bottom-6 sm:-mx-6 sm:-mb-6 sm:flex sm:flex-wrap sm:justify-end sm:px-6 sm:pb-6">
         {manage ? (
           <button type="button" onClick={() => done(choice)} className={btn("ghost")}>
             {c.save}

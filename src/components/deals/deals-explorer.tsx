@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { AnimatePresence, LayoutGroup, motion } from "motion/react";
+import { AnimatePresence, LayoutGroup, m } from "motion/react";
 import clsx from "clsx";
 import { DealCard } from "@/components/home/deals-rail";
 import { origins, routes } from "@/content/deals";
@@ -51,7 +51,7 @@ export function DealsExplorer({ fares }: { fares: FareMap }) {
                     on ? "text-white" : "text-ink ring-1 ring-line hover:bg-mist",
                   )}
                 >
-                  {on && <motion.span layoutId="deal-origin-pill" className="absolute inset-0 rounded-full bg-ink" transition={{ type: "spring", stiffness: 420, damping: 36 }} />}
+                  {on && <m.span layoutId="deal-origin-pill" className="absolute inset-0 rounded-full bg-ink" transition={{ type: "spring", stiffness: 420, damping: 36 }} />}
                   <span className="relative">{o.city}</span>
                 </button>
               );
@@ -88,9 +88,9 @@ export function DealsExplorer({ fares }: { fares: FareMap }) {
         </div>
       </div>
 
-      <h2 className="mt-6 text-[0.9375rem] font-normal text-ink" aria-live="polite">
+      <p className="mt-6 text-[0.9375rem] text-ink" aria-live="polite">
         <strong className="font-semibold">{list.length}</strong> {list.length === 1 ? "route" : "routes"}
-      </h2>
+      </p>
 
       {list.length === 0 ? (
         <div className="mt-4 rounded-(--radius-panel) bg-mist px-6 py-12 text-center">
@@ -100,22 +100,24 @@ export function DealsExplorer({ fares }: { fares: FareMap }) {
           </button>
         </div>
       ) : (
-        <motion.ul layout className="mt-4 grid gap-x-5 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          <AnimatePresence mode="popLayout" initial={false}>
-            {list.map((d) => (
-              <motion.li
+        // Fade cards in and out on filter changes. No per-card layout animation:
+        // 36 projection nodes made hydration on /deals a 600 ms long task.
+        <ul className="mt-4 grid gap-x-5 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <AnimatePresence initial={false}>
+            {list.map((d, i) => (
+              <m.li
                 key={d.slug}
-                layout
                 initial={{ opacity: 0, scale: 0.97 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.97, transition: { duration: 0.12 } }}
                 transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
               >
-                <DealCard route={d} fare={fares[d.slug]} subId={`deals_${d.slug}`} />
-              </motion.li>
+                {/* The first cards are the mobile LCP: load them straight away. */}
+                <DealCard route={d} fare={fares[d.slug]} subId={`deals_${d.slug}`} priority={i < 2} />
+              </m.li>
             ))}
           </AnimatePresence>
-        </motion.ul>
+        </ul>
       )}
       <p className="mt-8 text-[0.8125rem] text-ink-soft">
         Lowest round-trip economy fares per person found in the last few days, in the departure city’s currency. Routes

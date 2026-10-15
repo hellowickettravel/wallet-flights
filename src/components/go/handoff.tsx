@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { motion, useReducedMotion } from "motion/react";
+import { m, useReducedMotion } from "motion/react";
 import { ArrowLeft, ArrowUpRight, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
 import { programs } from "@/content/affiliates";
 import { formatPrice, type Currency } from "@/content/deals";
@@ -62,7 +62,7 @@ export function Handoff() {
       {from && to && (
         <p className="mt-3 text-ink">
           {airline && <>{airline} · </>}
-          {from.city} → {to.city}
+          {from.city} to {to.city}
           {demoResults && Number.isFinite(price) && price > 0 && (
             <>
               {" · "}
@@ -73,7 +73,7 @@ export function Handoff() {
       )}
 
       <div className="mt-8 h-2 overflow-hidden rounded-full bg-mist" aria-hidden>
-        <motion.div
+        <m.div
           className="h-full rounded-full bg-action"
           initial={{ width: reduce ? "100%" : "0%" }}
           animate={{ width: "100%" }}

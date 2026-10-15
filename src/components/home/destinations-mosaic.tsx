@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { AnimatePresence, LayoutGroup, motion } from "motion/react";
+import { AnimatePresence, LayoutGroup, m } from "motion/react";
 import clsx from "clsx";
 import { SmartImage } from "@/components/ui/smart-image";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -47,7 +47,7 @@ export function DestinationsMosaic({ fares }: { fares: Record<string, TileFare> 
                 >
                   {r.label}
                   {active && (
-                    <motion.span
+                    <m.span
                       layoutId="region-underline"
                       className="absolute inset-x-3 -bottom-px h-[3px] rounded-full bg-action"
                       transition={{ type: "spring", stiffness: 420, damping: 36 }}
@@ -61,7 +61,7 @@ export function DestinationsMosaic({ fares }: { fares: Record<string, TileFare> 
 
         <div id="region-panel" role="tabpanel" aria-labelledby={`region-tab-${region}`} className="mt-8">
           <AnimatePresence mode="wait" initial={false}>
-            <motion.ul
+            <m.ul
               key={region}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -104,7 +104,7 @@ export function DestinationsMosaic({ fares }: { fares: Record<string, TileFare> 
                 </li>
                 );
               })}
-            </motion.ul>
+            </m.ul>
           </AnimatePresence>
         </div>
       </div>

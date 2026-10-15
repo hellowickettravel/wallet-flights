@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
-import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, LayoutGroup, m, useReducedMotion } from "motion/react";
 import {
   ArrowSquareOut,
   CaretLeft,
@@ -203,7 +203,7 @@ function ResultsView({ query }: { query: SearchQuery }) {
           </div>
           <AnimatePresence initial={false}>
             {editing && (
-              <motion.div
+              <m.div
                 id="modify-search"
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
@@ -214,7 +214,7 @@ function ResultsView({ query }: { query: SearchQuery }) {
                 <div className="pt-4">
                   <SearchPanel initial={query} variant="bar" />
                 </div>
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
         </div>
@@ -298,10 +298,10 @@ function ResultsView({ query }: { query: SearchQuery }) {
                     </button>
                   </div>
                 ) : view === "cards" ? (
-                  <motion.ol layout className="mt-4 space-y-4">
+                  <m.ol layout className="mt-4 space-y-4">
                     <AnimatePresence initial={true} mode="popLayout">
                       {sorted.list.slice(0, shown).map((it, i) => (
-                        <motion.li
+                        <m.li
                           key={it.id}
                           layout
                           initial={{ opacity: 0, y: 16 }}
@@ -316,10 +316,10 @@ function ResultsView({ query }: { query: SearchQuery }) {
                             onToggle={() => setExpanded((e) => (e === it.id ? null : it.id))}
                             badge={it.id === sorted.cheapestId ? "Cheapest" : it.id === sorted.fastestId ? "Fastest" : it.id === sorted.bestId ? "Best" : undefined}
                           />
-                        </motion.li>
+                        </m.li>
                       ))}
                     </AnimatePresence>
-                  </motion.ol>
+                  </m.ol>
                 ) : (
                   <ResultsTable list={sorted.list.slice(0, shown)} cheapestId={sorted.cheapestId} />
                 )}
@@ -444,7 +444,7 @@ function SortTabs({
               onClick={() => onSort(t.id)}
               className="relative cursor-pointer rounded-[14px] px-3 py-2.5 text-left sm:px-4"
             >
-              {on && <motion.span layoutId="sort-pill" className="absolute inset-0 rounded-[14px] bg-ink" transition={{ type: "spring", stiffness: 420, damping: 36 }} />}
+              {on && <m.span layoutId="sort-pill" className="absolute inset-0 rounded-[14px] bg-ink" transition={{ type: "spring", stiffness: 420, damping: 36 }} />}
               <span className={clsx("relative block text-[0.9375rem] font-semibold", on ? "text-white" : "text-ink")}>{t.label}</span>
               <span className={clsx("tabular relative block text-[0.8125rem]", on ? "text-white/75" : "text-ink-soft")}>{t.meta}</span>
             </button>
@@ -524,14 +524,14 @@ function FilterSheet({ onClose, count, children }: { onClose: () => void; count:
   }, [onClose]);
   return (
     <>
-      <motion.div
+      <m.div
         className="fixed inset-0 z-40 bg-ink/40"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
       />
-      <motion.div
+      <m.div
         role="dialog"
         aria-modal="true"
         aria-label="Filters"
@@ -560,7 +560,7 @@ function FilterSheet({ onClose, count, children }: { onClose: () => void; count:
             Show {count} flight{count === 1 ? "" : "s"}
           </button>
         </div>
-      </motion.div>
+      </m.div>
     </>
   );
 }

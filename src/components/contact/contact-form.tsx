@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import { CheckCircle, Info, PaperPlaneTilt } from "@phosphor-icons/react";
 import clsx from "clsx";
 import { bookingNote, contactLimits, contactTopics } from "@/content/contact";
@@ -68,7 +68,7 @@ export function ContactForm() {
     <div className="rounded-(--radius-panel) bg-white p-5 shadow-(--shadow-float) ring-1 ring-line/70 sm:p-8">
       <AnimatePresence mode="wait" initial={false}>
         {status === "sent" ? (
-          <motion.div
+          <m.div
             key="sent"
             role="status"
             initial={{ opacity: 0, y: 10 }}
@@ -88,9 +88,9 @@ export function ContactForm() {
             >
               Send another message
             </button>
-          </motion.div>
+          </m.div>
         ) : (
-          <motion.form
+          <m.form
             key="form"
             ref={formRef}
             onSubmit={submit}
@@ -165,7 +165,7 @@ export function ContactForm() {
               <FieldError id={`${id}-topic-err`} message={errors.topic} />
               <AnimatePresence initial={false}>
                 {values.topic === "booking" && (
-                  <motion.p
+                  <m.p
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
@@ -176,7 +176,7 @@ export function ContactForm() {
                       <Info className="mt-0.5 size-5 shrink-0 text-action" aria-hidden />
                       {bookingNote}
                     </span>
-                  </motion.p>
+                  </m.p>
                 )}
               </AnimatePresence>
             </fieldset>
@@ -235,7 +235,7 @@ export function ContactForm() {
                 .
               </p>
             )}
-          </motion.form>
+          </m.form>
         )}
       </AnimatePresence>
     </div>

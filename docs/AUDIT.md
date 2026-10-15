@@ -339,3 +339,18 @@ that need fares). New checks: every FAQ/help answer in the server HTML, the enti
 files, destination H1, region links, route links from /deals, route noindex = not in sitemap, guide
 links. The search-bar alignment test now measures field boxes after the entrance animation (it was
 flaky) and is stricter: same top and height within 1px.
+
+## Phase 3, part 1: performance (done). Part 2 still open (see docs/HANDOFF.md)
+| Plan item | Change |
+|---|---|
+| 3.1 Cookie banner | Server-rendered, so it paints with the page instead of after hydration (it was the mobile LCP element). An inline `<head>` script (`src/lib/consent-flag.ts`) sets `html[data-consent]` for visitors who already chose, and CSS hides it before first paint, with no flash. `max-h` plus internal scroll with sticky buttons (usable at 320px and 400% zoom). First in the DOM, so keyboard users reach it first. Back-to-top hidden while it's up. |
+| 3.2 Fare board | The split-flap writes glyphs into the tiles on animation frames and flips them with the Web Animations API, so React no longer re-renders the board 46 times. Tiles use `contain: layout paint`. IntersectionObserver plus matchMedia replace motion hooks. |
+| 3.3 Motion | `LazyMotion` (strict) with `domMax` loaded asynchronously (`src/components/motion-features.ts`). Every `motion.*` became `m.*` in 13 components, so the animation engine left the first-load bundle. |
+| 3.4 Fonts | Bricolage without the `wdth` axis (131 KB → about 77 KB). JetBrains Mono not preloaded. "→" replaced by "to" in visible copy, so the extra symbols subset isn't fetched. |
+| 3.5 | `cv-auto` (`content-visibility:auto`) on below-the-fold home sections. |
+| 3.6 /deals | First two card images eager with high fetch priority. No per-card `layout` animation. The "N routes" count is a `<p>`, not an H2. |
+| 3.7 Images | `deviceSizes` adds 1280/1440/1600. |
+| 3.8 /flights | The placeholder is an invisible copy of the consent notice (same size, no layout shift). Demo results UI loaded with `next/dynamic`, only in demo mode. |
+
+**Test:** lint, typecheck, build: pass. e2e: **219 passed**, 29 skipped. Re-measure PageSpeed/Lighthouse
+against https://www.walletflights.com after deploy.

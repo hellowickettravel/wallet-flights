@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { m, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { SmartImage } from "@/components/ui/smart-image";
 import type { Photo } from "@/content/images";
 
@@ -15,9 +15,9 @@ export function ParallaxHero({ photo, children }: { photo: Photo; children: Reac
 
   return (
     <div ref={ref} className="relative isolate overflow-hidden bg-ink">
-      <motion.div className="absolute inset-0" style={{ y, scale }}>
+      <m.div className="absolute inset-0" style={{ y, scale }}>
         <SmartImage photo={photo} sizes="100vw" priority />
-      </motion.div>
+      </m.div>
       <div
         aria-hidden
         className="absolute inset-0 bg-[linear-gradient(0deg,rgb(15_31_61/0.9)_0%,rgb(15_31_61/0.45)_45%,rgb(15_31_61/0.15)_100%)]"

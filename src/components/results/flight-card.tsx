@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import { AirplaneTilt, ArrowSquareOut, Backpack, CaretDown, Check, Suitcase, X } from "@phosphor-icons/react";
 import clsx from "clsx";
 import { formatPrice } from "@/content/deals";
@@ -119,7 +119,7 @@ export function FlightCard({ it, badge, travellers, expanded, onToggle, journeyL
 
       <AnimatePresence initial={false}>
         {expanded && (
-          <motion.div
+          <m.div
             id={detailsId}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
@@ -128,7 +128,7 @@ export function FlightCard({ it, badge, travellers, expanded, onToggle, journeyL
             className="overflow-hidden"
           >
             <Details it={it} journeyLabels={journeyLabels} />
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </article>

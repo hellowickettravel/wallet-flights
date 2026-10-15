@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import { BellRinging, CheckCircle } from "@phosphor-icons/react";
 import clsx from "clsx";
 
@@ -60,7 +60,7 @@ export function FareAlerts() {
 
           <AnimatePresence mode="wait" initial={false}>
             {state.status === "done" ? (
-              <motion.div
+              <m.div
                 key="done"
                 role="status"
                 initial={{ opacity: 0, y: 8 }}
@@ -71,9 +71,9 @@ export function FareAlerts() {
                 <p className="text-[1.0625rem]">
                   <span className="font-semibold">You’re signed up.</span> Your first fare alert arrives next week.
                 </p>
-              </motion.div>
+              </m.div>
             ) : (
-              <motion.form key="form" onSubmit={submit} noValidate exit={{ opacity: 0, y: -8 }} className="w-full">
+              <m.form key="form" onSubmit={submit} noValidate exit={{ opacity: 0, y: -8 }} className="w-full">
                 <label htmlFor={id} className="mb-2 block text-[0.9375rem] font-medium text-white/90">
                   Email address
                 </label>
@@ -107,7 +107,7 @@ export function FareAlerts() {
                 <p id={`${id}-err`} role="alert" className="mt-2 min-h-5 px-2 text-[0.875rem] font-medium text-white">
                   {error}
                 </p>
-              </motion.form>
+              </m.form>
             )}
           </AnimatePresence>
         </div>

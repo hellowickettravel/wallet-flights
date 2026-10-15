@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRef, useState } from "react";
-import { AnimatePresence, LayoutGroup, motion } from "motion/react";
+import { AnimatePresence, LayoutGroup, m } from "motion/react";
 import { ArrowUpRight, CaretLeft, CaretRight } from "@phosphor-icons/react";
 import clsx from "clsx";
 import { SmartImage } from "@/components/ui/smart-image";
@@ -64,7 +64,7 @@ export function DealsRail({ fares }: { fares: FareMap }) {
                   )}
                 >
                   {active && (
-                    <motion.span layoutId="origin-pill" className="absolute inset-0 rounded-full bg-ink" transition={{ type: "spring", stiffness: 420, damping: 36 }} />
+                    <m.span layoutId="origin-pill" className="absolute inset-0 rounded-full bg-ink" transition={{ type: "spring", stiffness: 420, damping: 36 }} />
                   )}
                   <span className="relative">{o.city}</span>
                 </button>
@@ -81,7 +81,7 @@ export function DealsRail({ fares }: { fares: FareMap }) {
         >
           <AnimatePresence mode="popLayout" initial={false}>
             {deals.map((d, i) => (
-              <motion.li
+              <m.li
                 key={d.slug}
                 layout
                 initial={{ opacity: 0, x: 24 }}
@@ -90,7 +90,7 @@ export function DealsRail({ fares }: { fares: FareMap }) {
                 className="w-[78%] shrink-0 snap-start sm:w-[44%] lg:w-[calc((100%-3*1.25rem)/4)]"
               >
                 <DealCard route={d} fare={fares[d.slug]} subId={`home_deals_${d.slug}`} />
-              </motion.li>
+              </m.li>
             ))}
           </AnimatePresence>
         </ul>
@@ -104,7 +104,7 @@ export function DealsRail({ fares }: { fares: FareMap }) {
 }
 
 /** A featured route. Shows the recent cheapest fare when there is one; otherwise no price. */
-export function DealCard({ route, fare, subId }: { route: Route; fare?: Fare; subId: string }) {
+export function DealCard({ route, fare, subId, priority }: { route: Route; fare?: Fare; subId: string; priority?: boolean }) {
   const { destination: d, origin } = route;
   const link = dealLink(fare, origin.code, d.airport, subId);
   const body = (
@@ -112,6 +112,7 @@ export function DealCard({ route, fare, subId }: { route: Route; fare?: Fare; su
       <div className="relative aspect-[4/3] overflow-hidden rounded-(--radius-card)">
         <SmartImage
           photo={d.photo}
+          priority={priority}
           sizes="(min-width: 1024px) 300px, (min-width: 640px) 44vw, 78vw"
           imgClassName="transition-transform duration-700 ease-(--ease-out-quint) group-hover:scale-[1.04]"
         />
@@ -126,7 +127,7 @@ export function DealCard({ route, fare, subId }: { route: Route; fare?: Fare; su
             {link.external && <ArrowUpRight className="size-4 shrink-0 text-ink-soft" weight="bold" aria-hidden />}
           </h3>
           <p className="truncate text-[0.875rem] text-ink-soft">
-            {origin.city} → {d.city}
+            {origin.city} to {d.city}
             {fare && <> · {fareDates(fare)}</>}
           </p>
         </div>

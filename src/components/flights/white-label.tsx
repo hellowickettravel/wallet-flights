@@ -65,7 +65,9 @@ export function WhiteLabel() {
     // Once, on permission: the widget manages the URL after that.
   }, [allowed]);
 
-  if (!hydrated || consent === undefined) return <WidgetSkeleton />;
+  // Until the stored choice is known, hold the space of the consent notice (what
+  // a first visit shows), so the page doesn't shift when it appears.
+  if (!hydrated || consent === undefined) return <GateSpace />;
   if (!allowed) return <SearchGate hasQuery={parseSearch(new URLSearchParams(params.toString())).ok} analytics={!!consent?.analytics} />;
 
   return (
@@ -101,11 +103,10 @@ function SearchGate({ hasQuery, analytics }: { hasQuery: boolean; analytics: boo
   );
 }
 
-function WidgetSkeleton() {
+function GateSpace() {
   return (
-    <div className="space-y-6" aria-hidden>
-      <div className="h-28 animate-pulse rounded-(--radius-panel) bg-white" />
-      <div className="h-96 animate-pulse rounded-(--radius-panel) bg-white" />
+    <div className="invisible" aria-hidden inert>
+      <SearchGate hasQuery={false} analytics={false} />
     </div>
   );
 }

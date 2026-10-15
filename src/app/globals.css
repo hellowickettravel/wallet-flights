@@ -66,7 +66,7 @@
 
 @utility font-display-tight {
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 64, "wdth" 96;
+  font-variation-settings: "opsz" 64;
   letter-spacing: -0.018em;
 }
 
@@ -100,24 +100,6 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .rise {
-    animation: none;
-  }
-}
-
-/* Split-flap tile flip on character change (fare board). */
-@keyframes flap-in {
-  from {
-    transform: rotateX(-80deg);
-    opacity: 0.4;
-  }
-}
-.flap-in {
-  display: inline-block;
-  transform-origin: 50% 0;
-  animation: flap-in 0.09s ease-out;
-}
-@media (prefers-reduced-motion: reduce) {
-  .flap-in {
     animation: none;
   }
 }
@@ -160,4 +142,18 @@
   .marquee-track > [aria-hidden="true"] {
     display: none;
   }
+}
+
+/* The cookie banner is in the server HTML; visitors who already chose get
+   html[data-consent] from an inline script before first paint (layout.tsx). */
+html[data-consent] .cookie-banner:not([data-reopened]) {
+  display: none;
+}
+
+/* Below-the-fold blocks: the browser skips their layout and paint until they
+   near the viewport (measured: about 38% less layout on the homepage's first
+   render). The size is a placeholder until the real height is known. */
+@utility cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
 }

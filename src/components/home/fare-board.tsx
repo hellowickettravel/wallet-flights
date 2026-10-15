@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useInView, useReducedMotion } from "motion/react";
+import { useEffect, useRef } from "react";
 import { ArrowRight, MagnifyingGlass } from "@phosphor-icons/react";
 import Link from "next/link";
 import clsx from "clsx";
@@ -50,29 +49,55 @@ const srText = (r: Row, key: (typeof cols)[number]["key"]) =>
 export function FareBoard({ fares, subPrefix = "home_board" }: { fares: FareMap; subPrefix?: string }) {
   const rows: Row[] = fareBoardRoutes.map((b) => ({ route: routeBySlug[b.route], city: b.city, fare: fares[b.route] }));
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.35 });
-  const reduce = useReducedMotion();
-  const [tick, setTick] = useState<number | null>(null); // null = settled
 
+  // The server HTML holds the final characters. The animation writes glyphs
+  // straight into the tiles on animation frames and flips them with the Web
+  // Animations API, so React never re-renders (it used to re-render the whole
+  // board 46 times: about 2 s of main-thread work on a mid-range phone).
   useEffect(() => {
-    if (!inView || reduce) return;
-    let frame = 0;
-    const id = window.setInterval(() => {
-      frame += 1;
-      if (frame > 46) {
-        window.clearInterval(id);
-        setTick(null);
-      } else setTick(frame);
-    }, 55);
-    return () => window.clearInterval(id);
-  }, [inView, reduce]);
-
-  function glyph(target: string, row: number, index: number) {
-    if (tick === null || target === " ") return target;
-    const settleAt = 8 + row * 4 + index * 1.2;
-    if (tick >= settleAt) return target;
-    return GLYPHS[(tick * 7 + index * 13 + row * 5) % GLYPHS.length];
-  }
+    const board = ref.current;
+    if (!board || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const tiles = [...board.querySelectorAll<HTMLElement>("[data-flap]")].map((el) => ({
+      el,
+      target: el.dataset.flap!,
+      settleAt: 8 + Number(el.dataset.row) * 4 + Number(el.dataset.index) * 1.2,
+      seed: Number(el.dataset.index) * 13 + Number(el.dataset.row) * 5,
+    }));
+    let raf = 0;
+    const run = () => {
+      let tick = 0;
+      let last = 0;
+      const step = (now: number) => {
+        if (now - last >= 55) {
+          last = now;
+          tick += 1;
+          for (const t of tiles) {
+            if (t.target === " ") continue;
+            const next = tick > 46 || tick >= t.settleAt ? t.target : GLYPHS[(tick * 7 + t.seed) % GLYPHS.length];
+            if (t.el.textContent === next) continue;
+            t.el.textContent = next;
+            t.el.animate([{ transform: "rotateX(-80deg)", opacity: 0.4 }, { transform: "none", opacity: 1 }], { duration: 90, easing: "ease-out" });
+          }
+          if (tick > 46) return;
+        }
+        raf = requestAnimationFrame(step);
+      };
+      raf = requestAnimationFrame(step);
+    };
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        io.disconnect();
+        run();
+      },
+      { threshold: 0.35 },
+    );
+    io.observe(board);
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(raf);
+    };
+  }, []);
 
   return (
     <section aria-labelledby="board-title" className="bg-board py-18 text-white md:py-28">
@@ -133,7 +158,7 @@ export function FareBoard({ fares, subPrefix = "home_board" }: { fares: FareMap;
                         <span className="sr-only">{srText(r, c.key)}</span>
                         <span aria-hidden data-nosnippet className="flex gap-[2px] sm:gap-[3px]">
                           {[...text].map((ch, i) => (
-                            <Flap key={i} ch={glyph(ch, ri, i + (c.key === "fare" ? 14 : 0))} accent={c.key === "fare"} />
+                            <Flap key={i} ch={ch} row={ri} index={i + (c.key === "fare" ? 14 : 0)} accent={c.key === "fare"} />
                           ))}
                         </span>
                       </td>
@@ -161,10 +186,11 @@ export function FareBoard({ fares, subPrefix = "home_board" }: { fares: FareMap;
   );
 }
 
-function Flap({ ch, accent }: { ch: string; accent?: boolean }) {
+function Flap({ ch, row, index, accent }: { ch: string; row: number; index: number; accent?: boolean }) {
   return (
-    <span className="relative grid h-[clamp(1.6rem,4.6vw,2.6rem)] w-[clamp(1.05rem,3.3vw,1.85rem)] place-items-center overflow-hidden rounded-[4px] bg-board-tile font-mono text-[clamp(0.875rem,2.6vw,1.5rem)] font-semibold shadow-[inset_0_-1px_0_rgb(0_0_0/0.35)] [perspective:200px]">
-      <span key={ch} className={clsx("flap-in", accent ? "text-sun" : "text-white")}>
+    // Fixed-size tile with contained layout: changing its glyph never reflows the table.
+    <span className="relative grid [contain:layout_paint] h-[clamp(1.6rem,4.6vw,2.6rem)] w-[clamp(1.05rem,3.3vw,1.85rem)] place-items-center overflow-hidden rounded-[4px] bg-board-tile font-mono text-[clamp(0.875rem,2.6vw,1.5rem)] font-semibold shadow-[inset_0_-1px_0_rgb(0_0_0/0.35)] [perspective:200px]">
+      <span data-flap={ch} data-row={row} data-index={index} className={clsx("inline-block origin-top", accent ? "text-sun" : "text-white")}>
         {ch === " " ? " " : ch}
       </span>
       {/* the hinge line across the middle of a split-flap tile */}

@@ -35,6 +35,9 @@ const nextConfig: NextConfig = {
     // Photos are served straight from Unsplash's CDN through a custom loader
     // (see src/components/ui/smart-image.tsx); this pattern is the allow-list.
     remotePatterns: [{ protocol: "https", hostname: "images.unsplash.com" }],
+    // Steps between 1200 and 1920 so a ~1440px screen doesn't download the
+    // 1920 version of a full-width hero (about 500 KB instead of 285 KB).
+    deviceSizes: [640, 750, 828, 1080, 1200, 1280, 1440, 1600, 1920, 2048, 3840],
   },
   turbopack: {
     rules: {

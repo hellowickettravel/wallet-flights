@@ -28,7 +28,7 @@ export const aboutEarn = {
 // order so the animation can sort them. No prices — `rank` (1 = cheapest)
 // orders the rows and sets the length of each price bar.
 export const ladderExample = {
-  route: "London → New York",
+  route: "London to New York",
   dates: "Illustration, round trip",
   rows: [
     { id: "c", label: "Travel site", detail: "1 stop · 10h 40m", rank: 3 },

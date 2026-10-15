@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import { CaretDown, Minus, Plus, User } from "@phosphor-icons/react";
 import clsx from "clsx";
 
@@ -111,7 +111,7 @@ export function TravellersPopover({ travellers, cabin, onChange, variant = "pill
 
       <AnimatePresence>
         {open && (
-          <motion.div
+          <m.div
             id={panelId}
             role="dialog"
             aria-label="Travellers and cabin class"
@@ -192,7 +192,7 @@ export function TravellersPopover({ travellers, cabin, onChange, variant = "pill
             >
               Done
             </button>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>
