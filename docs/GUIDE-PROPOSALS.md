@@ -1,4 +1,9 @@
-# New guide proposals (plan item 4.5): awaiting the owner's sign-off
+# New guide proposals (plan item 4.5)
+
+**Update 16 Oct 2026:** the owner asked for posts to be written. Proposal 1 is live as
+`/travel-guides/flight-cancelled-or-delayed-rights`, and its legacy URLs now redirect there (with
+`/refundable-flights` and `/how-to-avoid-flight-cancellation-fees` going to the new 24-hour rule guide).
+Proposals 2 to 5 are scheduled in wave 2 of `docs/SEO-CONTENT-PLAN.md`.
 
 Nothing here is published. Each proposal replaces old WordPress topics that are now redirected to a
 general page (see `src/content/legacy-redirects.ts`). Once a guide is approved, written and live, point

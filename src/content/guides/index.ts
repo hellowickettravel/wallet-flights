@@ -5,6 +5,12 @@ import type { Guide, Topic, TopicId } from "./types";
 import { carryOnChecklist } from "./carry-on-only-checklist";
 import { europeShoulderSeason } from "./europe-shoulder-season";
 import { whenToBook } from "./when-to-book-international-flights";
+import { powerBankRules } from "./power-bank-rules-on-planes";
+import { twentyFourHourRule } from "./24-hour-flight-cancellation-rule";
+import { flightRights } from "./flight-cancelled-or-delayed-rights";
+import { ukLiquidsRules } from "./uk-airport-liquids-rules";
+import { selfTransfer } from "./self-transfer-separate-tickets";
+import { eesEtias } from "./ees-etias-uk-us-travellers";
 
 export type { Guide, GuideSection, GuideTable, Topic, TopicId } from "./types";
 
@@ -19,7 +25,19 @@ export const topics: Topic[] = [
 export const topicById = Object.fromEntries(topics.map((t) => [t.id, t])) as Record<TopicId, Topic>;
 
 /** Newest first, by publish date. */
-export const guides: Guide[] = [whenToBook, europeShoulderSeason, carryOnChecklist].sort((a, b) => b.published.localeCompare(a.published));
+// Same-day guides keep this order (Array.prototype.sort is stable): the
+// research plan's priority order, docs/SEO-CONTENT-PLAN.md.
+export const guides: Guide[] = [
+  powerBankRules,
+  twentyFourHourRule,
+  flightRights,
+  ukLiquidsRules,
+  selfTransfer,
+  eesEtias,
+  whenToBook,
+  europeShoulderSeason,
+  carryOnChecklist,
+].sort((a, b) => b.published.localeCompare(a.published));
 
 export const guideBySlug = Object.fromEntries(guides.map((g) => [g.slug, g])) as Record<string, Guide>;
 

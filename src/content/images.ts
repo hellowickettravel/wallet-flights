@@ -39,6 +39,13 @@ export const photos = {
 
   guidePlanning: p("photo-1578894381163-e72c17f2d45f", "Camera and passport laid out before a trip", "#9a9a9a", "Charlotte Noelle", "charlottenoelle_"),
   guideEurope: p("photo-1467269204594-9661b134dd2b", "Spring flowers on a railing in a European old town", "#9ab8b8", "Roman Kraft", "iamromankraft"),
+  // Guides added 16 Oct 2026; subjects checked by viewing each photo, tone is its average colour.
+  guidePowerBank: p("photo-1566554738544-d962991c3fee", "A phone charging from a power bank, held in two hands", "#687a5e", "I'M ZION", "ziontech"),
+  guideBooking: p("photo-1776161558001-eb66ae9f42eb", "A model airplane next to a computer keyboard", "#eef3f7", "Sasun Bughdaryan", "sasun1990"),
+  guideDepartures: p("photo-1490430657723-4d607c1503fc", "An airport departure board listing flights and times", "#49424c", "JESHOOTS.COM", "jeshoots"),
+  guideLiquids: p("photo-1765516976457-550bd5f6f708", "A toiletry bag with travel-size bottles and jars", "#a8a89f", "Rachel Beck", "rachjl"),
+  guideConnection: p("photo-1530521954074-e64f6810b32d", "A traveller resting their feet on a suitcase at the gate as a plane takes off", "#a8967a", "JESHOOTS.COM", "jeshoots"),
+  guidePassports: p("photo-1553697388-94e804e2f0f6", "Two US passports held up in a city square", "#83817f", "Spencer Davis", "spencerdavis"),
   guideCarryOn: p("photo-1526857240824-92be52581d9b", "Clothes and shoes packed in a suitcase", "#8ca6c0", "Arnel Hasanovic", "arnelhasanovic"),
 } satisfies Record<string, Photo>;
 

@@ -50,6 +50,16 @@ export const originAirports: Record<string, string> = {
 };
 
 /** Passenger-rights notes by departure country, with the official source. */
+/** Guides linked from route pages, by departure country ("Before you fly"). */
+export const routeGuides = {
+  title: "Before you fly",
+  uk: ["uk-airport-liquids-rules", "power-bank-rules-on-planes", "flight-cancelled-or-delayed-rights"],
+  us: ["24-hour-flight-cancellation-rule", "power-bank-rules-on-planes", "flight-cancelled-or-delayed-rights"],
+  /** Added for destinations in the Schengen area. */
+  schengen: "ees-etias-uk-us-travellers",
+  schengenSlugs: ["paris", "rome", "barcelona", "lisbon"],
+};
+
 export const rights = {
   uk: {
     text: "Flights leaving a UK airport are covered by UK rules on any airline. If your flight is cancelled you can choose a refund or another flight, and you may be able to claim compensation if you were told less than 14 days before departure. Compensation depends on the flight’s distance.",

@@ -10,7 +10,9 @@ import { TripExtras } from "@/components/destinations/trip-extras";
 import { formatPrice, routeBySlug, routes } from "@/content/deals";
 import { destinationGuides } from "@/content/destination-guides";
 import { routeQuestions } from "@/content/quick-answers";
-import { routeQuickAnswers, routeSeo, routeTimeDifference } from "@/lib/route-facts";
+import { routeGuides } from "@/content/route-facts";
+import { guideBySlug } from "@/content/guides";
+import { isUkOrigin, routeQuickAnswers, routeSeo, routeTimeDifference } from "@/lib/route-facts";
 import { faqPage, jsonLdHtml, webPage } from "@/lib/schema";
 import { approxFlightTime } from "@/lib/demo-flights";
 import { dealLink, fareDates, stopsText } from "@/lib/deal-links";
@@ -46,6 +48,10 @@ export default async function RoutePage({ params }: PageProps<"/routes/[slug]">)
   // Answer-first questions (flight time, distance, time difference, airports,
   // rights, entry), shown on the page and in the FAQPage markup.
   const answers = routeQuickAnswers(r, await routeTimeDifference(r.slug));
+  const beforeYouFly = [
+    ...(isUkOrigin(r) ? routeGuides.uk : routeGuides.us),
+    ...(routeGuides.schengenSlugs.includes(d.slug) ? [routeGuides.schengen] : []),
+  ].flatMap((s) => (guideBySlug[s] ? [guideBySlug[s]] : []));
   const jsonLd = {
     "@graph": [
       webPage("WebPage", `/routes/${r.slug}`, `Flights from ${origin.city} to ${d.city}`, routeSeo(r).description, {
@@ -169,6 +175,21 @@ export default async function RoutePage({ params }: PageProps<"/routes/[slug]">)
               </div>
             ))}
           </div>
+
+          {beforeYouFly.length > 0 && (
+            <>
+              <h3 className="mt-10 text-[1.125rem] font-semibold text-ink">{routeGuides.title}</h3>
+              <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+                {beforeYouFly.map((g) => (
+                  <li key={g.slug}>
+                    <Link href={`/travel-guides/${g.slug}`} className="flex h-full items-center rounded-(--radius-card) bg-mist px-4 py-3 font-semibold text-ink hover:text-action">
+                      {g.seoTitle ?? g.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
         </div>
       </section>
 

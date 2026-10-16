@@ -35,11 +35,11 @@ export const legacyRedirects: { source: string; destination: string }[] = [
   { source: "/flight-deal-tracker", destination: "/deals" },
   { source: "/round-trip-flight-specials", destination: "/deals" },
 
-  // Refunds and changes are covered in the help centre
-  { source: "/air-refunds", destination: "/help" },
-  { source: "/flight-ticket-refunds", destination: "/help" },
-  { source: "/refundable-flights", destination: "/help" },
-  { source: "/how-to-avoid-flight-cancellation-fees", destination: "/help" },
+  // Refunds and cancellations: the guides that replace them (16 Oct 2026)
+  { source: "/air-refunds", destination: "/travel-guides/flight-cancelled-or-delayed-rights" },
+  { source: "/flight-ticket-refunds", destination: "/travel-guides/flight-cancelled-or-delayed-rights" },
+  { source: "/refundable-flights", destination: "/travel-guides/24-hour-flight-cancellation-rule" },
+  { source: "/how-to-avoid-flight-cancellation-fees", destination: "/travel-guides/24-hour-flight-cancellation-rule" },
 
   // Country flight pages
   { source: "/flights-to-united-kingdom", destination: "/destinations/london" },

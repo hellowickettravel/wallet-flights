@@ -4,7 +4,8 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { guides, guidesIntro, readingMinutes, topicById } from "@/content/guides";
 
 export function GuidesSection() {
-  const [lead, ...rest] = guides;
+  // The newest guide large, the next three beside it; the rest are on /travel-guides.
+  const [lead, ...rest] = guides.slice(0, 4);
   return (
     <section aria-labelledby="guides-title" className="py-18 md:py-28">
       <div className="container-page">

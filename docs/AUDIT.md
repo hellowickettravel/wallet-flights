@@ -528,3 +528,25 @@ time is now one text node; list pages that don't exist are checked for noindex).
 **Follow-up (not changed):** unknown dynamic URLs (`/routes/x`, `/destinations/x`, `/travel-guides/x`)
 return status 200 with the not-found page and `noindex` because the response starts streaming before
 `notFound()` runs. Noindex keeps them out of the index, but a true 404 status would be cleaner.
+
+### Wave 1 guides (16 Oct 2026)
+
+Six new guides from the research plan (`docs/SEO-CONTENT-PLAN.md`), each with a short answer, tables,
+an FAQ and official sources read the same day (DOT pages and the ETIAS site read in a browser because
+they block automated fetches):
+power banks on planes, the 24-hour cancellation rule, cancelled or delayed flight rights (owner proposal 1),
+UK airport liquids rules (six airports checked on their own pages), self-transfer flights, EES and ETIAS.
+
+- Facts that differed from secondary sources: the ESTA fee is **$40.62** from 16 Oct 2026 (official
+  ESTA site; the research's secondary source said $40.27). ETIAS: the official site gives no start date.
+- UK "no 24-hour rule": the Consumer Contracts Regulations 2013, reg. 27(2)(c), exclude passenger transport.
+- Legacy redirects: `/air-refunds` and `/flight-ticket-refunds` → the rights guide; `/refundable-flights`
+  and `/how-to-avoid-flight-cancellation-fees` → the 24-hour rule guide.
+- Route pages link three or four of the guides under "Before you fly" (UK or US departures; EES/ETIAS
+  for Schengen destinations). The homepage shows the four newest guides.
+- Photos: six new Unsplash photos, each viewed to confirm the subject, credited on /photo-credits.
+
+**Test.** lint, typecheck, build: pass. e2e: **284 passed**, 30 skipped (new tests check every wave 1
+guide's sources, FAQ, sitemap entry and internal links, and the route "Before you fly" links).
+
+**Re-check monthly:** liquids table, power bank rules, EES/ETIAS status (update each guide's `updated`).

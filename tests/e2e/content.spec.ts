@@ -124,3 +124,40 @@ test("every guide: meta description and title fit, sources listed, FAQ questions
     for (const f of g.faqs ?? []) expect(html, f.q).toContain(f.q);
   }
 });
+
+// Wave 1 posts (docs/SEO-CONTENT-PLAN.md).
+const wave1 = [
+  "power-bank-rules-on-planes",
+  "24-hour-flight-cancellation-rule",
+  "flight-cancelled-or-delayed-rights",
+  "uk-airport-liquids-rules",
+  "self-transfer-separate-tickets",
+  "ees-etias-uk-us-travellers",
+];
+
+test("wave 1 guides: live, in the sitemap, with a short answer, an FAQ and official sources", async ({ request }) => {
+  const sitemap = await (await request.get("/sitemap.xml")).text();
+  for (const slug of wave1) {
+    const g = guides.find((x) => x.slug === slug);
+    expect(g, slug).toBeTruthy();
+    expect(g!.summary?.length ?? 0, slug).toBeGreaterThanOrEqual(3);
+    expect(g!.faqs?.length ?? 0, slug).toBeGreaterThanOrEqual(4);
+    for (const s of g!.sources ?? []) expect(s.url, slug).toMatch(/^https:\/\/(www\.)?(gov\.uk|caa\.co\.uk|tsa\.gov|faa\.gov|transportation\.gov|legislation\.gov\.uk|esta\.cbp\.dhs\.gov|travel-europe\.europa\.eu|home-affairs\.ec\.europa\.eu|heathrow\.com|gatwickairport\.com|birminghamairport\.co\.uk|edinburghairport\.com|manchesterairport\.co\.uk|stanstedairport\.com)\//);
+    expect(sitemap, slug).toContain(`<loc>${HOST}/travel-guides/${slug}</loc>`);
+    const res = await request.get(`/travel-guides/${slug}`);
+    expect(res.status(), slug).toBe(200);
+    // Internal links inside the text all point at pages that exist.
+    for (const href of new Set([...(await res.text()).matchAll(/href="(\/(?:travel-guides|routes|destinations)\/[^"#]+)"/g)].map((m) => m[1]))) {
+      expect((await request.get(href)).status(), `${slug} → ${href}`).toBe(200);
+    }
+  }
+});
+
+test("route pages link the guides that matter before you fly", async ({ page }) => {
+  await page.goto("/routes/london-to-lisbon");
+  const uk = page.locator("section", { has: page.getByRole("heading", { name: "Before you fly" }) });
+  await expect(uk.getByRole("link", { name: "Liquids rules at UK airports in 2026" })).toHaveAttribute("href", "/travel-guides/uk-airport-liquids-rules");
+  await expect(uk.getByRole("link", { name: "EES and ETIAS for UK and US travellers" })).toBeVisible();
+  await page.goto("/routes/new-york-to-tokyo");
+  await expect(page.getByRole("link", { name: "The 24-hour flight cancellation rule" })).toHaveAttribute("href", "/travel-guides/24-hour-flight-cancellation-rule");
+});
