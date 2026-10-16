@@ -566,3 +566,13 @@ Brought forward from weeks 3 and 4 of `docs/SEO-CONTENT-PLAN.md`:
 
 Three new Unsplash photos, each viewed to confirm the subject. Tests extend the guide checks to these
 three (official or airline sources, FAQ, sitemap, internal links).
+
+### Canonical host moved to the apex (16 Oct 2026)
+
+The owner made `https://walletflights.com` the production domain in Vercel, with www 308-redirecting
+to it. The site still declared www everywhere, so every canonical, og:url, sitemap `<loc>`, the
+robots.txt sitemap line, llms.txt and schema URL pointed at a redirecting host. `site.url` is now
+`https://walletflights.com` (one change covers all of those); the `.vercel.app` redirect goes straight to
+the apex (one hop); tests now assert no www URLs. The search widget's airport lookup works on the apex.
+TODO(confirm): owner to update the White Label domain (#23361) to the apex in its dashboard.
+**Test:** lint, typecheck, build pass; e2e 284 passed, 30 skipped.

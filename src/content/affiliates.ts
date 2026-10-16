@@ -4,7 +4,12 @@ export const travelpayouts = {
   marker: "567389",
   /** The "Walletflights" project (source) in the dashboard. */
   trs: "344771",
-  /** White Label widget #23361, configured for https://www.walletflights.com */
+  /**
+   * White Label widget #23361. Registered in the dashboard for
+   * https://www.walletflights.com; the site moved to the apex on 16 Oct 2026
+   * and the widget's airport lookup still works there. TODO(confirm): owner to
+   * update the widget's domain to https://walletflights.com in the dashboard.
+   */
   whiteLabelId: "23361",
 } as const;
 

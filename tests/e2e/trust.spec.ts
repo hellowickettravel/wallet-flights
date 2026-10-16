@@ -86,7 +86,7 @@ test("llms.txt names the company and the booking options", async ({ request }) =
 
 test("sitemap lists the editorial policy and guides by their last update", async ({ request }) => {
   const xml = await (await request.get("/sitemap.xml")).text();
-  expect(xml).toContain("<loc>https://www.walletflights.com/editorial-policy</loc>");
+  expect(xml).toContain("<loc>https://walletflights.com/editorial-policy</loc>");
   expect(xml).toMatch(/carry-on-only-checklist<\/loc>\s*<lastmod>2026-10-16/);
 });
 

@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
     // Query values pass through to the destination.
     return [
       // The production .vercel.app address duplicates the site: send it to the real domain.
-      { source: "/:path*", has: [{ type: "host", value: "wallet-flights.vercel.app" }], destination: "https://www.walletflights.com/:path*", permanent: true },
+      { source: "/:path*", has: [{ type: "host", value: "wallet-flights.vercel.app" }], destination: "https://walletflights.com/:path*", permanent: true },
       { source: "/", has: [{ type: "query", key: "flightSearch" }], destination: "/flights", permanent: false },
       ...legacyRedirects.map((r) => ({ ...r, permanent: true })),
       ...legacyOwnerRedirects.map((r) => ({ ...r, permanent: false })),

@@ -4,9 +4,10 @@
 // published, so only the city is shown.
 export const site = {
   name: "Wallet Flights",
-  // www is the host Vercel serves (the apex redirects to it) and the one the
-  // search widget is registered to. Canonicals, sitemap and schema use this.
-  url: "https://www.walletflights.com",
+  // The production host (owner, 16 Oct 2026): Vercel serves the apex and
+  // 308-redirects www to it. Canonicals, og:url, sitemap, robots, llms.txt
+  // and schema all use this, so they must match the host Vercel serves.
+  url: "https://walletflights.com",
   tagline: "Compare cheap flights in one place",
   // Also the homepage meta description: keep it under 155 characters.
   description:

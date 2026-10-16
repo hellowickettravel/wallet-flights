@@ -6,7 +6,7 @@ import { guides, pageCount } from "../../src/content/guides";
 // guides hub with pagination, and the guide template.
 test.describe.configure({ mode: "parallel" });
 
-const HOST = "https://www.walletflights.com";
+const HOST = "https://walletflights.com";
 const meta = (html: string, key: string) => html.match(new RegExp(`<meta name="${key}" content="([^"]*)"`))?.[1];
 const jsonLd = (html: string) =>
   [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].flatMap((m) => {

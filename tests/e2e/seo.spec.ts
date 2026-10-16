@@ -4,7 +4,7 @@ import { legacyOwnerRedirects, legacyRedirects } from "../../src/content/legacy-
 // Phase 1 of docs/IMPROVEMENT-PLAN.md: indexing foundations. Plain HTTP checks.
 test.describe.configure({ mode: "parallel" });
 
-const HOST = "https://www.walletflights.com";
+const HOST = "https://walletflights.com";
 
 const meta = (html: string, attr: "name" | "property", key: string) =>
   html.match(new RegExp(`<meta ${attr}="${key}" content="([^"]*)"`))?.[1];
@@ -35,7 +35,7 @@ const pages = [
 ];
 
 for (const path of pages) {
-  test(`${path}: canonical and og:url agree, on www, with full share tags`, async ({ request }) => {
+  test(`${path}: canonical and og:url agree, on the apex host, with full share tags`, async ({ request }) => {
     const html = await (await request.get(path)).text();
     const url = path === "/" ? HOST : `${HOST}${path}`;
     expect(canonical(html)).toBe(url);
@@ -47,8 +47,8 @@ for (const path of pages) {
     const description = meta(html, "name", "description") ?? "";
     expect(description.length).toBeGreaterThan(50);
     expect(description.length).toBeLessThanOrEqual(160);
-    // Nothing points at the apex any more.
-    expect(html).not.toMatch(/https:\/\/walletflights\.com/);
+    // Nothing points at www any more (Vercel redirects www to the apex).
+    expect(html).not.toMatch(/https:\/\/www\.walletflights\.com/);
   });
 }
 
@@ -73,7 +73,7 @@ test("404 and hand-off pages: own title, noindex, no canonical", async ({ reques
   expect(canonical(go)).toBeUndefined();
 });
 
-test("robots.txt: www sitemap, exact /go block, /flights crawlable, AI crawlers named", async ({ request }) => {
+test("robots.txt: apex sitemap, exact /go block, /flights crawlable, AI crawlers named", async ({ request }) => {
   const txt = await (await request.get("/robots.txt")).text();
   expect(txt).toContain(`Sitemap: ${HOST}/sitemap.xml`);
   expect(txt).toContain("Disallow: /go$");
@@ -82,7 +82,7 @@ test("robots.txt: www sitemap, exact /go block, /flights crawlable, AI crawlers 
   for (const bot of ["GPTBot", "OAI-SearchBot", "PerplexityBot", "ClaudeBot", "Google-Extended"]) expect(txt).toContain(bot);
 });
 
-test("sitemap: every URL on www with a lastmod date", async ({ request }) => {
+test("sitemap: every URL on the apex host with a lastmod date", async ({ request }) => {
   const xml = await (await request.get("/sitemap.xml")).text();
   const urls = [...xml.matchAll(/<url>([\s\S]*?)<\/url>/g)].map((m) => m[1]);
   // 35 core pages, plus route pages while they have fares.
