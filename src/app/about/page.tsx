@@ -1,3 +1,4 @@
+import { jsonLdHtml, orgRef, webPage } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
 import { ArrowUpRight, Buildings, Envelope, MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
 import { PageHeader } from "@/components/ui/page-header";
@@ -8,12 +9,17 @@ import { aboutCompany, aboutEarn, aboutIntro } from "@/content/about";
 import { howItWorks } from "@/content/how-it-works";
 import { photos } from "@/content/images";
 
+const description =
+  "Wallet Flights, a trading brand of Wicket Travel Limited, compares flight prices from airlines and travel sites for US and UK travellers, cheapest first.";
+
 export const metadata = pageMetadata({
-  title: "About us",
-  description:
-    "Wallet Flights, a trading brand of Wicket Travel Limited, compares flight prices from airlines and travel sites for US and UK travellers, cheapest first.",
+  // Absolute: the brand is already in the title, so no " | Wallet Flights".
+  title: { absolute: "About Wallet Flights: how our flight comparison works" },
+  description,
   path: "/about",
 });
+
+const jsonLd = webPage("AboutPage", "/about", "About Wallet Flights", description, { mainEntity: orgRef, about: orgRef });
 
 export default function AboutPage() {
   return (
@@ -145,6 +151,7 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(jsonLd)} />
     </>
   );
 }

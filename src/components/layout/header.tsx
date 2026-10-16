@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, m } from "motion/react";
 import { ArrowUpRight, List, WhatsappLogo, X } from "@phosphor-icons/react";
 import clsx from "clsx";
@@ -15,6 +16,15 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
   const menuButton = useRef<HTMLButtonElement>(null);
+  // The drawer is portalled to <body>: the header's backdrop-filter makes it
+  // the containing block for position:fixed children, which squeezed the
+  // full-height drawer into the 72px header bar on phones. True only in the
+  // browser (the server has no document to portal into).
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
 
   // Closing with the X, the scrim or Escape gives focus back to the menu
   // button; following a link doesn't (the new page takes over). The focus
@@ -52,7 +62,11 @@ export function Header() {
     if (!open) return;
     document.documentElement.style.overflow = "hidden";
     const outside = Array.from(document.body.children).filter(
-      (el) => !el.contains(headerRef.current) && el.localName !== "script" && el.localName !== "next-route-announcer",
+      (el) =>
+        !el.contains(headerRef.current) &&
+        !el.hasAttribute("data-menu-layer") &&
+        el.localName !== "script" &&
+        el.localName !== "next-route-announcer",
     );
     outside.forEach((el) => el.setAttribute("inert", ""));
     const onKey = (e: KeyboardEvent) => {
@@ -169,91 +183,98 @@ export function Header() {
         </div>
       </div>
 
-      <AnimatePresence>
-        {open && (
-          <>
-            <m.div
-              key="scrim"
-              className="fixed inset-0 z-40 bg-ink/40 lg:hidden"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              onClick={close}
-            />
-            <m.div
-              key="drawer"
-              id="mobile-menu"
-              role="dialog"
-              aria-modal="true"
-              aria-label="Menu"
-              className="fixed inset-y-0 right-0 z-50 flex w-[min(24rem,100%)] flex-col bg-white shadow-(--shadow-pop) lg:hidden"
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", stiffness: 380, damping: 38 }}
-            >
-              <div className="flex h-[4.5rem] items-center justify-between px-5">
-                <Logo />
-                <button
-                  type="button"
-                  onClick={close}
-                  aria-label="Close menu"
-                  autoFocus
-                  className="grid size-11 cursor-pointer place-items-center rounded-full ring-1 ring-line hover:bg-mist"
-                >
-                  <X className="size-5" aria-hidden />
-                </button>
-              </div>
-              <nav aria-label="Mobile" className="flex-1 overflow-y-auto px-3 py-2">
-                <ul>
-                  {mainNav.map((item) => (
-                    <li key={item.href}>
-                      {"external" in item ? (
-                        <a
-                          href={item.href}
-                          target="_blank"
-                          rel="noopener"
-                          onClick={() => setOpen(false)}
-                          className="flex flex-col rounded-xl px-3 py-3 hover:bg-mist"
-                        >
-                          <span className="flex items-center gap-1.5 font-display-tight text-[1.375rem] font-semibold text-ink">
-                            {item.label}
-                            <ArrowUpRight className="size-4 text-ink-soft" weight="bold" aria-hidden />
-                          </span>
-                          <span className="text-[0.875rem] text-ink-soft">{item.external}</span>
-                          <span className="sr-only"> (opens in a new tab)</span>
-                        </a>
-                      ) : (
-                        <Link
-                          href={item.href}
-                          onClick={() => setOpen(false)}
-                          className="flex items-center rounded-xl px-3 py-3.5 font-display-tight text-[1.375rem] font-semibold text-ink hover:bg-mist"
-                        >
-                          {item.label}
-                        </Link>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-              <div className="border-t border-line p-5">
-                <p className="text-sm text-ink-soft">Questions? {site.responseTime}.</p>
-                <a
-                  href={site.phone.whatsapp}
-                  target="_blank"
-                  rel="noopener"
-                  className="mt-3 flex h-14 items-center justify-center gap-2 rounded-full bg-fare text-base font-semibold text-white"
-                >
-                  <WhatsappLogo weight="fill" className="size-5.5" aria-hidden />
-                  <span className="tabular">{site.phone.display}</span>
-                  <span className="sr-only"> (opens WhatsApp)</span>
-                </a>
-              </div>
-            </m.div>
-          </>
+      {mounted &&
+        createPortal(
+          <div data-menu-layer="">
+            <AnimatePresence>
+              {open && (
+                <>
+                  <m.div
+                    key="scrim"
+                    className="fixed inset-0 z-[65] bg-ink/40 lg:hidden"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    onClick={close}
+                  />
+                  <m.div
+                    key="drawer"
+                    id="mobile-menu"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Menu"
+                    // Above the cookie banner (z-60), which is inert while the menu is open.
+                    className="fixed inset-y-0 right-0 z-[70] flex w-[min(24rem,100%)] flex-col bg-white shadow-(--shadow-pop) lg:hidden"
+                    initial={{ x: "100%" }}
+                    animate={{ x: 0 }}
+                    exit={{ x: "100%" }}
+                    transition={{ type: "spring", stiffness: 380, damping: 38 }}
+                  >
+                    <div className="flex h-[4.5rem] items-center justify-between px-5">
+                      <Logo />
+                      <button
+                        type="button"
+                        onClick={close}
+                        aria-label="Close menu"
+                        autoFocus
+                        className="grid size-11 cursor-pointer place-items-center rounded-full ring-1 ring-line hover:bg-mist"
+                      >
+                        <X className="size-5" aria-hidden />
+                      </button>
+                    </div>
+                    <nav aria-label="Mobile" className="flex-1 overflow-y-auto px-3 py-2">
+                      <ul>
+                        {mainNav.map((item) => (
+                          <li key={item.href}>
+                            {"external" in item ? (
+                              <a
+                                href={item.href}
+                                target="_blank"
+                                rel="noopener"
+                                onClick={() => setOpen(false)}
+                                className="flex flex-col rounded-xl px-3 py-3 hover:bg-mist"
+                              >
+                                <span className="flex items-center gap-1.5 font-display-tight text-[1.375rem] font-semibold text-ink">
+                                  {item.label}
+                                  <ArrowUpRight className="size-4 text-ink-soft" weight="bold" aria-hidden />
+                                </span>
+                                <span className="text-[0.875rem] text-ink-soft">{item.external}</span>
+                                <span className="sr-only"> (opens in a new tab)</span>
+                              </a>
+                            ) : (
+                              <Link
+                                href={item.href}
+                                onClick={() => setOpen(false)}
+                                className="flex items-center rounded-xl px-3 py-3.5 font-display-tight text-[1.375rem] font-semibold text-ink hover:bg-mist"
+                              >
+                                {item.label}
+                              </Link>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </nav>
+                    <div className="border-t border-line p-5">
+                      <p className="text-sm text-ink-soft">Questions? {site.responseTime}.</p>
+                      <a
+                        href={site.phone.whatsapp}
+                        target="_blank"
+                        rel="noopener"
+                        className="mt-3 flex h-14 items-center justify-center gap-2 rounded-full bg-fare text-base font-semibold text-white"
+                      >
+                        <WhatsappLogo weight="fill" className="size-5.5" aria-hidden />
+                        <span className="tabular">{site.phone.display}</span>
+                        <span className="sr-only"> (opens WhatsApp)</span>
+                      </a>
+                    </div>
+                  </m.div>
+                </>
+              )}
+            </AnimatePresence>
+          </div>,
+          document.body,
         )}
-      </AnimatePresence>
     </header>
   );
 }

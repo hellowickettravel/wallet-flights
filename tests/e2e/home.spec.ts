@@ -383,6 +383,12 @@ test("mobile menu opens and closes", async ({ page, isMobile }) => {
   await page.getByRole("button", { name: "Open menu" }).click();
   const drawer = page.getByRole("dialog", { name: "Menu" });
   await expect(drawer.getByRole("link", { name: "Deals" })).toBeVisible();
+  // Full height, not squeezed into the header bar: the header's backdrop-filter
+  // makes it the containing block for fixed children, so the drawer is portalled.
+  const box = await drawer.boundingBox();
+  expect(box!.height).toBeGreaterThanOrEqual(page.viewportSize()!.height - 1);
+  // Every link can actually be tapped (nothing on top of it).
+  for (const name of ["Deals", "Travel guides", "Contact"]) await drawer.getByRole("link", { name }).click({ trial: true });
   // The page behind the drawer is out of reach while it's open.
   await expect(page.locator("main")).toHaveAttribute("inert", "");
   await expect(page.locator("footer")).toHaveAttribute("inert", "");

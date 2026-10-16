@@ -1,14 +1,21 @@
+import { itemList, jsonLdHtml, webPage } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
 import { PageHeader } from "@/components/ui/page-header";
 import { DestinationTile } from "@/components/destinations/destination-tile";
 import { destinations, regions } from "@/content/destinations";
 import { destinationTileFares } from "@/lib/fares";
 
+const description =
+  "Best time to visit, main airports, flight times from London and New York, and recent fares for 20 popular destinations in Europe, Asia, Africa and the Americas.";
+
 export const metadata = pageMetadata({
-  title: "Flight destinations: guides and fares",
-  description:
-    "Travel guides and recent flight prices for 20 popular destinations across Europe, Asia, the Middle East, Africa and the Americas.",
+  title: "Flight destinations: best time to visit and fares",
+  description,
   path: "/destinations",
+});
+
+const jsonLd = webPage("CollectionPage", "/destinations", "Flight destinations", description, {
+  mainEntity: itemList(destinations.map((d) => ({ name: `Flights to ${d.city}, ${d.country}`, path: `/destinations/${d.slug}` }))),
 });
 
 export default async function DestinationsPage() {
@@ -51,6 +58,7 @@ export default async function DestinationsPage() {
           </section>
         );
       })}
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(jsonLd)} />
     </div>
   );
 }

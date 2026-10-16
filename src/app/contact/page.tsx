@@ -1,3 +1,4 @@
+import { jsonLdHtml, orgRef, webPage } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
 import { EnvelopeSimple, FacebookLogo, InstagramLogo, MapPin, Phone, WhatsappLogo, XLogo, Receipt } from "@phosphor-icons/react/dist/ssr";
 import { PageHeader } from "@/components/ui/page-header";
@@ -5,12 +6,15 @@ import { ContactForm } from "@/components/contact/contact-form";
 import { bookingNote } from "@/content/contact";
 import { site } from "@/content/site";
 
+const description = `Contact ${site.name} by email, phone or WhatsApp about a deal, a booking or working with us. We can also book a flight for you. ${site.responseTime}.`;
+
 export const metadata = pageMetadata({
-  title: "Contact us",
-  description:
-    `Questions about a deal, a booking or partnering with ${site.name}? Send us a message. ${site.responseTime}.`,
+  title: { absolute: `Contact ${site.name}: email, phone and WhatsApp` },
+  description,
   path: "/contact",
 });
+
+const jsonLd = webPage("ContactPage", "/contact", `Contact ${site.name}`, description, { about: orgRef });
 
 const socialIcons = { Instagram: InstagramLogo, X: XLogo, Facebook: FacebookLogo } as const;
 
@@ -97,6 +101,7 @@ export default function ContactPage() {
           </div>
         </aside>
       </div>
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(jsonLd)} />
     </section>
   );
 }

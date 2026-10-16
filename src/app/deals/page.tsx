@@ -1,16 +1,23 @@
+import { itemList, jsonLdHtml, webPage } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
 import { PageHeader } from "@/components/ui/page-header";
 import { DealsExplorer } from "@/components/deals/deals-explorer";
 import { FareBoard } from "@/components/home/fare-board";
 import Link from "next/link";
-import { origins, routesByOrigin } from "@/content/deals";
+import { origins, routes, routesByOrigin } from "@/content/deals";
 import { routeFares } from "@/lib/fares";
+
+const description =
+  "Recent cheapest round-trip fares from New York, London, Los Angeles, Manchester, Chicago and Atlanta. Pick a deal to book or compare live prices.";
 
 export const metadata = pageMetadata({
   title: "Cheap flight deals from the US and UK",
-  description:
-    "Recent cheapest round-trip fares from New York, London, Los Angeles, Manchester, Chicago and Atlanta. Pick a deal to book or compare live prices.",
+  description,
   path: "/deals",
+});
+
+const jsonLd = webPage("CollectionPage", "/deals", "Flight deals from the US and UK", description, {
+  mainEntity: itemList(routes.map((r) => ({ name: `Flights from ${r.origin.city} to ${r.destination.city}`, path: `/routes/${r.slug}` }))),
 });
 
 export default async function DealsPage() {
@@ -49,6 +56,7 @@ export default async function DealsPage() {
           </div>
         </div>
       </section>
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(jsonLd)} />
     </>
   );
 }

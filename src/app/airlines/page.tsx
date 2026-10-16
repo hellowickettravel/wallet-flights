@@ -1,3 +1,4 @@
+import { jsonLdHtml, webPage } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { MapPin, UsersThree } from "@phosphor-icons/react/dist/ssr";
@@ -5,11 +6,21 @@ import { PageHeader } from "@/components/ui/page-header";
 import { AirlineMark } from "@/components/results/airline-mark";
 import { airlines, type Alliance } from "@/content/airlines";
 
+const description =
+  "Compare fares from British Airways, Virgin Atlantic, Emirates, Qatar Airways, Turkish Airlines and more, alongside online travel sites.";
+
 export const metadata = pageMetadata({
   title: "Airlines we compare for cheap flights",
-  description:
-    "Compare fares from British Airways, Virgin Atlantic, Emirates, Qatar Airways, Turkish Airlines and more, alongside online travel sites.",
+  description,
   path: "/airlines",
+});
+
+const jsonLd = webPage("CollectionPage", "/airlines", "Airlines we compare", description, {
+  mainEntity: {
+    "@type": "ItemList",
+    numberOfItems: airlines.length,
+    itemListElement: airlines.map((a, i) => ({ "@type": "ListItem", position: i + 1, item: { "@type": "Airline", name: a.name, iataCode: a.code } })),
+  },
 });
 
 const groups: { alliance: Alliance; blurb: string }[] = [
@@ -65,6 +76,7 @@ export default function AirlinesPage() {
           <Link href="/#search" className="font-semibold text-action underline underline-offset-4">Search flights</Link>
         </p>
       </div>
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(jsonLd)} />
     </div>
   );
 }

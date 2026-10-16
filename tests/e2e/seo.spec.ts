@@ -157,7 +157,7 @@ test("one organisation entity, referenced by the website and articles", async ({
   expect(org.publishingPrinciples).toBe(`${HOST}/editorial-policy`);
   expect(home.find((d) => d["@type"] === "WebSite").publisher["@id"]).toBe(org["@id"]);
 
-  const guide = jsonLd(await (await request.get("/travel-guides/when-to-book-international-flights")).text()).find((d) => d["@type"] === "Article");
+  const guide = jsonLd(await (await request.get("/travel-guides/when-to-book-international-flights")).text()).find((d) => d["@type"] === "BlogPosting");
   expect(guide.author["@id"]).toBe(org["@id"]);
   expect(guide.publisher["@id"]).toBe(org["@id"]);
   expect(guide.dateModified).toMatch(/^\d{4}-\d{2}-\d{2}T/);

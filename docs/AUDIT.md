@@ -495,3 +495,36 @@ difference, CAA band and its omission near an edge, DOT link, entry links by dir
 mouse leaves the skip link hidden and by keyboard focuses it, widget config carries the currencies, Hotels
 in the desktop and mobile menus. Checked by hand on a local production build: header at 1024px (one line,
 nothing clipped) and the live widget's currency menu listing all 20 currencies.
+
+---
+
+## SEO and AI-search pass, travel guides hub and template (16 Oct 2026)
+
+**Plan.** Owner brief: optimise every page for search, structured data and AI engines; build a
+"Travel guides" hub with a paginated grid and a better single-guide template; then plan and write new
+posts from keyword research. Keyword research by a specialist agent: `docs/SEO-KEYWORD-RESEARCH.md`
+(demand from autocomplete tiers, no invented volumes).
+
+**Fixed first (owner report): the mobile menu.** The header's `backdrop-filter` made it the containing
+block for `position: fixed` children, so the "full-height" drawer was squeezed into the 72px header bar
+(it looked like nothing happened) and sat under the cookie banner. The drawer and scrim are now
+portalled to `<body>` (z 65/70, above the banner, which is inert while the menu is open). The e2e test
+now checks the drawer's height and that each link can be tapped.
+
+**Built.**
+| Area | Change |
+|---|---|
+| Route pages (37) | Indexable with or without fares and all in the sitemap (they were `noindex` in production, so none could earn impressions). Title "{A} to {B} flight time, distance and fares"; answer-first lead; "quick answers" block (flight time, return flight, distance, time difference, airports, best time, cancellation rights, entry) with FAQPage + WebPage markup. |
+| Destination pages (20) | Title "{City} flights: best time to visit and fares"; the "Visiting" section is now question-led (best time, airport, flight time from the UK and US, visa) with FAQPage markup. |
+| Hubs | CollectionPage + ItemList on /destinations, /deals, /airlines, /travel-guides; AboutPage and ContactPage; clearer About and Contact titles. |
+| llms.txt / llms-full.txt | Route list, and each route's Q&A; guides include the short answer, tables, tips and FAQs. |
+| Travel guides hub | Topic links, three featured guides, a paginated grid (real links to /travel-guides/page/N, 9 per page), a "Browse by topic" board in the fare-board style, and a destination band. Blog + CollectionPage markup. |
+| Guide template | Topic in the breadcrumb, byline with dates and reading time, "The short answer" box, contents (sticky on desktop, folding on phones), tables, tips, numbered steps, FAQ with FAQPage markup, sources, share links (no third-party scripts) with copy link, related guides, and a CSS-only reading-progress bar. BlogPosting markup with wordCount, articleSection, keywords and isPartOf the Blog. |
+| Content model | `src/content/guides/` (one file per guide, topics, `[label](href)` links in text); existing guides gained a short answer, FAQs and research-based SEO titles. |
+
+**Test.** lint, typecheck, build: pass. e2e: 278 passed, 30 skipped, after fixing two new tests (reading
+time is now one text node; list pages that don't exist are checked for noindex). New `tests/e2e/content.spec.ts`.
+
+**Follow-up (not changed):** unknown dynamic URLs (`/routes/x`, `/destinations/x`, `/travel-guides/x`)
+return status 200 with the not-found page and `noindex` because the response starts streaming before
+`notFound()` runs. Noindex keeps them out of the index, but a true 404 status would be cleaner.

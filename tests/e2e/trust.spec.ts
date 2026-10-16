@@ -108,7 +108,8 @@ test("every guide is about 1,000+ words, lists official sources and shows the up
 test("destination pages have a trip-planning section with official entry requirements", async ({ page }) => {
   await page.goto("/destinations/lisbon");
   await expect(page.getByRole("heading", { level: 2, name: "Visiting Lisbon" })).toBeVisible();
-  for (const h of ["When to go", "Flying to Lisbon", "Before you go"]) await expect(page.getByRole("heading", { level: 3, name: h })).toBeVisible();
+  for (const h of ["When is the best time to visit Lisbon?", "Which airport do I fly into for Lisbon?", "How long is the flight to Lisbon from the UK and US?", "Do I need a visa to visit Portugal?"])
+    await expect(page.getByRole("heading", { level: 3, name: h })).toBeVisible();
   await expect(page.getByRole("link", { name: /GOV\.UK: Portugal entry requirements/ })).toHaveAttribute("href", "https://www.gov.uk/foreign-travel-advice/portugal/entry-requirements");
   await expect(page.locator("main")).toContainText("Travelling on a US passport?");
 
@@ -119,7 +120,7 @@ test("destination pages have a trip-planning section with official entry require
 
 test("route pages show calculated facts, passenger rights and the right entry link", async ({ page }) => {
   await page.goto("/routes/manchester-to-istanbul");
-  const facts = page.locator("section", { has: page.getByRole("heading", { level: 2, name: "About this route" }) });
+  const facts = page.locator("section", { has: page.getByRole("heading", { level: 2, name: "Manchester to Istanbul flights: quick answers" }) });
   await expect(facts).toContainText(/About 2,6\d0 km \(1,6\d0 miles\)/);
   await expect(facts).toContainText(/Istanbul is \d hours? ahead of Manchester/);
   await expect(facts).toContainText("1,500km to 3,500km band");
@@ -132,7 +133,7 @@ test("route pages show calculated facts, passenger rights and the right entry li
   await expect(page.locator("main")).toContainText("Lisbon is on the same time as London.");
 
   await page.goto("/routes/new-york-to-tokyo");
-  const us = page.locator("section", { has: page.getByRole("heading", { level: 2, name: "About this route" }) });
+  const us = page.locator("section", { has: page.getByRole("heading", { level: 2, name: "New York to Tokyo flights: quick answers" }) });
   await expect(us.getByRole("link", { name: /Department of Transportation/ })).toHaveAttribute("href", /transportation\.gov/);
   await expect(us).toContainText("Travelling on a US passport?");
   await expect(us).toContainText("because of daylight saving time");

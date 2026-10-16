@@ -5,9 +5,10 @@ import { aboutEarn, aboutIntro } from "@/content/about";
 import { routes } from "@/content/deals";
 import { destinationGuides } from "@/content/destination-guides";
 import { destinations } from "@/content/destinations";
-import { guides } from "@/content/guides";
+import { guides, plainText } from "@/content/guides";
 import { helpTopics } from "@/content/help";
 import { company, companyLine, footerNotice, site } from "@/content/site";
+import { routeQuickAnswers, routeTimeDifference } from "@/lib/route-facts";
 
 const url = (path: string) => `${site.url}${path}`;
 
@@ -46,6 +47,9 @@ export function llmsTxt() {
     `- [Flight deals from the US and UK](${url("/deals")})`,
     `- [Airlines we compare](${url("/airlines")})`,
     "",
+    "## Routes (flight time, distance, time difference, airports, passenger rights)",
+    ...routes.map((r) => `- [${r.origin.city} to ${r.destination.city}](${url(`/routes/${r.slug}`)})`),
+    "",
     "## Travel guides",
     ...guides.map((g) => `- [${g.title}](${url(`/travel-guides/${g.slug}`)}): ${g.excerpt}`),
     "",
@@ -56,12 +60,14 @@ export function llmsTxt() {
     `- [Editorial policy](${url("/editorial-policy")})`,
     "",
     "## Optional",
-    `- [Full text of help, destinations and guides](${url("/llms-full.txt")})`,
+    `- [Full text of help, destinations, routes and guides](${url("/llms-full.txt")})`,
     "",
   ].join("\n");
 }
 
-export function llmsFullTxt() {
+export async function llmsFullTxt() {
+  // The time difference reads the clock, so it comes from the cached helper.
+  const diffs = await Promise.all(routes.map((r) => routeTimeDifference(r.slug)));
   return [
     ...header(),
     "## Help centre",
@@ -77,14 +83,27 @@ export function llmsFullTxt() {
         "",
       ];
     }),
-    "## Routes with their own page",
-    ...routes.map((r) => `- [${r.origin.city} to ${r.destination.city}](${url(`/routes/${r.slug}`)})`),
-    "",
+    "## Routes",
+    ...routes.flatMap((r, i) => [
+      `### ${r.origin.city} to ${r.destination.city}`,
+      `Page: ${url(`/routes/${r.slug}`)}`,
+      // Flight times and distances are estimates from the great-circle distance, as on the page.
+      ...routeQuickAnswers(r, diffs[i]).flatMap((x) => [`**${x.q}**`, x.a, ""]),
+    ]),
     "## Travel guides",
     ...guides.flatMap((g) => [
       `### ${g.title}`,
       `Page: ${url(`/travel-guides/${g.slug}`)} (published ${g.published}${g.updated ? `, updated ${g.updated}` : ""})`,
-      ...g.sections.flatMap((s) => [`#### ${s.heading}`, ...s.paragraphs, ...(s.list ?? []).map((li) => `- ${li}`), ""]),
+      ...(g.summary ? ["#### The short answer", ...g.summary.map((x) => `- ${plainText(x)}`), ""] : []),
+      ...g.sections.flatMap((s) => [
+        `#### ${s.heading}`,
+        ...s.paragraphs.map(plainText),
+        ...(s.list ?? []).map((li, i) => `${s.ordered ? `${i + 1}.` : "-"} ${plainText(li)}`),
+        ...(s.table ? [`| ${s.table.head.join(" | ")} |`, `|${s.table.head.map(() => "---").join("|")}|`, ...s.table.rows.map((r) => `| ${r.map(plainText).join(" | ")} |`)] : []),
+        ...(s.tip ? [`Tip: ${plainText(s.tip)}`] : []),
+        "",
+      ]),
+      ...(g.faqs ? ["#### Questions", ...g.faqs.flatMap((f) => [`**${f.q}**`, plainText(f.a), ""])] : []),
       ...(g.sources ? ["#### Sources", ...g.sources.map((s) => `- [${s.label}](${s.url})`), ""] : []),
     ]),
   ].join("\n");

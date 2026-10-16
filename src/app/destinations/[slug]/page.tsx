@@ -1,4 +1,5 @@
-import { breadcrumbList, jsonLdHtml } from "@/lib/schema";
+import { breadcrumbList, faqPage, jsonLdHtml } from "@/lib/schema";
+import { destinationQuestions } from "@/content/quick-answers";
 import { pageMetadata, unsplashShareImage } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -30,8 +31,8 @@ export async function generateMetadata({ params }: PageProps<"/destinations/[slu
   // Flight times are shown from the other gateway city, never from the city itself.
   const from = ["New York", "London"].filter((c) => c !== d.city).join(" and ");
   return pageMetadata({
-    title: `Cheap flights to ${d.city}`,
-    description: `Compare flights to ${d.city}, ${d.country}. Best time to visit, flight times from ${from}, recent fares and the cheapest month to fly.`,
+    title: `${d.city} flights: best time to visit and fares`,
+    description: `How long the flight to ${d.city} is from ${from}, the best months to visit, which airport to use, and entry rules for British and American travellers.`,
     path: `/destinations/${d.slug}`,
     image: unsplashShareImage(d.photo),
   });
@@ -72,8 +73,31 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
     },
   ];
 
+  const timesFrom = [
+    d.city !== "London" && { from: "London", time: fromLon },
+    d.city !== "New York" && { from: "New York", time: fromNyc },
+  ].filter((t) => !!t);
+  const notUkUs = d.country !== "United Kingdom" && d.country !== "United States";
+  const qa = {
+    bestTime: { q: destinationQuestions.bestTime.q(d.city), a: destinationQuestions.bestTime.a(guide.bestTime, guide.whenToGo) },
+    airports: { q: destinationQuestions.airports.q(d.city), a: guide.flying },
+    flightTime: {
+      q: destinationQuestions.flightTime.q(d.city, d.city === "London" ? "the US" : d.city === "New York" ? "the UK" : "the UK and US"),
+      a: destinationQuestions.flightTime.a(timesFrom),
+    },
+    entry: {
+      q: destinationQuestions.entry.q(d.country),
+      rest: `${entryNote}${notUkUs ? ` ${usPassportNote}` : ""}`,
+    },
+  };
   const jsonLd = {
     "@graph": [
+      faqPage([
+        qa.bestTime,
+        qa.airports,
+        qa.flightTime,
+        { q: qa.entry.q, a: `${destinationQuestions.entryLead} ${guide.entry.label} (${guide.entry.url}). ${qa.entry.rest}` },
+      ]),
       {
         "@type": "TouristDestination",
         name: d.city,
@@ -144,19 +168,24 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
           </ol>
 
           <h2 className="mt-12 font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">Visiting {d.city}</h2>
-          <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">When to go</h3>
-          <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">{guide.whenToGo}</p>
-          <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">Flying to {d.city}</h3>
-          <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">{guide.flying}</p>
-          <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">Before you go</h3>
+          {/* Answer-first questions; the same text feeds the FAQPage markup below. */}
+          <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">{qa.bestTime.q}</h3>
           <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">
+            <strong className="font-semibold text-ink">{guide.bestTime}.</strong> {guide.whenToGo}
+          </p>
+          <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">{qa.airports.q}</h3>
+          <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">{guide.flying}</p>
+          <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">{qa.flightTime.q}</h3>
+          <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">{qa.flightTime.a}</p>
+          <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">{qa.entry.q}</h3>
+          <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">
+            {destinationQuestions.entryLead}{" "}
             <a href={guide.entry.url} target="_blank" rel="noopener" className="inline-flex items-center gap-1 font-semibold text-action hover:underline">
               {guide.entry.label}
               <ArrowUpRight className="size-3.5" weight="bold" aria-hidden />
               <span className="sr-only"> (opens in a new tab)</span>
             </a>
-            . {entryNote}
-            {d.country !== "United Kingdom" && d.country !== "United States" && ` ${usPassportNote}`}
+            . {qa.entry.rest}
           </p>
 
           {routes.some((r) => r.destination.slug === slug) && (

@@ -27,3 +27,34 @@ export function linkDestinations(text: string, seen: Set<string>): ReactNode[] {
   out.push(text.slice(last));
   return out;
 }
+
+const linkPattern = /\[([^\]]+)\]\(([^)]+)\)/g;
+
+/**
+ * Guide text with its [label](href) links rendered: internal paths as Next
+ * links, anything else in a new tab. Plain stretches still get destination
+ * links (once per guide, through `seen`).
+ */
+export function richText(text: string, seen: Set<string>): ReactNode[] {
+  const out: ReactNode[] = [];
+  let last = 0;
+  for (const m of text.matchAll(linkPattern)) {
+    out.push(...linkDestinations(text.slice(last, m.index), seen));
+    const [, label, href] = m;
+    out.push(
+      href.startsWith("/") ? (
+        <Link key={`${href}-${m.index}`} href={href} className="font-medium text-action underline underline-offset-4 hover:text-action-deep">
+          {label}
+        </Link>
+      ) : (
+        <a key={`${href}-${m.index}`} href={href} target="_blank" rel="noopener" className="font-medium text-action underline underline-offset-4 hover:text-action-deep">
+          {label}
+          <span className="sr-only"> (opens in a new tab)</span>
+        </a>
+      ),
+    );
+    last = m.index + m[0].length;
+  }
+  out.push(...linkDestinations(text.slice(last), seen));
+  return out;
+}

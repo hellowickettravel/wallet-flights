@@ -176,3 +176,32 @@ html[data-consent] .cookie-banner:not([data-reopened]) {
   content-visibility: auto;
   contain-intrinsic-size: auto 900px;
 }
+
+/* Guide reading progress: a bar along the bottom edge of the sticky header,
+   driven by the page's scroll position with no JavaScript. Browsers without
+   scroll-driven animations simply don't show it. */
+.reading-progress {
+  display: none;
+}
+@supports (animation-timeline: scroll()) {
+  .reading-progress {
+    display: block;
+    position: fixed;
+    inset-inline: 0;
+    top: 4.5rem;
+    z-index: 39;
+    height: 3px;
+    background: var(--color-action);
+    transform-origin: left;
+    animation: reading-progress linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+@keyframes reading-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}

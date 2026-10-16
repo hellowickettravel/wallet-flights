@@ -8,10 +8,10 @@ import { SearchPanel } from "@/components/search/search-panel";
 import { MonthCalendar } from "@/components/destinations/month-calendar";
 import { TripExtras } from "@/components/destinations/trip-extras";
 import { formatPrice, routeBySlug, routes } from "@/content/deals";
-import { destinationGuides, entryNote, usPassportNote } from "@/content/destination-guides";
-import { airports } from "@/content/airports";
-import { originAirports } from "@/content/route-facts";
-import { isUkOrigin, routeDistance, routeRights, routeTimeDifference } from "@/lib/route-facts";
+import { destinationGuides } from "@/content/destination-guides";
+import { routeQuestions } from "@/content/quick-answers";
+import { routeQuickAnswers, routeSeo, routeTimeDifference } from "@/lib/route-facts";
+import { faqPage, jsonLdHtml, webPage } from "@/lib/schema";
 import { approxFlightTime } from "@/lib/demo-flights";
 import { dealLink, fareDates, stopsText } from "@/lib/deal-links";
 import { monthCalendars } from "@/lib/fares";
@@ -25,15 +25,11 @@ export async function generateMetadata({ params }: PageProps<"/routes/[slug]">):
   const { slug } = await params;
   const r = routeBySlug[slug];
   if (!r) return {};
-  // A route page is only worth indexing with a real fare on it; without one
-  // it's a thin template. It comes back by itself once fares flow.
-  const fare = await cheapestFare(r.origin.apiCode, r.destination.cityCode, r.origin.currency);
-  return pageMetadata({
-    robots: fare ? undefined : { index: false, follow: true },
-    title: `Cheap flights from ${r.origin.city} to ${r.destination.city}`,
-    description: `Recent cheapest round trips from ${r.origin.city} to ${r.destination.city}, the cheapest month to fly, and a live price comparison.`,
-    path: `/routes/${r.slug}`,
-  });
+  // Indexable with or without a fare: since Phase 4 part 3 every route page
+  // answers the flight-time, distance, time-difference, airport and rights
+  // questions for that pair, so it isn't a thin template any more.
+  const { title, description } = routeSeo(r);
+  return pageMetadata({ title, description, path: `/routes/${r.slug}` });
 }
 
 export default async function RoutePage({ params }: PageProps<"/routes/[slug]">) {
@@ -47,21 +43,26 @@ export default async function RoutePage({ params }: PageProps<"/routes/[slug]">)
   const [fare, calendars] = await Promise.all([cheapestFare(origin.apiCode, d.cityCode, origin.currency), monthCalendars(d, [origin])]);
   const link = dealLink(fare ?? undefined, origin.code, d.airport, `${sub}_cheapest`);
   const time = approxFlightTime(origin.code, d.airport);
-  const distance = routeDistance(r);
-  const timeDiff = await routeTimeDifference(r.slug);
-  const rightsNote = routeRights(r);
-  const originMain = origin.code === "NYC" ? "JFK" : origin.code === "LON" ? "Heathrow" : origin.code;
-  const arrival = airports.find((a) => a.code === d.airport);
-  // UK departures get GOV.UK (or ESTA for New York); US departures only have an
-  // official link for London (the UK ETA). Elsewhere, point US travellers to
-  // the State Department.
-  const showEntryLink = isUkOrigin(r) || d.slug === "london";
+  // Answer-first questions (flight time, distance, time difference, airports,
+  // rights, entry), shown on the page and in the FAQPage markup.
+  const answers = routeQuickAnswers(r, await routeTimeDifference(r.slug));
+  const jsonLd = {
+    "@graph": [
+      webPage("WebPage", `/routes/${r.slug}`, `Flights from ${origin.city} to ${d.city}`, routeSeo(r).description, {
+        about: [
+          { "@type": "City", name: origin.city },
+          { "@type": "City", name: d.city, containedInPlace: { "@type": "Country", name: d.country } },
+        ],
+      }),
+      faqPage(answers),
+    ],
+  };
 
   return (
     <div>
       <PageHeader
         title={`Flights from ${origin.city} to ${d.city}`}
-        intro="The cheapest round trips travellers found recently, the cheapest month to go, and live prices for your dates."
+        intro={routeSeo(r).lead}
         crumbs={[
           { label: "Deals", href: "/deals" },
           { label: `${origin.city} to ${d.city}`, href: `/routes/${r.slug}` },
@@ -140,65 +141,34 @@ export default async function RoutePage({ params }: PageProps<"/routes/[slug]">)
       <section aria-labelledby="route-facts-title" className="border-t border-line py-14 md:py-20">
         <div className="container-page max-w-4xl">
           <h2 id="route-facts-title" className="font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">
-            About this route
+            {routeQuestions.heading(origin.city, d.city)}
           </h2>
-          <dl className="mt-6 grid gap-x-10 gap-y-6 sm:grid-cols-2">
-            <div>
-              <dt className="text-[0.8125rem] text-ink-soft">Distance</dt>
-              <dd className="tabular mt-1 text-ink">
-                About {distance.km.toLocaleString("en-GB")} km ({distance.miles.toLocaleString("en-GB")} miles) between {originMain} and {d.airport}, in a straight line
-              </dd>
-            </div>
-            {timeDiff && (
-              <div>
-                <dt className="text-[0.8125rem] text-ink-soft">Time difference</dt>
-                <dd className="mt-1 text-ink">{timeDiff}</dd>
+          <div className="mt-8 divide-y divide-line border-y border-line">
+            {answers.map((x) => (
+              <div key={x.q} className="grid gap-2 py-6 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] md:gap-10">
+                <h3 className="text-[1.0625rem] leading-snug font-semibold text-ink">{x.q}</h3>
+                <p className="leading-relaxed text-ink/85">
+                  {x.a}
+                  {x.link && (
+                    <>
+                      {" "}
+                      {x.link.external ? (
+                        <a href={x.link.href} target="_blank" rel="noopener" className="inline-flex items-center gap-1 font-semibold text-action hover:underline">
+                          {x.link.label}
+                          <ArrowUpRight className="size-3.5" weight="bold" aria-hidden />
+                          <span className="sr-only"> (opens in a new tab)</span>
+                        </a>
+                      ) : (
+                        <Link href={x.link.href} className="font-semibold text-action underline-offset-4 hover:underline">
+                          {x.link.label}
+                        </Link>
+                      )}
+                    </>
+                  )}
+                </p>
               </div>
-            )}
-            <div>
-              <dt className="text-[0.8125rem] text-ink-soft">Airports in {origin.city}</dt>
-              <dd className="mt-1 text-ink">{originAirports[origin.code]}</dd>
-            </div>
-            <div>
-              <dt className="text-[0.8125rem] text-ink-soft">Arriving in {d.city}</dt>
-              <dd className="mt-1 text-ink">{arrival ? `${arrival.name} (${d.airport})` : d.airport} is the main airport. <Link href={`/destinations/${d.slug}`} className="font-semibold text-action underline-offset-4 hover:underline">Other airports and when to go</Link></dd>
-            </div>
-          </dl>
-
-          {rightsNote && (
-            <>
-              <h3 className="mt-10 text-[1.125rem] font-semibold text-ink">If your flight is cancelled</h3>
-              <p className="mt-2 leading-relaxed text-ink/85">
-                {rightsNote.text}
-                {rightsNote.band && ` This route is in the ${rightsNote.band} band.`}{" "}
-                <a href={rightsNote.source.url} target="_blank" rel="noopener" className="inline-flex items-center gap-1 font-semibold text-action hover:underline">
-                  {rightsNote.source.label}
-                  <ArrowUpRight className="size-3.5" weight="bold" aria-hidden />
-                  <span className="sr-only"> (opens in a new tab)</span>
-                </a>
-              </p>
-            </>
-          )}
-
-          {guide && (
-            <>
-              <h3 className="mt-8 text-[1.125rem] font-semibold text-ink">Passports and entry</h3>
-              <p className="mt-2 leading-relaxed text-ink/85">
-                {showEntryLink ? (
-                  <>
-                    <a href={guide.entry.url} target="_blank" rel="noopener" className="inline-flex items-center gap-1 font-semibold text-action hover:underline">
-                      {guide.entry.label}
-                      <ArrowUpRight className="size-3.5" weight="bold" aria-hidden />
-                      <span className="sr-only"> (opens in a new tab)</span>
-                    </a>
-                    . {entryNote}
-                  </>
-                ) : (
-                  `${usPassportNote} ${entryNote}`
-                )}
-              </p>
-            </>
-          )}
+            ))}
+          </div>
         </div>
       </section>
 
@@ -216,6 +186,7 @@ export default async function RoutePage({ params }: PageProps<"/routes/[slug]">)
       )}
 
       <TripExtras slug={d.slug} city={d.city} subPrefix={sub} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(jsonLd)} />
     </div>
   );
 }
