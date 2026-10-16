@@ -1,6 +1,6 @@
 # Search Console indexing checklist (16 Oct 2026)
 
-All 79 URLs below are in `https://www.walletflights.com/sitemap.xml` once commits `d50a30e` and `5ca1766`
+All 82 URLs below are in `https://www.walletflights.com/sitemap.xml` once the commits on `main`
 are pushed and deployed. Do the steps in order.
 
 ## Step 0: push and deploy (owner's terminal)
@@ -17,7 +17,7 @@ Vercel deploys `main` automatically. Wait for the deploy to finish, then open
 1. **Add a Domain property** for `walletflights.com` (DNS TXT record at Hostinger) if you only have a
    URL-prefix property. It shows www, the apex and the `flights.` / `booking.` subdomains together.
 2. **Sitemaps** → submit `https://www.walletflights.com/sitemap.xml` (resubmit even if it's already there:
-   it now has 79 URLs instead of 36).
+   it now has 82 URLs instead of 36).
 3. **Bing Webmaster Tools** → "Import from Google Search Console". Bing also feeds ChatGPT search,
    DuckDuckGo and Copilot answers.
 
@@ -71,12 +71,17 @@ covers everything else; these are the pages most likely to earn impressions firs
 6. https://www.walletflights.com/destinations/new-york
 7. https://www.walletflights.com/destinations/london
 8. https://www.walletflights.com/destinations/bangkok
-9. https://www.walletflights.com/travel-guides/when-to-book-international-flights
-10. https://www.walletflights.com/travel-guides/carry-on-only-checklist
+9. https://www.walletflights.com/travel-guides/esta-and-uk-eta
+10. https://www.walletflights.com/travel-guides/half-term-flights
 
-**Day 5 onward:** the rest only if URL Inspection shows "URL is not on Google" after a week.
+**Day 5**
+1. https://www.walletflights.com/travel-guides/hand-luggage-sizes-bag-fees
+2. https://www.walletflights.com/travel-guides/when-to-book-international-flights
+3. https://www.walletflights.com/travel-guides/carry-on-only-checklist
 
-## All 79 URLs in the sitemap
+**Day 6 onward:** the rest only if URL Inspection shows "URL is not on Google" after a week.
+
+## All 82 URLs in the sitemap
 
 **Main pages (13)**
 - https://www.walletflights.com
@@ -93,7 +98,10 @@ covers everything else; these are the pages most likely to earn impressions firs
 - https://www.walletflights.com/cookie-policy
 - https://www.walletflights.com/photo-credits
 
-**Travel guides (9)**
+**Travel guides (12)**
+- https://www.walletflights.com/travel-guides/hand-luggage-sizes-bag-fees
+- https://www.walletflights.com/travel-guides/esta-and-uk-eta
+- https://www.walletflights.com/travel-guides/half-term-flights
 - https://www.walletflights.com/travel-guides/power-bank-rules-on-planes
 - https://www.walletflights.com/travel-guides/24-hour-flight-cancellation-rule
 - https://www.walletflights.com/travel-guides/flight-cancelled-or-delayed-rights

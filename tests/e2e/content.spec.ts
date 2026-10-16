@@ -133,16 +133,21 @@ const wave1 = [
   "uk-airport-liquids-rules",
   "self-transfer-separate-tickets",
   "ees-etias-uk-us-travellers",
+  // Wave 2 so far
+  "hand-luggage-sizes-bag-fees",
+  "esta-and-uk-eta",
+  "half-term-flights",
 ];
 
-test("wave 1 guides: live, in the sitemap, with a short answer, an FAQ and official sources", async ({ request }) => {
+test("wave 1 and 2 guides: live, in the sitemap, with a short answer, an FAQ and official sources", async ({ request }) => {
   const sitemap = await (await request.get("/sitemap.xml")).text();
   for (const slug of wave1) {
     const g = guides.find((x) => x.slug === slug);
     expect(g, slug).toBeTruthy();
     expect(g!.summary?.length ?? 0, slug).toBeGreaterThanOrEqual(3);
     expect(g!.faqs?.length ?? 0, slug).toBeGreaterThanOrEqual(4);
-    for (const s of g!.sources ?? []) expect(s.url, slug).toMatch(/^https:\/\/(www\.)?(gov\.uk|caa\.co\.uk|tsa\.gov|faa\.gov|transportation\.gov|legislation\.gov\.uk|esta\.cbp\.dhs\.gov|travel-europe\.europa\.eu|home-affairs\.ec\.europa\.eu|heathrow\.com|gatwickairport\.com|birminghamairport\.co\.uk|edinburghairport\.com|manchesterairport\.co\.uk|stanstedairport\.com)\//);
+    expect(g!.sources?.length ?? 0, slug).toBeGreaterThanOrEqual(2);
+    for (const s of g!.sources ?? []) expect(s.url, slug).toMatch(/^https:\/\/(www\.)?(gov\.uk|caa\.co\.uk|tsa\.gov|faa\.gov|transportation\.gov|legislation\.gov\.uk|esta\.cbp\.dhs\.gov|travel-europe\.europa\.eu|home-affairs\.ec\.europa\.eu|heathrow\.com|gatwickairport\.com|birminghamairport\.co\.uk|edinburghairport\.com|manchesterairport\.co\.uk|stanstedairport\.com|cbp\.gov|united\.com|aa\.com|delta\.com|flyfrontier\.com|britishairways\.com)\//);
     expect(sitemap, slug).toContain(`<loc>${HOST}/travel-guides/${slug}</loc>`);
     const res = await request.get(`/travel-guides/${slug}`);
     expect(res.status(), slug).toBe(200);

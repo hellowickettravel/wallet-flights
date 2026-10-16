@@ -11,6 +11,9 @@ import { flightRights } from "./flight-cancelled-or-delayed-rights";
 import { ukLiquidsRules } from "./uk-airport-liquids-rules";
 import { selfTransfer } from "./self-transfer-separate-tickets";
 import { eesEtias } from "./ees-etias-uk-us-travellers";
+import { bagFees } from "./hand-luggage-sizes-bag-fees";
+import { estaAndEta } from "./esta-and-uk-eta";
+import { halfTermFlights } from "./half-term-flights";
 
 export type { Guide, GuideSection, GuideTable, Topic, TopicId } from "./types";
 
@@ -34,6 +37,9 @@ export const guides: Guide[] = [
   ukLiquidsRules,
   selfTransfer,
   eesEtias,
+  bagFees,
+  estaAndEta,
+  halfTermFlights,
   whenToBook,
   europeShoulderSeason,
   carryOnChecklist,

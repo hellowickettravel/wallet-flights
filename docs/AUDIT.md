@@ -550,3 +550,19 @@ UK airport liquids rules (six airports checked on their own pages), self-transfe
 guide's sources, FAQ, sitemap entry and internal links, and the route "Before you fly" links).
 
 **Re-check monthly:** liquids table, power bank rules, EES/ETIAS status (update each guide's `updated`).
+
+### Wave 2, first three guides (16 Oct 2026)
+
+Brought forward from weeks 3 and 4 of `docs/SEO-CONTENT-PLAN.md`:
+- **Hand luggage sizes and bag fees** (`/airline-baggage-fees` now redirects here). Carry-on and personal
+  item sizes for United, American (read in a browser), Delta and Frontier from their own pages. BA's sizes
+  sit behind a calculator, and easyJet, Ryanair and Jet2 pages blocked reading or returned errors, so the
+  guide sends readers to those airlines instead of quoting unchecked figures. No fee amounts are quoted.
+- **ESTA and the UK ETA.** ETA: £20, 2 years or passport expiry, decision usually within a day (up to 3
+  working days), needed for transit through UK border control. ESTA: $40.62 from 16 Oct 2026, 2 years or
+  passport expiry, needed for US transit (official ESTA FAQ).
+- **Cheap half-term flights.** Term dates by postcode (GOV.UK), and the term-time absence fines (£80 rising
+  to £160 after 21 days; court after three absences in three years). Timing advice is labelled as ours.
+
+Three new Unsplash photos, each viewed to confirm the subject. Tests extend the guide checks to these
+three (official or airline sources, FAQ, sitemap, internal links).

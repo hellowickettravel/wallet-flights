@@ -24,7 +24,7 @@ export const legacyRedirects: { source: string; destination: string }[] = [
   { source: "/best-time-to-book-flights", destination: "/travel-guides/when-to-book-international-flights" },
   { source: "/the-best-days-to-book-flights", destination: "/travel-guides/when-to-book-international-flights" },
   { source: "/early-bird-discounts-on-flights", destination: "/travel-guides/when-to-book-international-flights" },
-  { source: "/airline-baggage-fees", destination: "/travel-guides/carry-on-only-checklist" },
+  { source: "/airline-baggage-fees", destination: "/travel-guides/hand-luggage-sizes-bag-fees" },
   { source: "/off-season-travel-deals", destination: "/travel-guides/europe-shoulder-season" },
   { source: "/peak-season-vs-off-peak-flights", destination: "/travel-guides/europe-shoulder-season" },
   { source: "/flight-booking-tips", destination: "/travel-guides" },

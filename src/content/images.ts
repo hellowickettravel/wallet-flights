@@ -46,6 +46,9 @@ export const photos = {
   guideLiquids: p("photo-1765516976457-550bd5f6f708", "A toiletry bag with travel-size bottles and jars", "#a8a89f", "Rachel Beck", "rachjl"),
   guideConnection: p("photo-1530521954074-e64f6810b32d", "A traveller resting their feet on a suitcase at the gate as a plane takes off", "#a8967a", "JESHOOTS.COM", "jeshoots"),
   guidePassports: p("photo-1553697388-94e804e2f0f6", "Two US passports held up in a city square", "#83817f", "Spencer Davis", "spencerdavis"),
+  guideBagFees: p("photo-1569512850669-7baa648e82d8", "A grey hard-shell suitcase on an airport baggage carousel", "#7d6f59", "Dimitri Karastelev", "dkfra19"),
+  guideEntryPermits: p("photo-1581553673739-c4906b5d0de8", "An open passport with entry stamps on its pages", "#888f8b", "Kit (formerly ConvertKit)", "kit"),
+  guideHalfTerm: p("photo-1763618769312-d9eba1b1bce5", "Two boys watching planes through an airport window", "#6a6a6c", "Rochelle Lee", "bestlifanna"),
   guideCarryOn: p("photo-1526857240824-92be52581d9b", "Clothes and shoes packed in a suitcase", "#8ca6c0", "Arnel Hasanovic", "arnelhasanovic"),
 } satisfies Record<string, Photo>;
 

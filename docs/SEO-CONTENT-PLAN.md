@@ -29,7 +29,7 @@ regulators, governments and airports read on the day, with a short answer, table
 BlogPosting markup. Six is the number that could be written to that standard; more, thinner posts would
 hurt a domain that Google is re-evaluating after 200+ spun listicles.
 
-**Wave 2: 9 posts over weeks 3 to 8** (about 1.5 a week), plus 27 more route pairs if at least half of
+**Wave 2: 9 posts over weeks 3 to 8** (3 published early, on 16 Oct 2026) (about 1.5 a week), plus 27 more route pairs if at least half of
 the first 37 route pages are indexed by week 3.
 
 ## Wave 1: live now
@@ -50,9 +50,9 @@ Existing guides were retitled to their top searches: "Best time to book internat
 
 | Week | Guide (slug) | Primary keyword | Notes |
 |---|---|---|---|
-| 3 | `hand-luggage-sizes-bag-fees` | airline baggage fees comparison | Then point `/airline-baggage-fees` here. Read each airline's own page; leave out Spirit (reported to have stopped flying, verify first). |
-| 3 | `esta-and-uk-eta` | uk eta for us citizens / esta for usa from uk | ESTA fee is $40.62 from 16 Oct 2026 (official ESTA site); UK ETA £20 (GOV.UK). |
-| 4 | `half-term-flights` | cheap half term flights | **Publish by mid-November** for February half-term planning. |
+| ✅ 16 Oct | `hand-luggage-sizes-bag-fees` | airline baggage fees comparison | **Live.** `/airline-baggage-fees` now redirects here. US airline sizes from their own pages; UK airline pages blocked checking, so readers are sent to them. |
+| ✅ 16 Oct | `esta-and-uk-eta` | uk eta for us citizens / esta for usa from uk | **Live.** ESTA $40.62 from 16 Oct 2026; UK ETA £20. Re-check both fees monthly. |
+| ✅ 16 Oct | `half-term-flights` | cheap half term flights | **Live**, ahead of February half-term planning. |
 | 4 | `how-long-a-layover` | how long is a good layover for international flights | |
 | 5 | `how-to-find-cheap-flights` | how to find cheap flights | Then point `/how-to-find-the-cheapest-flights` and `/flight-booking-tips` here. |
 | 6 | `are-last-minute-flights-cheaper` | are last minute flights cheaper | Link from `/deals`; keep `/last-minute-flight-deals` → `/deals`. |
