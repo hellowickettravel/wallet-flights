@@ -64,7 +64,7 @@ export function DealsExplorer({ fares }: { fares: FareMap }) {
             <select
               value={region}
               onChange={(e) => setRegion(e.target.value as Region | "all")}
-              className="mt-1 h-11 w-full min-w-0 cursor-pointer rounded-xl bg-white px-3 text-[0.9375rem] font-semibold text-ink ring-1 ring-line"
+              className="mt-1 h-11 w-full min-w-0 cursor-pointer rounded-xl bg-white px-3 text-base font-semibold text-ink ring-1 ring-line sm:text-[0.9375rem]"
             >
               <option value="all">All regions</option>
               {regions.map((r) => (
@@ -79,7 +79,7 @@ export function DealsExplorer({ fares }: { fares: FareMap }) {
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value as Sort)}
-              className="mt-1 h-11 w-full min-w-0 cursor-pointer rounded-xl bg-white px-3 text-[0.9375rem] font-semibold text-ink ring-1 ring-line"
+              className="mt-1 h-11 w-full min-w-0 cursor-pointer rounded-xl bg-white px-3 text-base font-semibold text-ink ring-1 ring-line sm:text-[0.9375rem]"
             >
               <option value="price">Lowest price</option>
               <option value="city">Destination A–Z</option>

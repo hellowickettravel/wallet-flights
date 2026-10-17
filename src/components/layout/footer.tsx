@@ -27,7 +27,7 @@ export function Footer() {
           </p>
           <ul className="mt-8 space-y-3 text-[0.9375rem]">
             <li>
-              <a href={`mailto:${site.email}`} className="inline-flex items-center gap-3 font-semibold hover:text-sun">
+              <a href={`mailto:${site.email}`} className="inline-flex min-h-6 items-center gap-3 font-semibold hover:text-sun">
                 <EnvelopeSimple className="size-5 text-sun" aria-hidden />
                 {site.email}
               </a>
@@ -109,7 +109,7 @@ export function Footer() {
             <p id="company-details">{companyLine}</p>
           </div>
           <div className="flex shrink-0 flex-col gap-2 md:items-end">
-            <CookieSettingsButton className="cursor-pointer text-left font-semibold text-white/75 underline-offset-4 hover:text-white hover:underline" />
+            <CookieSettingsButton className="min-h-6 cursor-pointer text-left font-semibold text-white/75 underline-offset-4 hover:text-white hover:underline" />
             <p>
               © <CurrentYear /> {site.name}
             </p>

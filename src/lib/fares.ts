@@ -12,16 +12,21 @@ export async function routeFares(list: Route[] = routes): Promise<FareMap> {
   return Object.fromEntries(list.flatMap((r, i) => (fares[i] ? [[r.slug, fares[i]]] : [])));
 }
 
-/** The cheapest fare in each currency (pounds first), for the hero's "from" prices. */
-export function lowestFares(fares: FareMap, list: Route[] = routes): { route: Route; fare: Fare }[] {
-  const best = new Map<string, { route: Route; fare: Fare }>();
-  for (const route of list) {
-    const fare = fares[route.slug];
-    if (!fare) continue;
-    const cur = best.get(fare.currency);
-    if (!cur || fare.price < cur.fare.price) best.set(fare.currency, { route, fare });
-  }
-  return ["GBP", "USD"].flatMap((c) => best.get(c) ?? []);
+/**
+ * The hero's fare ticker: the cheapest routes in each currency (pounds and
+ * dollars alternating, cheapest first), up to `perCurrency` of each. Only
+ * routes with a real recent fare; empty without fare data.
+ */
+export function tickerFares(fares: FareMap, perCurrency = 6, list: Route[] = routes): { route: Route; fare: Fare }[] {
+  const byCurrency = ["GBP", "USD"].map((c) =>
+    list
+      .flatMap((route) => (fares[route.slug]?.currency === c ? [{ route, fare: fares[route.slug] }] : []))
+      .sort((a, b) => a.fare.price - b.fare.price)
+      .slice(0, perCurrency),
+  );
+  const out: { route: Route; fare: Fare }[] = [];
+  for (let i = 0; i < perCurrency; i++) for (const rows of byCurrency) if (rows[i]) out.push(rows[i]);
+  return out;
 }
 
 /** For destination tiles: from New York (or from London for New York itself). */

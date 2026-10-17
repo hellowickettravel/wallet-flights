@@ -101,7 +101,7 @@ export function FareAlerts() {
                     aria-invalid={!!error}
                     aria-describedby={error ? `${id}-err` : undefined}
                     className={clsx(
-                      "h-14 min-w-0 flex-1 rounded-full bg-white px-6 text-[1.0625rem] text-ink outline-none placeholder:text-ink-soft focus-visible:ring-4 focus-visible:ring-sun",
+                      "h-14 min-w-0 rounded-full bg-white sm:flex-1 px-6 text-[1.0625rem] text-ink outline-none placeholder:text-ink-soft focus-visible:ring-4 focus-visible:ring-sun",
                       error && "ring-4 ring-red-300",
                     )}
                   />

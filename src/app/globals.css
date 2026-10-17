@@ -65,6 +65,21 @@
     background: var(--color-sun);
     color: var(--color-ink);
   }
+  /* Everything you can press shows a hand; anything switched off says so. */
+  :is(button, [role="button"], [role="tab"], [role="option"], [role="switch"], summary, select, label[for], input[type="checkbox"], input[type="radio"]):not(:disabled, [aria-disabled="true"]) {
+    cursor: pointer;
+  }
+  :is(button, input, select, textarea):disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+  /* Touch screens have no hover, so a press dims the control while the
+     finger is down: instant feedback that the tap landed. */
+  @media (hover: none) {
+    :is(a, button, [role="button"], [role="tab"], [role="option"], summary):active:not(:disabled) {
+      opacity: 0.72;
+    }
+  }
 }
 
 @utility container-page {
@@ -224,6 +239,218 @@ html[data-consent] .cookie-banner:not([data-reopened]) {
 }
 @media (prefers-reduced-motion: reduce) {
   .skyline-bar {
+    animation: none;
+  }
+}
+
+/* Skeletons (components/ui/skeleton.tsx): solid bones that breathe gently. */
+.skeleton {
+  background: #e6ecf5;
+  animation: skeleton-breathe 1.4s ease-in-out infinite;
+}
+@keyframes skeleton-breathe {
+  50% {
+    opacity: 0.55;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
+
+/* Hero fare ticker: a dot that pings like a departure board's "now boarding"
+   light. Still with reduced motion. */
+.ticker-dot {
+  position: relative;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: var(--color-ink);
+}
+.ticker-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--color-ink);
+  animation: ticker-ping 1.6s var(--ease-out-quint) infinite;
+}
+@keyframes ticker-ping {
+  to {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ticker-dot::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* Fare calendar suggestion (calendar-teaser.tsx). A plane flies the dashed
+   route from the bottom left and tows the card open behind it; the copy
+   follows. The plane and trail share one path, set inline from PATH. */
+.teaser-plane {
+  offset-rotate: auto;
+  offset-anchor: center;
+  animation: teaser-fly 1.9s cubic-bezier(0.45, 0.05, 0.35, 1) both;
+}
+@keyframes teaser-fly {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+.teaser-trail-draw {
+  stroke-dasharray: 1;
+  animation: teaser-draw 1.9s cubic-bezier(0.45, 0.05, 0.35, 1) both;
+}
+@keyframes teaser-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.teaser-trail {
+  animation: teaser-fade 0.9s ease 2.1s both;
+}
+@keyframes teaser-fade {
+  to {
+    opacity: 0;
+  }
+}
+.teaser-card {
+  transform-origin: left bottom;
+  animation: teaser-unfurl 0.8s var(--ease-out-quint) 0.6s both;
+}
+@keyframes teaser-unfurl {
+  from {
+    clip-path: inset(0 100% 0 0 round 20px);
+    rotate: -2.5deg;
+  }
+  to {
+    clip-path: inset(0 0 0 0 round 20px);
+    rotate: 0deg;
+  }
+}
+.teaser-in {
+  animation: rise 0.6s var(--ease-out-quint) both;
+  animation-delay: calc(1.05s + var(--i, 0) * 90ms);
+}
+/* On phones the card spans the bottom of the screen: back-to-top steps aside. */
+@media (width < 40rem) {
+  body:has(.teaser) .back-to-top {
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+.teaser[data-leaving] .teaser-card {
+  animation: teaser-out 0.3s var(--ease-out-quint) both;
+}
+.teaser[data-leaving] :is(.teaser-plane, .teaser-trail) {
+  display: none;
+}
+@keyframes teaser-out {
+  from {
+    clip-path: inset(0 0 0 0 round 20px);
+  }
+  to {
+    opacity: 0;
+    translate: 0 18px;
+    scale: 0.96;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .teaser-plane,
+  .teaser-trail {
+    display: none;
+  }
+  .teaser-card {
+    animation: teaser-fade-in 0.3s ease both;
+  }
+  .teaser-in {
+    animation: none;
+  }
+}
+@keyframes teaser-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Page-change bar (nav-progress.tsx): creeps to 85% while the next page
+   loads, then shoots to the end and fades. */
+.nav-progress {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 70;
+  height: 3px;
+  pointer-events: none;
+  transform-origin: left;
+  transform: scaleX(0);
+  opacity: 0;
+  background: var(--color-action);
+}
+.nav-progress[data-phase="loading"] {
+  opacity: 1;
+  transform: scaleX(0.85);
+  transition:
+    transform 8s cubic-bezier(0.08, 0.7, 0.2, 1),
+    opacity 0.15s;
+}
+.nav-progress[data-phase="done"] {
+  opacity: 0;
+  transform: scaleX(1);
+  transition:
+    transform 0.2s ease-out,
+    opacity 0.25s ease 0.2s;
+}
+
+/* 404 departure board: each tile flips down into place, left to right, with
+   the split line of a real split-flap display. Still with reduced motion. */
+.flap {
+  position: relative;
+  animation: flap 0.55s cubic-bezier(0.3, 1.3, 0.5, 1) both;
+  animation-delay: calc(0.15s + var(--i, 0) * 45ms);
+}
+.flap::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: 1px;
+  background: rgb(0 0 0 / 0.35);
+}
+@keyframes flap {
+  0% {
+    transform: perspective(200px) rotateX(90deg);
+    opacity: 0;
+  }
+  60% {
+    transform: perspective(200px) rotateX(-18deg);
+    opacity: 1;
+  }
+  100% {
+    transform: perspective(200px) rotateX(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flap {
     animation: none;
   }
 }

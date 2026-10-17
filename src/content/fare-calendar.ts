@@ -131,3 +131,19 @@ export const extraAirportNames: Record<string, string> = {
   SAW: "Sabiha Gökçen", MXP: "Milan Malpensa", LIN: "Milan Linate", BGY: "Bergamo", CIA: "Rome Ciampino",
   LGA: "LaGuardia", MDW: "Chicago Midway", DWC: "Dubai World Central", GLA: "Glasgow", BRS: "Bristol",
 };
+
+/**
+ * The fare calendar suggestion: a card a little plane tows in from the bottom
+ * left, once per visit (owner, 17 Oct 2026). Prices are the popular routes
+ * the calendar itself shows for the visitor's nearest city; without them the
+ * card shows no prices at all.
+ */
+export const teaserCopy = {
+  region: "Fare calendar suggestion",
+  badge: "New tool",
+  title: "Flexible dates? Fly on the cheapest day.",
+  routesLead: (city: string) => `Popular from ${city}, found recently:`,
+  route: (to: string, price: string) => `Fare calendar to ${to}, fares from ${price}`,
+  cta: "Open the fare calendar",
+  close: "Close the fare calendar suggestion",
+} as const;

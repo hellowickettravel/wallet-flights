@@ -10,7 +10,7 @@ export function GuidesSection() {
     <section aria-labelledby="guides-title" className="py-18 md:py-28">
       <div className="container-page">
         <SectionHeading id="guides-title" title="Travel guides" intro={guidesIntro}>
-          <Link href="/travel-guides" className="text-[0.9375rem] font-semibold text-action underline-offset-4 hover:underline">
+          <Link href="/travel-guides" className="inline-flex min-h-6 items-center text-[0.9375rem] font-semibold text-action underline-offset-4 hover:underline">
             Read all guides
           </Link>
         </SectionHeading>

@@ -2,12 +2,13 @@ import Link from "next/link";
 import { ArrowUpRight, Bed, Car, MapPin, Tag, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
 import { SearchPanel } from "@/components/search/search-panel";
 import { crossSell, ownerLinks, ownerSite } from "@/content/cross-sell";
-import { formatPrice, type Route } from "@/content/deals";
+import type { Route } from "@/content/deals";
 import type { Fare } from "@/lib/travelpayouts";
 import { heroCopy } from "@/content/home";
 import { site } from "@/content/site";
 import { TrustpilotStar } from "@/components/ui/trustpilot-star";
 import { affiliateUrl } from "@/lib/affiliate";
+import { FareTicker } from "./fare-ticker";
 import { Reveal } from "./reveal";
 
 /** Hotels / car hire shortcut: the owner's own link when set, otherwise the interim partner. */
@@ -26,9 +27,6 @@ const pill =
  * the other verticals on top, then the headline, then one joined search bar.
  */
 export function Hero({ lowFares = [] }: { lowFares?: { route: Route; fare: Fare }[] }) {
-  const fromPrices = lowFares.map(({ route, fare }) =>
-    heroCopy.lowFares.item(route.origin.city, route.destination.city, formatPrice(fare.price, fare.currency)),
-  );
   return (
     <section id="search" aria-labelledby="hero-title" className="relative z-10 bg-ink">
       <div className="container-page pt-6 pb-12 md:pt-8 md:pb-16 lg:pt-10 lg:pb-20">
@@ -75,14 +73,6 @@ export function Hero({ lowFares = [] }: { lowFares?: { route: Route; fare: Fare 
         <Reveal text delay={0.08} className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
           <p className="max-w-[40rem] text-[1.0625rem] leading-relaxed text-pretty text-white/80 md:text-[1.1875rem]">
             {heroCopy.intro}
-            {fromPrices.length > 0 && (
-              <>
-                {" "}
-                <strong data-testid="hero-from-prices" className="font-semibold text-white">
-                  {heroCopy.lowFares.lead} {fromPrices.join(", ")}.
-                </strong>
-              </>
-            )}
           </p>
           <a
             href={site.trustpilot}
@@ -98,6 +88,12 @@ export function Hero({ lowFares = [] }: { lowFares?: { route: Route; fare: Fare 
           </a>
         </Reveal>
 
+        {lowFares.length > 0 && (
+          <Reveal delay={0.12} className="mt-6 md:mt-8">
+            <FareTicker fares={lowFares} />
+          </Reveal>
+        )}
+
         <Reveal delay={0.16} className="mt-8 md:mt-10">
           <SearchPanel subId="home_hero" />
         </Reveal>
@@ -109,7 +105,7 @@ export function Hero({ lowFares = [] }: { lowFares?: { route: Route; fare: Fare 
             href={site.phone.whatsapp}
             target="_blank"
             rel="noopener"
-            className="font-semibold text-white underline decoration-white/40 underline-offset-4 hover:decoration-sun"
+            className="inline-block py-0.5 font-semibold text-white underline decoration-white/40 underline-offset-4 hover:decoration-sun"
           >
             {heroCopy.phoneAction} <span className="tabular">{site.phone.display}</span>
             <span className="sr-only"> (opens WhatsApp)</span>

@@ -113,7 +113,7 @@ export function SearchBar({ initial, onSearch, onTripChange, lengthPrices, curre
               value={initial.nights}
               disabled={initial.trip === "oneway"}
               onChange={(e) => onTripChange(initial.trip, Number(e.target.value))}
-              className="-ml-1 w-full cursor-pointer bg-transparent text-[1.0625rem] font-semibold text-ink outline-none disabled:cursor-not-allowed"
+              className="-ml-1 min-h-6 w-full cursor-pointer bg-transparent text-[1.0625rem] font-semibold text-ink outline-none disabled:cursor-not-allowed"
             >
               {custom && <option value={initial.nights}>{initial.nights} nights</option>}
               {tripLengths.map((t) => {

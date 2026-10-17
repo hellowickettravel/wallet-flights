@@ -13,7 +13,7 @@ import { FaqSection } from "@/components/home/faq-section";
 import { FareAlerts } from "@/components/home/fare-alerts";
 import { homeFaqs } from "@/content/faqs";
 import { site } from "@/content/site";
-import { destinationTileFares, lowestFares, routeFares } from "@/lib/fares";
+import { destinationTileFares, routeFares, tickerFares } from "@/lib/fares";
 
 export const metadata = pageMetadata({
   title: { absolute: `${site.name} — ${site.tagline}` },
@@ -40,7 +40,7 @@ export default async function HomePage() {
   const [fares, tileFares] = await Promise.all([routeFares(), destinationTileFares()]);
   return (
     <>
-      <Hero lowFares={lowestFares(fares)} />
+      <Hero lowFares={tickerFares(fares)} />
       <AirlineStrip />
       <AssuranceStrip />
       <DealsRail fares={fares} />

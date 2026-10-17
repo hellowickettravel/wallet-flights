@@ -28,7 +28,7 @@ export function PageHeader({ title, intro, crumbs, id = "page-title" }: Props) {
                   </span>
                 ) : (
                   <>
-                    <Link href={c.href} className="hover:text-action hover:underline">
+                    <Link href={c.href} className="inline-flex min-h-6 items-center hover:text-action hover:underline">
                       {c.label}
                     </Link>
                     <CaretRight className="size-3.5" aria-hidden />

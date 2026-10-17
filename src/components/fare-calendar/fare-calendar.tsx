@@ -367,12 +367,12 @@ function LoadingState({ label }: { label: string }) {
   return (
     <div role="status" className="grid gap-6 lg:grid-cols-[17.5rem_minmax(0,1fr)]">
       <span className="sr-only">{label}</span>
-      <div aria-hidden className="hidden h-96 rounded-(--radius-panel) bg-white ring-1 ring-line lg:block" />
+      <div aria-hidden className="skeleton hidden h-96 rounded-(--radius-panel) ring-1 ring-line lg:block" />
       <div aria-hidden className="rounded-(--radius-panel) bg-white p-7 ring-1 ring-line">
-        <div className="h-7 w-56 rounded-md bg-mist" />
+        <div className="skeleton h-7 w-56 rounded-md" />
         <div className="mt-8 flex h-36 items-end gap-2">
           {[50, 38, 62, 70, 84, 92, 100, 96, 74, 60, 44, 80].map((h, i) => (
-            <span key={i} className="flex-1 rounded-t-md bg-mist motion-safe:animate-pulse" style={{ height: `${h}%`, animationDelay: `${i * 80}ms` }} />
+            <span key={i} className="skeleton flex-1 rounded-t-md" style={{ height: `${h}%`, animationDelay: `${i * 80}ms` }} />
           ))}
         </div>
         <p className="mt-6 text-[0.9375rem] text-ink-soft">{label}</p>

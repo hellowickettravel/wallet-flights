@@ -183,7 +183,7 @@ bar height relative to that city's range, cheapest month in `fare` green.
 ## Batch 5 — Travel tools
 
 Both pages: `PhotoHeader` (17 Oct 2026, owner: the white header felt flat) — a full-bleed photo
-under a navy wash from the bottom and the left, white breadcrumb, H1, intro and three fact chips. The
+under a solid navy wash (`ink/65`; owner, 17 Oct 2026: no gradients), white breadcrumb, H1, intro and three fact chips. The
 tool's card (calendar search, compensation form) is pulled up over the photo's deep bottom edge, then
 the working area sits on a `mist` band so the white panels read as instruments. One memorable element
 each; everything else answers an action.
@@ -222,3 +222,27 @@ Ways to claim: two columns (yourself / Compensair) + share link; a third column 
 ```
 Review against defaults: no stats row, no gradient, no eyebrow labels; numbering not used (no
 sequence); chips are real radio groups; the ticket and skyline carry the personality.
+
+## Batch 6 — Ticker, fare calendar suggestion, loading and 404 (17 Oct 2026)
+
+Owner rules for this batch: attention-grabbing but clean, **solid colours only, no gradients**,
+photography and icons over decoration.
+
+- **Hero fare ticker** (`home/fare-ticker.tsx`): a `board`-navy pill under the intro. A sun label
+  ("Round trips found recently", with a pinging ink dot) heads a pausable marquee of real fares, each
+  a link to its route page: origin, a sun plane, destination, price in a sun chip. The note under it
+  carries the conditions (round trip, economy, per person, last few days). Hidden without fares.
+- **Fare calendar suggestion** (`layout/calendar-teaser.tsx`): a white card, bottom left. A white
+  plane badge flies a dashed `action` route line up from off-screen and tows the card open (clip-path
+  unfurl); the copy rises after. Inside: the calendar's photo as a thumbnail, a `mist` "New tool"
+  pill, the title, then either the visitor's real popular routes (a `mist` list, price in `fare`
+  green) or the calendar's three icon points, and one `action` button. Once per visit, after the
+  cookie choice, 8 s in and a third of the way down (or at 25 s); never on the calendar, search,
+  hand-off, alerts or compensation pages. Not a dialog: it never takes focus.
+- **Loading**: tool skeletons that mirror the real layout, solid `#e6ecf5` bones that breathe (no shimmer gradient). A 3px solid `action`
+  bar along the top while a clicked page loads (shown only past 120 ms).
+- **404**: a split-flap departure board (WF404 / PAGE NOT FOUND / DEPARTED, tiles flip in left to
+  right, words never split) above the heading, then four "Where to next" cards.
+- **Touch**: every pressable control shows a pointer; on touch screens a press dims it while the
+  finger is down. Tap targets are at least 24 px on phones (checked by `experience.spec.ts`).
+

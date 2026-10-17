@@ -226,7 +226,14 @@ test("hero offers manual bookings on WhatsApp, real from-prices only, the sister
   // No unqualified "as little as" claim: from-prices come from fare data, with route and trip type.
   await expect(hero).not.toContainText("as little as");
   const from = hero.getByTestId("hero-from-prices");
-  if ((await from.count()) > 0) await expect(from).toHaveText(/^Round trips found recently: .+ to .+ from [£$][\d,]+(, .+ to .+ from [£$][\d,]+)?\.$/);
+  // The ticker: each item a route page link, named with route, trip type and a real price.
+  if ((await from.count()) > 0) {
+    await expect(from.getByRole("region", { name: "Round trips found recently" })).toBeVisible();
+    const items = from.locator('a[href^="/routes/"]:not([inert] *)');
+    expect(await items.count()).toBeGreaterThan(0);
+    for (const a of await items.all()) await expect(a).toHaveAttribute("aria-label", /^.+ to .+, round trip from [£$][\d,]+$/);
+    await expect(from).toContainText("per person");
+  }
   await expect(hero).toContainText("Prefer not to book online? Our team can book a flight for you.");
   await expect(hero).toContainText("Hotels and car hire are booked with our sister company, Wicket Travel Holidays.");
   const wa = hero.getByRole("link", { name: /Call or WhatsApp \+44 7417 564704/ });

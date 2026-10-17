@@ -10,7 +10,20 @@ import clsx from "clsx";
  * Hover and focus pause it; the button pauses it for keyboard and touch users
  * too (WCAG 2.2.2). Under reduced motion it doesn't move, so there's no button.
  */
-export function Marquee({ children, duration = 40, label, className }: { children: ReactNode; duration?: number; label: string; className?: string }) {
+export function Marquee({
+  children,
+  duration = 40,
+  label,
+  className,
+  tone = "light",
+}: {
+  children: ReactNode;
+  duration?: number;
+  label: string;
+  className?: string;
+  /** "dark" for a marquee on the navy band: a translucent pause button. */
+  tone?: "light" | "dark";
+}) {
   const [paused, setPaused] = useState(false);
   return (
     <div className={clsx("relative", className)}>
@@ -32,7 +45,10 @@ export function Marquee({ children, duration = 40, label, className }: { childre
         type="button"
         onClick={() => setPaused((p) => !p)}
         aria-label={`${paused ? "Play" : "Pause"} ${label.toLowerCase()}`}
-        className="absolute top-1/2 right-0 grid size-9 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-white text-ink shadow-[0_2px_8px_rgb(15_31_61/0.14)] ring-1 ring-line transition-colors hover:bg-mist motion-reduce:hidden"
+        className={clsx(
+          "absolute top-1/2 grid size-9 -translate-y-1/2 cursor-pointer place-items-center rounded-full transition-colors active:scale-95 motion-reduce:hidden",
+          tone === "dark" ? "right-1.5 bg-white/12 text-white ring-1 ring-white/25 hover:bg-white/20" : "right-0 bg-white text-ink shadow-[0_2px_8px_rgb(15_31_61/0.14)] ring-1 ring-line hover:bg-mist",
+        )}
       >
         {paused ? <Play weight="fill" className="size-4" aria-hidden /> : <Pause weight="fill" className="size-4" aria-hidden />}
       </button>

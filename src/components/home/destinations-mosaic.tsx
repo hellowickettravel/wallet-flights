@@ -23,7 +23,7 @@ export function DestinationsMosaic({ fares }: { fares: Record<string, TileFare> 
           title="Trending destinations"
           intro="Popular places to fly this season, with the cheapest round trip found recently from New York."
         >
-          <Link href="/destinations" className="text-[0.9375rem] font-semibold text-action underline-offset-4 hover:underline">
+          <Link href="/destinations" className="inline-flex min-h-6 items-center text-[0.9375rem] font-semibold text-action underline-offset-4 hover:underline">
             See all destinations
           </Link>
         </SectionHeading>

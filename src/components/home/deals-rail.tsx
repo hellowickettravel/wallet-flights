@@ -167,7 +167,7 @@ export function DealCard({ route, fare, subId, priority }: { route: Route; fare?
         </Link>
       )}
       {/* Crawlable link to the route's own page (the card itself goes to booking or search). */}
-      <Link href={`/routes/${route.slug}`} className="mt-1.5 inline-block text-[0.8125rem] font-medium text-ink-soft underline decoration-line underline-offset-4 hover:text-action">
+      <Link href={`/routes/${route.slug}`} className="mt-1 inline-block py-0.5 text-[0.8125rem] font-medium text-ink-soft underline decoration-line underline-offset-4 hover:text-action">
         {origin.city} to {d.city} flights
       </Link>
     </>

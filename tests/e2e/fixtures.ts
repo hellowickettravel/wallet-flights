@@ -8,6 +8,8 @@ import { test as base, expect } from "@playwright/test";
  *   writes the search it received into #tpwl-search, so tests don't depend on a
  *   third-party service. tp.media affiliate redirects are stubbed the same way.
  * - Photos are blocked (CDN may be unreachable in CI).
+ * - `teaser`: the fare calendar suggestion stays out of the way unless a test
+ *   asks for it (it's marked as already shown for this visit).
  * - The worldwide airport lookup (/api/places) answers from PLACES_STUB, so the
  *   form falls back to its built-in list for anything else.
  */
@@ -21,10 +23,17 @@ export const WIDGET_STUB = `
   if (el) el.textContent = "White Label stub: " + (p.get("flightSearch") ?? "no search") + " · marker " + p.get("marker");
 `;
 
-export const test = base.extend<{ consent: "unset" | "rejected" | "search" }>({
+export const test = base.extend<{ consent: "unset" | "rejected" | "search"; teaser: boolean }>({
   consent: ["rejected", { option: true }],
+  teaser: [false, { option: true }],
   // (Playwright calls the second argument `use`; renamed so the React hooks lint rule leaves it alone.)
-  context: async ({ context, consent, baseURL }, provide) => {
+  context: async ({ context, consent, teaser, baseURL }, provide) => {
+    if (!teaser)
+      await context.addInitScript(() => {
+        try {
+          sessionStorage.setItem("wf_teaser", "test");
+        } catch {}
+      });
     if (consent !== "unset") {
       const value = consent === "search" ? `s1.a0.${Date.now()}` : `s0.a0.${Date.now()}`;
       await context.addCookies([{ name: "wf_consent", value, url: baseURL! }]);

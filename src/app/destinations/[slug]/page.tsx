@@ -121,11 +121,11 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
           <nav aria-label="Breadcrumb">
             <ol className="flex flex-wrap items-center gap-1.5 text-[0.875rem] text-white/80">
               <li className="flex items-center gap-1.5">
-                <Link href="/" className="hover:text-white hover:underline">Home</Link>
+                <Link href="/" className="inline-flex min-h-6 items-center hover:text-white hover:underline">Home</Link>
                 <CaretRight className="size-3.5" aria-hidden />
               </li>
               <li className="flex items-center gap-1.5">
-                <Link href="/destinations" className="hover:text-white hover:underline">Destinations</Link>
+                <Link href="/destinations" className="inline-flex min-h-6 items-center hover:text-white hover:underline">Destinations</Link>
                 <CaretRight className="size-3.5" aria-hidden />
               </li>
               <li aria-current="page" className="font-medium text-white">{d.city}</li>

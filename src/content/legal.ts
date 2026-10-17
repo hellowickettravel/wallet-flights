@@ -171,7 +171,10 @@ export const cookies: { intro: string; sections: LegalSection[] } = {
     {
       heading: "Necessary",
       body: [
-        ["wf_consent — remembers your cookie choice. Set by Wallet Flights, kept for 6 months."],
+        [
+          "wf_consent — remembers your cookie choice. Set by Wallet Flights, kept for 6 months.",
+          "wf_teaser (stored in your browser for this visit only, not a cookie) — remembers that we’ve shown you the fare calendar suggestion, so it appears at most once per visit. Cleared when you close the tab.",
+        ],
         "These are needed for the site to work and don’t require consent.",
       ],
     },

@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { CalendarSkeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { CalendarDots, Scales, Storefront, TrendDown } from "@phosphor-icons/react/dist/ssr";
 import { PhotoHeader } from "@/components/ui/photo-header";
@@ -33,7 +34,7 @@ export default function FareCalendarPage() {
         })}
       />
       {/* The calendar reads the route from the URL, so it renders in the browser. */}
-      <Suspense fallback={<div className="relative z-10 container-page -mt-20 h-[48rem] md:-mt-24" aria-hidden><div className="h-36 rounded-(--radius-panel) bg-white shadow-(--shadow-float) ring-1 ring-line" /></div>}>
+      <Suspense fallback={<CalendarSkeleton />}>
         <FareCalendar />
       </Suspense>
       <section aria-labelledby="tools-more" className="container-page py-12 md:py-16">

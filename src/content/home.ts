@@ -5,13 +5,18 @@ export const heroCopy = {
   // "thousands", to match the logo strip (owner, 16 Oct 2026; CAP 3.7).
   title: "We compare hundreds of flight providers and show the cheapest fare.",
   intro: "Airlines and travel sites in one search, cheapest first, so you don’t have to check them one by one.",
-  // Replaces the unqualified "as little as $18" (owner, 16 Oct 2026): the
-  // cheapest real round trip found recently on our featured routes, one per
-  // currency, with its route. UK advertising rules (CAP Code section 3) expect a
-  // "from" price to be real and its conditions clear. Hidden without fare data.
+  // Replaces the unqualified "as little as $18" (owner, 16 Oct 2026): real
+  // round trips found recently on our featured routes, cheapest first, as a
+  // ticker under the intro (owner, 17 Oct 2026). UK advertising rules (CAP
+  // Code section 3) expect a "from" price to be real and its conditions
+  // clear, so the label says round trip and "found recently". Hidden without
+  // fare data.
   lowFares: {
-    lead: "Round trips found recently:",
-    item: (from: string, to: string, price: string) => `${from} to ${to} from ${price}`,
+    label: "Round trips found recently",
+    short: "Found recently",
+    noteShort: "Round trips, economy, per person, found in the last few days.",
+    note: "Lowest round-trip economy fares per person found in the last few days. Prices change: search your dates for live prices.",
+    item: (from: string, to: string, price: string) => `${from} to ${to}, round trip from ${price}`,
   },
   /** Disclosed next to the Hotels and Car hire shortcuts, which open the sister company's site. */
   sisterNote: (name: string) => `Hotels and car hire are booked with our sister company, ${name}.`,

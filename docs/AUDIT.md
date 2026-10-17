@@ -631,3 +631,27 @@ in the headers, no static or hard-coded field defaults; reorganise the main menu
 **Test:** lint, typecheck, build pass; `tools.spec.ts` now 12 tests per device (24), including a fixed-route
 check, the no-location state, priced trip lengths, an empty checker and the licence question; full e2e
 passed after the Contact menu wording fix.
+
+### Batch 6: ticker, fare calendar suggestion, loading, 404, phone checks (17 Oct 2026)
+
+- Hero "found recently" prices → a ticker of up to 12 real round trips (6 per currency, cheapest
+  first), each linking to its route page (`tickerFares`, `FareTicker`). Conditions in the note.
+- Fare calendar suggestion card with the plane animation; real popular routes from
+  `/api/fare-calendar/start`, no prices without data. Lazy-loaded (not in the first JS). Uses
+  session storage `wf_teaser`, disclosed in the cookie policy.
+- Calendar and checker skeletons, results skeleton restyled; page-change bar. A root
+  `app/loading.tsx` was tried and dropped: streamed not-found pages then lost their
+  "Page not found" title.
+- 404 redesigned. Known limit: unknown `/routes/*`, `/destinations/*` and guide slugs show the
+  not-found page with status 200 + noindex (Cache Components streams them; `dynamicParams` isn't
+  allowed). A proxy could return a real 404 but would run on every visit to those pages, so it
+  was left out for speed.
+- Global pointer cursor and touch press feedback; small tap targets fixed (breadcrumbs, footer email
+  and cookie settings, route links, section links, About register link, trip-length select).
+- Bug: the homepage fare-alerts email field collapsed to 21 px tall on phones (`flex-1` in a column)
+  → fixed. Deals filters now 16 px on phones (no iOS zoom).
+- Photo header overlay is now solid (owner: no gradients).
+- New `tests/e2e/experience.spec.ts`: suggestion (routes, no-data, once per visit, Escape, waits
+  for consent, skipped pages), 404, and phone layout on 14 pages (no overflow at 320–414 px, ≥24 px
+  targets, ≥16 px fields).
+

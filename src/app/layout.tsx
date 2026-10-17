@@ -4,6 +4,8 @@ import { Bricolage_Grotesque, JetBrains_Mono, Onest } from "next/font/google";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { BackToTop } from "@/components/layout/back-to-top";
+import { CalendarTeaserLoader } from "@/components/layout/calendar-teaser-loader";
+import { NavProgress } from "@/components/layout/nav-progress";
 import { MotionProvider } from "@/components/motion-provider";
 import { CookieBanner } from "@/components/consent/cookie-banner";
 import { ConsentedAnalytics } from "@/components/consent/consented-analytics";
@@ -56,6 +58,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="flex min-h-dvh flex-col">
         <MotionProvider>
+          <NavProgress />
           {/* First in the DOM so keyboard users reach the cookie choice first (it's fixed at the bottom). */}
           <CookieBanner />
           <Header />
@@ -64,6 +67,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </main>
           <Footer />
           <BackToTop />
+          <CalendarTeaserLoader />
         </MotionProvider>
         {/* Only on Vercel, where the /_vercel/* endpoints exist, and only after consent. */}
         {process.env.VERCEL && <ConsentedAnalytics />}

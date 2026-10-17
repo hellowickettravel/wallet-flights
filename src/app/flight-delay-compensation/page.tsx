@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { CheckerSkeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { CalendarDots, Gavel, Scroll, UserCircleCheck } from "@phosphor-icons/react/dist/ssr";
 import { PhotoHeader } from "@/components/ui/photo-header";
@@ -37,7 +38,7 @@ export default function CompensationPage() {
       <div className="bg-mist pb-8 md:pb-14">
         <div className="relative z-10 container-page -mt-20 md:-mt-24">
           {/* The checker reads its answers from the URL (share links), so it renders in the browser. */}
-          <Suspense fallback={<div className="h-[52rem] rounded-(--radius-panel) bg-white shadow-(--shadow-float) ring-1 ring-line" aria-hidden />}>
+          <Suspense fallback={<CheckerSkeleton />}>
             <Checker />
           </Suspense>
         </div>

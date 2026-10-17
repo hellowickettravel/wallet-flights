@@ -43,7 +43,7 @@ export function BackToTop() {
         if (e.detail === 0) document.querySelector<HTMLElement>("header a")?.focus({ preventScroll: true });
       }}
       className={clsx(
-        "group fixed right-4 bottom-4 z-40 grid size-12 cursor-pointer place-items-center rounded-full bg-ink text-sun shadow-(--shadow-pop) ring-2 ring-white transition-[opacity,translate,visibility,background-color] duration-200 hover:bg-action sm:right-6 sm:bottom-6 sm:size-14",
+        "back-to-top group fixed right-4 bottom-4 z-40 grid size-12 cursor-pointer place-items-center rounded-full bg-ink text-sun shadow-(--shadow-pop) ring-2 ring-white transition-[opacity,translate,visibility,background-color] duration-200 hover:bg-action sm:right-6 sm:bottom-6 sm:size-14",
         shown ? "visible translate-y-0 opacity-100" : "invisible translate-y-3 opacity-0",
       )}
     >

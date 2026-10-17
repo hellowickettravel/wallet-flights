@@ -160,14 +160,14 @@ export default async function GuidePage({ params }: PageProps<"/travel-guides/[s
           <ol className="flex flex-wrap items-center gap-1.5 text-[0.875rem] text-ink-soft">
             {crumbs.slice(0, -1).map((c) => (
               <li key={c.href} className="flex items-center gap-1.5">
-                <Link href={c.href} className="hover:text-action hover:underline">
+                <Link href={c.href} className="inline-flex min-h-6 items-center hover:text-action hover:underline">
                   {c.label}
                 </Link>
                 <CaretRight className="size-3.5" aria-hidden />
               </li>
             ))}
             <li>
-              <Link href={`/travel-guides#topic-${topic.id}`} className="font-medium text-action hover:underline">
+              <Link href={`/travel-guides#topic-${topic.id}`} className="inline-flex min-h-6 items-center font-medium text-action hover:underline">
                 {topic.label}
               </Link>
             </li>

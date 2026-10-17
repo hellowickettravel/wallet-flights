@@ -25,7 +25,7 @@ export function PhotoHeader({ photo, title, intro, crumbs, points }: Props) {
   return (
     <ParallaxHero photo={photo}>
       {/* A second wash from the left keeps white text readable over bright skies. */}
-      <div aria-hidden className="absolute inset-0 bg-[linear-gradient(90deg,rgb(15_31_61/0.82)_0%,rgb(15_31_61/0.5)_55%,rgb(15_31_61/0.2)_100%)]" />
+      <div aria-hidden className="absolute inset-0 bg-ink/65" />
       <div className="relative container-page pt-8 pb-28 md:pt-12 md:pb-36">
         <nav aria-label="Breadcrumb">
           <ol className="flex flex-wrap items-center gap-1.5 text-[0.875rem] text-white/80">
@@ -36,7 +36,7 @@ export function PhotoHeader({ photo, title, intro, crumbs, points }: Props) {
                 </li>
               ) : (
                 <li key={c.href} className="flex items-center gap-1.5">
-                  <Link href={c.href} className="hover:text-white hover:underline">
+                  <Link href={c.href} className="inline-flex min-h-6 items-center hover:text-white hover:underline">
                     {c.label}
                   </Link>
                   <CaretRight className="size-3.5" aria-hidden />

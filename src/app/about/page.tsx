@@ -97,7 +97,7 @@ export default function AboutPage() {
               href={aboutCompany.registerLink.href}
               target="_blank"
               rel="noopener"
-              className="mt-6 inline-flex items-center gap-1.5 text-[0.9375rem] font-semibold text-action hover:underline"
+              className="mt-6 inline-flex min-h-6 items-center gap-1.5 text-[0.9375rem] font-semibold text-action hover:underline"
             >
               {aboutCompany.registerLink.label}
               <ArrowUpRight className="size-4" weight="bold" aria-hidden />
