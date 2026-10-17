@@ -8,7 +8,7 @@
 // calls /api/price-alerts/check, which finds each route's cheapest fare the
 // same way the fare calendar does and emails the alerts it's now below.
 // Development and the e2e server keep alerts in memory instead.
-import { createHash } from "node:crypto";
+import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { groupByDate, monthSummaries, noFilters } from "@/components/fare-calendar/model";
 import type { Currency } from "@/content/deals";
 import { emailReady } from "@/lib/email";
@@ -33,6 +33,12 @@ export type AlertSpec = {
 
 export type Alert = AlertSpec & {
   id: string;
+  /**
+   * The secret half of the alert's stop link. Random and stored with the
+   * alert rather than signed, so stop links in old emails keep working even if
+   * the site's signing secret changes.
+   */
+  stopKey: string;
   created: number;
   /** The last alert email: when, and at what price. */
   sentAt?: number;
@@ -43,7 +49,7 @@ const KEY = "wf:price-alerts";
 /** A safety cap on the whole list; past it, new sign-ups are refused. */
 const MAX_ALERTS = 5000;
 /** The same price again is only re-sent after a week; a lower one goes out the next day. */
-const RESEND_AFTER_MS = 7 * 24 * 60 * 60_000;
+const REPEAT_AFTER_MS = 7 * 24 * 60 * 60_000;
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const CODE = /^[A-Z]{3}$/;
@@ -155,8 +161,9 @@ export async function saveAlert(spec: AlertSpec, now = Date.now()): Promise<Save
   try {
     const existing = await s.get(id);
     if (!existing && (await s.count()) >= MAX_ALERTS) return { ok: false, reason: "full" };
-    // A new price starts fresh, so the next check can email straight away.
-    const alert: Alert = { ...spec, id, created: existing?.created ?? now };
+    // A new price starts fresh, so the next check can email straight away;
+    // the stop key stays, so links in earlier emails still work.
+    const alert: Alert = { ...spec, id, stopKey: existing?.stopKey ?? randomBytes(18).toString("base64url"), created: existing?.created ?? now };
     await s.put(alert);
     return { ok: true, alert };
   } catch (e) {
@@ -165,16 +172,26 @@ export async function saveAlert(spec: AlertSpec, now = Date.now()): Promise<Save
   }
 }
 
-export async function removeAlert(id: string): Promise<{ ok: boolean; alert: Alert | null }> {
+/**
+ * Stops the alert a stop link names ("<id>.<stopKey>"). "invalid" for a
+ * malformed or wrong key; an alert that's already gone counts as stopped.
+ */
+export async function removeAlertByToken(token: string): Promise<{ ok: true; alert: Alert | null } | { ok: false; reason: "invalid" | "unavailable" }> {
+  const [id, key] = token.split(".");
+  if (!id || !key) return { ok: false, reason: "invalid" };
   const s = store();
-  if (!s) return { ok: false, alert: null };
+  if (!s) return { ok: false, reason: "unavailable" };
   try {
     const alert = await s.get(id);
+    if (!alert) return { ok: true, alert: null };
+    const want = Buffer.from(alert.stopKey ?? "");
+    const given = Buffer.from(key);
+    if (want.length !== given.length || !timingSafeEqual(want, given)) return { ok: false, reason: "invalid" };
     await s.remove(id);
     return { ok: true, alert };
   } catch (e) {
     console.error(e);
-    return { ok: false, alert: null };
+    return { ok: false, reason: "unavailable" };
   }
 }
 
@@ -203,7 +220,7 @@ export async function cheapestFare(a: Pick<AlertSpec, "from" | "to" | "trip" | "
 export function shouldSend(a: Alert, fare: Cheapest, now = Date.now()) {
   if (fare.price > a.max) return false;
   if (a.sentPrice === undefined || a.sentAt === undefined) return true;
-  return fare.price < a.sentPrice || now - a.sentAt >= RESEND_AFTER_MS;
+  return fare.price < a.sentPrice || now - a.sentAt >= REPEAT_AFTER_MS;
 }
 
 export type CheckSummary = { alerts: number; routes: number; matched: number; sent: number; failed: number };
@@ -241,10 +258,7 @@ export async function checkAlerts(send: (a: Alert, fare: Cheapest) => Promise<bo
 // --- Links -----------------------------------------------------------------
 
 const CONFIRM_TTL_MS = 7 * 24 * 60 * 60_000;
-/** Stop links never really expire: an old alert email must still stop the alert. */
-const STOP_TTL_MS = 10 * 365 * 24 * 60 * 60_000;
 export const CONFIRM_PURPOSE = "price-alert-confirm";
-export const STOP_PURPOSE = "price-alert-stop";
 
 /** Production links always use the canonical host; previews and local runs use their own. */
 export const linkOrigin = (req: Request, canonical: string) => (process.env.VERCEL_ENV === "production" ? canonical : new URL(req.url).origin);
@@ -257,8 +271,8 @@ export function calendarLink(origin: string, a: Pick<AlertSpec, "from" | "to" | 
 
 export const confirmToken = (spec: AlertSpec) => createSignedToken(CONFIRM_PURPOSE, spec, CONFIRM_TTL_MS);
 
-export function stopLinks(origin: string, id: string) {
-  const t = createSignedToken(STOP_PURPOSE, { id }, STOP_TTL_MS);
-  if (!t) return null;
+/** The page link (a button to press) and the one-click link mail apps post to. */
+export function stopLinks(origin: string, a: Pick<Alert, "id" | "stopKey">) {
+  const t = `${a.id}.${a.stopKey}`;
   return { stop: `${origin}/price-alerts/stop?t=${t}`, oneClick: `${origin}/api/price-alerts/stop?t=${t}` };
 }

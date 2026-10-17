@@ -16,7 +16,7 @@ Read first: `CLAUDE.md`, `AGENTS.md`, `docs/IMPROVEMENT-PLAN.md` (the 4-phase pl
    - `curl -sI https://www.walletflights.com/ | grep -i content-security` shows the enforced
      `Content-Security-Policy` header, and a live search on /flights still shows fares
    - the header at 1024px, the swap button on a phone, the marquee pause button
-   - fare-alert sign-up (needs `RESEND_API_KEY`; without it the form says the service is unavailable)
+   - fare-alert sign-up (needs `SMTP_PASS`; without it the form says the service is unavailable)
 2. PageSpeed Insights (mobile): home measured 16 Oct (99, LCP 2.0 s). Still to measure: `/deals`, `/routes/new-york-to-london`.
 3. **CSP (enforced 16 Oct 2026, without the report-only period, at the owner's request):** for the
    first days after deploy, read the `CSP violation` lines in the Vercel logs. These are now real
@@ -29,10 +29,11 @@ Read first: `CLAUDE.md`, `AGENTS.md`, `docs/IMPROVEMENT-PLAN.md` (the 4-phase pl
 - **Rate limit:** the built-in limit is per server instance. For a site-wide limit, add a Vercel
   Firewall rate-limit rule on `/api/contact`, `/api/fare-alerts` and `/api/fare-alerts/confirm`
   (owner's dashboard; ask before changing account settings).
-- **Fare alerts:** sign-ups now need `RESEND_API_KEY` and a verified `EMAIL_FROM` to send the
-  confirmation email. Optional `FARE_ALERT_SECRET` signs the links (falls back to the Resend key);
-  `RESEND_AUDIENCE_ID` collects confirmed addresses. Nothing sends alerts yet: the copy says
-  "coming soon" until the owner decides on a schedule.
+- **Email (batch 7):** everything sends through the info@walletflights.com mailbox (Microsoft 365
+  from GoDaddy, `smtp.office365.com:587`); only `SMTP_PASS` is required, and the mailbox needs
+  "SMTP Authentication" on. Resend is no longer used. Confirmed homepage fare-alert sign-ups are
+  emailed to the inbox. Fare calendar price alerts also need Upstash for Redis (done 17 Oct 2026)
+  and `CRON_SECRET`; see `docs/AUDIT.md`, Batch 7.
 
 ## Working rules (from the owner and user)
 - Ask before joining any program, accepting terms, or changing payout or account settings.

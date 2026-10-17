@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server";
 import { guardFormRequest } from "@/lib/api-guard";
-import { readSignedToken } from "@/lib/opt-in";
-import { STOP_PURPOSE, removeAlert } from "@/lib/price-alerts";
+import { removeAlertByToken } from "@/lib/price-alerts";
 
 /**
  * Stops one alert. Two callers:
  * - the stop page's button: JSON `{ t }`, same-origin, like our other forms;
  * - a mail app's one-click unsubscribe (RFC 8058): a form POST to the
  *   List-Unsubscribe URL (`?t=` in the address) from the mail provider's
- *   servers, so there's no Origin to check. The signed token is the check.
+ *   servers, so there's no Origin to check. The alert's random stop key is the check.
  */
 export async function POST(req: Request) {
   const url = new URL(req.url);
@@ -21,10 +20,12 @@ export async function POST(req: Request) {
     const body = (await req.json().catch(() => null)) as { t?: unknown } | null;
     token = typeof body?.t === "string" ? body.t : "";
   }
-  const check = readSignedToken<{ id?: unknown }>(STOP_PURPOSE, token);
-  if (!check.ok || typeof check.data.id !== "string") return NextResponse.json({ error: "invalid" }, { status: 400 });
-  const result = await removeAlert(check.data.id);
-  if (!result.ok) return NextResponse.json({ error: "Price alerts are unavailable" }, { status: 503 });
+  const result = await removeAlertByToken(token);
+  if (!result.ok) {
+    return result.reason === "invalid"
+      ? NextResponse.json({ error: "invalid" }, { status: 400 })
+      : NextResponse.json({ error: "Price alerts are unavailable" }, { status: 503 });
+  }
   // Stopping twice is fine: the alert is gone either way.
   return NextResponse.json({ ok: true, route: result.alert ? `${result.alert.from.city} to ${result.alert.to.city}` : null });
 }

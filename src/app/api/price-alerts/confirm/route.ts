@@ -27,6 +27,6 @@ export async function POST(req: Request) {
     price: formatPrice(spec.max, spec.currency),
     calendar: calendarLink("", spec),
     // The e2e server sends no email, so it hands back the stop link an alert email would carry.
-    ...(process.env.EMAIL_DRY_RUN === "1" ? { stop: stopLinks(linkOrigin(req, site.url), saved.alert.id)?.stop } : {}),
+    ...(process.env.EMAIL_DRY_RUN === "1" ? { stop: stopLinks(linkOrigin(req, site.url), saved.alert).stop } : {}),
   });
 }

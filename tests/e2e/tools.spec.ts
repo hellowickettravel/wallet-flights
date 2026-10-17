@@ -161,8 +161,11 @@ test("price alerts: double opt-in, stop link, one-click unsubscribe and a locked
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Alert stopped");
 
   // A mail app's one-click unsubscribe: a form post from its servers, no Origin.
-  await request.post("/api/price-alerts/confirm", { data: { t } });
-  const oneClick = await request.post(`/api/price-alerts/stop?t=${new URL(stop).searchParams.get("t")}`, { form: { "List-Unsubscribe": "One-Click" } });
+  // An old stop link can't stop a newer alert for the same route: each gets its own key.
+  const again = await (await request.post("/api/price-alerts/confirm", { data: { t } })).json();
+  const stale = await request.post(`/api/price-alerts/stop?t=${new URL(stop).searchParams.get("t")}`, { form: { "List-Unsubscribe": "One-Click" } });
+  expect(stale.status()).toBe(400);
+  const oneClick = await request.post(`/api/price-alerts/stop?t=${new URL(again.stop).searchParams.get("t")}`, { form: { "List-Unsubscribe": "One-Click" } });
   expect(oneClick.status()).toBe(200);
   expect((await oneClick.json()).route).toBe("London to Barcelona");
   expect((await request.post("/api/price-alerts/stop?t=forged", { form: { "List-Unsubscribe": "One-Click" } })).status()).toBe(400);

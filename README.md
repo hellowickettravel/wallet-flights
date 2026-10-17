@@ -25,9 +25,11 @@ First-time Playwright setup locally: `npx playwright install chromium`.
 1. In Vercel, **Add New → Project** and import `hellowickettravel/wallet-flights`.
    The framework preset (Next.js), build command and output are detected automatically.
 2. Add environment variables (Settings → Environment Variables), see `.env.example`:
-   - `RESEND_API_KEY` and `EMAIL_FROM`: required for the contact form and fare alerts.
-     Without them, production returns a friendly "unavailable" message instead of losing messages.
-   - `CONTACT_TO` (defaults to info@walletflights.com), `RESEND_AUDIENCE_ID` (optional).
+   - `SMTP_PASS`: the info@walletflights.com mailbox password (Microsoft 365 from GoDaddy, with
+     "SMTP Authentication" on). Required for the contact form and all alerts. Without it, production
+     returns a friendly "unavailable" message instead of losing messages.
+   - `KV_REST_API_URL` and `KV_REST_API_TOKEN` (set by Vercel → Storage → Upstash for Redis) and
+     `CRON_SECRET` (any long random string): needed for fare calendar price alerts.
    - `TRAVELPAYOUTS_TOKEN`: Travelpayouts API token for real cached fares (Production + Preview).
      Without it the site works but shows no prices.
 3. Deploy. Every push to a branch gets a preview URL; `main` deploys to production.

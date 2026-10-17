@@ -20,8 +20,7 @@ export async function GET(req: Request) {
 
   const origin = linkOrigin(req, site.url);
   const summary = await checkAlerts(async (a, fare) => {
-    const links = stopLinks(origin, a.id);
-    if (!links) return false;
+    const links = stopLinks(origin, a);
     const sent = await sendPriceAlert(a, fare, { calendar: calendarLink(origin, a), ...links });
     return sent.ok;
   });

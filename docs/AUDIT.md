@@ -684,3 +684,16 @@ CLS 0); fare calendar 80 / 100 / 100 / 100 (LCP 4.5 s, CLS 0); London to New Yor
 not this batch's code. PageSpeed Insights was over its daily quota; re-measure the live site there.
 
 **Test:** lint, typecheck, build pass. e2e: **342 passed**, 44 skipped (desktop-only or phone-only), 0 failed.
+
+### Batch 7b: email through the company mailbox (17 Oct 2026)
+
+Owner asked to drop Resend. `walletflights.com` mail is Microsoft 365 from GoDaddy (MX
+`*.mail.protection.outlook.com`), and its SPF (`include:secureserver.net` → `spf.protection.outlook.com`)
+already authorises Microsoft's servers. `src/lib/email.ts` now signs in to `smtp.office365.com:587` (STARTTLS
+required) with Nodemailer 10.0.14 (7.x had open SMTP-injection advisories); only `SMTP_PASS` is required.
+Sign-in errors are logged with the server's reply code, never the password. Price alert stop links now carry a
+random per-alert key stored with the alert instead of a signature, so they survive a secret change; an old link
+can't stop a newer alert for the same route. Confirmation links are signed with `FARE_ALERT_SECRET`, else
+`CRON_SECRET`, else the mailbox password. Privacy policy names Microsoft 365 as the email provider.
+TODO(confirm): Microsoft is retiring password sign-in for SMTP on some tenants; if the mailbox refuses it
+(reply 535 5.7.139), the fallback is Microsoft Graph with an app registration.

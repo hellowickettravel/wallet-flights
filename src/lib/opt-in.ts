@@ -5,12 +5,14 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 const TTL_MS = 7 * 24 * 60 * 60_000;
 
 /**
- * FARE_ALERT_SECRET if set, otherwise the Resend key (a server secret that
- * exists whenever email can be sent). Development and dry runs get a fixed
- * value; production without either can't sign, and sign-up reports it.
+ * FARE_ALERT_SECRET if set, otherwise another server-only secret the site
+ * already has (the cron secret, then the mailbox password). Changing it only
+ * voids confirmation links still waiting to be clicked. Development and dry
+ * runs get a fixed value; production without any can't sign, and sign-up
+ * reports it.
  */
 function secret() {
-  const s = process.env.FARE_ALERT_SECRET || process.env.RESEND_API_KEY;
+  const s = process.env.FARE_ALERT_SECRET || process.env.CRON_SECRET || process.env.SMTP_PASS;
   if (s) return s;
   return process.env.NODE_ENV !== "production" || process.env.EMAIL_DRY_RUN === "1" ? "dev-only-opt-in-secret" : null;
 }
