@@ -25,7 +25,7 @@ export const searchCurrencies = [
   "ZAR", "SGD", "JPY", "CNY", "MXN", "BRL", "TRY", "CHF", "NZD", "THB",
 ] as const;
 
-export type ProgramId = "aviasales" | "tripcom" | "kiwitaxi" | "economybookings" | "airalo" | "tiqets";
+export type ProgramId = "aviasales" | "tripcom" | "kiwitaxi" | "economybookings" | "airalo" | "tiqets" | "compensair";
 
 export type Program = {
   id: ProgramId;
@@ -44,4 +44,6 @@ export const programs: Record<ProgramId, Program> = {
   economybookings: { id: "economybookings", name: "Economybookings.com", campaignId: 10, p: 2018, hosts: ["www.economybookings.com"] },
   airalo: { id: "airalo", name: "Airalo", campaignId: 541, p: 8310, hosts: ["www.airalo.com"] },
   tiqets: { id: "tiqets", name: "Tiqets", campaignId: 89, p: 2074, hosts: ["www.tiqets.com"] },
+  /** Flight-delay claims (/flight-delay-compensation). IDs from the dashboard link generator, 17 Oct 2026. */
+  compensair: { id: "compensair", name: "Compensair", campaignId: 86, p: 4129, hosts: ["www.compensair.com", "compensair.com"] },
 };

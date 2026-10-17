@@ -215,7 +215,7 @@ form panel (7 cols, white, float shadow)    │ ticket (5 cols, board, sticky)
  Reason the airline gave (chips)            │  ✓ covered  ✓ 3h+  ! reason …
  Passengers  − 2 +                          │  Claim by …
 ──────────────────────────────────────────────────────────────────────────────
-Ways to claim: three columns (yourself / Compensair / AirHelp) + share link
+Ways to claim: two columns (yourself / Compensair) + share link; a third column returns if AirHelp opens to us
 ```
 Review against defaults: no stats row, no gradient, no eyebrow labels; numbering not used (no
 sequence); chips are real radio groups; the ticket and skyline carry the personality.

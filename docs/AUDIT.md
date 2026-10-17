@@ -593,8 +593,10 @@ Two new pages, built layout-first per the owner's brief (plan and design in `doc
 - Footer, sitemap, `updated.ts` and llms.txt list both pages. New tokens: `fare-deep`/`fare-tint` (5.4:1),
   `dear`/`dear-tint` (5.5:1).
 
-**Open, `TODO(confirm)`:** Compensair campaign_id/p (joined; IDs not copied yet); AirHelp **not joined**
-(owner's OK needed), so both buttons link without tracking; partner fees; legal review of the rules wording
+**Update 17 Oct 2026:** Compensair wired as a tracked link (campaign_id 86, p 4129, Sub ID
+`compensation_compensair`) with its own fee wording; AirHelp card hidden (network says the project needs three
+months of steady traffic before "Submit for review").
+**Open, `TODO(confirm)`:** legal review of the rules wording
 and the UK261 within-UK distance rule; `/api/fare-alerts` stores only the email (route + target price are
 sent but not kept), so alert copy says route alerts are "launching soon".
 **Test:** lint, typecheck, build pass; new `tests/e2e/tools.spec.ts` (16 tests: axe WCAG 2.2 AA, no

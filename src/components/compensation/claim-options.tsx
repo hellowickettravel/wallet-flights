@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { ArrowUpRight, Check, CopySimple, DownloadSimple, EnvelopeSimple, Handshake, LinkSimple, ShareNetwork, X } from "@phosphor-icons/react";
 import { claimPartners, compensationCopy, questions, type What } from "@/content/compensation";
+import { affiliateUrl, sponsoredLink } from "@/lib/affiliate";
 import { formatMoney, type Assessment } from "@/lib/compensation";
 
 const copy = compensationCopy.claim;
@@ -149,14 +150,8 @@ function LetterDialog({ open, onClose, facts, result }: { open: boolean; onClose
   );
 }
 
-/**
- * TODO(confirm): affiliate IDs for each claim partner (src/content/compensation.ts).
- * Once known, add the partner to src/content/affiliates.ts and return
- * affiliateUrl(id, p.url, `compensation_${p.id}`) here, marked sponsored.
- */
-function partnerHref(p: (typeof claimPartners)[number]) {
-  return { href: p.url, sponsored: p.affiliate !== null };
-}
+/** Tracked affiliate link; the Sub ID shows this button in the network's reports. */
+const partnerHref = (p: (typeof claimPartners)[number]) => affiliateUrl(p.program, p.url, `compensation_${p.id}`);
 
 export function ClaimOptions({ result, facts, shareUrl }: { result: Assessment; facts: LetterFacts; shareUrl: string }) {
   const [letterOpen, setLetterOpen] = useState(false);
@@ -190,7 +185,7 @@ export function ClaimOptions({ result, facts, shareUrl }: { result: Assessment; 
           <span className="font-semibold">{copy.notOwed.title}</span> {copy.notOwed.text}
         </p>
       )}
-      <ul className="mt-6 grid gap-4 lg:grid-cols-3">
+      <ul className="mt-6 grid gap-4 md:grid-cols-2">
         <li className="flex flex-col rounded-(--radius-card) bg-white p-6 ring-2 ring-ink">
           <span className="grid size-11 place-items-center rounded-full bg-ink text-sun">
             <EnvelopeSimple className="size-5" weight="fill" aria-hidden />
@@ -216,15 +211,13 @@ export function ClaimOptions({ result, facts, shareUrl }: { result: Assessment; 
         </li>
 
         {claimPartners.map((p) => {
-          const link = partnerHref(p);
           return (
             <li key={p.id} className="flex flex-col rounded-(--radius-card) bg-white p-6 ring-1 ring-line">
               <span className="grid size-11 place-items-center rounded-full bg-mist text-action">
                 <Handshake className="size-5" weight="fill" aria-hidden />
               </span>
               <h3 className="mt-4 text-[1.1875rem] font-bold text-ink">{p.name}</h3>
-              {/* TODO(confirm): partner fee from the partner's own site. */}
-              <p className="mt-1 font-semibold text-ink-soft">{p.fee ?? "Check their fee before you claim"}</p>
+              <p className="mt-1 font-semibold text-ink-soft">{p.fee}</p>
               <ul className="mt-4 flex-1 space-y-2 text-[0.9375rem] text-ink-soft">
                 {p.points.map((x) => (
                   <li key={x} className="flex gap-2">
@@ -234,17 +227,15 @@ export function ClaimOptions({ result, facts, shareUrl }: { result: Assessment; 
                 ))}
               </ul>
               <a
-                href={link.href}
-                target="_blank"
-                rel={link.sponsored ? "sponsored noopener" : "noopener"}
-                data-sub={`compensation_${p.id}`}
+                href={partnerHref(p)}
+                {...sponsoredLink}
                 className="mt-6 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-6 font-semibold text-ink ring-1 ring-line transition-colors hover:bg-mist hover:ring-ink/30"
               >
                 {copy.partnerCta(p.name)}
                 <ArrowUpRight className="size-4" weight="bold" aria-hidden />
                 <span className="sr-only"> (opens in a new tab)</span>
               </a>
-              {link.sponsored && <p className="mt-2 text-center text-[0.75rem] text-ink-soft">{copy.partnerNote}</p>}
+              <p className="mt-2 text-center text-[0.75rem] text-ink-soft">{copy.partnerNote}</p>
             </li>
           );
         })}

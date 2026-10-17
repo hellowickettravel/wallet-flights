@@ -5,6 +5,8 @@
 // src/content/guides/flight-cancelled-or-delayed-rights.ts (CAA and GOV.UK,
 // read 16 Oct 2026). TODO(confirm): legal wording reviewed before launch.
 
+import type { ProgramId } from "./affiliates";
+
 /** Where an airport or airline sits for these rules. EU261 also covers Iceland, Norway and Switzerland. */
 export type Region = "UK" | "EU" | "X";
 
@@ -292,28 +294,22 @@ export const compensationCopy = {
 
 /**
  * Claim companies, linked through our affiliate network (docs/TRAVELPAYOUTS.md).
- * TODO(confirm): Compensair is joined, but its campaign_id and p are not yet
- * copied from the dashboard's link generator; AirHelp is NOT joined (needs the
- * owner's OK). Until then the buttons link to their sites without tracking.
- * TODO(confirm): each partner's fee, from their own site, before showing it.
+ * Fee and points use Compensair's own wording from its programme terms
+ * (17 Oct 2026): "No win, no fee", free to submit, 25–35% service fee only if
+ * the customer is paid.
+ *
+ * AirHelp is listed in the network but not open to us yet: it needs three
+ * months of steady monthly traffic, then "Submit for review" in the dashboard
+ * (owner's call). Until then it isn't shown, as the link wouldn't earn.
+ * Its terms then: 15% of AirHelp's fee (16.6% AirHelp+), 45-day cookie.
  */
 export const claimPartners = [
   {
     id: "compensair",
     name: "Compensair",
+    program: "compensair",
     url: "https://www.compensair.com/",
-    affiliate: null as { campaignId: number; p: number } | null,
-    fee: null as string | null,
-    // TODO(confirm): what the partner offers, in its own words, before listing it here.
-    points: ["Deals with the airline for you"],
+    fee: "No win, no fee",
+    points: ["Free to submit your claim", "They deal with the airline for you", "Their fee is 25–35%, only if you’re paid"],
   },
-  {
-    id: "airhelp",
-    name: "AirHelp",
-    url: "https://www.airhelp.com/",
-    affiliate: null as { campaignId: number; p: number } | null,
-    fee: null as string | null,
-    // TODO(confirm): what the partner offers, in its own words, before listing it here.
-    points: ["Deals with the airline for you"],
-  },
-] as const;
+] as const satisfies readonly { id: string; name: string; program: ProgramId; url: string; fee: string; points: readonly string[] }[];

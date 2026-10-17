@@ -131,7 +131,13 @@ test("delay compensation: claim letter and partners", async ({ page }) => {
   await expect(dialog.getByLabel("Letter text")).toHaveValue(/UK261/);
   await page.keyboard.press("Escape");
   await expect(dialog).toBeHidden();
-  for (const name of ["Compensair", "AirHelp"]) {
-    await expect(page.getByRole("link", { name: new RegExp(`Claim with ${name}`) })).toHaveAttribute("target", "_blank");
-  }
+  // Compensair goes through our tracked affiliate link; AirHelp isn't open to us yet, so it isn't shown.
+  const compensair = page.getByRole("link", { name: /Claim with Compensair/ });
+  await expect(compensair).toHaveAttribute("target", "_blank");
+  await expect(compensair).toHaveAttribute("rel", /sponsored/);
+  const href = (await compensair.getAttribute("href")) ?? "";
+  expect(href).toMatch(/^https:\/\/tp\.media\/r\?campaign_id=86&marker=567389&p=4129&sub_id=compensation_compensair&trs=344771&u=/);
+  expect(decodeURIComponent(href.split("u=")[1])).toBe("https://www.compensair.com/");
+  await expect(page.getByText("No win, no fee")).toBeVisible();
+  await expect(page.getByRole("link", { name: /Claim with AirHelp/ })).toHaveCount(0);
 });

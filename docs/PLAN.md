@@ -221,11 +221,13 @@ layout can be reviewed; production shows an empty state and a link to live searc
 | 1 | PageHeader | Promise: a minute, free, UK and EU rules | — |
 | 2 | Checker form | Collect the facts | From/to, airline, what happened (chips), arrival delay or notice, reason, passengers, date |
 | 3 | Live result | Answer as inputs change | Amount per passenger + total, distance band bar, checklist of why |
-| 4 | Ways to claim | Turn the answer into action | Claim yourself (free letter generator), Compensair, AirHelp (affiliate via our network), share link |
+| 4 | Ways to claim | Turn the answer into action | Claim yourself (free letter generator), Compensair (tracked affiliate link), share link. AirHelp later, once the network opens it to us |
 | 5 | Notes | Honesty | "A guide, not legal advice"; link to the rights guide |
 
 Rules (client-side, `src/lib/compensation.ts`): UK261 / EU261 coverage; £220/£350/£520 and
 €250/€400/€600 by distance (1,500 km, 3,500 km); 3-hour arrival rule; extraordinary circumstances;
 50% cut for 3–4 hour delays on flights over 3,500 km; 6-year limit (5 in Scotland).
-Open items, `TODO(confirm)`: partner fees and affiliate IDs for Compensair (joined) and AirHelp
-(**not joined: needs the owner's OK**); legal wording review.
+Compensair: campaign_id 86, p 4129, Sub ID `compensation_compensair`; fee copy from its programme
+terms ("No win, no fee", 25–35% only if paid). AirHelp is unavailable to the project until it has three
+months of steady traffic (then "Submit for review", owner's call), so its card is hidden.
+Open items, `TODO(confirm)`: legal wording review.

@@ -47,6 +47,7 @@ https://tp.media/r?campaign_id={C}&marker=567389&p={P}&sub_id={placement}&trs=34
 | Economybookings.com (cars) | 10 | 2018 | `https://www.economybookings.com/` |
 | Airalo (eSIM) | 541 | 8310 | `https://www.airalo.com/` |
 | Tiqets (tickets) | 89 | 2074 | `https://www.tiqets.com/` |
+| Compensair (delay claims) | 86 | 4129 | `https://www.compensair.com/` |
 
 The White Label forwards Sub IDs too: `?marker=567389.<sub_id>` on `/flights` is passed with
 every search, so bookings made inside the widget are attributed per placement.
