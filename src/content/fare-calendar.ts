@@ -147,3 +147,55 @@ export const teaserCopy = {
   cta: "Open the fare calendar",
   close: "Close the fare calendar suggestion",
 } as const;
+
+/** "Return, 1 week" or "One way", for alert emails and pages. */
+export const tripText = (trip: "return" | "oneway", nights: number) =>
+  trip === "oneway" ? "one way" : `return, ${tripLengths.find((t) => t.nights === nights)?.label.toLowerCase() ?? `${nights} nights`}`;
+
+/**
+ * Route price alerts (owner, 17 Oct 2026: the old site had them). Double
+ * opt-in; checked daily against the same fares the calendar shows (see
+ * src/lib/price-alerts.ts).
+ */
+export const priceAlertCopy = {
+  badge: "Price alert",
+  title: (from: string, to: string) => `Watch ${from} to ${to}`,
+  intro: (trip: string) => `Tell us the most you’d pay. We check fares every day and email you when the cheapest ${trip} fare drops below it.`,
+  now: "Cheapest found recently",
+  email: "Email address",
+  below: "Email me below",
+  submit: "Create alert",
+  sending: "Creating…",
+  invalid: "Enter an email address like name@example.com",
+  invalidPrice: "Enter the most you’d pay, like 90",
+  failed: "We couldn’t create your alert just now. Please try again in a moment.",
+  doneTitle: "Check your inbox.",
+  doneText: "Confirm your email with the link we sent and your alert starts.",
+  small: "We only email when the price is below yours, at most once a day. Stop any time with one click.",
+  confirm: {
+    metaTitle: "Confirm your price alert",
+    title: "Confirm your price alert",
+    text: "One click and we start checking fares for you every day.",
+    button: "Start my alert",
+    sending: "Starting…",
+    doneTitle: "Your alert is on",
+    doneText: (route: string, price: string) => `We’ll email you when ${route} drops below ${price}. Every alert email has a link to stop it.`,
+    expiredTitle: "This link has expired",
+    expiredText: "Confirmation links last 7 days. Create the alert again from the fare calendar and we’ll send a new one.",
+    failed: "We couldn’t start your alert just now. Please try again in a moment.",
+    back: "Open the fare calendar",
+  },
+  stop: {
+    metaTitle: "Stop a price alert",
+    title: "Stop this price alert?",
+    text: "We’ll stop checking this route for you and won’t email you about it again.",
+    button: "Stop my alert",
+    sending: "Stopping…",
+    doneTitle: "Alert stopped",
+    doneText: "You won’t get any more emails about this route. Your other alerts, if you have any, keep running.",
+    invalidTitle: "This link doesn’t work",
+    invalidText: "It may have been copied incompletely. Use the stop link in your latest alert email, or contact us and we’ll remove it.",
+    failed: "We couldn’t stop your alert just now. Please try again in a moment.",
+    back: "Open the fare calendar",
+  },
+} as const;

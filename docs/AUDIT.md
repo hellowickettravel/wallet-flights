@@ -655,3 +655,32 @@ passed after the Contact menu wording fix.
   for consent, skipped pages), 404, and phone layout on 14 pages (no overflow at 320–414 px, ≥24 px
   targets, ≥16 px fields).
 
+
+## Batch 7: route price alerts, SEO and performance recheck (17 Oct 2026)
+
+**Price alerts (owner: the old site had them).** "Watch London to Barcelona: email me below £85" sits under the
+fare calendar's results. Double opt-in: the alert travels in an HMAC-signed confirmation link and is only saved
+once confirmed (`/price-alerts/confirm`, a button, so mail scanners can't confirm). Saved alerts live in Redis over
+its REST API (Upstash through Vercel; memory in development and e2e). A daily cron (`vercel.json`, 07:00 UTC)
+calls `/api/price-alerts/check`, which prices each route exactly as the calendar does (cheapest one-way, or
+cheapest outbound + return N nights later, no filters) and emails alerts at or below the visitor's price: a lower
+price the next day, the same price at most weekly. Every alert email has a stop link (`/price-alerts/stop`) and
+RFC 8058 one-click unsubscribe headers. Tokens are purpose-bound, so a homepage fare-alert link can't confirm a
+price alert and a confirm link can't stop one. Privacy policy updated.
+
+**Not live until the owner adds settings.** The box only renders when email, the database and `CRON_SECRET`
+are all configured (`priceAlertsReady()`, reported with the fare data), so nobody signs up for emails that
+never come. TODO(confirm): owner connects Upstash for Redis in Vercel and sets `CRON_SECRET`; email moves to
+the GoDaddy mailbox next batch.
+
+**SEO recheck (production build, all 84 sitemap URLs):** status 200, self-canonical, one h1, valid JSON-LD,
+og and Twitter tags on every page; confirm, stop, hand-off and unknown pages noindex; 404 for unknown paths.
+Fixed: 24 titles over 60 characters now drop the " | Wallet Flights" suffix (`pageMetadata`); destination
+descriptions under 160; photo-credits description lengthened.
+
+**Lighthouse 13.4.1, local simulated mobile, 1 run each:** home 75 / 100 / 100 / 100 (LCP 4.6 s, TBT 250 ms,
+CLS 0); fare calendar 80 / 100 / 100 / 100 (LCP 4.5 s, CLS 0); London to New York 77 / 100 / 100 / 100 (LCP
+4.7 s, CLS 0). Photos loaded this time. Remaining cost is the shared framework chunks and the two stylesheets,
+not this batch's code. PageSpeed Insights was over its daily quota; re-measure the live site there.
+
+**Test:** lint, typecheck, build pass. e2e: **342 passed**, 44 skipped (desktop-only or phone-only), 0 failed.

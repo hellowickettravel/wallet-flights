@@ -17,6 +17,7 @@ import { MonthSkyline } from "./month-skyline";
 import { DayCalendar } from "./day-calendar";
 import { DayFares } from "./day-fares";
 import { FlexGrid } from "./flex-grid";
+import { RouteAlert } from "./route-alert";
 import {
   activeFilterCount,
   addDays,
@@ -61,7 +62,8 @@ function urlFor(q: RouteQuery) {
 
 /** The route on screen; either place may still be missing until the visitor (or their location) picks it. */
 type Query = { from: Airport | null; to: Airport | null; trip: Trip; nights: number };
-type Loaded = { key: string; data: FareCalendarData | null; error: boolean };
+/** `alerts`: whether route price alerts can be offered (see /api/fare-calendar). */
+type Loaded = { key: string; data: (FareCalendarData & { alerts?: boolean }) | null; error: boolean };
 /** Per-route view state; a new route starts fresh. */
 type View = { key: string; filters: Filters; month: number | null; date: string | null; filtersOpen: boolean };
 
@@ -120,7 +122,7 @@ export function FareCalendar() {
     const ctrl = new AbortController();
     const p = new URLSearchParams({ origin: route.from.code, destination: route.to.code, currency, trip: route.trip });
     fetch(`/api/fare-calendar?${p}`, { signal: ctrl.signal })
-      .then((r) => (r.ok ? (r.json() as Promise<FareCalendarData>) : Promise.reject(new Error(String(r.status)))))
+      .then((r) => (r.ok ? (r.json() as Promise<FareCalendarData & { alerts?: boolean }>) : Promise.reject(new Error(String(r.status)))))
       .then((data) => setLoaded({ key, data, error: false }))
       .catch((e: Error) => {
         if (e.name !== "AbortError") setLoaded({ key, data: null, error: true });
@@ -160,6 +162,12 @@ export function FareCalendar() {
     }
     return out;
   }, [model.out, back, months]);
+
+  // What a price alert watches: the cheapest fare for this trip, ignoring filters.
+  const alertCheapest = useMemo(() => {
+    const mins = monthSummaries({ out, back: isReturn ? back : undefined, nights: query.nights, filters: noFilters }, months).flatMap((s) => (s.min === null ? [] : [s.min]));
+    return mins.length ? Math.min(...mins) : null;
+  }, [out, back, isReturn, query.nights, months]);
 
   const validMonths = summaries.filter((s) => s.min !== null);
   const cheapestMonth = validMonths.length ? summaries.indexOf(validMonths.reduce((a, b) => (b.min! < a.min! ? b : a))) : 0;
@@ -351,6 +359,17 @@ export function FareCalendar() {
                       if (nights !== query.nights) changeTrip("return", nights);
                       setView({ ...view, month: mi >= 0 ? mi : monthIdx, date: l });
                     }}
+                  />
+                )}
+                {data?.alerts && (
+                  <RouteAlert
+                    key={`${routeKey}-${isReturn ? query.nights : 0}`}
+                    from={route.from}
+                    to={route.to}
+                    trip={isReturn ? "return" : "oneway"}
+                    nights={isReturn ? query.nights : 0}
+                    cheapest={alertCheapest}
+                    currency={currency}
                   />
                 )}
                 <p className="text-[0.8125rem] leading-relaxed text-ink-soft">{copy.disclaimer}</p>

@@ -8,7 +8,7 @@ import { site } from "@/content/site";
 type Image = { url: string; width: number; height: number; alt: string };
 
 type PageSeo = {
-  /** Page title; the layout template adds " | Wallet Flights". */
+  /** Page title; the layout template adds " | Wallet Flights" when it fits in 60 characters. */
   title: string | { absolute: string };
   description: string;
   /** Path from the site root, e.g. "/deals". Becomes the canonical and og:url. */
@@ -25,7 +25,11 @@ type PageSeo = {
 // sets its own openGraph no longer inherits it, so it's named explicitly.
 const defaultImage: Image = { url: "/opengraph-image", width: 1200, height: 630, alt: `${site.name}: compare cheap flights in one place` };
 
-export function pageMetadata({ title, description, path, image, type = "website", publishedTime, modifiedTime, robots }: PageSeo): Metadata {
+/** Google cuts titles at about 60 characters; past that, the brand suffix gives way to the page's own words. */
+const TITLE_MAX = 60;
+
+export function pageMetadata({ title: given, description, path, image, type = "website", publishedTime, modifiedTime, robots }: PageSeo): Metadata {
+  const title = typeof given === "string" && `${given} | ${site.name}`.length > TITLE_MAX ? { absolute: given } : given;
   const shareTitle = typeof title === "string" ? `${title} | ${site.name}` : title.absolute;
   return {
     title,

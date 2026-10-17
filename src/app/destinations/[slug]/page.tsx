@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: PageProps<"/destinations/[slu
   const from = ["New York", "London"].filter((c) => c !== d.city).join(" and ");
   return pageMetadata({
     title: `${d.city} flights: best time to visit and fares`,
-    description: `How long the flight to ${d.city} is from ${from}, the best months to visit, which airport to use, and entry rules for British and American travellers.`,
+    description: `How long the flight to ${d.city} is from ${from}, the best months to visit, which airport to use, and entry rules for UK and US travellers.`,
     path: `/destinations/${d.slug}`,
     image: unsplashShareImage(d.photo),
   });

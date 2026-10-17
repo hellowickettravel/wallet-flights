@@ -87,7 +87,7 @@ test("contact api rejects invalid input and ignores honeypot spam", async ({ req
 });
 
 test("form APIs refuse non-JSON and cross-site posts (CSRF)", async ({ request, baseURL }) => {
-  for (const path of ["/api/contact", "/api/fare-alerts"]) {
+  for (const path of ["/api/contact", "/api/fare-alerts", "/api/price-alerts", "/api/price-alerts/confirm"]) {
     const plain = await request.post(path, { headers: { "content-type": "text/plain" }, data: '{"email":"a@example.com"}' });
     expect(plain.status()).toBe(415);
     const foreign = await request.post(path, { headers: { origin: "https://evil.example" }, data: { email: "a@example.com" } });

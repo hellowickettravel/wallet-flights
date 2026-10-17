@@ -13,7 +13,7 @@ const CalendarTeaser = dynamic(() => import("./calendar-teaser").then((m) => m.C
 export const TEASER_KEY = "wf_teaser";
 
 /** Pages where it would get in the way: the calendar itself, the search and partner hand-off, and claims. */
-const SKIP = [/^\/fare-calendar/, /^\/flights/, /^\/go/, /^\/fare-alerts/, /^\/flight-delay-compensation/];
+const SKIP = [/^\/fare-calendar/, /^\/flights/, /^\/go/, /^\/fare-alerts/, /^\/price-alerts/, /^\/flight-delay-compensation/];
 
 const seen = () => {
   try {

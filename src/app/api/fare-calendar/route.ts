@@ -1,12 +1,14 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { fareCalendar } from "@/lib/fare-calendar";
+import { priceAlertsReady } from "@/lib/price-alerts";
 
 const CODE = /^[A-Z]{3}$/;
 
 /**
  * Fares for the fare calendar: GET /api/fare-calendar?origin=LON&destination=BCN&currency=GBP&trip=return
  * Each month is cached on the server for an hour (see src/lib/fare-calendar.ts),
- * and the answer at the edge for an hour too.
+ * and the answer at the edge for an hour too. `alerts` says whether route
+ * price alerts can be offered (fixed per deployment, so it caches with the fares).
  */
 export async function GET(req: NextRequest) {
   const p = req.nextUrl.searchParams;
@@ -18,7 +20,7 @@ export async function GET(req: NextRequest) {
   }
   const data = await fareCalendar(origin, destination, currency, p.get("trip") === "return");
   const found = data.out.length > 0;
-  return NextResponse.json(data, {
+  return NextResponse.json({ ...data, alerts: priceAlertsReady() }, {
     headers: { "Cache-Control": found ? "public, s-maxage=3600, stale-while-revalidate=86400" : "no-store" },
   });
 }

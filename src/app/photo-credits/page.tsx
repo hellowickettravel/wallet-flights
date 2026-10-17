@@ -6,7 +6,7 @@ import { photographerUrl, photos, unsplashHomeUrl } from "@/content/images";
 export const metadata = pageMetadata({
   title: "Photo credits",
   description:
-    "The photographers whose work appears on Wallet Flights, via Unsplash.",
+    "The photographers whose work appears on Wallet Flights, with links to their Unsplash profiles and the photos we use.",
   path: "/photo-credits",
 });
 

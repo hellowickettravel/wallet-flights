@@ -36,3 +36,32 @@ export function readOptInToken(token: string, now = Date.now()): OptInCheck {
   if (now > Number.parseInt(exp, 36)) return { ok: false, reason: "expired" };
   return { ok: true, email: Buffer.from(mail, "base64url").toString() };
 }
+
+/**
+ * The same signing for any small JSON payload (route price alerts). `purpose`
+ * is part of what's signed, so a token made for one link (confirm, stop)
+ * never works for another, nor as a fare-alert token.
+ */
+export function createSignedToken(purpose: string, data: unknown, ttlMs: number, now = Date.now()): string | null {
+  const key = secret();
+  if (!key) return null;
+  const payload = `${Buffer.from(JSON.stringify(data)).toString("base64url")}.${(now + ttlMs).toString(36)}`;
+  return `${payload}.${sign(`${purpose}|${payload}`, key)}`;
+}
+
+export type SignedCheck<T> = { ok: true; data: T } | { ok: false; reason: "invalid" | "expired" };
+
+export function readSignedToken<T>(purpose: string, token: string, now = Date.now()): SignedCheck<T> {
+  const key = secret();
+  const [body, exp, sig] = token.split(".");
+  if (!key || !body || !exp || !sig) return { ok: false, reason: "invalid" };
+  const expected = Buffer.from(sign(`${purpose}|${body}.${exp}`, key));
+  const given = Buffer.from(sig);
+  if (expected.length !== given.length || !timingSafeEqual(expected, given)) return { ok: false, reason: "invalid" };
+  if (now > Number.parseInt(exp, 36)) return { ok: false, reason: "expired" };
+  try {
+    return { ok: true, data: JSON.parse(Buffer.from(body, "base64url").toString()) as T };
+  } catch {
+    return { ok: false, reason: "invalid" };
+  }
+}

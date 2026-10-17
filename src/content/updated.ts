@@ -11,7 +11,7 @@ export const updated = {
   about: "2026-10-16",
   contact: "2026-10-16",
   help: "2026-10-15",
-  legal: "2026-10-16",
+  legal: "2026-10-17",
   editorial: "2026-10-16",
   photoCredits: "2026-10-12",
   fareCalendar: "2026-10-17",

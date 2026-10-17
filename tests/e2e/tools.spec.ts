@@ -19,7 +19,8 @@ function calendarFixture() {
     fare(`${m}-12`, "LGW", "BCN", 140 + i * 5, 0, "BA"),
   ]);
   const back = months.flatMap((m) => [fare(`${m}-17`, "BCN", "LGW", 40, 0, "U2"), fare(`${m}-19`, "BCN", "LGW", 45, 0, "U2")]);
-  return { currency: "GBP", months, out, back };
+  // alerts: the server says route price alerts can be sent.
+  return { currency: "GBP", months, out, back, alerts: true };
 }
 
 const london = { code: "LON", city: "London", name: "All airports", country: "United Kingdom" };
@@ -88,6 +89,89 @@ test("fare calendar: months, days, fares and a Select link into live search", as
 
   // Each trip length shows the cheapest return total the fares allow (7 nights: £50 out + £40 back).
   await expect(page.getByLabel("Trip length").locator("option", { hasText: "1 week" })).toHaveText("1 week · from £90");
+});
+
+test("fare calendar: a price alert for the route on screen, only when alerts can be sent", async ({ page }) => {
+  await mockCalendar(page, calendarFixture());
+  await page.goto("/fare-calendar?from=LON&to=BCN&trip=return&nights=7");
+  const box = page.getByRole("region", { name: "Watch London to Barcelona" });
+  await expect(box).toContainText("return, 1 week");
+  // Today's cheapest (£50 out + £40 back), and a target a little under it.
+  await expect(box).toContainText("£90");
+  await expect(box.getByLabel("Email me below")).toHaveValue("85");
+
+  await box.getByRole("button", { name: "Create alert" }).click();
+  await expect(box.getByRole("alert")).toHaveText(/Enter an email address/);
+  await box.getByLabel("Email address").fill("traveller@example.com");
+  await box.getByLabel("Email me below").fill("0");
+  await box.getByRole("button", { name: "Create alert" }).click();
+  await expect(box.getByRole("alert")).toHaveText(/most you’d pay/);
+  await box.getByLabel("Email me below").fill("80");
+  await page.waitForTimeout(1600); // the API ignores sign-ups faster than a person could type
+  await box.getByRole("button", { name: "Create alert" }).click();
+  await expect(box.getByRole("status")).toContainText("Check your inbox");
+
+  // Without a way to send alerts, the box isn't offered at all.
+  await page.unrouteAll({ behavior: "ignoreErrors" });
+  await mockCalendar(page, { ...calendarFixture(), alerts: false });
+  await page.reload();
+  await expect(page.getByRole("list", { name: "Lowest fare in each month" })).toBeVisible();
+  await expect(page.getByTestId("route-alert")).toHaveCount(0);
+});
+
+test("price alerts: double opt-in, stop link, one-click unsubscribe and a locked daily check", async ({ page, request }) => {
+  const spec = {
+    email: "traveller@example.com",
+    from: { code: "LON", city: "London" },
+    to: { code: "BCN", city: "Barcelona" },
+    trip: "return",
+    nights: 7,
+    max: 80,
+    currency: "GBP",
+  };
+  for (const bad of [{ ...spec, max: 0 }, { ...spec, to: spec.from }, { ...spec, email: "nope" }]) {
+    expect((await request.post("/api/price-alerts", { data: { ...bad, startedAt: Date.now() - 5000 } })).status()).toBe(400);
+  }
+  const res = await request.post("/api/price-alerts", { data: { ...spec, startedAt: Date.now() - 5000 } });
+  expect(res.status()).toBe(202);
+  const { link } = await res.json();
+  expect(link).toMatch(/\/price-alerts\/confirm\?t=/);
+
+  await page.goto(link);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Confirm your price alert");
+  await page.getByRole("button", { name: "Start my alert" }).click();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Your alert is on");
+  await expect(page.getByRole("status")).toContainText("London to Barcelona drops below £80");
+  await expect(page.getByRole("link", { name: "Open the fare calendar" })).toHaveAttribute("href", "/fare-calendar?from=LON&to=BCN&trip=return&nights=7");
+
+  // A forged or edited link is refused; a homepage fare-alert link doesn't work here either.
+  await page.goto(`${link}x`);
+  await page.getByRole("button", { name: "Start my alert" }).click();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("This link has expired");
+  const fareAlert = (await (await request.post("/api/fare-alerts", { data: { email: spec.email, startedAt: Date.now() - 5000 } })).json()).link as string;
+  const crossed = await request.post("/api/price-alerts/confirm", { data: { t: new URL(fareAlert).searchParams.get("t") } });
+  expect(crossed.status()).toBe(400);
+
+  // The stop link every alert email carries.
+  const t = new URL(link).searchParams.get("t");
+  const { stop } = await (await request.post("/api/price-alerts/confirm", { data: { t } })).json();
+  await page.goto(stop);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Stop this price alert?");
+  await page.getByRole("button", { name: "Stop my alert" }).click();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Alert stopped");
+
+  // A mail app's one-click unsubscribe: a form post from its servers, no Origin.
+  await request.post("/api/price-alerts/confirm", { data: { t } });
+  const oneClick = await request.post(`/api/price-alerts/stop?t=${new URL(stop).searchParams.get("t")}`, { form: { "List-Unsubscribe": "One-Click" } });
+  expect(oneClick.status()).toBe(200);
+  expect((await oneClick.json()).route).toBe("London to Barcelona");
+  expect((await request.post("/api/price-alerts/stop?t=forged", { form: { "List-Unsubscribe": "One-Click" } })).status()).toBe(400);
+
+  // The daily check only runs with the cron secret.
+  expect((await request.get("/api/price-alerts/check")).status()).toBe(401);
+  const check = await request.get("/api/price-alerts/check", { headers: { authorization: "Bearer e2e-cron-secret" } });
+  expect(check.status()).toBe(200);
+  expect(await check.json()).toMatchObject({ sent: expect.any(Number), failed: 0 });
 });
 
 test("fare calendar: starts near the visitor with a popular route, never a fixed one", async ({ page }) => {

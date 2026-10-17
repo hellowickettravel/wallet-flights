@@ -28,7 +28,10 @@ test("route pages are indexable, listed in the sitemap and answer the flight-tim
     const html = await (await request.get(path)).text();
     expect(meta(html, "robots") ?? "", path).not.toContain("noindex");
     expect(sitemap, path).toContain(`<loc>${HOST}${path}</loc>`);
-    expect(html).toMatch(/<title>[^<]+ to [^<]+ flight time(, distance and fares| and distance) \| Wallet Flights<\/title>/);
+    // The brand suffix only when it fits: Google cuts titles at about 60 characters.
+    const title = html.match(/<title>([^<]+)<\/title>/)?.[1] ?? "";
+    expect(title).toMatch(/^.+ to .+ flight time(, distance and fares| and distance)( \| Wallet Flights)?$/);
+    expect(title.endsWith("| Wallet Flights") ? title.length : 0, path).toBeLessThanOrEqual(60);
     expect((meta(html, "description") ?? "").length).toBeLessThanOrEqual(160);
     const faq = jsonLd(html).find((d) => d["@type"] === "FAQPage");
     expect(faq.mainEntity.length, path).toBeGreaterThanOrEqual(6);
