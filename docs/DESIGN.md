@@ -177,3 +177,45 @@ Analytics). `/flights` shows a "Live prices need one cookie choice" panel until 
 **Prices:** green `fare` only for real Data API prices. No fare → no price (cards say "Search
 dates", the board shows blank flaps). Cheapest-month calendar: one cell per month with a fare,
 bar height relative to that city's range, cheapest month in `fare` green.
+
+---
+
+## Batch 5 — Travel tools
+
+Both pages: `PageHeader` on white, then the working area on a `mist` band so the white panels
+read as instruments. One memorable element each; everything else answers an action.
+
+**Fare calendar — signature: the month skyline.** Twelve bars like a city skyline at dusk; the
+cheapest month is fare green and labelled. Bars grow once when a route loads (CSS transform,
+off with reduced motion).
+```
+[breadcrumb] H1 "Find the cheapest time to fly" · intro
+┌From────────┐⇄┌To──────────┐ (One way|Return) [Trip length ▾] [Show fares]   ← joined bar
+mist ─────────────────────────────────────────────────────────────────────────────
+filters 280px (sticky) │ panel: Lowest fare by month   ▁▃▂▅▇▆▃▂▁▂▃▅  + 3 insights
+ Direct only [toggle]  │ panel: ‹ November 2026 ›   Low ■ High ■
+ Leave on M T W T F S S│  Mon Tue … grid; day cell = date + price
+ Departure airport ☐   │ panel: Sat 14 Nov — 4 cheapest fares  [Select]
+ Airlines ☐            │ panel: Flexible by a few days? 7×7 (return only)
+ Max price ───●        │ action band: Watch this route (email + target price)
+```
+New functional colour: **dear** `#A63A28` text on `#FBEAE6` (5.5:1) for expensive days only, the
+counterpart of fare green. Never used for errors or decoration.
+
+**Delay compensation — signature: the result ticket.** A navy (`board`) panel shaped like a
+boarding-pass stub (perforated divider), sticky beside the form. The amount is set large in
+`sun` (sun lives on ink), and the distance bar shows the three bands with a marker at this
+flight's distance. Amount changes animate once per change (response to input, not decoration).
+```
+[breadcrumb] H1 "Check what you're owed" · intro
+form panel (7 cols, white, float shadow)    │ ticket (5 cols, board, sticky)
+ From ▾  ⇄  To ▾   Airline ▾   Date          │  You're likely owed
+ What happened? (4 large chips with icons)  │  £350 per passenger · £700 total
+ How late did you arrive? (chips)           │  ├ 1,500 ┼ 3,500 ┤  ● 2,240 km
+ Reason the airline gave (chips)            │  ✓ covered  ✓ 3h+  ! reason …
+ Passengers  − 2 +                          │  Claim by …
+──────────────────────────────────────────────────────────────────────────────
+Ways to claim: three columns (yourself / Compensair / AirHelp) + share link
+```
+Review against defaults: no stats row, no gradient, no eyebrow labels; numbering not used (no
+sequence); chips are real radio groups; the ticket and skyline carry the personality.

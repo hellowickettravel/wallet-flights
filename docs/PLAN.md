@@ -186,3 +186,46 @@ Dashboard audit and IDs: [`docs/TRAVELPAYOUTS.md`](TRAVELPAYOUTS.md).
 | Homepage hero | Skyscanner-style search-first hero (owner request) | see DESIGN.md Batch 4 |
 
 Demo results UI + engine stay behind `NEXT_PUBLIC_DEMO_RESULTS=true`.
+
+---
+
+# Batch 5 — Travel tools: fare calendar and delay compensation (17 Oct 2026)
+
+Owner brief: two working pages, layout and UI first. Feature reference only (not design):
+`marketing/feature-mockups/wallet-flights-tools-mockup.html`.
+
+## `/fare-calendar` — "Find the cheapest time to fly"
+
+| # | Section | Job | Interaction |
+|---|---|---|---|
+| 1 | PageHeader | Say what the tool does | — |
+| 2 | Search bar | Pick the route and trip | From ⇄ To (same airport combobox as the hero), One way / Return, trip length (return only) |
+| 3 | Filters rail | Narrow the fares already loaded | Direct only, departure airport, airline, day of week, max price; reset; mobile disclosure |
+| 4 | Lowest fare by month | See the cheap months at a glance | 12 bars, cheapest in fare green; click a bar to open that month; 3 insights computed from the data |
+| 5 | Day calendar | Pick a day | Month nav; cheap days green, dear days red; legend |
+| 6 | Day fares | Act on a day | Fare cards; Select → `/flights?…&sub=calendar` (White Label, earns the flight commission) |
+| 7 | Flexible dates (return) | ±3 days around the chosen pair | 7×7 grid; picking a cell selects that pair |
+| 8 | Route alert | Capture email | Posts to the existing `/api/fare-alerts` double opt-in with route + target price |
+
+Data: Data API `prices_for_dates`, one call per month and direction (12, or 24 for returns),
+through `GET /api/fare-calendar`, cached hourly with `use cache`. The token is read from
+`TRAVELPAYOUTS_TOKEN` on the server only. Filters run in the browser on the fares returned.
+Return totals = cheapest outbound on day D + cheapest return on D + trip length (two one-way
+fares, labelled as such). With no token, **development only** serves labelled sample fares so the
+layout can be reviewed; production shows an empty state and a link to live search.
+
+## `/flight-delay-compensation` — "Check what you're owed"
+
+| # | Section | Job | Interaction |
+|---|---|---|---|
+| 1 | PageHeader | Promise: a minute, free, UK and EU rules | — |
+| 2 | Checker form | Collect the facts | From/to, airline, what happened (chips), arrival delay or notice, reason, passengers, date |
+| 3 | Live result | Answer as inputs change | Amount per passenger + total, distance band bar, checklist of why |
+| 4 | Ways to claim | Turn the answer into action | Claim yourself (free letter generator), Compensair, AirHelp (affiliate via our network), share link |
+| 5 | Notes | Honesty | "A guide, not legal advice"; link to the rights guide |
+
+Rules (client-side, `src/lib/compensation.ts`): UK261 / EU261 coverage; £220/£350/£520 and
+€250/€400/€600 by distance (1,500 km, 3,500 km); 3-hour arrival rule; extraordinary circumstances;
+50% cut for 3–4 hour delays on flights over 3,500 km; 6-year limit (5 in Scotland).
+Open items, `TODO(confirm)`: partner fees and affiliate IDs for Compensair (joined) and AirHelp
+(**not joined: needs the owner's OK**); legal wording review.

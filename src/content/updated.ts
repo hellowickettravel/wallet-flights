@@ -14,4 +14,6 @@ export const updated = {
   legal: "2026-10-16",
   editorial: "2026-10-16",
   photoCredits: "2026-10-12",
+  fareCalendar: "2026-10-17",
+  compensation: "2026-10-17",
 } as const;

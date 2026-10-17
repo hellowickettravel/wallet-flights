@@ -34,7 +34,7 @@ type RawFare = {
   link?: string;
 };
 
-async function get<T>(path: string, params: Record<string, string>): Promise<T | null> {
+export async function get<T>(path: string, params: Record<string, string>): Promise<T | null> {
   const token = process.env.TRAVELPAYOUTS_TOKEN;
   if (!token) return null;
   try {

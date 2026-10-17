@@ -91,6 +91,8 @@ export const footerNav = [
       { label: "Flight deals", href: "/deals" },
       { label: "Destinations", href: "/destinations" },
       { label: "Airlines", href: "/airlines" },
+      { label: "Fare calendar", href: "/fare-calendar" },
+      { label: "Delay compensation", href: "/flight-delay-compensation" },
     ],
   },
   {

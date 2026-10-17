@@ -576,3 +576,27 @@ robots.txt sitemap line, llms.txt and schema URL pointed at a redirecting host. 
 the apex (one hop); tests now assert no www URLs. The search widget's airport lookup works on the apex.
 TODO(confirm): owner to update the White Label domain (#23361) to the apex in its dashboard.
 **Test:** lint, typecheck, build pass; e2e 284 passed, 30 skipped.
+
+### Batch 5: fare calendar and delay compensation, layout and UI (17 Oct 2026)
+
+Two new pages, built layout-first per the owner's brief (plan and design in `docs/PLAN.md` and
+`docs/DESIGN.md`, Batch 5). Feature reference only: `marketing/feature-mockups/wallet-flights-tools-mockup.html`.
+- **`/fare-calendar`**: route search (same airport combobox as the hero), month skyline, day calendar
+  (cheap/dear days), day fare cards with Select → `/flights?…&sub=calendar`, ±3-day grid for returns,
+  filters (direct, weekday, max price, departure airport, airline), route alert posting to the existing
+  `/api/fare-alerts`. Data: `GET /api/fare-calendar` → `prices_for_dates` per month and direction, `use cache`
+  hourly; token from `TRAVELPAYOUTS_TOKEN` only. Local `.env.local` has an empty token, so **development**
+  serves labelled sample fares; production with no data shows an empty state (tested).
+- **`/flight-delay-compensation`**: form + live result ticket (per passenger, total, distance band bar,
+  checklist, claim time limit), rules in `src/lib/compensation.ts`, claim letter generator, share link,
+  Compensair and AirHelp cards, rules table, mobile sticky amount bar.
+- Footer, sitemap, `updated.ts` and llms.txt list both pages. New tokens: `fare-deep`/`fare-tint` (5.4:1),
+  `dear`/`dear-tint` (5.5:1).
+
+**Open, `TODO(confirm)`:** Compensair campaign_id/p (joined; IDs not copied yet); AirHelp **not joined**
+(owner's OK needed), so both buttons link without tracking; partner fees; legal review of the rules wording
+and the UK261 within-UK distance rule; `/api/fare-alerts` stores only the email (route + target price are
+sent but not kept), so alert copy says route alerts are "launching soon".
+**Test:** lint, typecheck, build pass; new `tests/e2e/tools.spec.ts` (16 tests: axe WCAG 2.2 AA, no
+overflow at 360/768/1280, partner never named, calendar flows with mocked data, rules cases, letter
+dialog); full e2e 300 passed, 30 skipped.

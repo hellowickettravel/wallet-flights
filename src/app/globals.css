@@ -15,6 +15,11 @@
   --color-line: #dfe6f0;
   --color-board: #13284d;
   --color-board-tile: #1b345f;
+  /* Fare calendar: cheap days (fare-deep on fare-tint, 5.4:1) and dear days (5.5:1). */
+  --color-fare-deep: #08704a;
+  --color-fare-tint: #e6f4ec;
+  --color-dear: #a63a28;
+  --color-dear-tint: #fbeae6;
 
   --font-sans: var(--font-onest), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-bricolage), var(--font-onest), ui-sans-serif, sans-serif;
@@ -203,5 +208,22 @@ html[data-consent] .cookie-banner:not([data-reopened]) {
   }
   to {
     transform: scaleX(1);
+  }
+}
+
+/* Fare calendar signature: the month bars grow once when a route loads
+   (docs/DESIGN.md, Batch 5). Off with reduced motion. */
+@keyframes skyline-grow {
+  from {
+    transform: scaleY(0);
+  }
+}
+.skyline-bar {
+  transform-origin: bottom;
+  animation: skyline-grow 0.7s var(--ease-out-quint) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skyline-bar {
+    animation: none;
   }
 }

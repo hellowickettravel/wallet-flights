@@ -16,6 +16,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // Every route page answers the flight-time and route questions, so all are listed (fares or not).
     ...routes.map((r) => page(`/routes/${r.slug}`, updated.routes)),
     page("/airlines", updated.airlines),
+    page("/fare-calendar", updated.fareCalendar),
+    page("/flight-delay-compensation", updated.compensation),
     page("/travel-guides", updated.travelGuides),
     ...guides.map((g) => page(`/travel-guides/${g.slug}`, g.updated ?? g.published)),
     page("/about", updated.about),
