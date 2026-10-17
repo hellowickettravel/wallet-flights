@@ -1,26 +1,39 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { Scales } from "@phosphor-icons/react/dist/ssr";
-import { PageHeader } from "@/components/ui/page-header";
+import { CalendarDots, Scales, Storefront, TrendDown } from "@phosphor-icons/react/dist/ssr";
+import { PhotoHeader } from "@/components/ui/photo-header";
 import { FareCalendar } from "@/components/fare-calendar/fare-calendar";
 import { fareCalendarCopy as copy } from "@/content/fare-calendar";
+import { photos } from "@/content/images";
 import { jsonLdHtml, webPage } from "@/lib/schema";
-import { pageMetadata } from "@/lib/seo";
+import { pageMetadata, unsplashShareImage } from "@/lib/seo";
 
 export const metadata = pageMetadata({
   title: copy.metaTitle,
   description: copy.metaDescription,
   path: "/fare-calendar",
+  image: unsplashShareImage(photos.fareCalendar),
 });
+
+const pointIcons = [CalendarDots, TrendDown, Storefront];
 
 const jsonLd = webPage("WebPage", "/fare-calendar", copy.title, copy.metaDescription);
 
 export default function FareCalendarPage() {
   return (
     <>
-      <PageHeader title={copy.title} intro={copy.intro} crumbs={[{ label: "Fare calendar", href: "/fare-calendar" }]} />
+      <PhotoHeader
+        photo={photos.fareCalendar}
+        title={copy.title}
+        intro={copy.intro}
+        crumbs={[{ label: "Fare calendar", href: "/fare-calendar" }]}
+        points={copy.points.map((label, i) => {
+          const Icon = pointIcons[i];
+          return { label, icon: <Icon className="size-4" weight="bold" aria-hidden /> };
+        })}
+      />
       {/* The calendar reads the route from the URL, so it renders in the browser. */}
-      <Suspense fallback={<div className="mt-8 h-[48rem] bg-mist md:mt-12" aria-hidden />}>
+      <Suspense fallback={<div className="relative z-10 container-page -mt-20 h-[48rem] md:-mt-24" aria-hidden><div className="h-36 rounded-(--radius-panel) bg-white shadow-(--shadow-float) ring-1 ring-line" /></div>}>
         <FareCalendar />
       </Suspense>
       <section aria-labelledby="tools-more" className="container-page py-12 md:py-16">

@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { AirplaneLanding, AirplaneTakeoff, ArrowsLeftRight, MagnifyingGlass } from "@phosphor-icons/react";
 import { AirportField } from "@/components/search/airport-field";
 import type { Airport } from "@/content/airports";
+import { formatPrice, type Currency } from "@/content/deals";
 import { fareCalendarCopy as copy, tripLengths } from "@/content/fare-calendar";
 import { onRovingKeyDown } from "@/lib/roving";
 
@@ -16,10 +17,13 @@ type Props = {
   onSearch: (q: RouteQuery) => void;
   /** Trip type and length apply at once (the fares are already loaded); places wait for "Show fares". */
   onTripChange: (trip: Trip, nights: number) => void;
+  /** Cheapest return total for each trip length on this route (from the loaded fares). */
+  lengthPrices: Record<number, number | null>;
+  currency: Currency;
 };
 
 /** Route search for the fare calendar: From ⇄ To, one way or return, trip length. */
-export function SearchBar({ initial, onSearch, onTripChange }: Props) {
+export function SearchBar({ initial, onSearch, onTripChange, lengthPrices, currency }: Props) {
   const [from, setFrom] = useState<Airport | null>(initial.from);
   const [to, setTo] = useState<Airport | null>(initial.to);
   const [error, setError] = useState<string | null>(null);
@@ -100,7 +104,7 @@ export function SearchBar({ initial, onSearch, onTripChange }: Props) {
 
           <label
             className={clsx(
-              "col-span-2 flex h-16 flex-col justify-center rounded-xl bg-white px-4 ring-1 ring-line transition-opacity focus-within:ring-2 focus-within:ring-action sm:col-span-1 lg:min-w-44",
+              "col-span-2 flex h-16 flex-col justify-center rounded-xl bg-white px-4 ring-1 ring-line transition-opacity focus-within:ring-2 focus-within:ring-action sm:col-span-1 lg:min-w-56",
               initial.trip === "oneway" && "opacity-50",
             )}
           >
@@ -112,11 +116,14 @@ export function SearchBar({ initial, onSearch, onTripChange }: Props) {
               className="-ml-1 w-full cursor-pointer bg-transparent text-[1.0625rem] font-semibold text-ink outline-none disabled:cursor-not-allowed"
             >
               {custom && <option value={initial.nights}>{initial.nights} nights</option>}
-              {tripLengths.map((t) => (
-                <option key={t.nights} value={t.nights}>
-                  {t.label}
-                </option>
-              ))}
+              {tripLengths.map((t) => {
+                const price = lengthPrices[t.nights];
+                return (
+                  <option key={t.nights} value={t.nights}>
+                    {price != null ? `${t.label} · from ${formatPrice(price, currency)}` : t.label}
+                  </option>
+                );
+              })}
             </select>
           </label>
         </div>

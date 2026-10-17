@@ -2,13 +2,113 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, m } from "motion/react";
-import { ArrowUpRight, List, WhatsappLogo, X } from "@phosphor-icons/react";
+import { ArrowUpRight, CaretDown, List, WhatsappLogo, X } from "@phosphor-icons/react";
 import clsx from "clsx";
-import { mainNav, site } from "@/content/site";
+import { mainNav, site, type NavLink } from "@/content/site";
 import { Logo } from "./logo";
+
+const isActive = (pathname: string, href: string) => pathname === href || pathname.startsWith(href + "/");
+
+/**
+ * A top-level item with a dropdown (disclosure pattern: a button that shows a
+ * list of links). Opens on hover with a mouse, and on click or Enter with
+ * anything; Escape, a click outside or tabbing away closes it.
+ */
+function NavMenu({ label, items, pathname }: { label: string; items: readonly NavLink[]; pathname: string }) {
+  const id = useId();
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLLIElement>(null);
+  const button = useRef<HTMLButtonElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  // A click on a menu the mouse has just opened keeps it open instead of closing it.
+  const byHover = useRef(false);
+  const active = items.some((l) => isActive(pathname, l.href));
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: PointerEvent) => {
+      if (!root.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setOpen(false);
+      button.current?.focus();
+    };
+    document.addEventListener("pointerdown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+  useEffect(() => () => clearTimeout(closeTimer.current), []);
+
+  return (
+    <li
+      ref={root}
+      className="relative"
+      onPointerEnter={(e) => {
+        if (e.pointerType !== "mouse") return;
+        clearTimeout(closeTimer.current);
+        if (!open) byHover.current = true;
+        setOpen(true);
+      }}
+      onPointerLeave={(e) => {
+        if (e.pointerType !== "mouse") return;
+        closeTimer.current = setTimeout(() => setOpen(false), 160);
+      }}
+      onBlur={(e) => {
+        if (!root.current?.contains(e.relatedTarget as Node | null)) setOpen(false);
+      }}
+    >
+      <button
+        ref={button}
+        type="button"
+        aria-expanded={open}
+        aria-controls={id}
+        onClick={() => {
+          if (open && byHover.current) byHover.current = false;
+          else {
+            byHover.current = false;
+            setOpen(!open);
+          }
+        }}
+        className={clsx(
+          "inline-flex cursor-pointer items-center gap-1 rounded-full px-3.5 py-2 text-[0.9375rem] font-medium whitespace-nowrap transition-colors",
+          active ? "text-action" : "text-ink/80 hover:bg-mist hover:text-ink",
+          open && !active && "bg-mist text-ink",
+        )}
+      >
+        {label}
+        <CaretDown className={clsx("size-3.5 transition-transform duration-200 motion-reduce:transition-none", open && "rotate-180")} weight="bold" aria-hidden />
+      </button>
+      {/* pt-2 bridges the gap, so the pointer can travel from the button to the panel. */}
+      <div id={id} hidden={!open} className="absolute top-full left-0 z-50 pt-2">
+        <ul className="w-80 rounded-2xl bg-white p-2 shadow-(--shadow-pop) ring-1 ring-line">
+          {items.map((l) => {
+            const here = isActive(pathname, l.href);
+            return (
+              <li key={l.href}>
+                <Link
+                  href={l.href}
+                  aria-current={here ? "page" : undefined}
+                  onClick={() => setOpen(false)}
+                  className={clsx("block rounded-xl px-3.5 py-2.5 transition-colors hover:bg-mist", here && "bg-mist")}
+                >
+                  <span className={clsx("block text-[0.9375rem] font-semibold", here ? "text-action" : "text-ink")}>{l.label}</span>
+                  <span className="mt-0.5 block text-[0.8125rem] text-ink-soft">{l.description}</span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </li>
+  );
+}
 
 export function Header() {
   const pathname = usePathname();
@@ -109,7 +209,10 @@ export function Header() {
         <nav aria-label="Main" className="ml-4 hidden lg:block">
           <ul className="flex items-center gap-1">
             {mainNav.map((item) => {
-              if ("external" in item)
+              if (item.items)
+                // Keyed by path, so a dropdown closes after one of its links is followed.
+                return <NavMenu key={`${item.label}-${pathname}`} label={item.label} items={item.items} pathname={pathname} />;
+              if (item.external)
                 return (
                   <li key={item.href}>
                     <a
@@ -125,7 +228,7 @@ export function Header() {
                     </a>
                   </li>
                 );
-              const active = pathname === item.href || pathname.startsWith(item.href + "/");
+              const active = isActive(pathname, item.href);
               return (
                 <li key={item.href}>
                   <Link
@@ -226,8 +329,27 @@ export function Header() {
                     <nav aria-label="Mobile" className="flex-1 overflow-y-auto px-3 py-2">
                       <ul>
                         {mainNav.map((item) => (
-                          <li key={item.href}>
-                            {"external" in item ? (
+                          <li key={item.label}>
+                            {item.items ? (
+                              <div className="my-2 border-y border-line py-2">
+                                <p className="px-3 pt-1 pb-1 text-[0.8125rem] font-semibold tracking-wide text-ink-soft uppercase">{item.label}</p>
+                                <ul>
+                                  {item.items.map((l) => (
+                                    <li key={l.href}>
+                                      <Link
+                                        href={l.href}
+                                        onClick={() => setOpen(false)}
+                                        aria-current={isActive(pathname, l.href) ? "page" : undefined}
+                                        className="flex flex-col rounded-xl px-3 py-2.5 hover:bg-mist aria-[current=page]:bg-mist"
+                                      >
+                                        <span className="font-display-tight text-[1.25rem] font-semibold text-ink">{l.label}</span>
+                                        <span className="text-[0.875rem] text-ink-soft">{l.description}</span>
+                                      </Link>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            ) : item.external ? (
                               <a
                                 href={item.href}
                                 target="_blank"

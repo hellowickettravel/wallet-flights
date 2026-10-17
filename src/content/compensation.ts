@@ -144,21 +144,25 @@ export const rightsAirlines: RightsAirline[] = [
 
 export const rightsAirlineByCode = Object.fromEntries(rightsAirlines.map((a) => [a.code, a])) as Record<string, RightsAirline>;
 
-export const regionGroups: { region: Region; label: string }[] = [
-  { region: "UK", label: "United Kingdom" },
-  { region: "EU", label: "EU, Iceland, Norway and Switzerland" },
-  { region: "X", label: "Rest of the world" },
-];
-
-export const airlineGroups: { region: Region; label: string }[] = [
-  { region: "UK", label: "UK airlines" },
-  { region: "EU", label: "EU, Norwegian and Swiss airlines" },
-  { region: "X", label: "Other airlines" },
-];
+/**
+ * Which rules a country's airports fall under (ISO country codes). EU261
+ * covers the 27 EU countries, their outermost regions that carry their own
+ * codes (Guadeloupe, Martinique, French Guiana, Réunion, Mayotte,
+ * Saint-Martin), Iceland, Norway and Switzerland. The Canaries, Madeira and
+ * the Azores come under Spain and Portugal. UK261 covers the UK only; the
+ * Channel Islands, the Isle of Man and Gibraltar have their own codes and are
+ * treated as outside both. TODO(confirm): Gibraltar, in the legal review.
+ */
+const euCountries = new Set([
+  "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT", "LV", "LT", "LU", "MT",
+  "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE", "GP", "MQ", "GF", "RE", "YT", "MF", "IS", "NO", "CH",
+]);
+export const regionForCountry = (code: string): Region => (code === "GB" ? "UK" : euCountries.has(code) ? "EU" : "X");
 
 export type What = "delayed" | "cancelled" | "denied" | "missed";
 export type DelayBand = "lt2" | "2to3" | "3to4" | "4p";
 export type Notice = "lt7" | "7to14" | "gt14";
+export type AirlineBase = Region;
 export type Reason = "tech" | "crew" | "strikeAirline" | "weather" | "atc" | "strikeOther" | "security" | "none";
 
 export const questions = {
@@ -190,6 +194,15 @@ export const questions = {
       { v: "gt14", label: "More than 14 days before" },
     ] as { v: Notice; label: string }[],
   },
+  airlineBase: {
+    label: (airline: string) => `Where is ${airline} licensed?`,
+    hint: "It matters for flights into the UK or EU. Your booking says who operated the flight.",
+    options: [
+      { v: "UK", label: "In the UK" },
+      { v: "EU", label: "In the EU, Norway or Switzerland" },
+      { v: "X", label: "Somewhere else" },
+    ] as { v: AirlineBase; label: string }[],
+  },
   reason: {
     label: "Reason the airline gave",
     options: [
@@ -209,6 +222,7 @@ export const compensationCopy = {
   title: "Check what you’re owed",
   intro:
     "Delayed, cancelled or bumped off a flight? Answer a few questions and see what UK and EU passenger rights say you’re owed, per passenger and in total. Free, and it takes a minute.",
+  points: ["UK261 and EU261 rules", "Free claim letter", "No sign-up"],
   metaTitle: "Flight delay compensation calculator (UK261 and EU261)",
   metaDescription:
     "Check how much compensation you’re owed for a delayed, cancelled or overbooked flight under UK261 and EU261: £220 to £520 or €250 to €600 per passenger.",
@@ -219,9 +233,29 @@ export const compensationCopy = {
     toHint: "Your final destination, if you had connections",
     airline: "Airline",
     airlineHint: "The airline that operated the flight",
+    placeFrom: "Airport or city",
+    placeAirline: "Airline name or code",
     date: "Flight date",
+    dateHint: "The date your flight was due to leave",
     passengers: "Passengers on the booking",
     swap: "Swap airports",
+  },
+  progress: {
+    title: "Your result appears here",
+    left: (n: number) => (n === 1 ? "One more answer and we’ll work it out." : `${n} more answers and we’ll work it out.`),
+    items: {
+      from: "Where you flew from",
+      to: "Where you flew to",
+      airline: "The airline",
+      airlineBase: "Where the airline is licensed",
+      date: "The flight date",
+      what: "What happened",
+      delay: "How late you arrived",
+      notice: "When you were told",
+      reason: "The reason the airline gave",
+    },
+    lookup: "Checking that airport…",
+    amounts: "UK rules pay £220 to £520 and EU rules €250 to €600 per passenger, depending on how far the flight was.",
   },
   result: {
     title: "Your result",

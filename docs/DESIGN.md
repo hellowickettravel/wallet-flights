@@ -182,8 +182,11 @@ bar height relative to that city's range, cheapest month in `fare` green.
 
 ## Batch 5 — Travel tools
 
-Both pages: `PageHeader` on white, then the working area on a `mist` band so the white panels
-read as instruments. One memorable element each; everything else answers an action.
+Both pages: `PhotoHeader` (17 Oct 2026, owner: the white header felt flat) — a full-bleed photo
+under a navy wash from the bottom and the left, white breadcrumb, H1, intro and three fact chips. The
+tool's card (calendar search, compensation form) is pulled up over the photo's deep bottom edge, then
+the working area sits on a `mist` band so the white panels read as instruments. One memorable element
+each; everything else answers an action.
 
 **Fare calendar — signature: the month skyline.** Twelve bars like a city skyline at dusk; the
 cheapest month is fare green and labelled. Bars grow once when a route loads (CSS transform,

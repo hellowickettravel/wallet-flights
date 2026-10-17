@@ -6,6 +6,7 @@ export const fareCalendarCopy = {
   title: "Find the cheapest time to fly",
   intro:
     "See the lowest fare travellers found for every month and every day on your route, then pick the cheapest day and compare live prices.",
+  points: ["12 months of fares", "Cheapest day highlighted", "Book with the provider"],
   metaTitle: "Fare calendar: find the cheapest time to fly",
   metaDescription:
     "Lowest fares by month and by day for your route, with direct-only, airline, airport and weekday filters. Pick the cheapest day, then compare live prices.",
@@ -75,30 +76,20 @@ export const fareCalendarCopy = {
     show: "Filters",
     from: "from",
   },
-  alert: {
-    title: (from: string, to: string) => `Watch ${from} to ${to}`,
-    // The fare-alerts service is a launch waitlist today (src/content/home.ts),
-    // so we don't promise price-drop emails yet.
-    // TODO(confirm): switch to "We'll email you when it drops below…" once
-    // route alerts send price emails.
-    intro: "Route price alerts are launching soon. Leave your email and the price you’d pay, and we’ll tell you when they go live.",
-    email: "Email address",
-    below: "Alert me below",
-    submit: "Create alert",
-    sending: "Saving…",
-    invalid: "Enter an email address like name@example.com",
-    failed: "We couldn’t save your alert just now. Please try again in a moment.",
-    doneTitle: "Check your inbox.",
-    doneText: "Confirm your email with the link we sent and we’ll be in touch when route alerts launch.",
+  popular: {
+    title: (city: string) => `Popular from ${city}`,
+    from: "from",
   },
   status: {
     loading: "Loading fares for the next 12 months…",
+    locating: "Finding popular routes near you…",
+    pickTitle: "Where do you want to go?",
+    pickText: "Choose where you’re leaving from and where you’re going, and we’ll chart the lowest fares for the next 12 months.",
     error: "We couldn’t load fares just now. Please try again.",
     retry: "Try again",
     emptyTitle: "No recent fares on this route",
     emptyText: "Travellers haven’t searched this route lately, so there’s nothing to chart. Live search still checks every provider.",
     emptyCta: "Search live prices",
-    sample: "Sample prices for layout review. Live fares appear once the price feed is connected.",
   },
   disclaimer:
     "Fares were found by travellers in the last few days and are per person in economy. They can change or sell out; the provider confirms the final price when you book.",
@@ -106,16 +97,16 @@ export const fareCalendarCopy = {
 
 export const tripLengths = [
   { nights: 2, label: "Weekend, 2 nights" },
+  { nights: 3, label: "3 nights" },
   { nights: 4, label: "4 nights" },
+  { nights: 5, label: "5 nights" },
   { nights: 7, label: "1 week" },
+  { nights: 10, label: "10 nights" },
   { nights: 14, label: "2 weeks" },
 ] as const;
 
 export const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const;
 export const weekdayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] as const;
-
-/** Route shown before the visitor picks one (codes from src/content/airports.ts). */
-export const defaultRoute = { from: "LON", to: "BCN" } as const;
 
 /**
  * Airline names for the IATA codes the Data API returns. Public facts; any

@@ -1,29 +1,43 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { CalendarDots } from "@phosphor-icons/react/dist/ssr";
-import { PageHeader } from "@/components/ui/page-header";
+import { CalendarDots, Gavel, Scroll, UserCircleCheck } from "@phosphor-icons/react/dist/ssr";
+import { PhotoHeader } from "@/components/ui/photo-header";
 import { Checker } from "@/components/compensation/checker";
 import { compensationCopy as copy } from "@/content/compensation";
+import { photos } from "@/content/images";
 import { jsonLdHtml, webPage } from "@/lib/schema";
-import { pageMetadata } from "@/lib/seo";
+import { pageMetadata, unsplashShareImage } from "@/lib/seo";
 
 export const metadata = pageMetadata({
   title: copy.metaTitle,
   description: copy.metaDescription,
   path: "/flight-delay-compensation",
+  image: unsplashShareImage(photos.compensation),
 });
+
+const pointIcons = [Gavel, Scroll, UserCircleCheck];
 
 const jsonLd = webPage("WebPage", "/flight-delay-compensation", copy.title, copy.metaDescription);
 
 export default function CompensationPage() {
   return (
     <>
-      <PageHeader title={copy.title} intro={copy.intro} crumbs={[{ label: "Delay compensation", href: "/flight-delay-compensation" }]} />
+      <PhotoHeader
+        photo={photos.compensation}
+        title={copy.title}
+        intro={copy.intro}
+        crumbs={[{ label: "Delay compensation", href: "/flight-delay-compensation" }]}
+        points={copy.points.map((label, i) => {
+          const Icon = pointIcons[i];
+          return { label, icon: <Icon className="size-4" weight="bold" aria-hidden /> };
+        })}
+      />
 
-      <div className="mt-8 bg-mist py-8 md:mt-12 md:py-14">
-        <div className="container-page">
+      {/* The form is pulled up over the photo header's deep bottom edge. */}
+      <div className="bg-mist pb-8 md:pb-14">
+        <div className="relative z-10 container-page -mt-20 md:-mt-24">
           {/* The checker reads its answers from the URL (share links), so it renders in the browser. */}
-          <Suspense fallback={<div className="h-[52rem] rounded-(--radius-panel) bg-white ring-1 ring-line" aria-hidden />}>
+          <Suspense fallback={<div className="h-[52rem] rounded-(--radius-panel) bg-white shadow-(--shadow-float) ring-1 ring-line" aria-hidden />}>
             <Checker />
           </Suspense>
         </div>

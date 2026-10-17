@@ -19,11 +19,18 @@ function calendarFixture() {
     fare(`${m}-12`, "LGW", "BCN", 140 + i * 5, 0, "BA"),
   ]);
   const back = months.flatMap((m) => [fare(`${m}-17`, "BCN", "LGW", 40, 0, "U2"), fare(`${m}-19`, "BCN", "LGW", 45, 0, "U2")]);
-  return { currency: "GBP", sample: false, months, out, back };
+  return { currency: "GBP", months, out, back };
 }
 
-async function mockCalendar(page: Page, body: object) {
+const london = { code: "LON", city: "London", name: "All airports", country: "United Kingdom" };
+const barcelona = { code: "BCN", city: "Barcelona", name: "El Prat", country: "Spain" };
+const dubai = { code: "DXB", city: "Dubai", name: "Dubai Intl", country: "United Arab Emirates" };
+/** Where the calendar starts: a city near the visitor and popular routes from it. */
+const startNearLondon = { from: london, currency: "GBP", destinations: [{ to: barcelona, price: 45 }, { to: dubai, price: 199 }] };
+
+async function mockCalendar(page: Page, body: object, start: object = startNearLondon) {
   await page.route("**/api/fare-calendar?**", (r) => r.fulfill({ json: body }));
+  await page.route("**/api/fare-calendar/start?**", (r) => r.fulfill({ json: start }));
 }
 
 async function noSeriousA11yIssues(page: Page) {
@@ -78,6 +85,31 @@ test("fare calendar: months, days, fares and a Select link into live search", as
 
   // Return trips get the flexible-dates grid.
   await expect(page.getByRole("heading", { name: "Flexible by a few days?" })).toBeVisible();
+
+  // Each trip length shows the cheapest return total the fares allow (7 nights: £50 out + £40 back).
+  await expect(page.getByLabel("Trip length").locator("option", { hasText: "1 week" })).toHaveText("1 week · from £90");
+});
+
+test("fare calendar: starts near the visitor with a popular route, never a fixed one", async ({ page }) => {
+  await mockCalendar(page, calendarFixture());
+  await page.goto("/fare-calendar");
+  await expect(page.getByRole("combobox", { name: "Leaving from" })).toHaveValue("London (LON)");
+  await expect(page.getByRole("combobox", { name: "Going to" })).toHaveValue("Barcelona (BCN)");
+  const popular = page.getByRole("button", { name: /^Dubai/ });
+  await expect(popular).toContainText("£199");
+  await popular.click();
+  await expect(page).toHaveURL(/from=LON&to=DXB/);
+  await expect(page.getByRole("combobox", { name: "Going to" })).toHaveValue("Dubai (DXB)");
+  await expect(popular).toHaveAttribute("aria-pressed", "true");
+});
+
+test("fare calendar: with no location or popular routes, the visitor picks", async ({ page }) => {
+  await mockCalendar(page, calendarFixture(), { from: null, currency: "USD", destinations: [] });
+  await page.goto("/fare-calendar");
+  await expect(page.getByRole("heading", { name: "Where do you want to go?" })).toBeVisible();
+  await expect(page.getByRole("combobox", { name: "Leaving from" })).toHaveValue("");
+  await expect(page.getByRole("combobox", { name: "Going to" })).toHaveValue("");
+  await expect(page.getByText(/£\d/)).toHaveCount(0);
 });
 
 test("fare calendar: one way hides the trip length and the flexible grid", async ({ page }) => {
@@ -88,12 +120,40 @@ test("fare calendar: one way hides the trip length and the flexible grid", async
   await expect(page.getByRole("heading", { name: "Flexible by a few days?" })).toHaveCount(0);
 });
 
-test("fare calendar: no fares shows the empty state, never sample prices", async ({ page }) => {
-  await mockCalendar(page, { currency: "GBP", sample: false, months: [], out: [] });
+test("fare calendar: no fares shows the empty state, never made-up prices", async ({ page }) => {
+  await mockCalendar(page, { currency: "GBP", months: [], out: [] });
   await page.goto("/fare-calendar");
   await expect(page.getByRole("heading", { name: "No recent fares on this route" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Search live prices" })).toHaveAttribute("href", /sub=calendar/);
-  await expect(page.getByText("Sample prices")).toHaveCount(0);
+  await expect(page.getByRole("list", { name: "Lowest fare in each month" })).toHaveCount(0);
+});
+
+test("delay compensation: nothing is pre-filled and no result shows until it's answered", async ({ page }) => {
+  await page.goto("/flight-delay-compensation");
+  for (const name of ["Flew from", "Flew to", "Airline"]) await expect(page.getByRole("combobox", { name })).toHaveValue("");
+  await expect(page.getByLabel("Flight date")).toHaveValue("");
+  await expect(page.getByRole("radio", { checked: true })).toHaveCount(0);
+  const result = page.locator("#result");
+  await expect(result).toContainText("5 more answers and we’ll work it out.");
+  await expect(result).not.toContainText("You’re likely owed");
+  await expect(page.getByRole("link", { name: /Claim with Compensair/ })).toHaveCount(0);
+  await expect(page).toHaveURL(/\/flight-delay-compensation$/);
+});
+
+test("delay compensation: an airline we don't know asks where it's licensed, only when that matters", async ({ page }) => {
+  await page.route("**/api/airlines?code=G9", (r) => r.fulfill({ json: { code: "G9", name: "Air Arabia" } }));
+  await page.goto("/flight-delay-compensation?from=DXB&to=LHR&air=G9&what=denied&date=2026-10-01");
+  const base = page.getByRole("radiogroup", { name: "Where is Air Arabia licensed?" });
+  await expect(base).toBeVisible();
+  await expect(page.locator("#result")).toContainText("One more answer");
+  await base.getByRole("radio", { name: "Somewhere else" }).click();
+  await expect(page.locator("#result")).toContainText("Not covered by UK or EU rules");
+  await base.getByRole("radio", { name: "In the UK" }).click();
+  await expect(page.locator("#result")).toContainText("£520");
+  // Leaving the UK, the airline's licence doesn't matter, so it isn't asked.
+  await page.goto("/flight-delay-compensation?from=LHR&to=DXB&air=G9&what=denied&date=2026-10-01");
+  await expect(page.locator("#result")).toContainText("£520");
+  await expect(page.getByRole("radiogroup", { name: /licensed/ })).toHaveCount(0);
 });
 
 test("delay compensation: live result follows the answers", async ({ page }) => {

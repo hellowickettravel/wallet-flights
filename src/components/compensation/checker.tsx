@@ -3,30 +3,36 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import clsx from "clsx";
-import { AirplaneLanding, AirplaneTakeoff, ArrowsDownUp, CalendarBlank, Clock, Minus, Plus, Prohibit, UsersThree, XCircle, AirplaneTilt, Shuffle } from "@phosphor-icons/react";
+import { AirplaneLanding, AirplaneTakeoff, ArrowsDownUp, CalendarBlank, CheckCircle, Circle, Clock, Minus, Plus, Prohibit, UsersThree, XCircle, AirplaneTilt, Shuffle } from "@phosphor-icons/react";
+import { AirportField } from "@/components/search/airport-field";
+import type { Airport } from "@/content/airports";
 import {
-  airlineGroups,
   compensationCopy,
   questions,
-  regionGroups,
+  regionForCountry,
   rightsAirlineByCode,
-  rightsAirlines,
   rightsAirportByCode,
-  rightsAirports,
+  type AirlineBase,
   type DelayBand,
   type Notice,
   type Reason,
+  type Region,
+  type RightsAirport,
   type What,
 } from "@/content/compensation";
 import { site } from "@/content/site";
 import { assess, formatMoney } from "@/lib/compensation";
+import type { Place } from "@/lib/travel-data";
 import { ChoiceGroup } from "./choice-group";
 import { ResultTicket } from "./result-ticket";
 import { ClaimOptions, labelOf } from "./claim-options";
+import { AirlineField, type AirlinePick } from "./airline-field";
 
 const copy = compensationCopy.form;
+const pcopy = compensationCopy.progress;
 
-type State = { from: string; to: string; air: string; what: What; delay: DelayBand; notice: Notice; why: Reason; pax: number; date: string };
+/** Every answer starts empty: nothing is filled in until the visitor (or a share link) says so. */
+type State = { from: string; to: string; air: string; base: AirlineBase | ""; what: What | ""; delay: DelayBand | ""; notice: Notice | ""; why: Reason | ""; pax: number; date: string };
 
 const whatIcons: Record<What, React.ReactNode> = {
   delayed: <Clock className="size-5" weight="bold" aria-hidden />,
@@ -35,79 +41,130 @@ const whatIcons: Record<What, React.ReactNode> = {
   missed: <Shuffle className="size-5" weight="bold" aria-hidden />,
 };
 
-const pick = <T extends string>(v: string | null, list: readonly { v: T }[], fallback: T): T => list.find((o) => o.v === v)?.v ?? fallback;
-const isoDaysAgo = (n: number) => new Date(Date.now() - n * 864e5).toISOString().slice(0, 10);
+const pick = <T extends string>(v: string | null, list: readonly { v: T }[]): T | "" => list.find((o) => o.v === v)?.v ?? "";
+const codeParam = (v: string | null, re: RegExp) => {
+  const c = (v ?? "").toUpperCase();
+  return re.test(c) ? c : "";
+};
 
 function fromParams(p: URLSearchParams): State {
-  const code = (k: string, list: Record<string, unknown>, fallback: string) => {
-    const v = (p.get(k) ?? "").toUpperCase();
-    return v in list ? v : fallback;
-  };
   const date = p.get("date") ?? "";
   return {
-    from: code("from", rightsAirportByCode, "LGW"),
-    to: code("to", rightsAirportByCode, "FAO"),
-    air: code("air", rightsAirlineByCode, "U2"),
-    what: pick(p.get("what"), questions.what.options, "delayed"),
-    delay: pick(p.get("delay"), questions.delay.options, "3to4"),
-    notice: pick(p.get("notice"), questions.notice.options, "lt7"),
-    why: pick(p.get("why"), questions.reason.options, "tech"),
+    from: codeParam(p.get("from"), /^[A-Z]{3}$/),
+    to: codeParam(p.get("to"), /^[A-Z]{3}$/),
+    air: codeParam(p.get("air"), /^[A-Z0-9]{2}$/),
+    base: pick(p.get("base"), questions.airlineBase.options),
+    what: pick(p.get("what"), questions.what.options),
+    delay: pick(p.get("delay"), questions.delay.options),
+    notice: pick(p.get("notice"), questions.notice.options),
+    why: pick(p.get("why"), questions.reason.options),
     pax: Math.min(9, Math.max(1, Number.parseInt(p.get("pax") ?? "", 10) || 1)),
-    date: /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : isoDaysAgo(9),
+    date: /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : "",
   };
 }
 
-const toQuery = (s: State) => new URLSearchParams({ from: s.from, to: s.to, air: s.air, what: s.what, delay: s.delay, notice: s.notice, why: s.why, pax: String(s.pax), date: s.date });
+/** Only the answers given so far go in the URL. */
+function toQuery(s: State) {
+  const q = new URLSearchParams();
+  for (const [k, v] of Object.entries(s)) if (v !== "" && !(k === "pax" && v === 1)) q.set(k, String(v));
+  return q;
+}
 
-/** Labelled select styled like the search fields (label inside the box). */
-function SelectField({ label, hint, icon, value, onChange, children }: { label: string; hint?: string; icon: React.ReactNode; value: string; onChange: (v: string) => void; children: React.ReactNode }) {
-  const id = useId();
-  return (
-    <div>
-      <div className="relative flex h-16 items-center gap-3 rounded-xl bg-white px-4 ring-1 ring-line transition-shadow focus-within:ring-2 focus-within:ring-action hover:ring-ink/30">
-        <span className="text-ink-soft">{icon}</span>
-        <div className="min-w-0 flex-1">
-          <label htmlFor={id} className="block text-[0.75rem] font-medium text-ink-soft">
-            {label}
-          </label>
-          <select
-            id={id}
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            aria-describedby={hint ? `${id}-hint` : undefined}
-            className="-ml-1 w-full cursor-pointer truncate bg-transparent text-[1.0625rem] font-semibold text-ink outline-none"
-          >
-            {children}
-          </select>
-        </div>
-      </div>
-      {hint && (
-        <p id={`${id}-hint`} className="mt-1.5 px-1 text-[0.8125rem] text-ink-soft">
-          {hint}
-        </p>
-      )}
-    </div>
-  );
+const toRights = (p: Place): RightsAirport => ({ code: p.code, city: p.city, name: p.name, region: regionForCountry(p.countryCode), lat: p.lat, lon: p.lon });
+
+type PlaceLookup = { place: RightsAirport | null; label: Airport | null; loading: boolean; failed: boolean };
+
+/**
+ * The rules need each airport's country and position. Airports on our own
+ * list are known at once; any other airport or city is looked up.
+ */
+function usePlace(placeCode: string): PlaceLookup {
+  const known = placeCode ? rightsAirportByCode[placeCode] : undefined;
+  const [got, setGot] = useState<{ code: string; place: RightsAirport | null; label: Airport | null } | null>(null);
+  useEffect(() => {
+    if (!placeCode || known) return;
+    const ctrl = new AbortController();
+    fetch(`/api/airport?code=${placeCode}`, { signal: ctrl.signal })
+      .then((r) => (r.ok ? (r.json() as Promise<Place>) : null))
+      .then((p) => setGot({ code: placeCode, place: p && toRights(p), label: p && { code: p.code, city: p.city, name: p.name, country: p.country } }))
+      .catch((e: Error) => {
+        if (e.name !== "AbortError") setGot({ code: placeCode, place: null, label: null });
+      });
+    return () => ctrl.abort();
+  }, [placeCode, known]);
+  if (!placeCode) return { place: null, label: null, loading: false, failed: false };
+  if (known) return { place: known, label: { code: known.code, city: known.city, name: known.name, country: "" }, loading: false, failed: false };
+  if (got?.code === placeCode) return { place: got.place, label: got.label, loading: false, failed: !got.place };
+  return { place: null, label: null, loading: true, failed: false };
+}
+
+/** The chosen airline, with its licence country when we hold it (null: we don't, so the visitor is asked if it matters). */
+type AirlineLookup = { code: string; name: string; region: Region | null };
+
+function useAirline(airCode: string): AirlineLookup | null {
+  const known = airCode ? rightsAirlineByCode[airCode] : undefined;
+  const [got, setGot] = useState<{ code: string; name: string | null } | null>(null);
+  useEffect(() => {
+    if (!airCode || known) return;
+    const ctrl = new AbortController();
+    fetch(`/api/airlines?code=${airCode}`, { signal: ctrl.signal })
+      .then((r) => (r.ok ? (r.json() as Promise<AirlinePick>) : null))
+      .then((a) => setGot({ code: airCode, name: a?.name ?? null }))
+      .catch((e: Error) => {
+        if (e.name !== "AbortError") setGot({ code: airCode, name: null });
+      });
+    return () => ctrl.abort();
+  }, [airCode, known]);
+  if (!airCode) return null;
+  if (known) return known;
+  if (got?.code === airCode) return { code: airCode, name: got.name ?? airCode, region: null };
+  return null;
 }
 
 export function Checker() {
   const params = useSearchParams();
   const [s, setS] = useState<State>(() => fromParams(new URLSearchParams(params.toString())));
+  // Labels for what the visitor picked, shown while a lookup is still running.
+  const [picked, setPicked] = useState<{ places: Record<string, Airport>; airlines: Record<string, AirlinePick> }>({ places: {}, airlines: {} });
   const today = new Date().toISOString().slice(0, 10);
   const update = (patch: Partial<State>) => {
     const next = { ...s, ...patch };
     setS(next);
-    window.history.replaceState(null, "", `/flight-delay-compensation?${toQuery(next)}`);
+    const qs = toQuery(next).toString();
+    window.history.replaceState(null, "", `/flight-delay-compensation${qs ? `?${qs}` : ""}`);
   };
 
-  const from = rightsAirportByCode[s.from];
-  const to = rightsAirportByCode[s.to];
-  const airline = rightsAirlineByCode[s.air];
-  const result = useMemo(
-    () => assess({ from, to, airline, what: s.what, delay: s.delay, notice: s.notice, reason: s.why, passengers: s.pax, date: s.date }, today),
-    [from, to, airline, s, today],
-  );
-  const same = s.from === s.to;
+  const fromP = usePlace(s.from);
+  const toP = usePlace(s.to);
+  const airline = useAirline(s.air);
+  const from = fromP.place;
+  const to = toP.place;
+  const same = !!s.from && s.from === s.to;
+
+  // The airline's base only matters when flying into the UK or EU from elsewhere.
+  const needBase = !!airline && airline.region === null && from?.region === "X" && !!to && to.region !== "X";
+  const steps: { key: keyof typeof pcopy.items; done: boolean }[] = [
+    { key: "from", done: !!from },
+    { key: "to", done: !!to && !same },
+    { key: "airline", done: !!airline },
+    ...(needBase ? [{ key: "airlineBase" as const, done: !!s.base }] : []),
+    { key: "date", done: !!s.date },
+    { key: "what", done: !!s.what },
+    ...(s.what === "delayed" || s.what === "missed" ? [{ key: "delay" as const, done: !!s.delay }] : []),
+    ...(s.what === "cancelled" ? [{ key: "notice" as const, done: !!s.notice }] : []),
+    ...(s.what && s.what !== "denied" ? [{ key: "reason" as const, done: !!s.why }] : []),
+  ];
+  const left = steps.filter((x) => !x.done).length;
+
+  const result = useMemo(() => {
+    if (left > 0 || !from || !to || !airline || !s.what) return null;
+    // An airline we don't hold a licence country for only gets here when it doesn't matter, or the visitor said.
+    const region: Region = airline.region ?? (s.base || "X");
+    return assess(
+      { from, to, airline: { ...airline, region }, what: s.what, delay: s.delay || "lt2", notice: s.notice || "gt14", reason: s.why || "none", passengers: s.pax, date: s.date },
+      today,
+    );
+  }, [left, from, to, airline, s, today]);
 
   // Phones: a slim bar keeps the live amount in view while the form is filled in.
   const resultRef = useRef<HTMLDivElement>(null);
@@ -124,17 +181,13 @@ export function Checker() {
   const origin = typeof window === "undefined" ? site.url : window.location.origin;
   const shareUrl = `${origin}/flight-delay-compensation?${toQuery(s)}`;
 
-  const airportOptions = regionGroups.map((g) => (
-    <optgroup key={g.region} label={g.label}>
-      {rightsAirports
-        .filter((a) => a.region === g.region)
-        .map((a) => (
-          <option key={a.code} value={a.code}>
-            {a.name.includes(a.city) ? a.name : `${a.city} ${a.name}`} ({a.code})
-          </option>
-        ))}
-    </optgroup>
-  ));
+  const fieldValue = (c: string, p: PlaceLookup): Airport | null => (c ? (picked.places[c] ?? p.label ?? { code: c, city: c, name: "", country: "" }) : null);
+  const airlineValue: AirlinePick | null = s.air ? (picked.airlines[s.air] ?? (airline ? { code: airline.code, name: airline.name } : { code: s.air, name: s.air })) : null;
+  const placeError = (p: PlaceLookup) => (p.failed ? "We couldn’t look up that airport. Try another, or check the spelling." : undefined);
+  const choosePlace = (field: "from" | "to") => (a: Airport | null) => {
+    if (a) setPicked((p) => ({ ...p, places: { ...p.places, [a.code]: a } }));
+    update({ [field]: a?.code ?? "" });
+  };
 
   return (
     <>
@@ -149,9 +202,14 @@ export function Checker() {
           </h2>
 
           <div className="mt-5 grid gap-3 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-start">
-            <SelectField label={copy.from} icon={<AirplaneTakeoff className="size-5" aria-hidden />} value={s.from} onChange={(v) => update({ from: v })}>
-              {airportOptions}
-            </SelectField>
+            <AirportField
+              label={copy.from}
+              icon={<AirplaneTakeoff className="size-5" aria-hidden />}
+              value={fieldValue(s.from, fromP)}
+              onChange={choosePlace("from")}
+              placeholder={copy.placeFrom}
+              error={placeError(fromP)}
+            />
             <button
               type="button"
               aria-label={copy.swap}
@@ -160,9 +218,17 @@ export function Checker() {
             >
               <ArrowsDownUp className="size-5" weight="bold" aria-hidden />
             </button>
-            <SelectField label={copy.to} hint={copy.toHint} icon={<AirplaneLanding className="size-5" aria-hidden />} value={s.to} onChange={(v) => update({ to: v })}>
-              {airportOptions}
-            </SelectField>
+            <div>
+              <AirportField
+                label={copy.to}
+                icon={<AirplaneLanding className="size-5" aria-hidden />}
+                value={fieldValue(s.to, toP)}
+                onChange={choosePlace("to")}
+                placeholder={copy.placeFrom}
+                error={placeError(toP)}
+              />
+              {!toP.failed && <p className="mt-1.5 px-1 text-[0.8125rem] text-ink-soft">{copy.toHint}</p>}
+            </div>
           </div>
           {same && (
             <p role="alert" className="mt-2 px-1 text-[0.875rem] font-medium text-red-700">
@@ -170,45 +236,58 @@ export function Checker() {
             </p>
           )}
 
-          <div className="mt-3 grid gap-3 md:grid-cols-2">
-            <SelectField label={copy.airline} hint={copy.airlineHint} icon={<AirplaneTilt className="size-5" aria-hidden />} value={s.air} onChange={(v) => update({ air: v })}>
-              {airlineGroups.map((g) => (
-                <optgroup key={g.region} label={g.label}>
-                  {rightsAirlines
-                    .filter((a) => a.region === g.region)
-                    .map((a) => (
-                      <option key={a.code} value={a.code}>
-                        {a.name}
-                      </option>
-                    ))}
-                </optgroup>
-              ))}
-            </SelectField>
+          <div className="mt-3 grid gap-3 md:grid-cols-2 md:items-start">
+            <AirlineField
+              label={copy.airline}
+              hint={copy.airlineHint}
+              icon={<AirplaneTilt className="size-5" aria-hidden />}
+              value={airlineValue}
+              onChange={(a) => {
+                if (a) setPicked((p) => ({ ...p, airlines: { ...p.airlines, [a.code]: a } }));
+                update({ air: a?.code ?? "", base: "" });
+              }}
+              placeholder={copy.placeAirline}
+            />
             <DateField value={s.date} max={today} onChange={(date) => update({ date })} />
           </div>
+
+          {needBase && airline && (
+            <div className="mt-6">
+              <ChoiceGroup
+                label={questions.airlineBase.label(airline.name)}
+                hint={questions.airlineBase.hint}
+                options={questions.airlineBase.options}
+                value={s.base || null}
+                onChange={(base) => update({ base })}
+                columns="grid-cols-1 sm:grid-cols-3"
+              />
+            </div>
+          )}
 
           <div className="mt-8 space-y-7 border-t border-line pt-7">
             <ChoiceGroup
               label={questions.what.label}
               size="large"
               options={questions.what.options.map((o) => ({ ...o, icon: whatIcons[o.v] }))}
-              value={s.what}
+              value={s.what || null}
               onChange={(what) => update({ what })}
             />
             {(s.what === "delayed" || s.what === "missed") && (
-              <ChoiceGroup label={questions.delay.label} hint={questions.delay.hint} options={questions.delay.options} value={s.delay} onChange={(delay) => update({ delay })} />
+              <ChoiceGroup label={questions.delay.label} hint={questions.delay.hint} options={questions.delay.options} value={s.delay || null} onChange={(delay) => update({ delay })} />
             )}
             {s.what === "cancelled" && (
               <ChoiceGroup
                 label={questions.notice.label}
                 hint={questions.notice.hint}
                 options={questions.notice.options}
-                value={s.notice}
+                value={s.notice || null}
                 onChange={(notice) => update({ notice })}
                 columns="grid-cols-1 sm:grid-cols-3"
               />
             )}
-            {s.what !== "denied" && <ChoiceGroup label={questions.reason.label} options={questions.reason.options} value={s.why} onChange={(why) => update({ why })} />}
+            {s.what && s.what !== "denied" && (
+              <ChoiceGroup label={questions.reason.label} options={questions.reason.options} value={s.why || null} onChange={(why) => update({ why })} />
+            )}
 
             <div className="flex flex-wrap items-center justify-between gap-4 border-t border-line pt-7">
               <p id="pax-label" className="flex items-center gap-3 text-[0.9375rem] font-semibold text-ink">
@@ -243,44 +322,71 @@ export function Checker() {
         </form>
 
         <div ref={resultRef} className="lg:sticky lg:top-24">
-          <ResultTicket result={result} passengers={s.pax} />
+          {result ? (
+            <ResultTicket result={result} passengers={s.pax} />
+          ) : (
+            <section id="result" aria-labelledby="result-title" className="rounded-(--radius-panel) bg-board p-6 text-white shadow-(--shadow-float) md:p-7">
+              <h2 id="result-title" className="font-display-tight text-[1.375rem] font-bold">
+                {pcopy.title}
+              </h2>
+              <p aria-live="polite" className="mt-1 text-white/75">
+                {fromP.loading || toP.loading ? pcopy.lookup : pcopy.left(left)}
+              </p>
+              <ul className="mt-5 space-y-2.5">
+                {steps.map((x) => (
+                  <li key={x.key} className="flex items-center gap-3 text-[0.9375rem]">
+                    {x.done ? <CheckCircle className="size-5 shrink-0 text-[#6fdca6]" weight="fill" aria-hidden /> : <Circle className="size-5 shrink-0 text-white/40" aria-hidden />}
+                    <span className={x.done ? "text-white/60" : "font-semibold text-white"}>
+                      {pcopy.items[x.key]}
+                      <span className="sr-only">{x.done ? ": answered" : ": still needed"}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-6 border-t border-white/15 pt-4 text-[0.875rem] leading-relaxed text-white/70">{pcopy.amounts}</p>
+            </section>
+          )}
           <p className="mt-3 px-1 text-[0.8125rem] leading-relaxed text-ink-soft">{compensationCopy.result.disclaimer}</p>
         </div>
       </div>
 
-      <ClaimOptions
-        result={result}
-        shareUrl={shareUrl}
-        facts={{
-          from: `${from.city} (${from.code})`,
-          to: `${to.city} (${to.code})`,
-          airline: airline.name.replace(/ \((UK)\)$/, ""),
-          date: s.date,
-          what: s.what,
-          delayLabel: labelOf.delay(s.delay),
-          noticeLabel: labelOf.notice(s.notice),
-          reasonLabel: labelOf.reason(s.why),
-          passengers: s.pax,
-        }}
-      />
+      {result && from && to && airline && s.what && (
+        <ClaimOptions
+          result={result}
+          shareUrl={shareUrl}
+          facts={{
+            from: `${from.city} (${from.code})`,
+            to: `${to.city} (${to.code})`,
+            airline: airline.name.replace(/ \((UK)\)$/, ""),
+            date: s.date,
+            what: s.what,
+            delayLabel: s.delay ? labelOf.delay(s.delay) : "",
+            noticeLabel: s.notice ? labelOf.notice(s.notice) : "",
+            reasonLabel: s.why ? labelOf.reason(s.why) : "",
+            passengers: s.pax,
+          }}
+        />
+      )}
 
-      <a
-        href="#result"
-        aria-hidden={resultVisible}
-        tabIndex={resultVisible ? -1 : 0}
-        className={clsx(
-          "fixed inset-x-3 bottom-3 z-30 flex items-center justify-between gap-3 rounded-2xl bg-board px-5 py-3 text-white shadow-(--shadow-pop) transition-[transform,opacity] duration-300 lg:hidden",
-          resultVisible ? "pointer-events-none translate-y-4 opacity-0" : "translate-y-0 opacity-100",
-        )}
-      >
-        <span className="text-[0.875rem] text-white/80">
-          {result.verdict === "not" ? compensationCopy.result.not : result.verdict === "maybe" ? compensationCopy.result.maybe : compensationCopy.result.owed}
-        </span>
-        <span className="tabular font-display-tight text-[1.375rem] font-extrabold text-sun">
-          {formatMoney(result.total, result.currency)}
-          <span className="sr-only"> in total. See how we worked it out</span>
-        </span>
-      </a>
+      {result && (
+        <a
+          href="#result"
+          aria-hidden={resultVisible}
+          tabIndex={resultVisible ? -1 : 0}
+          className={clsx(
+            "fixed inset-x-3 bottom-3 z-30 flex items-center justify-between gap-3 rounded-2xl bg-board px-5 py-3 text-white shadow-(--shadow-pop) transition-[transform,opacity] duration-300 lg:hidden",
+            resultVisible ? "pointer-events-none translate-y-4 opacity-0" : "translate-y-0 opacity-100",
+          )}
+        >
+          <span className="text-[0.875rem] text-white/80">
+            {result.verdict === "not" ? compensationCopy.result.not : result.verdict === "maybe" ? compensationCopy.result.maybe : compensationCopy.result.owed}
+          </span>
+          <span className="tabular font-display-tight text-[1.375rem] font-extrabold text-sun">
+            {formatMoney(result.total, result.currency)}
+            <span className="sr-only"> in total. See how we worked it out</span>
+          </span>
+        </a>
+      )}
     </>
   );
 }
@@ -288,21 +394,27 @@ export function Checker() {
 function DateField({ value, max, onChange }: { value: string; max: string; onChange: (v: string) => void }) {
   const id = useId();
   return (
-    <div className="flex h-16 items-center gap-3 rounded-xl bg-white px-4 ring-1 ring-line transition-shadow focus-within:ring-2 focus-within:ring-action hover:ring-ink/30">
-      <CalendarBlank className="size-5 shrink-0 text-ink-soft" aria-hidden />
-      <div className="min-w-0 flex-1">
-        <label htmlFor={id} className="block text-[0.75rem] font-medium text-ink-soft">
-          {copy.date}
-        </label>
-        <input
-          id={id}
-          type="date"
-          value={value}
-          max={max}
-          onChange={(e) => e.target.value && onChange(e.target.value)}
-          className="w-full bg-transparent text-[1.0625rem] font-semibold text-ink outline-none"
-        />
+    <div>
+      <div className="flex h-16 items-center gap-3 rounded-xl bg-white px-4 ring-1 ring-line transition-shadow focus-within:ring-2 focus-within:ring-action hover:ring-ink/30">
+        <CalendarBlank className="size-5 shrink-0 text-ink-soft" aria-hidden />
+        <div className="min-w-0 flex-1">
+          <label htmlFor={id} className="block text-[0.75rem] font-medium text-ink-soft">
+            {copy.date}
+          </label>
+          <input
+            id={id}
+            type="date"
+            value={value}
+            max={max}
+            onChange={(e) => onChange(e.target.value)}
+            aria-describedby={`${id}-hint`}
+            className={clsx("w-full bg-transparent text-[1.0625rem] font-semibold outline-none", value ? "text-ink" : "text-ink-soft")}
+          />
+        </div>
       </div>
+      <p id={`${id}-hint`} className="mt-1.5 px-1 text-[0.8125rem] text-ink-soft">
+        {copy.dateHint}
+      </p>
     </div>
   );
 }

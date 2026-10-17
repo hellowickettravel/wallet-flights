@@ -10,7 +10,8 @@ type Props<T extends string> = {
   label: string;
   hint?: string;
   options: readonly Option<T>[];
-  value: T;
+  /** Null until the visitor answers: nothing is pre-selected. */
+  value: T | null;
   onChange: (v: T) => void;
   /** "large" for the main question (icons + hints), "chip" for the rest. */
   size?: "large" | "chip";
@@ -37,7 +38,7 @@ export function ChoiceGroup<T extends string>({ label, hint, options, value, onC
         onKeyDown={(e) => onRovingKeyDown(e, (i) => onChange(options[i].v))}
         className={clsx("mt-3 grid gap-2", columns ?? (size === "large" ? "grid-cols-2 md:grid-cols-4" : "grid-cols-2 sm:grid-cols-4"))}
       >
-        {options.map((o) => {
+        {options.map((o, i) => {
           const on = o.v === value;
           return (
             <button
@@ -45,7 +46,8 @@ export function ChoiceGroup<T extends string>({ label, hint, options, value, onC
               type="button"
               role="radio"
               aria-checked={on}
-              tabIndex={on ? 0 : -1}
+              // With no answer yet, the first option takes the group's one Tab stop.
+              tabIndex={on || (value === null && i === 0) ? 0 : -1}
               onClick={() => onChange(o.v)}
               className={clsx(
                 "cursor-pointer rounded-xl text-left transition-[background-color,box-shadow,color] duration-150",

@@ -57,6 +57,7 @@ Read first: `CLAUDE.md`, `AGENTS.md`, `docs/IMPROVEMENT-PLAN.md` (the 4-phase pl
    (UK flight sales usually need one unless the airline issues the ticket immediately), which payment methods
    it takes, and whether to name the flight-search partner as an independent controller. Also confirm the
    new terms wording "we confirm the total price and fare rules with you before we book".
-4. The registered office (15 Lampton Avenue, Hounslow) now shows in every footer, as UK trading-disclosure
-   rules require of a company website. If the owner prefers another address for notices, change `company` in
+4. The registered office now shows in every footer, as UK trading-disclosure rules require of a company
+   website. At the owner's request (17 Oct 2026) it reads "Lampton Avenue, Hounslow" without the house
+   number; confirm that still meets the disclosure rules, which ask for the address as registered. If the owner prefers another address for notices, change `company` in
    `src/content/site.ts`.

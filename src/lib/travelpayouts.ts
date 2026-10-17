@@ -114,3 +114,48 @@ export async function faresFor(routes: { origin: string; destination: string; cu
   });
   return out;
 }
+
+/**
+ * Where people fly from a city: the most popular destinations (v1
+ * city-directions) with the cheapest fare found recently for each, falling
+ * back to the cheapest destinations (one fare per route). Up to 8, never
+ * estimated: empty when the API has nothing.
+ */
+export async function popularFrom(origin: string, currency: Currency): Promise<{ destination: string; price: number }[]> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("tp-prices", `tp-popular-${origin}`);
+  const token = process.env.TRAVELPAYOUTS_TOKEN;
+  if (!token) return [];
+  const keep = (rows: RawFare[]) => {
+    const seen = new Set<string>();
+    return rows
+      .filter((r) => r.price > 0 && /^[A-Z]{3}$/.test(r.destination) && r.destination !== origin && (!r.departure_at || future(r.departure_at)))
+      .filter((r) => !seen.has(r.destination) && !!seen.add(r.destination))
+      .slice(0, 8)
+      .map((r) => ({ destination: r.destination, price: Math.round(r.price) }));
+  };
+  try {
+    const res = await fetch(`https://api.travelpayouts.com/v1/city-directions?${new URLSearchParams({ origin, currency: currency.toLowerCase() })}`, {
+      headers: { "X-Access-Token": token, "Accept-Encoding": "gzip, deflate" },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (res.ok) {
+      const body = (await res.json()) as { success?: boolean; data?: Record<string, RawFare> };
+      const popular = body.success && body.data ? keep(Object.values(body.data)) : [];
+      if (popular.length) return popular;
+    }
+  } catch {
+    // Fall through to the cheapest destinations.
+  }
+  const data = await get<RawFare[]>("prices_for_dates", {
+    origin,
+    currency: currency.toLowerCase(),
+    one_way: "false",
+    sorting: "price",
+    unique: "true",
+    limit: "20",
+    page: "1",
+  });
+  return keep(data ?? []);
+}

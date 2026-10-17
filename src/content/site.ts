@@ -46,8 +46,11 @@ export const company = {
   registeredIn: "England and Wales",
   type: "private limited company",
   incorporated: "2026-01-30",
-  registeredOffice: "15 Lampton Avenue, Hounslow, England, TW3 4EW",
-  address: { street: "15 Lampton Avenue", locality: "Hounslow", postalCode: "TW3 4EW", country: "GB" },
+  // Shown without the house number at the owner's request (17 Oct 2026).
+  // TODO(confirm): trading-disclosure rules ask for the registered office
+  // address as registered at Companies House.
+  registeredOffice: "Lampton Avenue, Hounslow, England, TW3 4EW",
+  address: { street: "Lampton Avenue", locality: "Hounslow", postalCode: "TW3 4EW", country: "GB" },
   register: "https://find-and-update.company-information.service.gov.uk/company/17001759",
   /** Sister company that takes hotel bookings; the Hotels and Car hire links go to its site. */
   sister: { name: "Wicket Travel Holidays", url: "https://www.wickettravelholidays.com/" },
@@ -71,17 +74,46 @@ export const footerNotice = {
     "Some links to airlines, travel sites and other partners are affiliate links. If you book, we may earn a commission at no extra cost to you. It never changes the order of results, which are sorted by price.",
 } as const;
 
-export const mainNav = [
-  { label: "Flights", href: "/flights" },
-  { label: "Deals", href: "/deals" },
+export type NavLink = { label: string; href: string; description: string };
+export type NavItem =
+  | { label: string; href: string; external?: undefined; items?: undefined }
+  | { label: string; href: string; external: string; items?: undefined }
+  | { label: string; items: readonly NavLink[]; href?: undefined; external?: undefined };
+
+/**
+ * Five top-level items (owner, 17 Oct 2026): flight tools under Flights,
+ * rights and help under Travel help, company pages under About.
+ */
+export const mainNav: readonly NavItem[] = [
+  {
+    label: "Flights",
+    items: [
+      { label: "Search flights", href: "/flights", description: "Compare live prices, cheapest first" },
+      { label: "Fare calendar", href: "/fare-calendar", description: "The cheapest month and day to fly" },
+      { label: "Flight deals", href: "/deals", description: "Low fares found from the US and UK" },
+      { label: "Airlines", href: "/airlines", description: "The airlines we compare" },
+    ],
+  },
   { label: "Destinations", href: "/destinations" },
   // Hotels are booked with the sister company (owner, 16 Oct 2026): the menu
   // links straight to its site, opening in a new tab like the hero shortcut.
   { label: "Hotels", href: company.sister.url, external: `With our sister company, ${company.sister.name}` },
-  { label: "Travel guides", href: "/travel-guides" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
-] as const;
+  {
+    label: "Travel help",
+    items: [
+      { label: "Delay compensation", href: "/flight-delay-compensation", description: "Check what you’re owed for a late flight" },
+      { label: "Travel guides", href: "/travel-guides", description: "Tips for booking and flying" },
+      { label: "Help centre", href: "/help", description: "Bookings, changes and refunds" },
+    ],
+  },
+  {
+    label: "About",
+    items: [
+      { label: "About us", href: "/about", description: "Who we are and how we compare" },
+      { label: "Contact", href: "/contact", description: "Email, phone or WhatsApp" },
+    ],
+  },
+];
 
 export const footerNav = [
   {

@@ -25,6 +25,7 @@ export const privacy: { intro: string; sections: LegalSection[] } = {
           "Bookings made by our team: if you ask us on WhatsApp to book a flight, the details the airline needs to issue a ticket (usually each traveller’s name as it appears on their passport, date of birth, and contact details), your travel dates and preferences, and our messages with you.",
           "Fare alerts: your email address, once you confirm it from the email we send. Fare alerts haven’t launched yet; until they do, we only use it to tell you when they launch.",
           "Searches: the routes, dates and number of travellers you search for. Live search on our Flights page is run by our flight search partner, which receives your search, IP address and device information to find prices, and measures searches and bookings with its own cookies. It only loads if you allow “Live flight search” cookies.",
+          "Fare calendar starting point: when you open the fare calendar without choosing a route, our hosting provider passes our server your approximate location (worked out from your IP address) so we can start from an airport near you. We use it for that page only and don’t store it.",
           "Technical data: if you allow analytics, aggregated usage statistics (pages viewed, device type, country, page speed) from Vercel Analytics, which doesn’t identify you.",
           "Your cookie choice, stored in a cookie on your device.",
         ],

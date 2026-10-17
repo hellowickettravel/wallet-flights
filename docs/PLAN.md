@@ -198,29 +198,34 @@ Owner brief: two working pages, layout and UI first. Feature reference only (not
 
 | # | Section | Job | Interaction |
 |---|---|---|---|
-| 1 | PageHeader | Say what the tool does | — |
-| 2 | Search bar | Pick the route and trip | From ⇄ To (same airport combobox as the hero), One way / Return, trip length (return only) |
+| 1 | PhotoHeader | Say what the tool does | Full-bleed photo (wing at sunset) under a navy wash; three facts; the search card overlaps its bottom edge |
+| 2 | Search bar | Pick the route and trip | From ⇄ To (same airport combobox as the hero), One way / Return, trip length (return only, each length priced from the loaded fares). Starts from a city near the visitor and its most popular destination; "Popular from {city}" chips with prices. No fixed default route: with no location or data, the visitor picks |
 | 3 | Filters rail | Narrow the fares already loaded | Direct only, departure airport, airline, day of week, max price; reset; mobile disclosure |
 | 4 | Lowest fare by month | See the cheap months at a glance | 12 bars, cheapest in fare green; click a bar to open that month; 3 insights computed from the data |
 | 5 | Day calendar | Pick a day | Month nav; cheap days green, dear days red; legend |
 | 6 | Day fares | Act on a day | Fare cards; Select → `/flights?…&sub=calendar` (White Label, earns the flight commission) |
 | 7 | Flexible dates (return) | ±3 days around the chosen pair | 7×7 grid; picking a cell selects that pair |
-| 8 | Route alert | Capture email | Posts to the existing `/api/fare-alerts` double opt-in with route + target price |
 
 Data: Data API `prices_for_dates`, one call per month and direction (12, or 24 for returns),
 through `GET /api/fare-calendar`, cached hourly with `use cache`. The token is read from
 `TRAVELPAYOUTS_TOKEN` on the server only. Filters run in the browser on the fares returned.
 Return totals = cheapest outbound on day D + cheapest return on D + trip length (two one-way
-fares, labelled as such). With no token, **development only** serves labelled sample fares so the
-layout can be reviewed; production shows an empty state and a link to live search.
+fares, labelled as such). There is no sample data anywhere: with no token or no fares, the page shows
+an empty state and a link to live search.
+Starting point: `GET /api/fare-calendar/start` picks a city from Vercel's geo headers (a major city
+within 150 km, else the nearest city with flights in the same country) or, without them, the city the
+browser's time zone is named after; popular destinations come from the Data API (`v1/city-directions`,
+falling back to the cheapest destinations from `prices_for_dates`). Place names come from the partner's
+public data files (`src/lib/travel-data.ts`, cached daily). The route alert was removed: route alerts don't
+send yet, so it promised something the site can't do.
 
 ## `/flight-delay-compensation` — "Check what you're owed"
 
 | # | Section | Job | Interaction |
 |---|---|---|---|
-| 1 | PageHeader | Promise: a minute, free, UK and EU rules | — |
-| 2 | Checker form | Collect the facts | From/to, airline, what happened (chips), arrival delay or notice, reason, passengers, date |
-| 3 | Live result | Answer as inputs change | Amount per passenger + total, distance band bar, checklist of why |
+| 1 | PhotoHeader | Promise: a minute, free, UK and EU rules | Full-bleed photo (departures board) under a navy wash; the form overlaps its bottom edge |
+| 2 | Checker form | Collect the facts | Nothing pre-filled. From/to search every airport and city worldwide (`/api/places`, then `/api/airport` for country and position); airline searches every airline (`/api/airlines`); "Where is {airline} licensed?" only when an unknown airline flies into the UK/EU from outside; what happened (chips), arrival delay or notice, reason, passengers, date |
+| 3 | Live result | Answer as inputs change | Until complete: a checklist of what's still needed. Then: amount per passenger + total, distance band bar, checklist of why |
 | 4 | Ways to claim | Turn the answer into action | Claim yourself (free letter generator), Compensair (tracked affiliate link), share link. AirHelp later, once the network opens it to us |
 | 5 | Notes | Honesty | "A guide, not legal advice"; link to the rights guide |
 

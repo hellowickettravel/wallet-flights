@@ -19,6 +19,6 @@ export async function GET(req: NextRequest) {
   const data = await fareCalendar(origin, destination, currency, p.get("trip") === "return");
   const found = data.out.length > 0;
   return NextResponse.json(data, {
-    headers: { "Cache-Control": found && !data.sample ? "public, s-maxage=3600, stale-while-revalidate=86400" : "no-store" },
+    headers: { "Cache-Control": found ? "public, s-maxage=3600, stale-while-revalidate=86400" : "no-store" },
   });
 }

@@ -12,6 +12,9 @@ export const photos = {
   hero: p("photo-1631742272329-eeca83cb6886", "The sun setting over the clouds, seen from an airplane", "#3a1f22", "Noorulabdeen Ahmad", "noorulabdeen"),
   about: p("photo-1543797414-a0c3ad076f7c", "Looking out of an airplane window", "#4073a6", "@felirbe", "felirbe"),
   traveller: p("photo-1574202141112-c3a90e1a3ce2", "Traveller walking through an airport with a black suitcase", "#9aa3ad", "Tim Mossholder", "timmossholder"),
+  // Tool page headers, added 17 Oct 2026; subjects checked by viewing each photo.
+  fareCalendar: p("photo-1572204443432-a427ee039e73", "An airplane wing above the clouds at sunset, seen through the window", "#262626", "Jack Cohen", "jackcohen"),
+  compensation: p("photo-1786852448829-fc4277e70a5d", "A traveller with a backpack checking the flight information boards in an airport terminal", "#737359", "Preston A Larimer", "palarimer"),
 
   london: p("photo-1681407979872-0a4cbde28391", "Big Ben and the Houses of Parliament on the Thames, London", "#7e95ad", "Jacob Diehl", "jacob_diehl_film"),
   paris: p("photo-1502602898657-3e91760cbb34", "The Eiffel Tower above Paris", "#a99393", "Chris Karidis", "chriskaridis"),

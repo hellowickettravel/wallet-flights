@@ -602,3 +602,32 @@ sent but not kept), so alert copy says route alerts are "launching soon".
 **Test:** lint, typecheck, build pass; new `tests/e2e/tools.spec.ts` (16 tests: axe WCAG 2.2 AA, no
 overflow at 360/768/1280, partner never named, calendar flows with mocked data, rules cases, letter
 dialog); full e2e 300 passed, 30 skipped.
+
+### Batch 5b: tools production pass, menu, footer (17 Oct 2026)
+
+Owner's brief: both tools final and useful, no dummy data, nothing outside our partners, photography
+in the headers, no static or hard-coded field defaults; reorganise the main menu with dropdowns; drop
+"15" from the footer address.
+- **Menu**: five top-level items. Flights ▾ (Search flights, Fare calendar, Flight deals, Airlines),
+  Destinations, Hotels ↗, Travel help ▾ (Delay compensation, Travel guides, Help centre), About ▾ (About us,
+  Contact). Desktop dropdowns are disclosure buttons (hover with a mouse, click, Enter; Escape, a click
+  outside or tabbing away closes; current page marked). The phone menu shows the groups as sections.
+- **Headers**: new `PhotoHeader` (photo + navy washes, white breadcrumb, H1, intro, three facts), with
+  each tool's card overlapping its bottom edge. Photos: `fareCalendar` (Jack Cohen) and `compensation`
+  (Preston A Larimer), subjects checked by viewing; both on the photo credits page via `photos`.
+- **Fare calendar**: the development sample-fare generator is gone, so prices only ever come from the
+  Data API. No fixed London–Barcelona start: it begins at a city near the visitor (Vercel geo headers,
+  else time zone) and its most popular destination, with "Popular from {city}" chips and prices. Trip
+  length options show the cheapest return for each length. The route alert box ("launching soon") was
+  removed. Privacy policy now says the approximate location is used for that page only and not stored.
+- **Compensation**: no pre-filled answers (it used to open as Gatwick–Faro, easyJet, 9 days ago, 3–4 hours,
+  technical, so it showed "£350" before anyone typed). Airports and cities worldwide, every airline, a
+  licence question only when it changes the answer, and a "what's still needed" checklist until complete.
+  Share links carry only the answers given.
+- **Footer**: registered office without the house number (owner). `TODO(confirm)` against the
+  trading-disclosure rules.
+- Not verifiable locally: popular destinations and real fares need `TRAVELPAYOUTS_TOKEN` (empty here); the
+  first call on a cold server downloads the partner's airport and city files (~5 MB) before caching them.
+**Test:** lint, typecheck, build pass; `tools.spec.ts` now 12 tests per device (24), including a fixed-route
+check, the no-location state, priced trip lengths, an empty checker and the licence question; full e2e
+passed after the Contact menu wording fix.

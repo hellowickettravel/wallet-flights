@@ -5,7 +5,7 @@ import { expect, test } from "./fixtures";
 // Companies House register.
 const COMPANY = "Wicket Travel Limited";
 const NUMBER = "17001759";
-const OFFICE = "15 Lampton Avenue, Hounslow, England, TW3 4EW";
+const OFFICE = "Lampton Avenue, Hounslow, England, TW3 4EW";
 const REGISTER = `https://find-and-update.company-information.service.gov.uk/company/${NUMBER}`;
 
 test.beforeEach(async ({ page }) => {

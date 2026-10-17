@@ -101,9 +101,11 @@ test("header nav reaches About and Contact", async ({ page, isMobile }) => {
   await page.goto("/");
   if (isMobile) {
     await page.getByRole("button", { name: "Open menu" }).click();
-    await page.getByRole("dialog", { name: "Menu" }).getByRole("link", { name: "About" }).click();
+    await page.getByRole("dialog", { name: "Menu" }).getByRole("link", { name: /^About us/ }).click();
   } else {
-    await page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: "About" }).click();
+    const nav = page.getByRole("navigation", { name: "Main" });
+    await nav.getByRole("button", { name: "About" }).click();
+    await nav.getByRole("link", { name: /^About us/ }).click();
   }
   await expect(page).toHaveURL(/\/about$/);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();

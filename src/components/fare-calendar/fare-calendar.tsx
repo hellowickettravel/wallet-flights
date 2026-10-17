@@ -4,19 +4,19 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import clsx from "clsx";
-import { Info, MagnifyingGlass, SlidersHorizontal, WarningCircle } from "@phosphor-icons/react";
+import { AirplaneTilt, MagnifyingGlass, SlidersHorizontal, WarningCircle } from "@phosphor-icons/react";
 import type { Airport } from "@/content/airports";
-import type { Currency } from "@/content/deals";
-import { carrierName, defaultRoute, extraAirportNames, fareCalendarCopy as copy, tripLengths } from "@/content/fare-calendar";
+import { formatPrice, type Currency } from "@/content/deals";
+import { carrierName, extraAirportNames, fareCalendarCopy as copy, tripLengths } from "@/content/fare-calendar";
 import type { FareCalendarData } from "@/lib/fare-calendar";
 import { airportByCode, serializeSearch } from "@/lib/search-query";
+import type { CalendarStart } from "@/app/api/fare-calendar/start/route";
 import { SearchBar, type RouteQuery, type Trip } from "./search-bar";
 import { FiltersRail, type Option } from "./filters-rail";
 import { MonthSkyline } from "./month-skyline";
 import { DayCalendar } from "./day-calendar";
 import { DayFares } from "./day-fares";
 import { FlexGrid } from "./flex-grid";
-import { RouteAlert } from "./route-alert";
 import {
   activeFilterCount,
   addDays,
@@ -59,27 +59,66 @@ function urlFor(q: RouteQuery) {
   return `/fare-calendar?${p}`;
 }
 
+/** The route on screen; either place may still be missing until the visitor (or their location) picks it. */
+type Query = { from: Airport | null; to: Airport | null; trip: Trip; nights: number };
 type Loaded = { key: string; data: FareCalendarData | null; error: boolean };
 /** Per-route view state; a new route starts fresh. */
 type View = { key: string; filters: Filters; month: number | null; date: string | null; filtersOpen: boolean };
 
+const isRoute = (q: Query): q is RouteQuery => !!q.from && !!q.to && q.from.code !== q.to.code;
+
 export function FareCalendar() {
   const params = useSearchParams();
-  const [query, setQuery] = useState<RouteQuery>(() => {
-    const from = placeFrom(params.get("from"), params.get("fromlabel")) ?? airportByCode(defaultRoute.from)!;
-    let to = placeFrom(params.get("to"), params.get("tolabel")) ?? airportByCode(defaultRoute.to)!;
-    if (to.code === from.code) to = airportByCode(from.code === defaultRoute.to ? defaultRoute.from : defaultRoute.to)!;
+  const [query, setQuery] = useState<Query>(() => {
+    const from = placeFrom(params.get("from"), params.get("fromlabel"));
+    let to = placeFrom(params.get("to"), params.get("tolabel"));
+    if (to && from && to.code === from.code) to = null;
     const nights = Math.min(30, Math.max(1, Number.parseInt(params.get("nights") ?? "", 10) || 7));
     return { from, to, trip: params.get("trip") === "oneway" ? "oneway" : "return", nights };
   });
+
+  // Popular destinations from the origin, and (when the URL names no origin)
+  // a starting city near the visitor. Nothing here is a default route: when
+  // there's no location or no data, the visitor picks.
+  const [start, setStart] = useState<{ key: string; data: CalendarStart | null } | null>(null);
+  const startKey = query.from?.code ?? "near-me";
+  useEffect(() => {
+    const ctrl = new AbortController();
+    const p = new URLSearchParams();
+    if (query.from) p.set("from", query.from.code);
+    else p.set("tz", Intl.DateTimeFormat().resolvedOptions().timeZone ?? "");
+    fetch(`/api/fare-calendar/start?${p}`, { signal: ctrl.signal })
+      .then((r) => (r.ok ? (r.json() as Promise<CalendarStart>) : null))
+      .then((data) => {
+        setStart({ key: data?.from?.code ?? startKey, data });
+        // First visit: fill in whatever the URL left out.
+        if (data?.from)
+          setQuery((q) => {
+            const from = q.from ?? data.from;
+            const to = q.to ?? data.destinations.find((d) => d.to.code !== from?.code)?.to ?? null;
+            return from === q.from && to === q.to ? q : { ...q, from, to };
+          });
+      })
+      .catch((e: Error) => {
+        if (e.name !== "AbortError") setStart({ key: startKey, data: null });
+      });
+    return () => ctrl.abort();
+    // Only a new origin needs new suggestions.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startKey]);
+  const locating = !query.from && start === null;
+  const popular = start?.data && start.data.from && query.from && start.data.from.code === query.from.code ? start.data.destinations : [];
+
   const [retry, setRetry] = useState(0);
-  const currency = currencyFor(query.from);
-  const key = `${query.from.code}-${query.to.code}-${query.trip}-${currency}-${retry}`;
+  const route = isRoute(query) ? query : null;
+  const currency = query.from ? currencyFor(query.from) : "GBP";
+  const key = route ? `${route.from.code}-${route.to.code}-${route.trip}-${currency}-${retry}` : "";
 
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   useEffect(() => {
+    if (!route) return;
     const ctrl = new AbortController();
-    const p = new URLSearchParams({ origin: query.from.code, destination: query.to.code, currency, trip: query.trip });
+    const p = new URLSearchParams({ origin: route.from.code, destination: route.to.code, currency, trip: route.trip });
     fetch(`/api/fare-calendar?${p}`, { signal: ctrl.signal })
       .then((r) => (r.ok ? (r.json() as Promise<FareCalendarData>) : Promise.reject(new Error(String(r.status)))))
       .then((data) => setLoaded({ key, data, error: false }))
@@ -87,13 +126,15 @@ export function FareCalendar() {
         if (e.name !== "AbortError") setLoaded({ key, data: null, error: true });
       });
     return () => ctrl.abort();
-  }, [key, query.from.code, query.to.code, query.trip, currency]);
+    // `key` covers the route, trip, currency and retries.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
 
-  const ready = loaded?.key === key ? loaded : null;
+  const ready = route && loaded?.key === key ? loaded : null;
   const data = ready?.data ?? null;
 
   const [viewState, setView] = useState<View | null>(null);
-  const routeKey = `${query.from.code}-${query.to.code}-${query.trip}`;
+  const routeKey = route ? `${route.from.code}-${route.to.code}-${route.trip}` : "";
   const view: View = viewState?.key === routeKey ? viewState : { key: routeKey, filters: noFilters, month: null, date: null, filtersOpen: false };
   const patch = (p: Partial<View>) => setView({ ...view, ...p });
 
@@ -108,6 +149,17 @@ export function FareCalendar() {
   const summaries = useMemo(() => monthSummaries(model, months), [model, months]);
   const range = useMemo(() => priceRange(model, months), [model, months]);
   const insights = useMemo(() => weekdayInsights(model, months), [model, months]);
+
+  // The cheapest return total for each trip length, for the trip length list.
+  const lengthPrices = useMemo(() => {
+    if (!back) return {};
+    const out: Record<number, number | null> = {};
+    for (const t of tripLengths) {
+      const mins = monthSummaries({ out: model.out, back, nights: t.nights, filters: noFilters }, months).flatMap((s) => (s.min === null ? [] : [s.min]));
+      out[t.nights] = mins.length ? Math.min(...mins) : null;
+    }
+    return out;
+  }, [model.out, back, months]);
 
   const validMonths = summaries.filter((s) => s.min !== null);
   const cheapestMonth = validMonths.length ? summaries.indexOf(validMonths.reduce((a, b) => (b.min! < a.min! ? b : a))) : 0;
@@ -138,22 +190,22 @@ export function FareCalendar() {
   function changeTrip(trip: Trip, nights: number) {
     const q = { ...query, trip, nights };
     setQuery(q);
-    window.history.replaceState(null, "", urlFor(q));
+    if (isRoute(q)) window.history.replaceState(null, "", urlFor(q));
   }
 
   const selectHref = useMemo(() => {
-    if (!date) return "/flights";
+    if (!date || !route) return "/flights";
     const qs = serializeSearch({
       trip: isReturn ? "round" : "oneway",
-      legs: [{ from: query.from, to: query.to, date }],
-      returnDate: isReturn ? addDays(date, query.nights) : undefined,
+      legs: [{ from: route.from, to: route.to, date }],
+      returnDate: isReturn ? addDays(date, route.nights) : undefined,
       adults: 1,
       children: 0,
       infants: 0,
       cabin: "economy",
     });
     return `/flights?${qs}&sub=calendar`;
-  }, [date, isReturn, query]);
+  }, [date, isReturn, route]);
 
   const dayOuts = date ? outFares(out, date, view.filters).filter((f) => !isReturn && view.filters.maxPrice !== null ? f.price <= view.filters.maxPrice : true).slice(0, 4) : [];
   const dayBack = date && isReturn && back ? { date: addDays(date, query.nights), fare: backFares(back, addDays(date, query.nights), view.filters)[0] } : undefined;
@@ -165,25 +217,59 @@ export function FareCalendar() {
 
   return (
     <>
-      <div className="container-page mt-8 md:mt-10">
+      {/* Pulled up over the photo header's deep bottom edge. */}
+      <div className="relative z-10 container-page -mt-20 md:-mt-24">
         <SearchBar
-          key={`${query.from.code}-${query.to.code}`}
-          initial={{ from: query.from, to: query.to, trip: query.trip, nights: query.nights }}
+          key={`${query.from?.code}-${query.to?.code}`}
+          initial={query}
           onSearch={search}
           onTripChange={changeTrip}
+          lengthPrices={lengthPrices}
+          currency={currency}
         />
-        {data?.sample && (
-          <p className="mt-4 flex items-start gap-2 rounded-xl bg-sun/25 px-4 py-3 text-[0.875rem] font-medium text-ink ring-1 ring-sun">
-            <Info className="mt-0.5 size-4 shrink-0" weight="bold" aria-hidden />
-            {copy.status.sample}
-          </p>
+        {popular.length > 0 && query.from && (
+          <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+            <p className="shrink-0 text-[0.875rem] font-semibold text-ink-soft">{copy.popular.title(query.from.city)}</p>
+            <ul className="-mx-5 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
+              {popular.map((d) => {
+                const on = query.to?.code === d.to.code;
+                return (
+                  <li key={d.to.code} className="shrink-0">
+                    <button
+                      type="button"
+                      aria-pressed={on}
+                      onClick={() => search({ from: query.from!, to: d.to, trip: query.trip, nights: query.nights })}
+                      className={clsx(
+                        "inline-flex h-10 cursor-pointer items-center gap-2 rounded-full px-4 text-[0.875rem] font-semibold whitespace-nowrap ring-1 transition-colors",
+                        on ? "bg-ink text-white ring-ink" : "bg-white text-ink ring-line hover:ring-ink/30",
+                      )}
+                    >
+                      {d.to.city}
+                      <span className={clsx("tabular font-bold", on ? "text-sun" : "text-fare")}>
+                        <span className="sr-only">{copy.popular.from} </span>
+                        {formatPrice(d.price, start?.data?.currency ?? currency)}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         )}
       </div>
 
       <div className="mt-8 bg-mist py-8 md:mt-12 md:py-12">
         <div className="container-page">
-          {!ready ? (
-            <LoadingState />
+          {locating ? (
+            <LoadingState label={copy.status.locating} />
+          ) : !route ? (
+            <div className="grid place-items-center rounded-(--radius-panel) bg-white px-6 py-14 text-center ring-1 ring-line">
+              <AirplaneTilt className="size-10 text-action" aria-hidden />
+              <h2 className="mt-4 font-display-tight text-[1.5rem] font-bold text-ink">{copy.status.pickTitle}</h2>
+              <p className="mt-2 max-w-md text-ink-soft">{copy.status.pickText}</p>
+            </div>
+          ) : !ready ? (
+            <LoadingState label={copy.status.loading} />
           ) : ready.error ? (
             <div role="alert" className="grid place-items-center rounded-(--radius-panel) bg-white p-10 text-center ring-1 ring-line">
               <WarningCircle className="size-10 text-dear" aria-hidden />
@@ -198,7 +284,7 @@ export function FareCalendar() {
               <h2 className="mt-4 font-display-tight text-[1.5rem] font-bold text-ink">{copy.status.emptyTitle}</h2>
               <p className="mt-2 max-w-md text-ink-soft">{copy.status.emptyText}</p>
               <Link
-                href={`/flights?${serializeSearch({ trip: query.trip === "return" ? "round" : "oneway", legs: [{ from: query.from, to: query.to, date: "" }], adults: 1, children: 0, infants: 0, cabin: "economy" })}&sub=calendar`}
+                href={`/flights?${serializeSearch({ trip: route.trip === "return" ? "round" : "oneway", legs: [{ from: route.from, to: route.to, date: "" }], adults: 1, children: 0, infants: 0, cabin: "economy" })}&sub=calendar`}
                 className="mt-6 inline-flex h-12 items-center rounded-full bg-action px-6 font-semibold text-white hover:bg-action-deep"
               >
                 {copy.status.emptyCta}
@@ -238,7 +324,7 @@ export function FareCalendar() {
                   insights={insights}
                   currency={currency}
                   oneWay={!isReturn}
-                  subtitle={`${query.from.city} to ${query.to.city}, ${tripText}, one adult`}
+                  subtitle={`${route.from.city} to ${route.to.city}, ${tripText}, one adult`}
                   animateKey={routeKey}
                 />
                 {month && (
@@ -267,13 +353,6 @@ export function FareCalendar() {
                     }}
                   />
                 )}
-                <RouteAlert
-                  key={routeKey}
-                  from={query.from}
-                  to={query.to}
-                  suggested={validMonths.length ? Math.floor(Math.min(...validMonths.map((m) => m.min!)) * 0.95) : null}
-                  currency={currency}
-                />
                 <p className="text-[0.8125rem] leading-relaxed text-ink-soft">{copy.disclaimer}</p>
               </div>
             </div>
@@ -284,10 +363,10 @@ export function FareCalendar() {
   );
 }
 
-function LoadingState() {
+function LoadingState({ label }: { label: string }) {
   return (
     <div role="status" className="grid gap-6 lg:grid-cols-[17.5rem_minmax(0,1fr)]">
-      <span className="sr-only">{copy.status.loading}</span>
+      <span className="sr-only">{label}</span>
       <div aria-hidden className="hidden h-96 rounded-(--radius-panel) bg-white ring-1 ring-line lg:block" />
       <div aria-hidden className="rounded-(--radius-panel) bg-white p-7 ring-1 ring-line">
         <div className="h-7 w-56 rounded-md bg-mist" />
@@ -296,7 +375,7 @@ function LoadingState() {
             <span key={i} className="flex-1 rounded-t-md bg-mist motion-safe:animate-pulse" style={{ height: `${h}%`, animationDelay: `${i * 80}ms` }} />
           ))}
         </div>
-        <p className="mt-6 text-[0.9375rem] text-ink-soft">{copy.status.loading}</p>
+        <p className="mt-6 text-[0.9375rem] text-ink-soft">{label}</p>
       </div>
     </div>
   );
