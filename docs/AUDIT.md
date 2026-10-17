@@ -695,5 +695,10 @@ Sign-in errors are logged with the server's reply code, never the password. Pric
 random per-alert key stored with the alert instead of a signature, so they survive a secret change; an old link
 can't stop a newer alert for the same route. Confirmation links are signed with `FARE_ALERT_SECRET`, else
 `CRON_SECRET`, else the mailbox password. Privacy policy names Microsoft 365 as the email provider.
-TODO(confirm): Microsoft is retiring password sign-in for SMTP on some tenants; if the mailbox refuses it
-(reply 535 5.7.139), the fallback is Microsoft Graph with an app registration.
+Microsoft's timeline for password sign-in to SMTP (Exchange Online "SMTP AUTH Basic", checked 17 Oct 2026):
+unchanged until December 2026; at the end of December 2026 it is turned off by default for existing tenants
+(an admin can turn it back on); final removal to be announced in the second half of 2027. A blocked sign-in
+replies 550 5.7.30 (or 535 5.7.139 when SMTP AUTH is off for the mailbox). The fallback is Microsoft Graph
+with an app registration. TODO(confirm): whether GoDaddy's Microsoft 365 dashboard lets the owner turn it
+back on after December 2026; check in early January 2027 that the contact form still delivers.
+Sources: https://techcommunity.microsoft.com/blog/exchange/updated-exchange-online-smtp-auth-basic-authentication-deprecation-timeline/4489835
