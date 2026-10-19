@@ -791,3 +791,17 @@ opens on the £350 example. Found: the fare calendar's "Popular from" chips (rea
 phones by 705px; their sr-only "from" escaped the chip row's scroll. Every sideways-scrolling row is now
 `relative`, and a new test checks that structure on every page (it can't wait for live data to show the
 overflow). Full e2e **360 passed**, 44 skipped, 0 failed.
+
+## Batch 10 — Direct flights popup (20 Oct 2026)
+
+**Client report:** on /flights, clicking a price in the widget's "Direct flights" box did nothing useful,
+while "Select ticket" on a result worked. **Found:** the popup opened but stayed on "Loading prices…": it
+fetches the ticket from `tickets-api.<datacenter>.aviasales.ru`, which `connect-src` didn't allow, so the
+browser blocked it (console: "violates the following Content Security Policy directive"). Results use
+`*.apistp.com` (allowed), which is why the rest of the page worked. The datacenter comes from the search, so
+the fix allows `https://*.aviasales.ru` in `connect-src` only (src/lib/csp.ts); it's a header, not text on
+the site. The other hosts the widget's code can call were checked against the policy: all covered.
+
+**Test:** real widget on a local production build: the Direct flights price opens the popup with every
+provider's price and Buy buttons, no CSP violations over https. The security-headers test now checks the
+live search's `connect-src` hosts. Lint, typecheck, build pass; full e2e **360 passed**, 44 skipped, 0 failed.

@@ -86,6 +86,9 @@ test("security headers are set", async ({ request }) => {
   expect(res.headers()["content-security-policy-report-only"]).toBeUndefined();
   for (const rule of ["object-src 'none'", "base-uri 'self'", "frame-ancestors 'none'", "form-action 'self'", "report-uri /api/csp-report"]) expect(csp).toContain(rule);
   for (const host of ["https://tpwdg.com", "https://*.apistp.com", "https://images.unsplash.com", "https://pics.avs.io"]) expect(csp).toContain(host);
+  // The live search's own requests, including the Direct flights popup's ticket (it hung on "Loading prices" without it).
+  const connect = csp.split(";").find((d) => d.trim().startsWith("connect-src "))!;
+  for (const host of ["https://*.apistp.com", "https://*.aviasales.ru", "https://avsplow.com"]) expect(connect).toContain(host);
 });
 
 test("csp reports are accepted", async ({ request }) => {

@@ -17,7 +17,9 @@ export const cspHosts = {
   // Live search on /flights: the White Label script, its APIs, airline images,
   // measurement (Snowplow) and the Google Font it loads.
   search: ["https://tpwdg.com", "https://*.tpwdg.com"],
-  searchApi: ["https://*.apistp.com", "https://avsplow.com"],
+  // The Direct flights popup loads its ticket from tickets-api.<datacenter>.aviasales.ru
+  // (recorded 20 Oct 2026; the datacenter varies by search, hence the wildcard).
+  searchApi: ["https://*.apistp.com", "https://*.aviasales.ru", "https://avsplow.com"],
   searchImages: ["https://img.avs.io"],
   searchFonts: { style: ["https://fonts.googleapis.com"], font: ["https://fonts.gstatic.com"] },
   // Destination and guide photos.
