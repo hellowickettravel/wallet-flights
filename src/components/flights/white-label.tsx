@@ -8,6 +8,7 @@ import { searchGateCopy } from "@/content/consent";
 import { openConsentSettings, saveConsent, useConsent } from "@/lib/consent";
 import { parseSearch, withDefaultDates } from "@/lib/search-query";
 import { whiteLabelParams } from "@/lib/white-label";
+import { readDisplayCurrency } from "@/components/currency/currency-provider";
 
 const SCRIPT_SRC = `https://tpwdg.com/wl_web/main.js?wl_id=${travelpayouts.whiteLabelId}`;
 const noop = () => () => {};
@@ -22,13 +23,15 @@ function prepareUrl(params: URLSearchParams) {
   if (params.has("flightSearch")) return;
   const sub = (params.get("sub") ?? "flights_page").replace(/[^a-z0-9_]/gi, "_");
   const parsed = parseSearch(params);
+  // Prices open in the visitor's currency (the widget's own menu can still change it).
+  const currency = readDisplayCurrency();
   const next = parsed.ok
-    ? whiteLabelParams(withDefaultDates(parsed.query, todayIso()), sub)
-    : new URLSearchParams({ marker: `${travelpayouts.marker}.${sub}` });
+    ? whiteLabelParams(withDefaultDates(parsed.query, todayIso()), sub, currency)
+    : new URLSearchParams({ marker: `${travelpayouts.marker}.${sub}`, ...(currency && { currency }) });
   window.history.replaceState(null, "", `/flights?${next.toString()}`);
 }
 
-function loadScript() {
+function loadScript(visitorCurrency: string | null) {
   if (document.querySelector("script[data-tpwl]")) {
     // The widget mounts once per page load; coming back via client-side
     // navigation needs a fresh document.
@@ -43,7 +46,8 @@ function loadScript() {
     resultsURL: `${window.location.origin}/flights`,
     showReferralLink: false,
     showHotels: false,
-    availableCurrencies: [...searchCurrencies],
+    // The visitor's own currency first, then the owner's list; the widget keeps the ones it can price.
+    availableCurrencies: [...new Set([...(visitorCurrency ? [visitorCurrency] : []), ...searchCurrencies])],
   };
   const s = document.createElement("script");
   s.type = "module";
@@ -63,7 +67,7 @@ export function WhiteLabel() {
   useEffect(() => {
     if (!allowed) return;
     prepareUrl(new URLSearchParams(window.location.search));
-    loadScript();
+    loadScript(readDisplayCurrency());
     // Once, on permission: the widget manages the URL after that.
   }, [allowed]);
 

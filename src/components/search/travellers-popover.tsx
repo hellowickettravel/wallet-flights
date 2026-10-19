@@ -112,6 +112,8 @@ export function TravellersPopover({ travellers, cabin, onChange, variant = "pill
 
       <AnimatePresence>
         {open && (
+          // text-ink: the panel is white wherever it opens, but it inherits the
+          // hero form's white text, which hid the counts.
           <m.div
             id={panelId}
             role="dialog"
@@ -120,7 +122,7 @@ export function TravellersPopover({ travellers, cabin, onChange, variant = "pill
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.98 }}
             transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute top-[calc(100%+8px)] right-0 z-30 w-[min(22rem,calc(100vw-2.5rem))] origin-top-right rounded-2xl bg-white p-5 shadow-(--shadow-pop) ring-1 ring-line max-sm:left-0 max-sm:origin-top-left"
+            className="absolute top-[calc(100%+8px)] right-0 z-30 w-[min(22rem,calc(100vw-2.5rem))] origin-top-right rounded-2xl bg-white p-5 text-ink shadow-(--shadow-pop) ring-1 ring-line max-sm:left-0 max-sm:origin-top-left"
           >
             <ul className="space-y-4">
               {rows.map((r) => (
@@ -139,7 +141,7 @@ export function TravellersPopover({ travellers, cabin, onChange, variant = "pill
                     >
                       <Minus className="size-4" weight="bold" aria-hidden />
                     </Stepper>
-                    <output aria-live="polite" className="tabular w-5 text-center text-[1.0625rem] font-semibold">
+                    <output aria-live="polite" className="tabular w-5 text-center text-[1.0625rem] font-semibold text-ink">
                       {travellers[r.key]}
                     </output>
                     <Stepper

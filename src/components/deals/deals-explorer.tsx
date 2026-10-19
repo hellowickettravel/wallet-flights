@@ -7,6 +7,8 @@ import { DealCard } from "@/components/home/deals-rail";
 import { origins, routes } from "@/content/deals";
 import { regions, type Region } from "@/content/destinations";
 import type { FareMap } from "@/lib/fares";
+import { currencyCopy } from "@/content/currency";
+import { useDisplayCurrency, useToDisplay } from "@/components/currency/currency-provider";
 
 type Sort = "price" | "city";
 
@@ -14,12 +16,17 @@ export function DealsExplorer({ fares }: { fares: FareMap }) {
   const [origin, setOrigin] = useState<string>("all");
   const [region, setRegion] = useState<Region | "all">("all");
   const [sort, setSort] = useState<Sort>("price");
+  const shown = useDisplayCurrency();
+  const toDisplay = useToDisplay();
 
   const list = useMemo(() => {
-    // Priced routes first (GBP, then USD, cheapest first); unpriced routes last.
+    // Priced routes first, cheapest first (in the visitor's currency, or GBP
+    // then USD when none is set); unpriced routes last.
     const rank = (slug: string) => {
       const f = fares[slug];
-      return f ? [0, f.currency === "GBP" ? 0 : 1, f.price] : [1, 0, 0];
+      if (!f) return [1, 0, 0];
+      const v = toDisplay(f.price, f.currency);
+      return [0, shown ? 0 : f.currency === "GBP" ? 0 : 1, v.amount];
     };
     return routes
       .filter((d) => (origin === "all" || d.origin.code === origin) && (region === "all" || d.destination.region === region))
@@ -29,7 +36,7 @@ export function DealsExplorer({ fares }: { fares: FareMap }) {
         const rb = rank(b.slug);
         return ra[0] - rb[0] || ra[1] - rb[1] || ra[2] - rb[2];
       });
-  }, [origin, region, sort, fares]);
+  }, [origin, region, sort, fares, shown, toDisplay]);
 
   const chips = [{ code: "all", city: "All cities" }, ...origins];
 
@@ -120,8 +127,8 @@ export function DealsExplorer({ fares }: { fares: FareMap }) {
         </ul>
       )}
       <p className="mt-8 text-[0.8125rem] text-ink-soft">
-        Lowest round-trip economy fares per person found in the last few days, in the departure city’s currency. Routes
-        without a recent fare show no price; search them for your dates.
+        Lowest round-trip economy fares per person found in the last few days. {currencyCopy.converted} Routes without a
+        recent fare show no price; search them for your dates.
       </p>
     </div>
   );

@@ -1,4 +1,5 @@
 import { destinationBySlug, type Destination } from "./destinations";
+import { formatMoney, moneySymbol, type DisplayCurrency } from "@/lib/currency";
 
 // Featured routes: an editorial choice of where we show fares from each
 // departure city. There are no prices here — fares come from the Aviasales
@@ -63,11 +64,6 @@ export const fareBoardRoutes = [
   { route: "chicago-to-istanbul", city: "ISTANBUL" },
 ] as const;
 
-const symbols: Record<Currency, string> = { USD: "$", GBP: "£" };
-export const currencySymbol = (c: Currency) => symbols[c];
-
-const formatters: Record<Currency, Intl.NumberFormat> = {
-  USD: new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }),
-  GBP: new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP", maximumFractionDigits: 0 }),
-};
-export const formatPrice = (amount: number, c: Currency) => formatters[c].format(amount);
+// Any display currency: emails and price alerts can be in the visitor's own.
+export const currencySymbol = (c: DisplayCurrency) => moneySymbol(c);
+export const formatPrice = (amount: number, c: DisplayCurrency) => formatMoney(amount, c);

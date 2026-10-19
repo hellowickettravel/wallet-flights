@@ -1,10 +1,11 @@
 "use client";
 
 import clsx from "clsx";
-import { formatPrice, type Currency } from "@/content/deals";
+import type { Currency } from "@/content/deals";
 import { fareCalendarCopy, weekdays } from "@/content/fare-calendar";
 import { weekday } from "./model";
 import { fmtShort } from "./day-fares";
+import { useMoney } from "@/components/currency/currency-provider";
 
 const copy = fareCalendarCopy.flex;
 
@@ -29,6 +30,7 @@ function Head({ date }: { date: string }) {
 
 /** ±3 days around the chosen outbound and return dates; picking a cell selects that pair. */
 export function FlexGrid({ leave, back, cells, min, onPick, currency }: Props) {
+  const money = useMoney();
   return (
     <section aria-labelledby="flex-title" className="rounded-(--radius-panel) bg-white p-5 ring-1 ring-line md:p-7">
       <h2 id="flex-title" className="font-display-tight text-[1.375rem] font-bold text-ink md:text-[1.5rem]">
@@ -70,14 +72,14 @@ export function FlexGrid({ leave, back, cells, min, onPick, currency }: Props) {
                           type="button"
                           onClick={() => onPick(l, back[j])}
                           aria-pressed={chosen}
-                          aria-label={`Leave ${fmtShort(l)}, return ${fmtShort(back[j])}: ${formatPrice(v, currency)}${cheapest ? ", cheapest" : ""}`}
+                          aria-label={`Leave ${fmtShort(l)}, return ${fmtShort(back[j])}: ${money(v, currency)}${cheapest ? ", cheapest" : ""}`}
                           className={clsx(
                             "tabular h-12 w-full cursor-pointer rounded-lg text-[0.875rem] font-bold transition-[background-color,box-shadow]",
                             cheapest ? "bg-fare text-white hover:bg-fare-deep" : "bg-mist text-ink hover:ring-2 hover:ring-ink/20",
                             chosen && "ring-[3px] ring-ink",
                           )}
                         >
-                          {formatPrice(v, currency)}
+                          {money(v, currency)}
                         </button>
                       )}
                     </td>

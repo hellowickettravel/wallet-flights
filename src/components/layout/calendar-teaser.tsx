@@ -5,9 +5,10 @@ import Link from "next/link";
 import { Airplane, ArrowRight, CalendarDots, CaretRight, Storefront, TrendDown, X } from "@phosphor-icons/react";
 import type { CalendarStart } from "@/app/api/fare-calendar/start/route";
 import { SmartImage } from "@/components/ui/smart-image";
-import { formatPrice } from "@/content/deals";
+
 import { fareCalendarCopy, teaserCopy as copy } from "@/content/fare-calendar";
 import { photos } from "@/content/images";
+import { useMoney } from "@/components/currency/currency-provider";
 
 /**
  * The flight path, in the card's own coordinates (22rem wide): up from below
@@ -27,6 +28,7 @@ const pointIcons = [CalendarDots, TrendDown, Storefront];
  * fades in.
  */
 export function CalendarTeaser({ start, onClose }: { start: CalendarStart | null; onClose: () => void }) {
+  const money = useMoney();
   const titleId = useId();
   const maskId = useId();
   const [leaving, setLeaving] = useState(false);
@@ -102,7 +104,7 @@ export function CalendarTeaser({ start, onClose }: { start: CalendarStart | null
             <p className="text-[0.8125rem] text-ink-soft">{copy.routesLead(start!.from!.city)}</p>
             <ul className="mt-1.5 divide-y divide-line rounded-xl bg-mist px-3">
               {routes.map((r) => {
-                const price = formatPrice(r.price, start!.currency);
+                const price = money(r.price, start!.currency);
                 return (
                   <li key={r.to.code} className="nth-3:hidden sm:nth-3:block">
                     <Link

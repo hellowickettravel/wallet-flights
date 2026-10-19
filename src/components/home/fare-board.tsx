@@ -4,7 +4,9 @@ import { useEffect, useRef } from "react";
 import { ArrowRight, MagnifyingGlass } from "@phosphor-icons/react";
 import Link from "next/link";
 import clsx from "clsx";
-import { currencySymbol, fareBoardRoutes, routeBySlug, type Route } from "@/content/deals";
+import { fareBoardRoutes, routeBySlug, type Route } from "@/content/deals";
+import { formatMoney, moneySymbol, type DisplayCurrency } from "@/lib/currency";
+import { useDisplayCurrency, useToDisplay } from "@/components/currency/currency-provider";
 import { dealLink } from "@/lib/deal-links";
 import type { FareMap } from "@/lib/fares";
 import type { Fare } from "@/lib/travelpayouts";
@@ -20,7 +22,7 @@ const cols = [
   { key: "fare", label: "Fare", width: 4, show: "all" },
 ] as const;
 
-type Row = { route: Route; city: string; fare?: Fare };
+type Row = { route: Route; city: string; fare?: Fare; fareText: string; fareFull: string };
 const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
 // No fare → blank flaps: we never show a price we didn't find.
@@ -35,11 +37,17 @@ function cellText(r: Row, key: (typeof cols)[number]["key"]) {
     case "month":
       return r.fare ? MONTHS[new Date(r.fare.departureAt).getUTCMonth()] : "";
     case "fare":
-      return r.fare ? `${currencySymbol(r.fare.currency)}${r.fare.price}` : "";
+      return r.fareText;
   }
 }
+/** "£247", "$1240", "Rs69K": a symbol and at most five characters of number. */
+function boardPrice({ amount, currency }: { amount: number; currency: DisplayCurrency }) {
+  const n = amount >= 10_000 ? `${Math.round(amount / 1000)}K` : String(Math.round(amount));
+  return `${moneySymbol(currency).replace(/\s/g, "")}${n}`;
+}
+// Screen readers get the full price ("Rs 68,600"), not the board's short form.
 const srText = (r: Row, key: (typeof cols)[number]["key"]) =>
-  cellText(r, key) || (key === "fare" ? "No recent price" : key === "month" ? "Any month" : "");
+  (key === "fare" ? r.fareFull : cellText(r, key)) || (key === "fare" ? "No recent price" : key === "month" ? "Any month" : "");
 
 /**
  * Split-flap departure board: the homepage's one signature motion moment.
@@ -47,7 +55,15 @@ const srText = (r: Row, key: (typeof cols)[number]["key"]) =>
  * row by row, once when the board scrolls into view.
  */
 export function FareBoard({ fares, subPrefix = "home_board" }: { fares: FareMap; subPrefix?: string }) {
-  const rows: Row[] = fareBoardRoutes.map((b) => ({ route: routeBySlug[b.route], city: b.city, fare: fares[b.route] }));
+  const shown = useDisplayCurrency();
+  const toDisplay = useToDisplay();
+  const rows: Row[] = fareBoardRoutes.map((b) => {
+    const fare = fares[b.route];
+    const v = fare && toDisplay(fare.price, fare.currency);
+    return { route: routeBySlug[b.route], city: b.city, fare, fareText: v ? boardPrice(v) : "", fareFull: v ? formatMoney(v.amount, v.currency) : "" };
+  });
+  // Four tiles fit "£247"; local currencies ("Rs69K") get as many as they need.
+  const fareWidth = Math.max(4, ...rows.map((r) => r.fareText.length));
   const ref = useRef<HTMLDivElement>(null);
 
   // The server HTML holds the final characters. The animation writes glyphs
@@ -97,7 +113,8 @@ export function FareBoard({ fares, subPrefix = "home_board" }: { fares: FareMap;
       io.disconnect();
       cancelAnimationFrame(raf);
     };
-  }, []);
+    // A new currency means new tiles: flip them in again.
+  }, [shown, toDisplay]);
 
   return (
     <section aria-labelledby="board-title" className="bg-board py-18 text-white md:py-28">
@@ -152,7 +169,7 @@ export function FareBoard({ fares, subPrefix = "home_board" }: { fares: FareMap;
                 return (
                 <tr key={r.route.slug} className="group">
                   {cols.map((c) => {
-                    const text = pad(cellText(r, c.key), c.width);
+                    const text = pad(cellText(r, c.key), c.key === "fare" ? fareWidth : c.width);
                     return (
                       <td key={c.key} className={clsx("w-px pr-2.5 align-middle whitespace-nowrap md:pr-6 lg:pr-8", c.show === "lg" && "hidden lg:table-cell", c.show === "sm" && "hidden sm:table-cell")}>
                         <span className="sr-only">{srText(r, c.key)}</span>

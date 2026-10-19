@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import clsx from "clsx";
+import { m } from "motion/react";
 import { AirplaneLanding, AirplaneTakeoff, ArrowsLeftRight, MagnifyingGlass } from "@phosphor-icons/react";
 import { AirportField } from "@/components/search/airport-field";
 import type { Airport } from "@/content/airports";
-import { formatPrice, type Currency } from "@/content/deals";
+import type { Currency } from "@/content/deals";
 import { fareCalendarCopy as copy, tripLengths } from "@/content/fare-calendar";
 import { onRovingKeyDown } from "@/lib/roving";
+import { useMoney } from "@/components/currency/currency-provider";
 
 export type Trip = "oneway" | "return";
 export type RouteQuery = { from: Airport; to: Airport; trip: Trip; nights: number };
@@ -24,6 +26,7 @@ type Props = {
 
 /** Route search for the fare calendar: From ⇄ To, one way or return, trip length. */
 export function SearchBar({ initial, onSearch, onTripChange, lengthPrices, currency }: Props) {
+  const money = useMoney();
   const [from, setFrom] = useState<Airport | null>(initial.from);
   const [to, setTo] = useState<Airport | null>(initial.to);
   const [error, setError] = useState<string | null>(null);
@@ -92,11 +95,13 @@ export function SearchBar({ initial, onSearch, onTripChange, lengthPrices, curre
                   tabIndex={on ? 0 : -1}
                   onClick={() => onTripChange(t.v, initial.nights)}
                   className={clsx(
-                    "h-full flex-1 cursor-pointer rounded-lg px-4 text-[0.9375rem] font-semibold whitespace-nowrap transition-colors",
-                    on ? "bg-white text-ink shadow-sm ring-1 ring-line" : "text-ink-soft hover:text-ink",
+                    "relative h-full flex-1 cursor-pointer rounded-lg px-4 text-[0.9375rem] font-semibold whitespace-nowrap transition-colors",
+                    on ? "text-white" : "text-ink-soft hover:text-ink",
                   )}
                 >
-                  {t.label}
+                  {/* The selected trip is filled blue and the fill slides between them, like the homepage switch. */}
+                  {on && <m.span layoutId="calendar-trip" className="absolute inset-0 rounded-lg bg-action shadow-sm" transition={{ type: "spring", stiffness: 420, damping: 34 }} />}
+                  <span className="relative">{t.label}</span>
                 </button>
               );
             })}
@@ -120,7 +125,7 @@ export function SearchBar({ initial, onSearch, onTripChange, lengthPrices, curre
                 const price = lengthPrices[t.nights];
                 return (
                   <option key={t.nights} value={t.nights}>
-                    {price != null ? `${t.label} · from ${formatPrice(price, currency)}` : t.label}
+                    {price != null ? `${t.label} · from ${money(price, currency)}` : t.label}
                   </option>
                 );
               })}

@@ -7,11 +7,12 @@ import { ArrowUpRight, CaretLeft, CaretRight } from "@phosphor-icons/react";
 import clsx from "clsx";
 import { SmartImage } from "@/components/ui/smart-image";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { formatPrice, origins, routesByOrigin, type Route } from "@/content/deals";
+import { origins, routesByOrigin, type Route } from "@/content/deals";
 import { dealLink, fareDates, stopsText } from "@/lib/deal-links";
 import type { FareMap } from "@/lib/fares";
 import type { Fare } from "@/lib/travelpayouts";
 import { onRovingKeyDown } from "@/lib/roving";
+import { Price } from "@/components/currency/currency-provider";
 
 export function DealsRail({ fares }: { fares: FareMap }) {
   const [origin, setOrigin] = useState(origins[0].code);
@@ -144,7 +145,9 @@ export function DealCard({ route, fare, subId, priority }: { route: Route; fare?
         </div>
         {fare ? (
           <div className="shrink-0 text-right">
-            <p className="tabular text-[1.25rem] leading-none font-bold text-fare">{formatPrice(fare.price, fare.currency)}</p>
+            <p className="tabular text-[1.25rem] leading-none font-bold text-fare">
+              <Price amount={fare.price} currency={fare.currency} />
+            </p>
             <p className="mt-1 text-[0.75rem] text-ink-soft">round trip</p>
           </div>
         ) : (

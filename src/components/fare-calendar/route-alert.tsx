@@ -5,6 +5,8 @@ import { AnimatePresence, m } from "motion/react";
 import { BellRinging, CheckCircle, EnvelopeSimple, TrendDown } from "@phosphor-icons/react";
 import clsx from "clsx";
 import { currencySymbol, formatPrice, type Currency } from "@/content/deals";
+import { roundConverted } from "@/lib/currency";
+import { useToDisplay } from "@/components/currency/currency-provider";
 import { priceAlertCopy as copy, tripText } from "@/content/fare-calendar";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -30,8 +32,20 @@ type Props = {
 export function RouteAlert({ from, to, trip, nights, cheapest, currency }: Props) {
   const id = useId();
   const [email, setEmail] = useState("");
+  // The alert is in the visitor's currency: today's cheapest fare converted,
+  // and the price they type is in that currency too.
+  const toDisplay = useToDisplay();
+  const now = cheapest === null ? null : toDisplay(cheapest, currency);
+  const alertCurrency = now?.currency ?? toDisplay(1, currency).currency;
   // A little under today's cheapest fare: a price worth hearing about.
-  const [price, setPrice] = useState(cheapest ? String(Math.max(1, Math.floor(cheapest * 0.95))) : "");
+  const suggest = () => (now ? String(Math.max(1, roundConverted(Math.floor(now.amount * 0.95)))) : "");
+  const [price, setPrice] = useState(suggest);
+  // Switching currency in the header starts the suggestion again in the new one.
+  const [priceCurrency, setPriceCurrency] = useState(alertCurrency);
+  if (priceCurrency !== alertCurrency) {
+    setPriceCurrency(alertCurrency);
+    setPrice(suggest());
+  }
   const [state, setState] = useState<State>({ status: "idle" });
   const startedAt = useRef(0);
   const formRef = useRef<HTMLFormElement>(null);
@@ -57,7 +71,7 @@ export function RouteAlert({ from, to, trip, nights, cheapest, currency }: Props
           trip,
           nights,
           max: Math.round(max),
-          currency,
+          currency: alertCurrency,
           company: (formRef.current?.elements.namedItem("company") as HTMLInputElement | null)?.value ?? "",
           startedAt: startedAt.current,
         }),
@@ -90,7 +104,7 @@ export function RouteAlert({ from, to, trip, nights, cheapest, currency }: Props
               <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-mist px-3 py-1 text-[0.8125rem] text-ink">
                 <TrendDown weight="bold" className="size-4 text-fare" aria-hidden />
                 {copy.now}
-                <span className="tabular font-bold text-fare">{formatPrice(cheapest, currency)}</span>
+                <span className="tabular font-bold text-fare">{now && formatPrice(now.amount, now.currency)}</span>
               </p>
             )}
           </div>
@@ -136,7 +150,7 @@ export function RouteAlert({ from, to, trip, nights, cheapest, currency }: Props
                   </label>
                   <div className={clsx(field, "flex items-center px-3.5", error?.field === "price" && "ring-2 ring-dear")}>
                     <span aria-hidden className="font-semibold text-ink-soft">
-                      {currencySymbol(currency)}
+                      {currencySymbol(alertCurrency)}
                     </span>
                     <input
                       id={`${id}-price`}

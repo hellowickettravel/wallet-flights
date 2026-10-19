@@ -1,9 +1,9 @@
 import Link from "next/link";
 import clsx from "clsx";
 import { SmartImage } from "@/components/ui/smart-image";
-import { formatPrice } from "@/content/deals";
 import type { Destination } from "@/content/destinations";
 import type { TileFare } from "@/lib/fares";
+import { Price } from "@/components/currency/currency-provider";
 
 export function DestinationTile({ d, fare, size = "md", priority }: { d: Destination; fare?: TileFare; size?: "md" | "lg"; priority?: boolean }) {
   return (
@@ -24,7 +24,7 @@ export function DestinationTile({ d, fare, size = "md", priority }: { d: Destina
       {fare && (
         <span className="absolute top-3 right-3 rounded-full bg-white px-3 py-1 text-[0.8125rem] font-semibold text-ink">
           <span className="sr-only">Round trip from {fare.originCity} </span>
-          from <span className="tabular text-fare">{formatPrice(fare.price, fare.currency)}</span>
+          from <Price amount={fare.price} currency={fare.currency} className="tabular text-fare" />
         </span>
       )}
       <span className="absolute inset-x-0 bottom-0 p-5">

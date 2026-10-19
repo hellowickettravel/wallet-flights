@@ -6,10 +6,10 @@ import { AnimatePresence, LayoutGroup, m } from "motion/react";
 import clsx from "clsx";
 import { SmartImage } from "@/components/ui/smart-image";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { formatPrice } from "@/content/deals";
 import { destinations, regions, type Region } from "@/content/destinations";
 import type { TileFare } from "@/lib/fares";
 import { onRovingKeyDown } from "@/lib/roving";
+import { Price } from "@/components/currency/currency-provider";
 
 export function DestinationsMosaic({ fares }: { fares: Record<string, TileFare> }) {
   const [region, setRegion] = useState<Region>("europe");
@@ -88,7 +88,7 @@ export function DestinationsMosaic({ fares }: { fares: Record<string, TileFare> 
                     {fare && (
                       <span className="absolute top-3 right-3 rounded-full bg-white px-2.5 py-1 text-[0.75rem] font-semibold text-ink sm:top-4 sm:right-4 sm:px-3 sm:py-1.5 sm:text-[0.8125rem]">
                         <span className="sr-only">Round trip from {fare.originCity} </span>
-                        from <span className="tabular text-fare">{formatPrice(fare.price, fare.currency)}</span>
+                        from <Price amount={fare.price} currency={fare.currency} className="tabular text-fare" />
                       </span>
                     )}
                     <span className="absolute inset-x-0 bottom-0 p-4 sm:p-5">

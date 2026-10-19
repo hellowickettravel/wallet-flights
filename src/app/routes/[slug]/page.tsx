@@ -7,7 +7,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { SearchPanel } from "@/components/search/search-panel";
 import { MonthCalendar } from "@/components/destinations/month-calendar";
 import { TripExtras } from "@/components/destinations/trip-extras";
-import { formatPrice, routeBySlug, routes } from "@/content/deals";
+import { routeBySlug, routes } from "@/content/deals";
 import { destinationGuides } from "@/content/destination-guides";
 import { routeQuestions } from "@/content/quick-answers";
 import { routeGuides } from "@/content/route-facts";
@@ -18,6 +18,7 @@ import { approxFlightTime } from "@/lib/demo-flights";
 import { dealLink, fareDates, stopsText } from "@/lib/deal-links";
 import { monthCalendars } from "@/lib/fares";
 import { cheapestFare } from "@/lib/travelpayouts";
+import { Price } from "@/components/currency/currency-provider";
 
 export function generateStaticParams() {
   return routes.map((r) => ({ slug: r.slug }));
@@ -84,7 +85,9 @@ export default async function RoutePage({ params }: PageProps<"/routes/[slug]">)
           <h2 id="cheapest-title" className="font-display-tight text-[1.5rem] font-bold">Cheapest recent fare</h2>
           {fare ? (
             <>
-              <p className="tabular mt-4 font-display-tight text-[3rem] leading-none font-extrabold text-sun">{formatPrice(fare.price, fare.currency)}</p>
+              <p className="tabular mt-4 font-display-tight text-[3rem] leading-none font-extrabold text-sun">
+                <Price amount={fare.price} currency={fare.currency} />
+              </p>
               <p className="mt-2 text-white/80">
                 Round trip · {fareDates(fare)} · {stopsText(fare.transfers)}
               </p>

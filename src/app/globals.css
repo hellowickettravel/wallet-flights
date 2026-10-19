@@ -189,6 +189,14 @@ html[data-consent] .cookie-banner:not([data-reopened]) {
   display: none;
 }
 
+/* Prices rendered on the server are in the currency they were found in (data-base).
+   When the visitor's currency (html[data-cur], set before paint) differs, hide them
+   until the browser has converted them (data-shown), so £ never flashes before Rs. */
+html[data-cur]:not([data-cur="GBP"]) [data-base="GBP"]:not([data-shown]),
+html[data-cur]:not([data-cur="USD"]) [data-base="USD"]:not([data-shown]) {
+  visibility: hidden;
+}
+
 /* Below-the-fold blocks: the browser skips their layout and paint until they
    near the viewport (measured: about 38% less layout on the homepage's first
    render). The size is a placeholder until the real height is known. */

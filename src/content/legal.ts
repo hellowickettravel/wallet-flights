@@ -27,6 +27,7 @@ export const privacy: { intro: string; sections: LegalSection[] } = {
           "Price alerts on the fare calendar: your email address, the route, trip and price you chose, and when we last emailed you about it, once you confirm it from the email we send. We keep the alert until you stop it with the link in any alert email.",
           "Searches: the routes, dates and number of travellers you search for. Live search on our Flights page is run by our flight search partner, which receives your search, IP address and device information to find prices, and measures searches and bookings with its own cookies. It only loads if you allow “Live flight search” cookies.",
           "Fare calendar starting point: when you open the fare calendar without choosing a route, our hosting provider passes our server your approximate location (worked out from your IP address) so we can start from an airport near you. We use it for that page only and don’t store it.",
+          "Currency: on your first visit our hosting provider passes our server your country (worked out from your IP address) so we can show prices in its currency. We keep only the currency code, in the wf_cur cookie, never the country or IP address. Prices are converted at daily exchange rates published by the open-source currency-api project, fetched by our server, so your browser doesn’t contact it.",
           "Technical data: if you allow analytics, aggregated usage statistics (pages viewed, device type, country, page speed) from Vercel Analytics, which doesn’t identify you.",
           "Your cookie choice, stored in a cookie on your device.",
         ],
@@ -175,6 +176,7 @@ export const cookies: { intro: string; sections: LegalSection[] } = {
       body: [
         [
           "wf_consent — remembers your cookie choice. Set by Wallet Flights, kept for 6 months.",
+          "wf_cur — remembers the currency we show prices in: on your first visit, the currency of the country your IP address is in (only the currency is saved, not your location); after that, whatever you pick in the currency menu. Set by Wallet Flights, kept for 12 months.",
           "wf_teaser (stored in your browser for this visit only, not a cookie) — remembers that we’ve shown you the fare calendar suggestion, so it appears at most once per visit. Cleared when you close the tab.",
         ],
         "These are needed for the site to work and don’t require consent.",

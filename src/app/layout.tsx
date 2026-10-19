@@ -1,4 +1,5 @@
-import { CONSENT_FLAG_SCRIPT } from "@/lib/consent-flag";
+import { CONSENT_FLAG_SCRIPT, CURRENCY_FLAG_SCRIPT } from "@/lib/consent-flag";
+import { getRates } from "@/lib/rates";
 import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, JetBrains_Mono, Onest } from "next/font/google";
 import { Header } from "@/components/layout/header";
@@ -9,6 +10,7 @@ import { NavProgress } from "@/components/layout/nav-progress";
 import { MotionProvider } from "@/components/motion-provider";
 import { CookieBanner } from "@/components/consent/cookie-banner";
 import { ConsentedAnalytics } from "@/components/consent/consented-analytics";
+import { CurrencyProvider } from "@/components/currency/currency-provider";
 import { site } from "@/content/site";
 import "./globals.css";
 
@@ -49,25 +51,29 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  // Daily exchange rates for showing fares in the visitor's currency (cached; null if unavailable).
+  const rates = await getRates();
   return (
-    // suppressHydrationWarning: the inline script may add data-consent before React loads.
+    // suppressHydrationWarning: the inline script may add data-consent and data-cur before React loads.
     <html lang="en" className={`${onest.variable} ${bricolage.variable} ${jetbrains.variable} antialiased`} suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: CONSENT_FLAG_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: `${CONSENT_FLAG_SCRIPT};${CURRENCY_FLAG_SCRIPT}` }} />
       </head>
       <body className="flex min-h-dvh flex-col">
         <MotionProvider>
-          <NavProgress />
-          {/* First in the DOM so keyboard users reach the cookie choice first (it's fixed at the bottom). */}
-          <CookieBanner />
-          <Header />
-          <main id="main" className="flex-1">
-            {children}
-          </main>
-          <Footer />
-          <BackToTop />
-          <CalendarTeaserLoader />
+          <CurrencyProvider rates={rates}>
+            <NavProgress />
+            {/* First in the DOM so keyboard users reach the cookie choice first (it's fixed at the bottom). */}
+            <CookieBanner />
+            <Header />
+            <main id="main" className="flex-1">
+              {children}
+            </main>
+            <Footer />
+            <BackToTop />
+            <CalendarTeaserLoader />
+          </CurrencyProvider>
         </MotionProvider>
         {/* Only on Vercel, where the /_vercel/* endpoints exist, and only after consent. */}
         {process.env.VERCEL && <ConsentedAnalytics />}

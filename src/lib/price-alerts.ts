@@ -11,8 +11,10 @@
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { groupByDate, monthSummaries, noFilters } from "@/components/fare-calendar/model";
 import type { Currency } from "@/content/deals";
+import { convert, isDisplayCurrency, type DisplayCurrency } from "@/lib/currency";
 import { emailReady } from "@/lib/email";
 import { fareCalendar } from "@/lib/fare-calendar";
+import { getRates } from "@/lib/rates";
 import { createSignedToken } from "@/lib/opt-in";
 
 export type AlertPlace = { code: string; city: string };
@@ -28,7 +30,8 @@ export type AlertSpec = {
   nights: number;
   /** Email when the cheapest fare is at or below this, per person. */
   max: number;
-  currency: Currency;
+  /** The visitor's currency. Fares are found in GBP or USD and converted for the check. */
+  currency: DisplayCurrency;
 };
 
 export type Alert = AlertSpec & {
@@ -72,8 +75,10 @@ export function parseAlertSpec(body: Record<string, unknown> | null): AlertSpec 
   const nights = trip === "oneway" ? 0 : Math.trunc(Number(body?.nights));
   if (trip === "return" && !(nights >= 1 && nights <= 30)) return "Choose a trip length";
   const max = Math.round(Number(body?.max));
-  if (!(max >= 1 && max <= 100_000)) return "Enter the most you’d pay, in whole pounds or dollars";
-  const currency: Currency = body?.currency === "USD" ? "USD" : "GBP";
+  // Room for currencies with large numbers (rupees, yen).
+  if (!(max >= 1 && max <= 100_000_000)) return "Enter the most you’d pay, as a whole number";
+  const c = body?.currency;
+  const currency: DisplayCurrency = isDisplayCurrency(c) ? c : "GBP";
   return { email, from, to, trip, nights, max, currency };
 }
 
@@ -206,14 +211,20 @@ export type Cheapest = { price: number; date: string };
  */
 export async function cheapestFare(a: Pick<AlertSpec, "from" | "to" | "trip" | "nights" | "currency">): Promise<Cheapest | null> {
   const isReturn = a.trip === "return";
-  const data = await fareCalendar(a.from.code, a.to.code, a.currency, isReturn);
+  // Fares are found in pounds or dollars; any other currency is converted at today's rate.
+  const base: Currency = a.currency === "GBP" ? "GBP" : "USD";
+  const rates = base === a.currency ? null : await getRates();
+  if (base !== a.currency && !rates) return null;
+  const data = await fareCalendar(a.from.code, a.to.code, base, isReturn);
   if (!data.out.length || (isReturn && !data.back?.length)) return null;
   const model = { out: groupByDate(data.out), back: isReturn ? groupByDate(data.back) : undefined, nights: a.nights, filters: noFilters };
   let best: Cheapest | null = null;
   for (const m of monthSummaries(model, data.months)) {
     if (m.min !== null && m.minDate && (!best || m.min < best.price)) best = { price: m.min, date: m.minDate };
   }
-  return best;
+  if (!best || base === a.currency) return best;
+  const price = convert(best.price, base, a.currency, rates);
+  return price === null ? null : { ...best, price: Math.round(price) };
 }
 
 /** Whether this fare is worth an email: under the alert, and new news. */

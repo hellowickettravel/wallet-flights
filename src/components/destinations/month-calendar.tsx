@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { useId, useState } from "react";
 import clsx from "clsx";
-import { formatPrice } from "@/content/deals";
 import { dealLink, monthLabel } from "@/lib/deal-links";
 import type { MonthCalendar as Calendar } from "@/lib/fares";
 import { onRovingKeyDown } from "@/lib/roving";
+import { Price } from "@/components/currency/currency-provider";
 
 /**
  * Cheapest round trip per departure month, one tab per departure city. Bars
@@ -67,7 +67,7 @@ export function MonthCalendar({ calendars, to, subPrefix }: { calendars: Calenda
                 <span className={clsx("w-full rounded-md", cheapest ? "bg-fare" : "bg-action/25 group-hover:bg-action/40")} style={{ height: `${h}%` }} />
               </span>
               <span className="mt-2 text-[0.8125rem] text-ink-soft">{monthLabel(m.month)}</span>
-              <span className={clsx("tabular text-[1.0625rem] font-bold", cheapest ? "text-fare" : "text-ink")}>{formatPrice(m.price, m.currency)}</span>
+              <Price amount={m.price} currency={m.currency} className={clsx("tabular text-[1.0625rem] font-bold", cheapest ? "text-fare" : "text-ink")} />
               {cheapest && <span className="text-[0.75rem] font-semibold text-fare">Cheapest month</span>}
               {link.external && <span className="sr-only"> (opens in a new tab)</span>}
             </>

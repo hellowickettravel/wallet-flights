@@ -2,10 +2,11 @@
 
 import clsx from "clsx";
 import { CaretLeft, CaretRight } from "@phosphor-icons/react";
-import { formatPrice, type Currency } from "@/content/deals";
+import type { Currency } from "@/content/deals";
 import { fareCalendarCopy, weekdays } from "@/content/fare-calendar";
 import { daysInMonth, tierer, weekday, type DayBest, type Tier } from "./model";
 import { monthName } from "./month-skyline";
+import { useMoney } from "@/components/currency/currency-provider";
 
 const copy = fareCalendarCopy.calendar;
 const dayLabel = new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
@@ -32,6 +33,7 @@ const tierWord: Record<Tier, string> = { best: "cheapest day this month", low: "
 
 /** Day-by-day calendar for one month: cheap days green, dear days red. */
 export function DayCalendar({ month, best, bestDate, selected, today, onSelect, onPrev, onNext, currency }: Props) {
+  const money = useMoney();
   const dates = daysInMonth(month);
   const cells = dates.map((date) => ({ date, b: best(date) }));
   const values = cells.flatMap((c) => (c.b ? [c.b.total] : []));
@@ -92,7 +94,7 @@ export function DayCalendar({ month, best, bestDate, selected, today, onSelect, 
           const t = b ? tier(b.total) : null;
           const day = Number(date.slice(8));
           const label = `${dayLabel.format(new Date(`${date}T12:00:00Z`))}: ${
-            b ? `from ${formatPrice(b.total, currency)}${t && tierWord[t] ? `, ${tierWord[t]}` : ""}` : past ? copy.past : copy.noFare
+            b ? `from ${money(b.total, currency)}${t && tierWord[t] ? `, ${tierWord[t]}` : ""}` : past ? copy.past : copy.noFare
           }`;
           return (
             <button
@@ -110,7 +112,7 @@ export function DayCalendar({ month, best, bestDate, selected, today, onSelect, 
             >
               <span className={clsx("text-[0.8125rem] font-semibold sm:text-[0.875rem]", past && "line-through decoration-ink-soft/40")}>{day}</span>
               <span className="tabular text-[0.6875rem] font-bold sm:text-[0.875rem]">
-                {b ? formatPrice(b.total, currency) : <span className="sr-only sm:not-sr-only">–</span>}
+                {b ? money(b.total, currency) : <span className="sr-only sm:not-sr-only">–</span>}
               </span>
             </button>
           );

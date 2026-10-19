@@ -2,9 +2,10 @@
 
 import { useId } from "react";
 import clsx from "clsx";
-import { formatPrice, type Currency } from "@/content/deals";
+import type { Currency } from "@/content/deals";
 import { carrierName, fareCalendarCopy, weekdayNames, weekdays } from "@/content/fare-calendar";
 import { activeFilterCount, noFilters, type Filters } from "./model";
+import { useMoney } from "@/components/currency/currency-provider";
 
 const copy = fareCalendarCopy.filters;
 
@@ -28,6 +29,7 @@ function toggle(list: string[] | null, all: string[], code: string): string[] | 
 }
 
 function CheckList({ title, options, value, onChange, currency }: { title: string; options: Option[]; value: string[] | null; onChange: (v: string[] | null) => void; currency: Currency }) {
+  const money = useMoney();
   if (options.length < 2) return null;
   const all = options.map((o) => o.code);
   return (
@@ -48,7 +50,7 @@ function CheckList({ title, options, value, onChange, currency }: { title: strin
                 <span className="min-w-0 flex-1 truncate text-[0.9375rem] text-ink">{o.label}</span>
                 {o.from !== null && (
                   <span className="tabular shrink-0 text-[0.8125rem] text-ink-soft">
-                    {copy.from} {formatPrice(o.from, currency)}
+                    {copy.from} {money(o.from, currency)}
                   </span>
                 )}
               </label>
@@ -61,6 +63,7 @@ function CheckList({ title, options, value, onChange, currency }: { title: strin
 }
 
 export function FiltersRail({ filters, onChange, airports, airlines, range, currency }: Props) {
+  const money = useMoney();
   const id = useId();
   const count = activeFilterCount(filters);
   const set = (patch: Partial<Filters>) => onChange({ ...filters, ...patch });
@@ -133,7 +136,7 @@ export function FiltersRail({ filters, onChange, airports, airlines, range, curr
               {copy.maxPrice}
             </label>
             <span className="tabular text-[0.9375rem] font-semibold text-ink">
-              {filters.maxPrice === null ? copy.any : formatPrice(filters.maxPrice, currency)}
+              {filters.maxPrice === null ? copy.any : money(filters.maxPrice, currency)}
             </span>
           </div>
           <input
@@ -142,7 +145,7 @@ export function FiltersRail({ filters, onChange, airports, airlines, range, curr
             min={0}
             max={100}
             value={pos}
-            aria-valuetext={filters.maxPrice === null ? "Any price" : `Up to ${formatPrice(filters.maxPrice, currency)}`}
+            aria-valuetext={filters.maxPrice === null ? "Any price" : `Up to ${money(filters.maxPrice, currency)}`}
             onChange={(e) => {
               const v = Number(e.target.value);
               set({ maxPrice: v >= 100 ? null : Math.round(range.lo + ((range.hi - range.lo) * v) / 100) });
@@ -150,8 +153,8 @@ export function FiltersRail({ filters, onChange, airports, airlines, range, curr
             className="mt-3 w-full cursor-pointer accent-action"
           />
           <div className="tabular mt-1 flex justify-between text-[0.8125rem] text-ink-soft">
-            <span>{formatPrice(range.lo, currency)}</span>
-            <span>{formatPrice(range.hi, currency)}</span>
+            <span>{money(range.lo, currency)}</span>
+            <span>{money(range.hi, currency)}</span>
           </div>
         </div>
       )}

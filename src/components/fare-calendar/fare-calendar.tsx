@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import clsx from "clsx";
 import { AirplaneTilt, MagnifyingGlass, SlidersHorizontal, WarningCircle } from "@phosphor-icons/react";
 import type { Airport } from "@/content/airports";
-import { formatPrice, type Currency } from "@/content/deals";
+import type { Currency } from "@/content/deals";
 import { carrierName, extraAirportNames, fareCalendarCopy as copy, tripLengths } from "@/content/fare-calendar";
 import type { FareCalendarData } from "@/lib/fare-calendar";
 import { airportByCode, serializeSearch } from "@/lib/search-query";
@@ -18,6 +18,7 @@ import { DayCalendar } from "./day-calendar";
 import { DayFares } from "./day-fares";
 import { FlexGrid } from "./flex-grid";
 import { RouteAlert } from "./route-alert";
+import { useMoney } from "@/components/currency/currency-provider";
 import {
   activeFilterCount,
   addDays,
@@ -70,6 +71,7 @@ type View = { key: string; filters: Filters; month: number | null; date: string 
 const isRoute = (q: Query): q is RouteQuery => !!q.from && !!q.to && q.from.code !== q.to.code;
 
 export function FareCalendar() {
+  const money = useMoney();
   const params = useSearchParams();
   const [query, setQuery] = useState<Query>(() => {
     const from = placeFrom(params.get("from"), params.get("fromlabel"));
@@ -255,7 +257,7 @@ export function FareCalendar() {
                       {d.to.city}
                       <span className={clsx("tabular font-bold", on ? "text-sun" : "text-fare")}>
                         <span className="sr-only">{copy.popular.from} </span>
-                        {formatPrice(d.price, start?.data?.currency ?? currency)}
+                        {money(d.price, start?.data?.currency ?? currency)}
                       </span>
                     </button>
                   </li>

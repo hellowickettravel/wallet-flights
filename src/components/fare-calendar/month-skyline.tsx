@@ -2,9 +2,10 @@
 
 import clsx from "clsx";
 import { CalendarCheck, TrendDown, TrendUp } from "@phosphor-icons/react";
-import { formatPrice, type Currency } from "@/content/deals";
+import type { Currency } from "@/content/deals";
 import { fareCalendarCopy, weekdayNames } from "@/content/fare-calendar";
 import type { Insights, MonthSummary } from "./model";
+import { useMoney } from "@/components/currency/currency-provider";
 
 const copy = fareCalendarCopy;
 const short = new Intl.DateTimeFormat("en-GB", { month: "short", timeZone: "UTC" });
@@ -29,6 +30,7 @@ type Props = {
  * green. Each bar is a button that opens that month in the calendar.
  */
 export function MonthSkyline({ months, active, onPick, insights, currency, oneWay, subtitle, animateKey }: Props) {
+  const money = useMoney();
   const valid = months.filter((m) => m.min !== null) as (MonthSummary & { min: number })[];
   const cheapest = valid.length ? valid.reduce((a, b) => (b.min < a.min ? b : a)) : null;
   const hi = Math.max(...valid.map((m) => m.min), 1);
@@ -59,7 +61,7 @@ export function MonthSkyline({ months, active, onPick, insights, currency, oneWa
                 type="button"
                 disabled={m.min === null}
                 aria-pressed={i === active}
-                aria-label={`${monthName(m.month)}: ${m.min === null ? copy.months.none : `from ${formatPrice(m.min, currency)}`}${isCheapest ? `, ${copy.months.cheapest.toLowerCase()}` : ""}`}
+                aria-label={`${monthName(m.month)}: ${m.min === null ? copy.months.none : `from ${money(m.min, currency)}`}${isCheapest ? `, ${copy.months.cheapest.toLowerCase()}` : ""}`}
                 onClick={() => onPick(i)}
                 className={clsx(
                   "group flex w-full cursor-pointer flex-col items-center rounded-xl px-0.5 pt-2 pb-2 transition-colors disabled:cursor-default",
@@ -67,7 +69,7 @@ export function MonthSkyline({ months, active, onPick, insights, currency, oneWa
                 )}
               >
                 <span className={clsx("tabular text-[0.75rem] font-bold sm:text-[0.8125rem]", isCheapest ? "text-fare" : m.min === null ? "text-ink-soft" : "text-ink")}>
-                  {m.min === null ? "–" : formatPrice(m.min, currency)}
+                  {m.min === null ? "–" : money(m.min, currency)}
                 </span>
                 <span aria-hidden className="mt-1.5 flex h-24 w-full items-end justify-center md:h-32">
                   <span
@@ -99,7 +101,7 @@ export function MonthSkyline({ months, active, onPick, insights, currency, oneWa
             <span>
               <span className="block text-[0.8125rem] text-fare-deep">{copy.insights.cheapestMonth}</span>
               <span className="block mt-0.5 font-semibold text-ink">
-                {monthName(cheapest.month)}, {copy.insights.from} <span className="tabular text-fare-deep">{formatPrice(cheapest.min, currency)}</span>
+                {monthName(cheapest.month)}, {copy.insights.from} <span className="tabular text-fare-deep">{money(cheapest.min, currency)}</span>
               </span>
             </span>
           </button>
@@ -111,7 +113,7 @@ export function MonthSkyline({ months, active, onPick, insights, currency, oneWa
                 <div>
                   <span className="block text-[0.8125rem] text-ink-soft">{copy.insights.cheapestDay}</span>
                   <span className="block mt-0.5 font-semibold text-ink">
-                    {weekdayNames[insights.cheapestDow]}, {copy.insights.about} <span className="tabular">{formatPrice(insights.cheapestAvg, currency)}</span>
+                    {weekdayNames[insights.cheapestDow]}, {copy.insights.about} <span className="tabular">{money(insights.cheapestAvg, currency)}</span>
                   </span>
                 </div>
               </li>

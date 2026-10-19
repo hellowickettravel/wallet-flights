@@ -4,11 +4,12 @@ import Link from "next/link";
 import clsx from "clsx";
 import { AirplaneTilt, ArrowRight, CalendarBlank } from "@phosphor-icons/react";
 import { airlineByCode } from "@/content/airlines";
-import { formatPrice, type Currency } from "@/content/deals";
+import type { Currency } from "@/content/deals";
 import { carrierName, fareCalendarCopy } from "@/content/fare-calendar";
 import { stopsText } from "@/lib/deal-links";
 import type { CalendarFare } from "@/lib/fare-calendar";
 import { minutesText } from "./model";
+import { useMoney } from "@/components/currency/currency-provider";
 
 const copy = fareCalendarCopy.day;
 const longDay = new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
@@ -41,6 +42,7 @@ type Props = {
 
 /** The cheapest fares for the chosen day, each with a Select button into live search. */
 export function DayFares({ date, outs, back, currency, selectHref }: Props) {
+  const money = useMoney();
   if (!date) {
     return (
       <section aria-label="Fares for the chosen day" className="grid place-items-center rounded-(--radius-panel) bg-white p-10 text-center ring-1 ring-line">
@@ -88,7 +90,7 @@ export function DayFares({ date, outs, back, currency, selectHref }: Props) {
               </p>
             </div>
             <p className="tabular col-start-2 text-[1.375rem] leading-none font-extrabold text-fare sm:col-start-auto sm:text-right">
-              {formatPrice(f.price + backPrice, currency)}
+              {money(f.price + backPrice, currency)}
               {back?.fare && <span className="mt-1 block text-[0.75rem] font-medium text-ink-soft">return total</span>}
             </p>
             <Link
@@ -98,7 +100,7 @@ export function DayFares({ date, outs, back, currency, selectHref }: Props) {
               {copy.select}
               <span className="sr-only">
                 {" "}
-                {carrierName(f.airline)} {f.time} from {f.from}, {formatPrice(f.price + backPrice, currency)}
+                {carrierName(f.airline)} {f.time} from {f.from}, {money(f.price + backPrice, currency)}
               </span>
             </Link>
           </li>
@@ -117,7 +119,7 @@ export function DayFares({ date, outs, back, currency, selectHref }: Props) {
             </span>
           </p>
           <p className="tabular w-full pl-15 text-[0.875rem] text-ink-soft sm:w-auto sm:pl-0 sm:text-right">
-            {copy.includes} <span className="font-semibold text-ink">{formatPrice(back.fare.price, currency)}</span>
+            {copy.includes} <span className="font-semibold text-ink">{money(back.fare.price, currency)}</span>
           </p>
         </div>
       )}

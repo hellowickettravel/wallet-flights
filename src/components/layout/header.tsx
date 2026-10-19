@@ -9,6 +9,7 @@ import { ArrowUpRight, CaretDown, List, WhatsappLogo, X } from "@phosphor-icons/
 import clsx from "clsx";
 import { mainNav, site, type NavLink } from "@/content/site";
 import { Logo } from "./logo";
+import { CurrencyPicker } from "@/components/currency/currency-picker";
 
 const isActive = (pathname: string, href: string) => pathname === href || pathname.startsWith(href + "/");
 
@@ -248,6 +249,10 @@ export function Header() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
+          {/* Under 400px the bar has no room: the picker is in the menu instead. */}
+          <div className="hidden min-[400px]:block">
+            <CurrencyPicker />
+          </div>
           <a
             href={site.phone.whatsapp}
             target="_blank"
@@ -378,6 +383,7 @@ export function Header() {
                       </ul>
                     </nav>
                     <div className="border-t border-line p-5">
+                      <CurrencyPicker variant="row" className="mb-4" />
                       <p className="text-sm text-ink-soft">Questions? {site.responseTime}.</p>
                       <a
                         href={site.phone.whatsapp}

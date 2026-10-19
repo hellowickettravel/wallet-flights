@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { AirplaneTilt } from "@phosphor-icons/react/dist/ssr";
 import { Marquee } from "@/components/ui/marquee";
-import { formatPrice, type Route } from "@/content/deals";
+import { type Route } from "@/content/deals";
 import { heroCopy } from "@/content/home";
 import type { Fare } from "@/lib/travelpayouts";
+import { Price } from "@/components/currency/currency-provider";
 
 const copy = heroCopy.lowFares;
 
@@ -25,22 +26,25 @@ export function FareTicker({ fares }: { fares: { route: Route; fare: Fare }[] })
         </p>
         <Marquee label={copy.label} tone="dark" duration={Math.max(24, fares.length * 5)} className="-ml-6 min-w-0 flex-1 pr-12">
           {fares.map(({ route, fare }) => {
-            const price = formatPrice(fare.price, fare.currency);
+            // The link's name comes from its text (with hidden words), so it reads the converted price.
             return (
               <Link
                 key={route.slug}
                 href={`/routes/${route.slug}`}
-                aria-label={copy.item(route.origin.city, route.destination.city, price)}
                 className="group flex h-12 shrink-0 items-center gap-2 pr-2 pl-8 text-[0.9375rem] whitespace-nowrap"
               >
                 <span className="font-medium text-white/75 transition-colors group-hover:text-white">{route.origin.city}</span>
+                <span className="sr-only"> to </span>
                 <AirplaneTilt weight="fill" className="size-4 rotate-45 text-sun transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden />
                 <span className="font-semibold text-white underline decoration-transparent underline-offset-4 transition-colors group-hover:decoration-sun">
                   {route.destination.city}
                 </span>
-                <span className="tabular ml-1 rounded-full bg-sun/12 px-2.5 py-0.5 font-bold text-sun ring-1 ring-sun/35 transition-colors group-hover:bg-sun group-hover:text-ink">
-                  {price}
-                </span>
+                <span className="sr-only">, {copy.itemPrice} </span>
+                <Price
+                  amount={fare.price}
+                  currency={fare.currency}
+                  className="tabular ml-1 rounded-full bg-sun/12 px-2.5 py-0.5 font-bold text-sun ring-1 ring-sun/35 transition-colors group-hover:bg-sun group-hover:text-ink"
+                />
               </Link>
             );
           })}

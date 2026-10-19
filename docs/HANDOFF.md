@@ -1,4 +1,12 @@
-# Handoff: where the improvement plan stands (16 Oct 2026, Phase 4 part 1)
+# Handoff: where the work stands (19 Oct 2026)
+
+**Live check 19 Oct 2026:** canonical host is the apex `https://walletflights.com` (www and
+`.vercel.app` 308 to it); real fares show on home and /deals (`TRAVELPAYOUTS_TOKEN` is set in
+Production); price alerts report ready (`SMTP_PASS`, Upstash Redis and `CRON_SECRET` are set); CSP is
+enforced. Latest work after the plan: Batches 5 to 7b (fare calendar, delay compensation, menu
+dropdowns, hero fare ticker, route price alerts, email through the Microsoft 365 mailbox); see the end of
+`docs/AUDIT.md`. Batch 8 (19 Oct): prices in the visitor's currency (country on first visit via
+`src/proxy.ts`, picker in the header, CLDR country table, daily rates in `src/lib/rates.ts`); see `docs/AUDIT.md`.
 
 Read first: `CLAUDE.md`, `AGENTS.md`, `docs/IMPROVEMENT-PLAN.md` (the 4-phase plan),
 `docs/SITE-AUDIT.md` (audit findings with evidence) and the end of `docs/AUDIT.md` (what each phase changed).
@@ -6,17 +14,17 @@ Read first: `CLAUDE.md`, `AGENTS.md`, `docs/IMPROVEMENT-PLAN.md` (the 4-phase pl
 ## Status
 | Phase | State |
 |---|---|
-| 1 Indexing foundations | Done, live, verified on www.walletflights.com (commit 2c8a19f) |
+| 1 Indexing foundations | Done, live, verified on www.walletflights.com (commit 2c8a19f); canonical later moved to the apex (11d181e) |
 | 2 Structured data, AI search, on-page SEO | Done, live, verified (commit 025b8cf) |
 | 3 Performance, UX, accessibility, security | Done: part 1 (3.1 to 3.8, 3.17) and part 2 (3.9 to 3.23). See `docs/AUDIT.md`. |
 | 4 Content depth, E-E-A-T, claims | Part 1 done (4.1 to 4.4). Part 2 (4.5): guides expanded with sources, destination pages expanded; route pages get calculated facts (part 3; nonstop airlines still TODO(confirm)); new guides proposed in `docs/GUIDE-PROPOSALS.md` awaiting sign-off. Also: skip-link fix, 20 search currencies, Hotels ↗ in the menu. Left: 4.6 legal review, 4.7. |
 
 ## Next steps
-1. Push (from the user's terminal), let Vercel deploy, then verify on www:
-   - `curl -sI https://www.walletflights.com/ | grep -i content-security` shows the enforced
+1. After each push, let Vercel deploy, then verify on the live site:
+   - `curl -sI https://walletflights.com/ | grep -i content-security` shows the enforced
      `Content-Security-Policy` header, and a live search on /flights still shows fares
    - the header at 1024px, the swap button on a phone, the marquee pause button
-   - fare-alert sign-up (needs `SMTP_PASS`; without it the form says the service is unavailable)
+   - fare-alert sign-up (`SMTP_PASS` is set; confirm a real sign-up arrives in the inbox)
 2. PageSpeed Insights (mobile): home measured 16 Oct (99, LCP 2.0 s). Still to measure: `/deals`, `/routes/new-york-to-london`.
 3. **CSP (enforced 16 Oct 2026, without the report-only period, at the owner's request):** for the
    first days after deploy, read the `CSP violation` lines in the Vercel logs. These are now real
@@ -41,16 +49,16 @@ Read first: `CLAUDE.md`, `AGENTS.md`, `docs/IMPROVEMENT-PLAN.md` (the 4-phase pl
 - Never mention "Travelpayouts" or "Aviasales" in visible site text.
 - Never invent reviews, ratings, accreditations, authors or business facts. Mark unknowns `TODO(confirm)`.
 - Reference screenshots show ideas only: design in the site's own style (ink/sun palette, departure board, flight path, boarding pass).
-- Push to `main` from the user's terminal (`git push origin main`); Claude's own shell has no GitHub credentials. Vercel auto-deploys `main` to www.walletflights.com.
+- Push to `main` with `git push origin main` when the user asks (Claude's shell can push since 16 Oct 2026). Vercel auto-deploys `main` to walletflights.com.
 - Before pushing: `npm run lint && npm run typecheck && npm run build && npm run test:e2e`. Playwright runs `npm run start` on port 3100, so **rebuild before running e2e**.
 - Motion: components use `m.*` from `motion/react` inside `LazyMotion strict` (`src/components/motion-provider.tsx`). A full `motion.*` import throws.
 - Page metadata goes through `pageMetadata()` (`src/lib/seo.ts`); JSON-LD through `src/lib/schema.ts`.
 
 ## Owner actions still open
-1. Add `TRAVELPAYOUTS_TOKEN` in Vercel → Production, then redeploy. The deal, destination and route pages show no fares without it. Route pages come back into the sitemap and index automatically once they have fares.
+1. Done: `TRAVELPAYOUTS_TOKEN` is set in Production (fares live, checked 19 Oct 2026). Owner still to update the White Label domain (#23361) to the apex.
 2. Search Console:
    - the verification file is live at `/google4df2a790d730b8df.html`
-   - verify a URL-prefix property for **https://www.walletflights.com/**, or a Domain property (DNS TXT at Hostinger)
+   - verify a URL-prefix property for **https://walletflights.com/** (the apex is now canonical), or a Domain property (DNS TXT at Hostinger)
    - submit `/sitemap.xml`
    - import into Bing Webmaster Tools
    - export the Pages and Links reports to extend `src/content/legacy-redirects.ts`

@@ -61,12 +61,13 @@ export const currencyFor = (q: SearchQuery) => (UK.has(q.legs[0]?.from.country ?
  * Query string the White Label reads on load. `marker=567389.<sub_id>` makes
  * the widget attribute bookings to the placement that sent the visitor.
  */
-export function whiteLabelParams(q: SearchQuery, subId: string) {
+export function whiteLabelParams(q: SearchQuery, subId: string, visitorCurrency?: string | null) {
   const fs = toFlightSearch(q);
   const p = new URLSearchParams({ flightSearch: fs.flightSearch });
   if (fs.originAirports) p.set("origin_airports", fs.originAirports);
   if (fs.destinationAirports) p.set("destination_airports", fs.destinationAirports);
-  const currency = currencyFor(q);
+  // The visitor's own currency (header picker / country) wins over the trip's.
+  const currency = visitorCurrency ?? currencyFor(q);
   if (currency) p.set("currency", currency);
   p.set("marker", `${travelpayouts.marker}.${subId.replace(/[^a-z0-9_]/gi, "_")}`);
   return p;

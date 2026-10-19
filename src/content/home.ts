@@ -16,7 +16,8 @@ export const heroCopy = {
     short: "Found recently",
     noteShort: "Round trips, economy, per person, found in the last few days.",
     note: "Lowest round-trip economy fares per person found in the last few days. Prices change: search your dates for live prices.",
-    item: (from: string, to: string, price: string) => `${from} to ${to}, round trip from ${price}`,
+    /** Read by screen readers between the route and its price. */
+    itemPrice: "round trip from",
   },
   /** Disclosed next to the Hotels and Car hire shortcuts, which open the sister company's site. */
   sisterNote: (name: string) => `Hotels and car hire are booked with our sister company, ${name}.`,

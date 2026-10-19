@@ -11,7 +11,7 @@ import { SearchPanel } from "@/components/search/search-panel";
 import { airports } from "@/content/airports";
 import { MonthCalendar } from "@/components/destinations/month-calendar";
 import { TripExtras } from "@/components/destinations/trip-extras";
-import { formatPrice, originByCode, routes } from "@/content/deals";
+import { originByCode, routes } from "@/content/deals";
 import { destinationGuides, entryNote, usPassportNote } from "@/content/destination-guides";
 import { destinationBySlug, destinations, regions } from "@/content/destinations";
 import { site } from "@/content/site";
@@ -19,6 +19,7 @@ import { approxFlightTime } from "@/lib/demo-flights";
 import { dealLink, fareDates, stopsText } from "@/lib/deal-links";
 import { destinationTileFares, monthCalendars } from "@/lib/fares";
 import { cheapestFare } from "@/lib/travelpayouts";
+import { Price } from "@/components/currency/currency-provider";
 
 export function generateStaticParams() {
   return destinations.map((d) => ({ slug: d.slug }));
@@ -234,7 +235,7 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
                             {fareDates(fare)} · {stopsText(fare.transfers)}
                           </span>
                         </span>
-                        <span className="tabular text-[1.25rem] font-bold text-sun">{formatPrice(fare.price, fare.currency)}</span>
+                        <Price amount={fare.price} currency={fare.currency} className="tabular text-[1.25rem] font-bold text-sun" />
                         {link.external && <span className="sr-only"> (opens in a new tab)</span>}
                       </a>
                     </li>
