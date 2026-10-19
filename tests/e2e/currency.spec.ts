@@ -25,6 +25,25 @@ async function mockCalendar(page: Page) {
   await page.route("**/api/fare-calendar/start?**", (r) => r.fulfill({ json: { from: london, currency: "GBP", destinations: [] } }));
 }
 
+/** Opens the currency panel from the header (or the phone menu below 400px) and picks by search. */
+async function pickCurrency(page: Page, search: string, code: string) {
+  const bar = page.getByRole("banner").getByRole("button", { name: /change currency|Choose a currency/ });
+  // Wait for hydration: the pill's name includes the currency once the page is interactive.
+  const inBar = await bar
+    .waitFor({ state: "visible", timeout: 5000 })
+    .then(() => true)
+    .catch(() => false);
+  if (inBar) await bar.click();
+  else {
+    await page.getByRole("button", { name: "Open menu" }).click();
+    await page.getByRole("dialog", { name: "Menu" }).getByRole("button", { name: /change currency|Choose a currency/ }).click();
+  }
+  const panel = page.getByRole("dialog", { name: "Show prices in" });
+  await panel.getByRole("combobox").fill(search);
+  await panel.getByRole("option", { name: new RegExp(`^${code}`) }).click();
+  await expect(panel).toHaveCount(0);
+}
+
 async function setCurrency(page: Page, baseURL: string | undefined, value: string) {
   await page.context().addCookies([{ name: "wf_cur", value, url: baseURL! }]);
 }
@@ -62,13 +81,8 @@ test("fare calendar: prices in the visitor's currency, and the picker changes th
   expect(target).toBeGreaterThan(1000);
 
   // The header picker (the phone menu has the same one).
-  const picker = page.getByRole("banner").getByLabel("Currency for prices");
-  if (await picker.isVisible()) await picker.selectOption("USD");
-  else {
-    await page.getByRole("button", { name: "Open menu" }).click();
-    await page.getByRole("dialog", { name: "Menu" }).getByLabel("Currency for prices").selectOption("USD");
-    await page.getByRole("button", { name: "Close menu" }).click();
-  }
+  await pickCurrency(page, "united states", "USD");
+  if (await page.getByRole("dialog", { name: "Menu" }).isVisible()) await page.getByRole("button", { name: "Close menu" }).click();
   await expect(months.getByRole("button").first()).toHaveAccessibleName(/from \$[\d,]+/);
   await expect(page.locator("main")).not.toContainText("PKR");
   expect((await page.context().cookies()).find((c) => c.name === "wf_cur")?.value).toBe("USD");
@@ -126,26 +140,64 @@ test("fare calendar: the chosen trip type is filled blue", async ({ page }) => {
   await expect.poll(() => fill("Return")).toBe("none");
 });
 
-test("the currency list is every currency today's rates cover, the visitor's first", async ({ page, baseURL }) => {
+test("the currency panel: every currency today's rates cover, the visitor's first, searchable by country", async ({ page, baseURL }, info) => {
   await setCurrency(page, baseURL, "PKR");
   await page.goto("/about");
-  const menuButton = page.getByRole("button", { name: "Open menu" });
-  const scope = (await menuButton.isVisible()) ? (await menuButton.click(), page.getByRole("dialog", { name: "Menu" })) : page.getByRole("banner");
-  const select = scope.getByLabel("Currency for prices");
-  await expect(select).toHaveValue("PKR");
-  const groups = await select.evaluate((el: HTMLSelectElement) =>
-    [...el.querySelectorAll("optgroup")].map((g) => ({ label: g.label, codes: [...g.querySelectorAll("option")].map((o) => o.value) })),
-  );
-  expect(groups[0]).toEqual({ label: "Your currency", codes: ["PKR"] });
-  // Not a hand-picked list: well over a hundred currencies, including ones no list of "popular" ones would have.
-  expect(groups[1].codes.length).toBeGreaterThan(100);
-  for (const code of ["USD", "GBP", "EUR", "BDT", "KES", "LKR", "QAR"]) expect(groups[1].codes).toContain(code);
-  expect(groups[1].codes).not.toContain("PKR");
-  expect(groups[1].codes).not.toContain("XAU");
-  // Choosing one saves it and updates the pill.
-  await select.selectOption("BDT");
-  await expect(select).toHaveValue("BDT");
-  expect((await page.context().cookies()).find((c) => c.name === "wf_cur")?.value).toBe("BDT");
+  // Both test devices are at least 400px wide, so the pill is in the header bar.
+  await page.getByRole("banner").getByRole("button", { name: /PKR, change currency/ }).click();
+  const panel = page.getByRole("dialog", { name: "Show prices in" });
+  const search = panel.getByRole("combobox");
+  await expect(search).toBeFocused();
+  const options = panel.getByRole("option");
+  // The visitor's own currency first and selected; then over a hundred more, not a hand-picked list.
+  await expect(options.first()).toHaveAttribute("aria-selected", "true");
+  await expect(options.first()).toContainText("PKR");
+  expect(await options.count()).toBeGreaterThan(100);
+  await expect(panel.getByRole("option", { name: /^XAU/ })).toHaveCount(0);
+  await page.screenshot({ path: info.outputPath("currency-panel.png") });
+
+  // Search by country, then pick with the keyboard.
+  await search.fill("bangladesh");
+  await expect(options).toHaveCount(1);
+  await expect(options.first()).toContainText("Bangladeshi Taka");
+  // A country whose name isn't in the currency's: the row says why it matched.
+  await search.fill("germany");
+  await expect(options).toHaveCount(1);
+  await expect(options.first()).toContainText("Used in Germany");
+  await search.press("Enter");
+  await expect(panel).toHaveCount(0);
+  expect((await page.context().cookies()).find((c) => c.name === "wf_cur")?.value).toBe("EUR");
+
+  // Escape closes and returns focus to the pill; nothing matches shows a message.
+  const pill = page.getByRole("button", { name: /change currency/ }).filter({ visible: true }).first();
+  await pill.click();
+  await page.getByRole("dialog", { name: "Show prices in" }).getByRole("combobox").fill("zzzz");
+  await expect(page.getByRole("dialog", { name: "Show prices in" })).toContainText("No currency matches");
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog", { name: "Show prices in" })).toHaveCount(0);
+  await expect(pill).toBeFocused();
+});
+
+test.describe("live search", () => {
+  test.use({ consent: "search" });
+
+  test("changing the currency re-runs the search in it, and the widget's own choice comes back", async ({ page, baseURL }) => {
+    await setCurrency(page, baseURL, "PKR");
+    await page.goto("/flights?from0=LON&to0=DXB&date0=2026-12-10&trip=oneway");
+    await expect(page.locator("#tpwl-search")).toContainText("White Label stub");
+    expect(page.url()).toContain("currency=PKR");
+    expect((await page.context().cookies()).find((c) => c.name === "tpwl_currency")?.value).toBe("PKR");
+
+    await pickCurrency(page, "euro", "EUR");
+    await expect(page).toHaveURL(/currency=EUR/);
+    await expect(page.locator("#tpwl-search")).toContainText("White Label stub");
+    expect((await page.context().cookies()).find((c) => c.name === "tpwl_currency")?.value).toBe("EUR");
+
+    // The widget's own currency menu writes its cookie: the header follows, without a reload.
+    await page.waitForTimeout(4500);
+    await page.evaluate(() => (document.cookie = "tpwl_currency=GBP; path=/"));
+    await expect.poll(async () => (await page.context().cookies()).find((c) => c.name === "wf_cur")?.value).toBe("GBP");
+  });
 });
 
 test("an unknown currency in the cookie falls back to dollars", async ({ page, baseURL }) => {

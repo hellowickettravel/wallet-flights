@@ -27,11 +27,13 @@ export function FareTicker({ fares }: { fares: { route: Route; fare: Fare }[] })
         <Marquee label={copy.label} tone="dark" duration={Math.max(24, fares.length * 5)} className="-ml-6 min-w-0 flex-1 pr-12">
           {fares.map(({ route, fare }) => {
             // The link's name comes from its text (with hidden words), so it reads the converted price.
+            // `relative` keeps those absolutely positioned sr-only words inside the clipped track:
+            // without it they escape the marquee's overflow and widen the page.
             return (
               <Link
                 key={route.slug}
                 href={`/routes/${route.slug}`}
-                className="group flex h-12 shrink-0 items-center gap-2 pr-2 pl-8 text-[0.9375rem] whitespace-nowrap"
+                className="group relative flex h-12 shrink-0 items-center gap-2 pr-2 pl-8 text-[0.9375rem] whitespace-nowrap"
               >
                 <span className="font-medium text-white/75 transition-colors group-hover:text-white">{route.origin.city}</span>
                 <span className="sr-only"> to </span>

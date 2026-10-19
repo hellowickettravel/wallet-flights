@@ -158,6 +158,9 @@
   mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
 }
 .marquee {
+  /* relative: absolutely positioned children (sr-only text) are clipped too,
+     instead of escaping and widening the page. */
+  position: relative;
   overflow: hidden;
 }
 .marquee-track {

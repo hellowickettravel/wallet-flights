@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import { useSearchParams } from "next/navigation";
 import { ShieldCheck } from "@phosphor-icons/react";
 import { searchCurrencies, travelpayouts } from "@/content/affiliates";
@@ -8,7 +8,8 @@ import { searchGateCopy } from "@/content/consent";
 import { openConsentSettings, saveConsent, useConsent } from "@/lib/consent";
 import { parseSearch, withDefaultDates } from "@/lib/search-query";
 import { whiteLabelParams } from "@/lib/white-label";
-import { readDisplayCurrency } from "@/components/currency/currency-provider";
+import { readDisplayCurrency, setDisplayCurrency, useDisplayCurrency } from "@/components/currency/currency-provider";
+import { isDisplayCurrency } from "@/lib/currency";
 
 const SCRIPT_SRC = `https://tpwdg.com/wl_web/main.js?wl_id=${travelpayouts.whiteLabelId}`;
 const noop = () => () => {};
@@ -29,6 +30,22 @@ function prepareUrl(params: URLSearchParams) {
     ? whiteLabelParams(withDefaultDates(parsed.query, todayIso()), sub, currency)
     : new URLSearchParams({ marker: `${travelpayouts.marker}.${sub}`, ...(currency && { currency }) });
   window.history.replaceState(null, "", `/flights?${next.toString()}`);
+}
+
+// The widget remembers its currency in its own cookie, which can outvote the
+// URL: keep it in step with ours (only while live search is allowed, the
+// cookie's category).
+const WIDGET_CURRENCY = /(?:^|; )tpwl_currency=([A-Za-z]{3})/;
+const widgetCurrency = () => WIDGET_CURRENCY.exec(document.cookie)?.[1]?.toUpperCase() ?? null;
+function setWidgetCurrency(c: string) {
+  document.cookie = `tpwl_currency=${c}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`;
+}
+/** Points the current page's search at `currency` (the widget reads it on load). */
+function urlCurrency(currency: string) {
+  const url = new URL(window.location.href);
+  url.searchParams.set("currency", currency);
+  window.history.replaceState(null, "", url);
+  setWidgetCurrency(currency);
 }
 
 function loadScript(visitorCurrency: string | null) {
@@ -63,12 +80,53 @@ export function WhiteLabel() {
   const params = useSearchParams();
   const hydrated = useSyncExternalStore(noop, () => true, () => false);
   const allowed = !!consent?.search;
+  const shown = useDisplayCurrency();
+  // The currency the widget was loaded with (undefined until it is).
+  const loadedWith = useRef<string | null | undefined>(undefined);
 
   useEffect(() => {
     if (!allowed) return;
     prepareUrl(new URLSearchParams(window.location.search));
-    loadScript(readDisplayCurrency());
+    const currency = readDisplayCurrency();
+    if (currency) urlCurrency(currency);
+    loadedWith.current = currency;
+    loadScript(currency);
     // Once, on permission: the widget manages the URL after that.
+  }, [allowed]);
+
+  // Header picker → results: the widget only reads its currency on load, so
+  // run the same search again in the new one.
+  useEffect(() => {
+    if (!allowed || !shown || loadedWith.current === undefined || shown === loadedWith.current) return;
+    loadedWith.current = shown;
+    urlCurrency(shown);
+    window.location.reload();
+  }, [allowed, shown]);
+
+  // Widget's own currency menu → the rest of the site. Only a change the
+  // visitor makes there counts, not the widget settling on a currency it
+  // supports when it loads.
+  useEffect(() => {
+    if (!allowed) return;
+    // The widget renders into a shadow root, so "loaded" can't be read from
+    // the page: whatever its cookie says in the first few seconds is its own
+    // settling, and only later changes are the visitor's.
+    const settledAt = Date.now() + 4000;
+    let seen = widgetCurrency();
+    const t = window.setInterval(() => {
+      const w = widgetCurrency();
+      if (Date.now() < settledAt) {
+        seen = w;
+        return;
+      }
+      if (w === seen) return;
+      seen = w;
+      if (w && isDisplayCurrency(w) && w !== loadedWith.current) {
+        loadedWith.current = w;
+        setDisplayCurrency(w);
+      }
+    }, 1000);
+    return () => window.clearInterval(t);
   }, [allowed]);
 
   // Until the stored choice is known, hold the space of the consent notice (what

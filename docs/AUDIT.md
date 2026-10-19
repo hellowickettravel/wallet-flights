@@ -721,9 +721,16 @@ with the action blue, and the fill slides between options (the homepage switch's
 - **Rates:** `src/lib/rates.ts`, the public-domain daily feed by fawazahmed0 (jsDelivr, Pages mirror),
   `use cache` for a day, never caching a failure. Kept: every currency Intl lists as in use today, minus
   metals and IMF units (160 on 19 Oct). Static pages now revalidate daily so the rates stay fresh.
-- **Picker:** header (from 400px wide; under that, in the phone menu). A native select over a "PKR ▾"
-  pill: the visitor's currency first, then every currency the rates cover, by name. Built after hydration
-  from the browser's Intl names. A code without a rate shows dollars.
+- **Picker** (`src/components/currency/currency-picker.tsx`): header pill (from 400px wide; under that,
+  in the phone menu, opening in place). It opens a panel in the site's style (owner: the first, native
+  select "looked bad"): a search box (code, currency or country, "Used in Germany"), the visitor's currency
+  first with a check, then every currency the rates cover by name, with its symbol. Combobox pattern:
+  arrows, Home/End, Enter, Escape returns focus. Built after hydration from the browser's Intl names. A
+  code without a rate shows dollars.
+- **Live search follows the picker** (owner: "not changing search result page currencies"): the widget
+  reads its currency once on load and keeps its own `tpwl_currency` cookie, so /flights writes both the
+  `currency` param and that cookie and re-runs the same search. A change in the widget's own currency
+  menu flows back to the header (cookie watched after the widget settles).
 - **Display:** pages are still prerendered in GBP/USD (structured data and Google see one price).
   `<Price>` converts server-rendered prices after hydration; `useMoney()` does the fare calendar. An
   inline head script copies the cookie to `html[data-cur]` and CSS hides prices about to change until
@@ -737,7 +744,13 @@ with the action blue, and the fill slides between options (the homepage switch's
   amounts (fixed in EUR/GBP by law) and the demo-only results.
 - Cookie and privacy policies list `wf_cur` and the rate source.
 
+**Live check (19 Oct, first deploy 49550b2):** real fares converted (36 on the homepage, £32 → PKR 11,800),
+none left hidden. Found and fixed: the ticker's new screen-reader words (`sr-only` is absolute) escaped the
+marquee's clip and widened the phone page to 2,203px (links and `.marquee` are now `relative`); the fare
+board was 58px too wide at 320px (one-character symbols on tiles, longer codes in the header "Fare (PKR)",
+K/M amounts, at most 5 tiles, smaller tiles under 360px).
+
 **Test:** lint, typecheck, build pass. New `tests/e2e/currency.spec.ts` (country → cookie once; picker
 lists 100+ currencies with the visitor's first; calendar and alert in PKR; switching to USD and GBP;
-invalid code → dollars; travellers count; blue trip switch). Full e2e: **356 passed**, 44 skipped, 0 failed.
+invalid code → dollars; travellers count; blue trip switch). Full e2e: **358 passed**, 44 skipped, 0 failed.
 Not checkable locally (no fare data): server-rendered prices on home, deals, routes; verify on the live site.

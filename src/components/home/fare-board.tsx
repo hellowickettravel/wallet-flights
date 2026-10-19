@@ -40,11 +40,18 @@ function cellText(r: Row, key: (typeof cols)[number]["key"]) {
       return r.fareText;
   }
 }
-/** "£247", "$1240", "Rs69K": a symbol and at most five characters of number. */
-function boardPrice({ amount, currency }: { amount: number; currency: DisplayCurrency }) {
-  const n = amount >= 10_000 ? `${Math.round(amount / 1000)}K` : String(Math.round(amount));
-  return `${moneySymbol(currency).replace(/\s/g, "")}${n}`;
+/** A board-length number: "247", "1240", "113K", "3.5M" (at most four characters). */
+function compact(n: number) {
+  if (n < 10_000) return String(Math.round(n));
+  if (n < 999_500) return `${Math.round(n / 1000)}K`;
+  const m = n / 1_000_000;
+  return `${m < 9.95 ? m.toFixed(1).replace(/\.0$/, "") : Math.round(m)}M`;
 }
+/** One-character symbols ride on the tiles ("£247", "₹21K"); longer ones ("PKR", "CA$") go in the column header. */
+const tileSymbol = (c: DisplayCurrency) => {
+  const sym = moneySymbol(c);
+  return [...sym].length === 1 ? sym : "";
+};
 // Screen readers get the full price ("Rs 68,600"), not the board's short form.
 const srText = (r: Row, key: (typeof cols)[number]["key"]) =>
   (key === "fare" ? r.fareFull : cellText(r, key)) || (key === "fare" ? "No recent price" : key === "month" ? "Any month" : "");
@@ -60,10 +67,12 @@ export function FareBoard({ fares, subPrefix = "home_board" }: { fares: FareMap;
   const rows: Row[] = fareBoardRoutes.map((b) => {
     const fare = fares[b.route];
     const v = fare && toDisplay(fare.price, fare.currency);
-    return { route: routeBySlug[b.route], city: b.city, fare, fareText: v ? boardPrice(v) : "", fareFull: v ? formatMoney(v.amount, v.currency) : "" };
+    return { route: routeBySlug[b.route], city: b.city, fare, fareText: v ? `${tileSymbol(v.currency)}${compact(v.amount)}` : "", fareFull: v ? formatMoney(v.amount, v.currency) : "" };
   });
-  // Four tiles fit "£247"; local currencies ("Rs69K") get as many as they need.
-  const fareWidth = Math.max(4, ...rows.map((r) => r.fareText.length));
+  // Four tiles fit "£247"; at most five ("₹113K"), so the board still fits a 320px phone.
+  const fareWidth = Math.max(4, ...rows.map((r) => [...r.fareText].length));
+  // Prices shown in a currency whose symbol is longer than a tile: name it once, in the header.
+  const headerCode = shown && !tileSymbol(shown) ? shown : null;
   const ref = useRef<HTMLDivElement>(null);
 
   // The server HTML holds the final characters. The animation writes glyphs
@@ -151,7 +160,7 @@ export function FareBoard({ fares, subPrefix = "home_board" }: { fares: FareMap;
                       c.show === "lg" && "hidden lg:table-cell", c.show === "sm" && "hidden sm:table-cell",
                     )}
                   >
-                    {c.label}
+                    {c.key === "fare" && headerCode ? `${c.label} (${headerCode})` : c.label}
                   </th>
                 ))}
                 <th scope="col" className="w-full">
@@ -171,7 +180,7 @@ export function FareBoard({ fares, subPrefix = "home_board" }: { fares: FareMap;
                   {cols.map((c) => {
                     const text = pad(cellText(r, c.key), c.key === "fare" ? fareWidth : c.width);
                     return (
-                      <td key={c.key} className={clsx("w-px pr-2.5 align-middle whitespace-nowrap md:pr-6 lg:pr-8", c.show === "lg" && "hidden lg:table-cell", c.show === "sm" && "hidden sm:table-cell")}>
+                      <td key={c.key} className={clsx("w-px pr-1.5 align-middle whitespace-nowrap min-[360px]:pr-2.5 md:pr-6 lg:pr-8", c.show === "lg" && "hidden lg:table-cell", c.show === "sm" && "hidden sm:table-cell")}>
                         <span className="sr-only">{srText(r, c.key)}</span>
                         <span aria-hidden data-nosnippet className="flex gap-[2px] sm:gap-[3px]">
                           {[...text].map((ch, i) => (
@@ -206,7 +215,7 @@ export function FareBoard({ fares, subPrefix = "home_board" }: { fares: FareMap;
 function Flap({ ch, row, index, accent }: { ch: string; row: number; index: number; accent?: boolean }) {
   return (
     // Fixed-size tile with contained layout: changing its glyph never reflows the table.
-    <span className="relative grid [contain:layout_paint] h-[clamp(1.6rem,4.6vw,2.6rem)] w-[clamp(1.05rem,3.3vw,1.85rem)] place-items-center overflow-hidden rounded-[4px] bg-board-tile font-mono text-[clamp(0.875rem,2.6vw,1.5rem)] font-semibold shadow-[inset_0_-1px_0_rgb(0_0_0/0.35)] [perspective:200px]">
+    <span className="relative grid [contain:layout_paint] h-[clamp(1.6rem,4.6vw,2.6rem)] w-[clamp(0.9375rem,3.3vw,1.85rem)] min-[360px]:w-[clamp(1.05rem,3.3vw,1.85rem)] place-items-center overflow-hidden rounded-[4px] bg-board-tile font-mono text-[clamp(0.875rem,2.6vw,1.5rem)] font-semibold shadow-[inset_0_-1px_0_rgb(0_0_0/0.35)] [perspective:200px]">
       <span data-flap={ch} data-row={row} data-index={index} className={clsx("inline-block origin-top", accent ? "text-sun" : "text-white")}>
         {ch === " " ? " " : ch}
       </span>
