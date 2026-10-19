@@ -805,3 +805,26 @@ the site. The other hosts the widget's code can call were checked against the po
 **Test:** real widget on a local production build: the Direct flights price opens the popup with every
 provider's price and Buy buttons, no CSP violations over https. The security-headers test now checks the
 live search's `connect-src` hosts. Lint, typecheck, build pass; full e2e **360 passed**, 44 skipped, 0 failed.
+
+## Batch 11 — Email through Resend (20 Oct 2026)
+
+**Owner:** Resend account made, walletflights.com added (DNS on Hostinger); emails come from
+noreply@walletflights.com, replies to info@walletflights.com. **Why now:** Microsoft is retiring the mailbox
+password sign-in the site used (Batch 7 note).
+
+**Build:** `src/lib/email.ts` sends through Resend's REST API (`POST /emails`, no SDK) when
+`RESEND_API_KEY` is set, from "Wallet Flights <noreply@walletflights.com>" (`site.sendingEmail`, or
+`EMAIL_FROM`), reply-to the inbox (the visitor, for contact messages); custom headers pass through, so price
+alerts keep one-click unsubscribe. The Microsoft 365 mailbox (`SMTP_PASS`) sends until the key is set and
+stands in if Resend fails. Failures log Resend's reason (never the key). Privacy policy names Resend for
+sending email (legal date 20 Oct 2026); `.env.example` and HANDOFF updated. No subscriber list in Resend
+yet: a "Sending access" key can't manage contacts.
+
+**DNS seen 20 Oct:** `resend._domainkey` DKIM is published; nothing under `send.walletflights.com` yet
+(Resend's dashboard is the source of truth for which records it wants). Root SPF, DMARC (`p=none`) and the
+Microsoft MX are unchanged.
+
+**Test:** production build against a local stand-in for Resend's API: the contact form sends from noreply@
+to the inbox with reply-to the visitor; a fare-alert confirmation goes to the traveller with reply-to info@;
+a 403 "domain is not verified" makes the form report the service unavailable (503) and logs the reason.
+Lint, typecheck, build pass; full e2e **360 passed**, 44 skipped, 0 failed.

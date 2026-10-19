@@ -24,7 +24,7 @@ Read first: `CLAUDE.md`, `AGENTS.md`, `docs/IMPROVEMENT-PLAN.md` (the 4-phase pl
    - `curl -sI https://walletflights.com/ | grep -i content-security` shows the enforced
      `Content-Security-Policy` header, and a live search on /flights still shows fares
    - the header at 1024px, the swap button on a phone, the marquee pause button
-   - fare-alert sign-up (`SMTP_PASS` is set; confirm a real sign-up arrives in the inbox)
+   - fare-alert sign-up (`RESEND_API_KEY` set; confirm a real sign-up arrives in the inbox)
 2. PageSpeed Insights (mobile): home measured 16 Oct (99, LCP 2.0 s). Still to measure: `/deals`, `/routes/new-york-to-london`.
 3. **CSP (enforced 16 Oct 2026, without the report-only period, at the owner's request):** for the
    first days after deploy, read the `CSP violation` lines in the Vercel logs. These are now real
@@ -37,9 +37,11 @@ Read first: `CLAUDE.md`, `AGENTS.md`, `docs/IMPROVEMENT-PLAN.md` (the 4-phase pl
 - **Rate limit:** the built-in limit is per server instance. For a site-wide limit, add a Vercel
   Firewall rate-limit rule on `/api/contact`, `/api/fare-alerts` and `/api/fare-alerts/confirm`
   (owner's dashboard; ask before changing account settings).
-- **Email (batch 7):** everything sends through the info@walletflights.com mailbox (Microsoft 365
-  from GoDaddy, `smtp.office365.com:587`); only `SMTP_PASS` is required, and the mailbox needs
-  "SMTP Authentication" on. Resend is no longer used. Confirmed homepage fare-alert sign-ups are
+- **Email (batch 11, 20 Oct 2026):** everything sends through Resend from noreply@walletflights.com
+  (`RESEND_API_KEY` on Vercel, a "Sending access" key the owner adds; domain verified in Resend, DNS on
+  Hostinger), with replies to info@walletflights.com. The Microsoft 365 mailbox (`SMTP_PASS`,
+  `smtp.office365.com:587`, "SMTP Authentication" on) stays as the backup if Resend fails; Microsoft is
+  retiring that sign-in (see `docs/AUDIT.md`). Confirmed homepage fare-alert sign-ups are
   emailed to the inbox. Fare calendar price alerts also need Upstash for Redis (done 17 Oct 2026)
   and `CRON_SECRET`; see `docs/AUDIT.md`, Batch 7.
 

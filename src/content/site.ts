@@ -22,6 +22,8 @@ export const site = {
     note: "Our team can book a flight for you",
   },
   email: "info@walletflights.com",
+  /** The site's own emails (alerts, confirmations) come from here through Resend; replies go to `email` (owner, 20 Oct 2026). */
+  sendingEmail: "noreply@walletflights.com",
   location: "London, United Kingdom",
   responseTime: "We reply within 24 hours",
   markets: "Travellers in the US and UK",

@@ -1,11 +1,12 @@
-// Email goes out through the company mailbox, info@walletflights.com: a
-// Microsoft 365 mailbox bought through GoDaddy, so the site signs in to
-// smtp.office365.com like a mail app would. The only setting needed on Vercel
-// is SMTP_PASS (the mailbox password); SMTP_USER, SMTP_HOST, SMTP_PORT and
-// CONTACT_TO have defaults below. The mailbox needs "SMTP Authentication"
-// turned on (GoDaddy → Email & Office → the mailbox → Advanced settings).
-// Without a password, development logs the message and production reports the
-// form as unavailable rather than pretending to send.
+// Email goes out through Resend (RESEND_API_KEY on Vercel), from
+// noreply@walletflights.com, with replies going to the company inbox,
+// info@walletflights.com. The domain is verified in Resend (DNS on Hostinger).
+// Until the key is set, the Microsoft 365 mailbox still sends (SMTP_PASS: the
+// mailbox signs in to smtp.office365.com, and needs "SMTP Authentication" on),
+// and it stands in if Resend fails. EMAIL_FROM, CONTACT_TO, SMTP_USER,
+// SMTP_HOST and SMTP_PORT have defaults below. With neither, development logs
+// the message and production reports the form as unavailable rather than
+// pretending to send.
 import nodemailer, { type Transporter } from "nodemailer";
 import { formatPrice } from "@/content/deals";
 import { tripText } from "@/content/fare-calendar";
@@ -14,18 +15,44 @@ import type { Alert, AlertSpec, Cheapest } from "@/lib/price-alerts";
 
 type Result = { ok: true; delivered: boolean } | { ok: false; reason: "not-configured" | "provider-error" };
 
+const resendKey = () => process.env.RESEND_API_KEY;
 const password = () => process.env.SMTP_PASS;
 const user = () => process.env.SMTP_USER || site.email;
 // EMAIL_DRY_RUN=1 (used by the e2e test server) logs instead of sending, even
-// when a password is set, so tests never send real email.
+// when a key is set, so tests never send real email.
 const dryRun = () => process.env.EMAIL_DRY_RUN === "1";
 const isProd = () => process.env.NODE_ENV === "production" && process.env.VERCEL_ENV !== "preview";
-/** Microsoft 365 only sends as the mailbox that signed in. */
-const from = () => ({ name: site.name, address: user() });
 const inbox = () => process.env.CONTACT_TO || site.email;
 
-/** Whether email can go out: a mailbox password, or a dry run that only logs. */
-export const emailReady = () => dryRun() || !!password() || !isProd();
+/** Whether email can go out: Resend, the mailbox, or a dry run that only logs. */
+export const emailReady = () => dryRun() || !!resendKey() || !!password() || !isProd();
+
+type Message = { to: string; subject: string; text: string; html?: string; replyTo?: string; headers?: Record<string, string> };
+
+/** Resend's REST API (no SDK: one request). RESEND_API_URL points it elsewhere for local checks. */
+async function sendWithResend(message: Message) {
+  const res = await fetch(`${process.env.RESEND_API_URL || "https://api.resend.com"}/emails`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${resendKey()}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      from: `${site.name} <${process.env.EMAIL_FROM || site.sendingEmail}>`,
+      to: [message.to],
+      // Nobody reads noreply@: replies reach the inbox, or the visitor for contact messages.
+      reply_to: message.replyTo ?? inbox(),
+      subject: message.subject,
+      text: message.text,
+      ...(message.html && { html: message.html }),
+      ...(message.headers && { headers: message.headers }),
+    }),
+    signal: AbortSignal.timeout(15_000),
+  });
+  if (!res.ok) {
+    // Resend's message says what's wrong (never the key): 403 "domain is not
+    // verified", 401 a bad key, 422 a bad field.
+    const body = (await res.json().catch(() => null)) as { name?: string; message?: string } | null;
+    throw new Error(`Resend ${res.status} ${body?.name ?? ""}: ${body?.message ?? res.statusText}`);
+  }
+}
 
 let transport: Transporter | null = null;
 function mailer() {
@@ -44,33 +71,44 @@ function mailer() {
   return transport;
 }
 
-type Message = { to: string; subject: string; text: string; html?: string; replyTo?: string; headers?: Record<string, string> };
+async function sendWithMailbox(message: Message) {
+  try {
+    // Microsoft 365 only sends as the mailbox that signed in.
+    await mailer().sendMail({ from: { name: site.name, address: user() }, ...message });
+  } catch (e) {
+    // The server's reply says what's wrong (never the password); 535 means the
+    // sign-in was refused: wrong password, or SMTP Authentication is off.
+    const err = e as { code?: string; responseCode?: number; response?: string; message?: string };
+    transport = null;
+    throw new Error(`SMTP ${err.code ?? ""} ${err.responseCode ?? ""}: ${err.response ?? err.message}`);
+  }
+}
 
 /** Sends one message, or logs it when there's nothing to send with. */
 async function send(label: string, message: Message, logged: unknown = message): Promise<Result> {
-  if (dryRun() || !password()) {
+  const senders = dryRun() ? [] : [...(resendKey() ? [sendWithResend] : []), ...(password() ? [sendWithMailbox] : [])];
+  if (!senders.length) {
     if (dryRun()) {
       console.info(`[dry run] ${label} (not sent):`, logged);
       return { ok: true, delivered: false };
     }
     if (isProd()) {
-      console.error(`${label}: SMTP_PASS is not set; message not delivered.`);
+      console.error(`${label}: neither RESEND_API_KEY nor SMTP_PASS is set; message not delivered.`);
       return { ok: false, reason: "not-configured" };
     }
-    console.info(`[dev] ${label} (not sent, SMTP_PASS missing):`, logged);
+    console.info(`[dev] ${label} (not sent, no RESEND_API_KEY or SMTP_PASS):`, logged);
     return { ok: true, delivered: false };
   }
-  try {
-    await mailer().sendMail({ from: from(), ...message });
-    return { ok: true, delivered: true };
-  } catch (e) {
-    // The server's reply says what's wrong (never the password); 535 means the
-    // sign-in was refused: wrong password, or SMTP Authentication is off.
-    const err = e as { code?: string; responseCode?: number; response?: string; message?: string };
-    console.error(`${label}: not sent`, err.code, err.responseCode, err.response ?? err.message);
-    transport = null;
-    return { ok: false, reason: "provider-error" };
+  // Resend first; the mailbox stands in if Resend fails.
+  for (const sendWith of senders) {
+    try {
+      await sendWith(message);
+      return { ok: true, delivered: true };
+    } catch (e) {
+      console.error(`${label}: not sent`, (e as Error).message);
+    }
   }
+  return { ok: false, reason: "provider-error" };
 }
 
 const escape = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
