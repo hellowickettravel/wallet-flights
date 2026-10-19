@@ -55,7 +55,7 @@ export function DealsRail({ fares }: { fares: FareMap }) {
                 rail.current?.scrollTo({ left: 0 });
               })
             }
-            className="scrollbar-none -mx-5 mt-8 flex gap-2 overflow-x-auto px-5 md:mx-0 md:px-0">
+            className="relative scrollbar-none -mx-5 mt-8 flex gap-2 overflow-x-auto px-5 md:mx-0 md:px-0">
             {origins.map((o) => {
               const active = o.code === origin;
               return (
@@ -90,7 +90,7 @@ export function DealsRail({ fares }: { fares: FareMap }) {
       <div id="deals-panel" role="tabpanel" aria-labelledby={`origin-tab-${origin}`} className="container-page mt-6">
         <ul
           ref={rail}
-          className="scrollbar-none -mx-5 flex snap-x snap-mandatory scroll-px-5 gap-5 overflow-x-auto px-5 pb-2 md:-mx-8 md:scroll-px-8 md:px-8 xl:mx-0 xl:scroll-px-0 xl:px-0"
+          className="relative scrollbar-none -mx-5 flex snap-x snap-mandatory scroll-px-5 gap-5 overflow-x-auto px-5 pb-2 md:-mx-8 md:scroll-px-8 md:px-8 xl:mx-0 xl:scroll-px-0 xl:px-0"
         >
           <AnimatePresence mode="popLayout" initial={false}>
             {deals.map((d, i) => (

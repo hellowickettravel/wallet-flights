@@ -28,7 +28,7 @@ export default async function DestinationsPage() {
         crumbs={[{ label: "Destinations", href: "/destinations" }]}
       />
       <nav aria-label="Regions" className="container-page mt-8">
-        <ul className="scrollbar-none -mx-5 flex gap-2 overflow-x-auto px-5 md:mx-0 md:px-0">
+        <ul className="relative scrollbar-none -mx-5 flex gap-2 overflow-x-auto px-5 md:mx-0 md:px-0">
           {regions.map((r) => (
             <li key={r.id}>
               <a href={`#${r.id}`} className="inline-flex h-11 items-center rounded-full px-5 font-semibold whitespace-nowrap text-ink ring-1 ring-line hover:bg-mist">

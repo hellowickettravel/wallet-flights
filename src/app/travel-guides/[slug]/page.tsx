@@ -63,7 +63,7 @@ function SectionBody({ s, linked }: { s: GuideSection; linked: Set<string> }) {
       )}
       {s.table && (
         // Wide tables scroll sideways on phones instead of squashing.
-        <div className="mt-6 overflow-x-auto rounded-(--radius-card) ring-1 ring-line" tabIndex={0} role="region" aria-label={s.table.caption}>
+        <div className="relative mt-6 overflow-x-auto rounded-(--radius-card) ring-1 ring-line" tabIndex={0} role="region" aria-label={s.table.caption}>
           <table className="w-full min-w-[32rem] border-collapse text-left text-[0.9375rem]">
             <caption className="sr-only">{s.table.caption}</caption>
             <thead className="bg-mist">

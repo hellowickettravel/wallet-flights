@@ -38,7 +38,7 @@ export default function GuidesPage() {
       <PageHeader title={guidesHub.title} intro={guidesHub.intro} crumbs={[{ label: "Travel guides", href: "/travel-guides" }]} />
 
       <nav aria-label="Guide topics" className="container-page mt-6">
-        <ul className="scrollbar-none -mx-5 flex gap-2 overflow-x-auto px-5 md:mx-0 md:flex-wrap md:px-0">
+        <ul className="relative scrollbar-none -mx-5 flex gap-2 overflow-x-auto px-5 md:mx-0 md:flex-wrap md:px-0">
           {present.map((t) => (
             <li key={t.id}>
               <a href={`#topic-${t.id}`} className="inline-flex h-11 items-center rounded-full px-5 font-semibold whitespace-nowrap text-ink ring-1 ring-line hover:bg-mist">

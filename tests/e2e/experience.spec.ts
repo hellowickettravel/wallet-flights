@@ -136,3 +136,20 @@ test.describe("phone layout", () => {
     });
   }
 });
+
+// Absolutely positioned text (sr-only labels) inside a sideways-scrolling row
+// escapes the row's clip unless the row is positioned, and widens the page on
+// phones. It only shows with live data (fares, popular routes), so check the
+// structure on every page instead of waiting for the overflow.
+test("every sideways-scrolling row contains its absolutely positioned children", async ({ page }) => {
+  for (const path of PAGES) {
+    await page.goto(path);
+    const loose = await page.evaluate(() =>
+      [...document.querySelectorAll("body *")]
+        // Form fields scroll natively but hold no elements.
+        .filter((el) => !el.matches("textarea, select, input") && /auto|scroll/.test(getComputedStyle(el).overflowX) && getComputedStyle(el).position === "static")
+        .map((el) => `${el.tagName}.${String(el.className).slice(0, 60)}`),
+    );
+    expect(loose, path).toEqual([]);
+  }
+});

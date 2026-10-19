@@ -258,7 +258,9 @@ export function FareCalendar() {
         {popular.length > 0 && query.from && (
           <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
             <p className="shrink-0 text-[0.875rem] font-semibold text-ink-soft">{copy.popular.title(query.from.city)}</p>
-            <ul className="-mx-5 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
+            {/* relative (list and chips): the chips' sr-only words are absolutely positioned and would
+                otherwise escape this sideways scroll and widen the page on phones. */}
+            <ul className="relative -mx-5 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
               {popular.map((d) => {
                 const on = query.to?.code === d.to.code;
                 return (
@@ -268,7 +270,7 @@ export function FareCalendar() {
                       aria-pressed={on}
                       onClick={() => search({ from: query.from!, to: d.to, trip: query.trip, nights: query.nights })}
                       className={clsx(
-                        "inline-flex h-10 cursor-pointer items-center gap-2 rounded-full px-4 text-[0.875rem] font-semibold whitespace-nowrap ring-1 transition-colors",
+                        "relative inline-flex h-10 cursor-pointer items-center gap-2 rounded-full px-4 text-[0.875rem] font-semibold whitespace-nowrap ring-1 transition-colors",
                         on ? "bg-ink text-white ring-ink" : "bg-white text-ink ring-line hover:ring-ink/30",
                       )}
                     >

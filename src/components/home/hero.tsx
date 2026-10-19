@@ -31,7 +31,7 @@ export function Hero({ lowFares = [] }: { lowFares?: { route: Route; fare: Fare 
     <section id="search" aria-labelledby="hero-title" className="relative z-10 bg-ink">
       <div className="container-page pt-6 pb-12 md:pt-8 md:pb-16 lg:pt-10 lg:pb-20">
         {/* One row; on narrow phones it scrolls sideways instead of wrapping. */}
-        <nav aria-label="More ways to plan" className="-mx-5 overflow-x-auto px-5 [scrollbar-width:none] sm:mx-0 sm:px-0">
+        <nav aria-label="More ways to plan" className="relative -mx-5 overflow-x-auto px-5 [scrollbar-width:none] sm:mx-0 sm:px-0">
           <ul className="flex w-max gap-2 sm:gap-2.5">
             <li>
               <Link href="/deals" className={pill}>

@@ -20,7 +20,7 @@ export function DestinationBand() {
             {guidesDestinations.all}
           </Link>
         </div>
-        <ul className="scrollbar-none -mx-5 mt-8 flex snap-x scroll-px-5 gap-4 overflow-x-auto px-5 md:mx-0 md:grid md:grid-cols-3 md:px-0 lg:grid-cols-6">
+        <ul className="relative scrollbar-none -mx-5 mt-8 flex snap-x scroll-px-5 gap-4 overflow-x-auto px-5 md:mx-0 md:grid md:grid-cols-3 md:px-0 lg:grid-cols-6">
           {list.map((d) => (
             <li key={d.slug} className="w-40 shrink-0 snap-start md:w-auto">
               <Link href={`/destinations/${d.slug}`} className="group block rounded-(--radius-card)">

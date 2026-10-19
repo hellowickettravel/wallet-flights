@@ -784,3 +784,10 @@ homepage rail's note no longer says "in the departure city's currency".
 
 **Test:** lint, typecheck, build pass. Tests rewritten for the grid (pick, highlight, fares beside it, arrows,
 URL nights), one way, the example, and the internal deal links. Full e2e **358 passed**, 44 skipped, 0 failed.
+
+**Live check (41c3f7b):** destination, route and deals pages have no links to the partner's site (10 to 41 into
+our search each); the grid works on real fares (28 priced cells, dates highlighted, fares follow); compensation
+opens on the £350 example. Found: the fare calendar's "Popular from" chips (real location data only) widened
+phones by 705px; their sr-only "from" escaped the chip row's scroll. Every sideways-scrolling row is now
+`relative`, and a new test checks that structure on every page (it can't wait for live data to show the
+overflow). Full e2e **360 passed**, 44 skipped, 0 failed.

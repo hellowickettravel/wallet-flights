@@ -371,7 +371,7 @@ function AirlineStrip({
       <StripButton label="Scroll airlines left" onClick={() => scroll(-1)}>
         <CaretLeft className="size-4" weight="bold" aria-hidden />
       </StripButton>
-      <ul ref={ref} aria-label="Cheapest price by airline" className="scrollbar-none flex flex-1 snap-x gap-1 overflow-x-auto">
+      <ul ref={ref} aria-label="Cheapest price by airline" className="relative scrollbar-none flex flex-1 snap-x gap-1 overflow-x-auto">
         {facets.airlines.map(({ airline, from }) => {
           const on = selected.has(airline.code);
           return (
@@ -459,7 +459,7 @@ function SortTabs({
 
 function ResultsTable({ list, cheapestId }: { list: Itinerary[]; cheapestId?: string }) {
   return (
-    <div className="mt-4 overflow-x-auto rounded-(--radius-panel) bg-white ring-1 ring-line">
+    <div className="relative mt-4 overflow-x-auto rounded-(--radius-panel) bg-white ring-1 ring-line">
       <table className="w-full min-w-[40rem] text-left text-[0.9375rem]">
         <caption className="sr-only">Flight results</caption>
         <thead className="border-b border-line text-[0.8125rem] text-ink-soft">

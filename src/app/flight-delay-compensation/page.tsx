@@ -56,7 +56,7 @@ export default function CompensationPage() {
             </Link>
           </div>
           <div>
-            <div className="overflow-x-auto rounded-(--radius-card) ring-1 ring-line" tabIndex={0} role="region" aria-label="Compensation by distance, scrolls sideways">
+            <div className="relative overflow-x-auto rounded-(--radius-card) ring-1 ring-line" tabIndex={0} role="region" aria-label="Compensation by distance, scrolls sideways">
               <table className="w-full min-w-[28rem] text-left">
                 <caption className="sr-only">Compensation per passenger by flight distance</caption>
                 <thead className="bg-mist text-[0.875rem] text-ink-soft">

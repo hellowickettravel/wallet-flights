@@ -44,7 +44,7 @@ export function DealsExplorer({ fares }: { fares: FareMap }) {
     <div>
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <LayoutGroup id="deal-origin">
-          <div role="group" aria-label="Departure city" className="scrollbar-none -mx-5 flex gap-2 overflow-x-auto px-5 md:mx-0 md:flex-wrap md:px-0">
+          <div role="group" aria-label="Departure city" className="relative scrollbar-none -mx-5 flex gap-2 overflow-x-auto px-5 md:mx-0 md:flex-wrap md:px-0">
             {chips.map((o) => {
               const on = origin === o.code;
               return (
