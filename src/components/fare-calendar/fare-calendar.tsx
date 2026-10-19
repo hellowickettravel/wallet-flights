@@ -16,7 +16,7 @@ import { FiltersRail, type Option } from "./filters-rail";
 import { MonthSkyline } from "./month-skyline";
 import { DayCalendar } from "./day-calendar";
 import { DayFares } from "./day-fares";
-import { FlexGrid } from "./flex-grid";
+import { TripGrid } from "./trip-grid";
 import { RouteAlert } from "./route-alert";
 import { useMoney } from "@/components/currency/currency-provider";
 import {
@@ -25,12 +25,14 @@ import {
   backFares,
   bestFor,
   daysBetween,
-  flexGrid,
+  GRID_DAYS,
   groupByDate,
+  daysInMonth,
   monthSummaries,
   noFilters,
   outFares,
   priceRange,
+  tripGrid,
   weekdayInsights,
   type Filters,
   type Model,
@@ -66,7 +68,8 @@ type Query = { from: Airport | null; to: Airport | null; trip: Trip; nights: num
 /** `alerts`: whether route price alerts can be offered (see /api/fare-calendar). */
 type Loaded = { key: string; data: (FareCalendarData & { alerts?: boolean }) | null; error: boolean };
 /** Per-route view state; a new route starts fresh. */
-type View = { key: string; filters: Filters; month: number | null; date: string | null; filtersOpen: boolean };
+/** `grid`: the return grid's window (first leaving and first return date); null centres it on the chosen dates. */
+type View = { key: string; filters: Filters; month: number | null; date: string | null; filtersOpen: boolean; grid: { leave: string; back: string } | null };
 
 const isRoute = (q: Query): q is RouteQuery => !!q.from && !!q.to && q.from.code !== q.to.code;
 
@@ -139,7 +142,7 @@ export function FareCalendar() {
 
   const [viewState, setView] = useState<View | null>(null);
   const routeKey = route ? `${route.from.code}-${route.to.code}-${route.trip}` : "";
-  const view: View = viewState?.key === routeKey ? viewState : { key: routeKey, filters: noFilters, month: null, date: null, filtersOpen: false };
+  const view: View = viewState?.key === routeKey ? viewState : { key: routeKey, filters: noFilters, month: null, date: null, filtersOpen: false, grid: null };
   const patch = (p: Partial<View>) => setView({ ...view, ...p });
 
   const out = useMemo(() => groupByDate(data?.out), [data]);
@@ -219,7 +222,18 @@ export function FareCalendar() {
 
   const dayOuts = date ? outFares(out, date, view.filters).filter((f) => !isReturn && view.filters.maxPrice !== null ? f.price <= view.filters.maxPrice : true).slice(0, 4) : [];
   const dayBack = date && isReturn && back ? { date: addDays(date, query.nights), fare: backFares(back, addDays(date, query.nights), view.filters)[0] } : undefined;
-  const flex = date && isReturn ? flexGrid(model, date) : null;
+  // Return trips: the date grid. Centred on the chosen dates until the visitor
+  // moves it or picks inside it, but never starting before today or before the
+  // first day there are fares for (no rows of empty cells).
+  const backDate = date && isReturn ? addDays(date, query.nights) : null;
+  const half = Math.floor(GRID_DAYS / 2);
+  const firstDay = months.length && months[0] > today.slice(0, 7) ? `${months[0]}-01` : today;
+  const shiftBy = date ? Math.max(0, daysBetween(addDays(date, -half), firstDay)) : 0;
+  const gridLeave = view.grid?.leave ?? (date ? addDays(date, shiftBy - half) : null);
+  const gridBack = view.grid?.back ?? (backDate ? addDays(backDate, shiftBy - half) : null);
+  const lastDay = months.length ? daysInMonth(months[months.length - 1]).at(-1)! : today;
+  const grid = isReturn && gridLeave && gridBack ? tripGrid(model, gridLeave, gridBack, today) : null;
+  const moveGrid = (days: number) => gridLeave && gridBack && patch({ grid: { leave: addDays(gridLeave, days), back: addDays(gridBack, days) } });
   const tripText = isReturn
     ? `return, ${tripLengths.find((t) => t.nights === query.nights)?.label.toLowerCase() ?? `${query.nights} nights`}`
     : "one way";
@@ -233,7 +247,11 @@ export function FareCalendar() {
           key={`${query.from?.code}-${query.to?.code}`}
           initial={query}
           onSearch={search}
-          onTripChange={changeTrip}
+          onTripChange={(trip, nights) => {
+            changeTrip(trip, nights);
+            // A new trip length re-centres the date grid on the new dates.
+            patch({ grid: null });
+          }}
           lengthPrices={lengthPrices}
           currency={currency}
         />
@@ -317,7 +335,7 @@ export function FareCalendar() {
                 <div id="calendar-filters" className={clsx("mt-3 lg:mt-0 lg:block", view.filtersOpen ? "block" : "hidden")}>
                   <FiltersRail
                     filters={view.filters}
-                    onChange={(filters) => patch({ filters, date: null })}
+                    onChange={(filters) => patch({ filters, date: null, grid: null })}
                     airports={options.airports}
                     airlines={options.airlines}
                     range={range}
@@ -330,39 +348,49 @@ export function FareCalendar() {
                 <MonthSkyline
                   months={summaries}
                   active={monthIdx}
-                  onPick={(i) => patch({ month: i, date: null })}
+                  onPick={(i) => patch({ month: i, date: null, grid: null })}
                   insights={insights}
                   currency={currency}
                   oneWay={!isReturn}
                   subtitle={`${route.from.city} to ${route.to.city}, ${tripText}, one adult`}
                   animateKey={routeKey}
                 />
-                {month && (
-                  <DayCalendar
-                    month={month.month}
-                    best={(d) => bestFor(model, d)}
-                    bestDate={month.minDate}
-                    selected={date}
-                    today={today}
-                    onSelect={(d) => patch({ month: monthIdx, date: d })}
-                    onPrev={monthIdx > 0 ? () => patch({ month: monthIdx - 1, date: null }) : undefined}
-                    onNext={monthIdx < summaries.length - 1 ? () => patch({ month: monthIdx + 1, date: null }) : undefined}
-                    currency={currency}
-                  />
-                )}
-                <DayFares date={date} outs={dayOuts} back={dayBack} currency={currency} selectHref={selectHref} />
-                {flex && flex.min !== null && (
-                  <FlexGrid
-                    {...flex}
-                    currency={currency}
-                    onPick={(l, r) => {
-                      const nights = daysBetween(l, r);
-                      const mi = months.indexOf(l.slice(0, 7));
-                      if (nights !== query.nights) changeTrip("return", nights);
-                      setView({ ...view, month: mi >= 0 ? mi : monthIdx, date: l });
-                    }}
-                  />
-                )}
+                {/* The calendar (one way) or the date grid (return) on the left, the chosen day's fares beside it on wide screens. */}
+                <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] xl:items-start">
+                  {grid && date && backDate ? (
+                    <TripGrid
+                      {...grid}
+                      selected={{ leave: date, back: backDate }}
+                      currency={currency}
+                      onPick={(l, r) => {
+                        const nights = daysBetween(l, r);
+                        const mi = months.indexOf(l.slice(0, 7));
+                        if (nights !== query.nights) changeTrip("return", nights);
+                        // Keep the grid where it is: the visitor is picking inside it.
+                        setView({ ...view, month: mi >= 0 ? mi : monthIdx, date: l, grid: { leave: gridLeave!, back: gridBack! } });
+                      }}
+                      onPrev={gridLeave && gridLeave > firstDay ? () => moveGrid(-Math.min(GRID_DAYS, daysBetween(firstDay, gridLeave))) : undefined}
+                      onNext={gridLeave && addDays(gridLeave, GRID_DAYS) <= lastDay ? () => moveGrid(GRID_DAYS) : undefined}
+                    />
+                  ) : (
+                    month && (
+                      <DayCalendar
+                        month={month.month}
+                        best={(d) => bestFor(model, d)}
+                        bestDate={month.minDate}
+                        selected={date}
+                        today={today}
+                        onSelect={(d) => patch({ month: monthIdx, date: d })}
+                        onPrev={monthIdx > 0 ? () => patch({ month: monthIdx - 1, date: null }) : undefined}
+                        onNext={monthIdx < summaries.length - 1 ? () => patch({ month: monthIdx + 1, date: null }) : undefined}
+                        currency={currency}
+                      />
+                    )
+                  )}
+                  <div className="xl:sticky xl:top-24">
+                    <DayFares date={date} outs={dayOuts} back={dayBack} currency={currency} selectHref={selectHref} />
+                  </div>
+                </div>
                 {data?.alerts && (
                   <RouteAlert
                     key={`${routeKey}-${isReturn ? query.nights : 0}`}

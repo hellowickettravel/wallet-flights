@@ -48,6 +48,8 @@ export const fareCalendarCopy = {
   day: {
     title: (n: number) => (n === 1 ? "Cheapest fare" : `${n} cheapest fares`),
     withReturn: "with the cheapest return",
+    /** Return trips: both dates in the heading, "Thu 25 Mar to Sun 1 Apr". */
+    pair: (leave: string, back: string) => `${leave} to ${back}`,
     cheapest: "Cheapest",
     direct: "Direct",
     select: "Select",
@@ -57,12 +59,21 @@ export const fareCalendarCopy = {
     emptyHint: "Turn off a filter or pick another month.",
     pick: "Pick a day in the calendar to see its fares.",
   },
-  flex: {
-    title: "Flexible by a few days?",
-    intro: "Return trip totals for one adult, three days either side of your dates.",
+  /** Return trips: one grid for both dates (owner, 19 Oct 2026: not two calendars). */
+  grid: {
+    title: "Pick your dates",
+    intro: "Return trip totals for one adult. Leaving dates run down the side, return dates across the top.",
+    pricesIn: (code: string) => `Prices in ${code}.`,
+    caption: "Return trip totals: rows are leaving dates, columns are return dates",
     leave: "Leave",
     back: "Return",
-    corner: "Leave ↓ Return →",
+    prev: "Earlier dates",
+    next: "Later dates",
+    none: "No fare",
+    cheapest: "Cheapest",
+    low: "Cheaper",
+    high: "Dearer",
+    yourDates: "Your dates",
   },
   filters: {
     title: "Filters",

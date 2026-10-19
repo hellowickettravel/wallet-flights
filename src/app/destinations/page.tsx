@@ -48,7 +48,7 @@ export default async function DestinationsPage() {
               </h2>
               <span className="text-[0.9375rem] text-ink-soft">{list.length} destinations</span>
             </div>
-            <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {list.map((d, i) => (
                 <li key={d.slug} className={i === 0 ? "sm:col-span-2 lg:col-span-1 lg:row-span-1" : undefined}>
                   <DestinationTile d={d} fare={fares[d.slug]} priority={ri === 0 && i < 3} />

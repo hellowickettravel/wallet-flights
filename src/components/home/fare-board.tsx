@@ -5,9 +5,9 @@ import { ArrowRight, MagnifyingGlass } from "@phosphor-icons/react";
 import Link from "next/link";
 import clsx from "clsx";
 import { fareBoardRoutes, routeBySlug, type Route } from "@/content/deals";
-import { formatMoney, moneySymbol, type DisplayCurrency } from "@/lib/currency";
+import { compactMoney, formatMoney, shortSymbol } from "@/lib/currency";
 import { useDisplayCurrency, useToDisplay } from "@/components/currency/currency-provider";
-import { dealLink } from "@/lib/deal-links";
+import { dealHref } from "@/lib/deal-links";
 import type { FareMap } from "@/lib/fares";
 import type { Fare } from "@/lib/travelpayouts";
 
@@ -40,18 +40,6 @@ function cellText(r: Row, key: (typeof cols)[number]["key"]) {
       return r.fareText;
   }
 }
-/** A board-length number: "247", "1240", "113K", "3.5M" (at most four characters). */
-function compact(n: number) {
-  if (n < 10_000) return String(Math.round(n));
-  if (n < 999_500) return `${Math.round(n / 1000)}K`;
-  const m = n / 1_000_000;
-  return `${m < 9.95 ? m.toFixed(1).replace(/\.0$/, "") : Math.round(m)}M`;
-}
-/** One-character symbols ride on the tiles ("£247", "₹21K"); longer ones ("PKR", "CA$") go in the column header. */
-const tileSymbol = (c: DisplayCurrency) => {
-  const sym = moneySymbol(c);
-  return [...sym].length === 1 ? sym : "";
-};
 // Screen readers get the full price ("Rs 68,600"), not the board's short form.
 const srText = (r: Row, key: (typeof cols)[number]["key"]) =>
   (key === "fare" ? r.fareFull : cellText(r, key)) || (key === "fare" ? "No recent price" : key === "month" ? "Any month" : "");
@@ -67,12 +55,12 @@ export function FareBoard({ fares, subPrefix = "home_board" }: { fares: FareMap;
   const rows: Row[] = fareBoardRoutes.map((b) => {
     const fare = fares[b.route];
     const v = fare && toDisplay(fare.price, fare.currency);
-    return { route: routeBySlug[b.route], city: b.city, fare, fareText: v ? `${tileSymbol(v.currency)}${compact(v.amount)}` : "", fareFull: v ? formatMoney(v.amount, v.currency) : "" };
+    return { route: routeBySlug[b.route], city: b.city, fare, fareText: v ? compactMoney(v.amount, v.currency) : "", fareFull: v ? formatMoney(v.amount, v.currency) : "" };
   });
   // Four tiles fit "£247"; at most five ("₹113K"), so the board still fits a 320px phone.
   const fareWidth = Math.max(4, ...rows.map((r) => [...r.fareText].length));
   // Prices shown in a currency whose symbol is longer than a tile: name it once, in the header.
-  const headerCode = shown && !tileSymbol(shown) ? shown : null;
+  const headerCode = shown && !shortSymbol(shown) ? shown : null;
   const ref = useRef<HTMLDivElement>(null);
 
   // The server HTML holds the final characters. The animation writes glyphs
@@ -171,8 +159,8 @@ export function FareBoard({ fares, subPrefix = "home_board" }: { fares: FareMap;
             </thead>
             <tbody>
               {rows.map((r, ri) => {
-                const link = dealLink(r.fare, r.route.origin.code, r.route.destination.airport, `${subPrefix}_${r.route.slug}`);
-                const label = `${link.external ? "Book" : "Compare flights"} ${r.route.origin.city} to ${r.route.destination.city}${link.external ? " (opens in a new tab)" : ""}`;
+                const href = dealHref(r.fare, r.route.origin.code, r.route.destination.airport, `${subPrefix}_${r.route.slug}`);
+                const label = `Compare flights ${r.route.origin.city} to ${r.route.destination.city}`;
                 const arrowCls =
                   "inline-grid size-10 place-items-center rounded-full text-white/70 ring-1 ring-white/15 transition-colors group-hover:bg-white/10 group-hover:text-white hover:bg-sun hover:text-ink";
                 return (
@@ -191,15 +179,9 @@ export function FareBoard({ fares, subPrefix = "home_board" }: { fares: FareMap;
                     );
                   })}
                   <td className="w-full text-right align-middle">
-                    {link.external ? (
-                      <a href={link.href} rel="sponsored noopener" target="_blank" aria-label={label} className={arrowCls}>
-                        <ArrowRight className="size-[1.125rem]" weight="bold" aria-hidden />
-                      </a>
-                    ) : (
-                      <Link href={link.href} aria-label={label} className={arrowCls}>
-                        <ArrowRight className="size-[1.125rem]" weight="bold" aria-hidden />
-                      </Link>
-                    )}
+                    <Link href={href} aria-label={label} className={arrowCls}>
+                      <ArrowRight className="size-[1.125rem]" weight="bold" aria-hidden />
+                    </Link>
                   </td>
                 </tr>
                 );

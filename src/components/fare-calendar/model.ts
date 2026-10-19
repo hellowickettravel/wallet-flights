@@ -154,19 +154,27 @@ export function tierer(values: number[], bestValue: number | null) {
   return (v: number): Tier => (v === bestValue ? "best" : s.length < 4 ? "mid" : v <= lo ? "low" : v >= hi ? "high" : "mid");
 }
 
-/** Return totals for 3 days either side of the chosen outbound and return dates. */
-export function flexGrid(m: Model, date: string) {
-  const offsets = [-3, -2, -1, 0, 1, 2, 3];
-  const leave = offsets.map((n) => addDays(date, n));
-  const back = offsets.map((n) => addDays(date, m.nights + n));
+export const GRID_DAYS = 7;
+
+/**
+ * The return-trip date grid: `GRID_DAYS` leaving dates from `leaveFrom` (rows)
+ * by `GRID_DAYS` return dates from `backFrom` (columns), each cell the
+ * cheapest outbound plus cheapest return that pass the filters. Null where
+ * there's no fare, the return isn't after the outbound, or the day has gone.
+ */
+export function tripGrid(m: Model, leaveFrom: string, backFrom: string, today: string) {
+  const days = Array.from({ length: GRID_DAYS }, (_, i) => i);
+  const leave = days.map((n) => addDays(leaveFrom, n));
+  const back = days.map((n) => addDays(backFrom, n));
   const cheapestOut = (d: string) => outFares(m.out, d, m.filters)[0]?.price ?? null;
   const cheapestBack = (d: string) => (m.back ? backFares(m.back, d, m.filters)[0]?.price ?? null : null);
   const cells = leave.map((l) =>
     back.map((r) => {
-      if (r <= l) return null;
+      if (r <= l || l < today) return null;
       const a = cheapestOut(l);
       const b = cheapestBack(r);
-      return a !== null && b !== null ? a + b : null;
+      if (a === null || b === null) return null;
+      return m.filters.maxPrice !== null && a + b > m.filters.maxPrice ? null : a + b;
     }),
   );
   const values = cells.flat().filter((v): v is number => v !== null);

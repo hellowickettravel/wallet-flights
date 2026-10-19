@@ -15,7 +15,7 @@ import { guideBySlug } from "@/content/guides";
 import { isUkOrigin, routeQuickAnswers, routeSeo, routeTimeDifference } from "@/lib/route-facts";
 import { faqPage, jsonLdHtml, webPage } from "@/lib/schema";
 import { approxFlightTime } from "@/lib/demo-flights";
-import { dealLink, fareDates, stopsText } from "@/lib/deal-links";
+import { dealHref, fareDates, stopsText } from "@/lib/deal-links";
 import { monthCalendars } from "@/lib/fares";
 import { cheapestFare } from "@/lib/travelpayouts";
 import { Price } from "@/components/currency/currency-provider";
@@ -44,7 +44,7 @@ export default async function RoutePage({ params }: PageProps<"/routes/[slug]">)
   const sub = `route_${r.slug}`;
 
   const [fare, calendars] = await Promise.all([cheapestFare(origin.apiCode, d.cityCode, origin.currency), monthCalendars(d, [origin])]);
-  const link = dealLink(fare ?? undefined, origin.code, d.airport, `${sub}_cheapest`);
+  const href = dealHref(fare ?? undefined, origin.code, d.airport, `${sub}_cheapest`);
   const time = approxFlightTime(origin.code, d.airport);
   // Answer-first questions (flight time, distance, time difference, airports,
   // rights, entry), shown on the page and in the FAQPage markup.
@@ -91,22 +91,19 @@ export default async function RoutePage({ params }: PageProps<"/routes/[slug]">)
               <p className="mt-2 text-white/80">
                 Round trip · {fareDates(fare)} · {stopsText(fare.transfers)}
               </p>
-              <a
-                href={link.href}
-                rel="sponsored noopener"
-                target="_blank"
+              <Link
+                href={href}
                 data-sub={`${sub}_cheapest`}
                 className="mt-6 inline-flex h-12 items-center gap-2 rounded-full bg-sun px-6 font-semibold text-ink hover:bg-[#ffd666]"
               >
-                View this fare
-                <ArrowUpRight className="size-4" weight="bold" aria-hidden />
-                <span className="sr-only"> (opens in a new tab)</span>
-              </a>
+                <MagnifyingGlass className="size-4" weight="bold" aria-hidden />
+                Search these dates
+              </Link>
             </>
           ) : (
             <>
               <p className="mt-4 leading-relaxed text-white/80">No recent fare found for this route. Search your dates to compare live prices.</p>
-              <Link href={link.href} className="mt-6 inline-flex h-12 items-center gap-2 rounded-full bg-sun px-6 font-semibold text-ink hover:bg-[#ffd666]">
+              <Link href={href} className="mt-6 inline-flex h-12 items-center gap-2 rounded-full bg-sun px-6 font-semibold text-ink hover:bg-[#ffd666]">
                 <MagnifyingGlass className="size-4" weight="bold" aria-hidden />
                 Search live prices
               </Link>

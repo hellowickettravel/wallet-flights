@@ -1,17 +1,20 @@
 import type { Fare } from "@/lib/travelpayouts";
-import { affiliateUrl, aviasalesUrl } from "@/lib/affiliate";
-
-export type DealLink = { href: string; external: boolean };
 
 /**
- * Where a deal button goes. With a Data API fare: that exact Aviasales search,
- * as a Travelpayouts affiliate link. Without one: our White Label on /flights,
- * prefilled for the route (it carries marker.sub_id too).
+ * Where a deal goes: our own live search on /flights, prefilled with the route
+ * and, when we have a fare, its dates, so the visitor sees that fare's search
+ * without leaving the site (owner, 19 Oct 2026: no links out to the partner's
+ * site). `sub` carries the placement into the search's marker. Past dates (a
+ * page cached before the fare's day) are replaced on /flights.
  */
-export function dealLink(fare: Pick<Fare, "link"> | undefined, from: string, to: string, subId: string): DealLink {
-  if (fare?.link) return { href: affiliateUrl("aviasales", aviasalesUrl(fare.link), subId), external: true };
-  const p = new URLSearchParams({ trip: "round", cabin: "economy", adults: "1", from0: from, to0: to, sub: subId });
-  return { href: `/flights?${p}`, external: false };
+export function dealHref(fare: Partial<Pick<Fare, "departureAt" | "returnAt">> | undefined, from: string, to: string, subId: string) {
+  const p = new URLSearchParams({ trip: "round", cabin: "economy", adults: "1", from0: from, to0: to });
+  const out = fare?.departureAt?.slice(0, 10);
+  const back = fare?.returnAt?.slice(0, 10);
+  if (out) p.set("date0", out);
+  if (out && back && back >= out) p.set("return", back);
+  p.set("sub", subId);
+  return `/flights?${p}`;
 }
 
 const day = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });

@@ -109,7 +109,7 @@ export function DealsExplorer({ fares }: { fares: FareMap }) {
       ) : (
         // Fade cards in and out on filter changes. No per-card layout animation:
         // 36 projection nodes made hydration on /deals a 600 ms long task.
-        <ul className="mt-4 grid gap-x-5 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <ul className="mt-4 grid grid-cols-1 gap-x-5 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <AnimatePresence initial={false}>
             {list.map((d, i) => (
               <m.li

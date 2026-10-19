@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useId, useState } from "react";
 import clsx from "clsx";
-import { dealLink, monthLabel } from "@/lib/deal-links";
+import { dealHref, monthLabel } from "@/lib/deal-links";
 import type { MonthCalendar as Calendar } from "@/lib/fares";
 import { onRovingKeyDown } from "@/lib/roving";
 import { Price } from "@/components/currency/currency-provider";
@@ -56,7 +56,7 @@ export function MonthCalendar({ calendars, to, subPrefix }: { calendars: Calenda
         {cal.months.map((m) => {
           const cheapest = m.price === min;
           const h = max === min ? 100 : 30 + ((m.price - min) / (max - min)) * 70;
-          const link = dealLink(m, cal.origin.code, to, `${subPrefix}_month_${m.month}`);
+          const href = dealHref(m, cal.origin.code, to, `${subPrefix}_month_${m.month}`);
           const cls = clsx(
             "group flex h-full flex-col justify-end rounded-xl p-3 ring-1 transition-colors",
             cheapest ? "bg-fare/[0.07] ring-fare/40 hover:bg-fare/[0.12]" : "ring-line hover:bg-mist",
@@ -69,20 +69,13 @@ export function MonthCalendar({ calendars, to, subPrefix }: { calendars: Calenda
               <span className="mt-2 text-[0.8125rem] text-ink-soft">{monthLabel(m.month)}</span>
               <Price amount={m.price} currency={m.currency} className={clsx("tabular text-[1.0625rem] font-bold", cheapest ? "text-fare" : "text-ink")} />
               {cheapest && <span className="text-[0.75rem] font-semibold text-fare">Cheapest month</span>}
-              {link.external && <span className="sr-only"> (opens in a new tab)</span>}
             </>
           );
           return (
             <li key={m.month}>
-              {link.external ? (
-                <a href={link.href} rel="sponsored noopener" target="_blank" className={cls}>
-                  {inner}
-                </a>
-              ) : (
-                <Link href={link.href} className={cls}>
-                  {inner}
-                </Link>
-              )}
+              <Link href={href} className={cls}>
+                {inner}
+              </Link>
             </li>
           );
         })}

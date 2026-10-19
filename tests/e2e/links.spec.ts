@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { affiliateUrl, isProgramUrl } from "../../src/lib/affiliate";
-import { dealLink } from "../../src/lib/deal-links";
+import { dealHref } from "../../src/lib/deal-links";
 
 // Pure link-format checks (no browser). Samples were generated with the
 // Travelpayouts dashboard link generator ("Full link" view), 14 Oct 2026.
@@ -31,11 +31,12 @@ test("only program hosts are accepted for /go", () => {
   expect(isProgramUrl("aviasales", "https://www.aviasales.com.evil.example/")).toBe(false);
 });
 
-test("deal buttons: affiliate link with a fare, White Label search without", () => {
-  const withFare = dealLink({ link: "/search/LON2611LIS03121?t=abc" }, "LON", "LIS", "home_deals_london-to-lisbon");
-  expect(withFare).toEqual({
-    external: true,
-    href: "https://tp.media/r?campaign_id=100&marker=567389&p=4114&sub_id=home_deals_london-to-lisbon&trs=344771&u=https%3A%2F%2Fwww.aviasales.com%2Fsearch%2FLON2611LIS03121%3Ft%3Dabc",
-  });
-  expect(dealLink(undefined, "LON", "LIS", "x")).toEqual({ external: false, href: "/flights?trip=round&cabin=economy&adults=1&from0=LON&to0=LIS&sub=x" });
+test("deal buttons stay on our site: the live search with the fare's dates, or the route alone", () => {
+  // Owner, 19 Oct 2026: board arrows and recent fares must not open the partner's site.
+  const fare = { departureAt: "2026-11-26T08:00:00Z", returnAt: "2026-12-03T10:00:00Z", link: "/search/LON2611LIS03121?t=abc" };
+  expect(dealHref(fare, "LON", "LIS", "home_deals_london-to-lisbon")).toBe(
+    "/flights?trip=round&cabin=economy&adults=1&from0=LON&to0=LIS&date0=2026-11-26&return=2026-12-03&sub=home_deals_london-to-lisbon",
+  );
+  expect(dealHref({ departureAt: "2026-11-26T08:00:00Z" }, "LON", "LIS", "m")).toBe("/flights?trip=round&cabin=economy&adults=1&from0=LON&to0=LIS&date0=2026-11-26&sub=m");
+  expect(dealHref(undefined, "LON", "LIS", "x")).toBe("/flights?trip=round&cabin=economy&adults=1&from0=LON&to0=LIS&sub=x");
 });

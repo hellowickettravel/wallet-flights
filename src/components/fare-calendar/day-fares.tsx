@@ -54,9 +54,9 @@ export function DayFares({ date, outs, back, currency, selectHref }: Props) {
   }
   const backPrice = back?.fare?.price ?? 0;
   return (
-    <section aria-labelledby="day-title" className="rounded-(--radius-panel) bg-white p-5 ring-1 ring-line md:p-7">
+    <section aria-labelledby="day-title" className="@container rounded-(--radius-panel) bg-white p-5 ring-1 ring-line md:p-7">
       <h2 id="day-title" className="font-display-tight text-[1.375rem] font-bold text-ink md:text-[1.5rem]">
-        {fmtLong(date)}
+        {back ? copy.pair(fmtShort(date), fmtShort(back.date)) : fmtLong(date)}
       </h2>
       <p className="mt-1 text-[0.9375rem] text-ink-soft">
         {copy.title(outs.length)}
@@ -68,7 +68,7 @@ export function DayFares({ date, outs, back, currency, selectHref }: Props) {
           <li
             key={`${f.airline}-${f.from}-${f.time}-${i}`}
             className={clsx(
-              "grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-3 rounded-(--radius-card) p-4 ring-1 sm:grid-cols-[auto_1fr_auto_auto]",
+              "grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 gap-y-3 rounded-(--radius-card) p-4 ring-1 @lg:grid-cols-[auto_minmax(0,1fr)_auto_auto]",
               i === 0 ? "bg-fare-tint/50 ring-fare/30" : "ring-line",
             )}
           >
@@ -89,13 +89,13 @@ export function DayFares({ date, outs, back, currency, selectHref }: Props) {
                 {minutesText(f.mins) ? ` · ${minutesText(f.mins)}` : ""}
               </p>
             </div>
-            <p className="tabular col-start-2 text-[1.375rem] leading-none font-extrabold text-fare sm:col-start-auto sm:text-right">
+            <p className="tabular col-start-2 text-[1.375rem] leading-none font-extrabold text-fare @lg:col-start-auto @lg:text-right">
               {money(f.price + backPrice, currency)}
               {back?.fare && <span className="mt-1 block text-[0.75rem] font-medium text-ink-soft">return total</span>}
             </p>
             <Link
               href={selectHref}
-              className="col-span-2 inline-flex h-11 items-center justify-center rounded-full bg-action px-6 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-action-deep sm:col-span-1"
+              className="col-span-2 inline-flex h-11 items-center justify-center rounded-full bg-action px-6 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-action-deep @lg:col-span-1"
             >
               {copy.select}
               <span className="sr-only">
@@ -118,7 +118,7 @@ export function DayFares({ date, outs, back, currency, selectHref }: Props) {
               {carrierName(back.fare.airline)}, {back.fare.from} to {back.fare.to} · {back.fare.stops === 0 ? copy.direct : stopsText(back.fare.stops)}
             </span>
           </p>
-          <p className="tabular w-full pl-15 text-[0.875rem] text-ink-soft sm:w-auto sm:pl-0 sm:text-right">
+          <p className="tabular w-full pl-15 text-[0.875rem] text-ink-soft @lg:w-auto @lg:pl-0 @lg:text-right">
             {copy.includes} <span className="font-semibold text-ink">{money(back.fare.price, currency)}</span>
           </p>
         </div>

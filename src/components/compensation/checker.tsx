@@ -30,6 +30,7 @@ import { AirlineField, type AirlinePick } from "./airline-field";
 
 const copy = compensationCopy.form;
 const pcopy = compensationCopy.progress;
+const ecopy = compensationCopy.example;
 
 /** Every answer starts empty: nothing is filled in until the visitor (or a share link) says so. */
 type State = { from: string; to: string; air: string; base: AirlineBase | ""; what: What | ""; delay: DelayBand | ""; notice: Notice | ""; why: Reason | ""; pax: number; date: string };
@@ -61,6 +62,16 @@ function fromParams(p: URLSearchParams): State {
     pax: Math.min(9, Math.max(1, Number.parseInt(p.get("pax") ?? "", 10) || 1)),
     date: /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : "",
   };
+}
+
+const emptyState: State = { from: "", to: "", air: "", base: "", what: "", delay: "", notice: "", why: "", pax: 1, date: "" };
+
+/** The labelled worked example (src/content/compensation.ts), dated relative to today. */
+function exampleState(today: string): State {
+  const { daysAgo, ...f } = compensationCopy.example.flight;
+  const d = new Date(`${today}T12:00:00Z`);
+  d.setUTCDate(d.getUTCDate() - daysAgo);
+  return { ...emptyState, ...(f as Partial<State>), date: d.toISOString().slice(0, 10) };
 }
 
 /** Only the answers given so far go in the URL. */
@@ -123,12 +134,19 @@ function useAirline(airCode: string): AirlineLookup | null {
 
 export function Checker() {
   const params = useSearchParams();
-  const [s, setS] = useState<State>(() => fromParams(new URLSearchParams(params.toString())));
+  // A first visit (no answers in the link) opens on the labelled example, so the
+  // page shows what it works out straight away; a share link opens as given.
+  const [isExample, setIsExample] = useState(() => params.toString() === "");
+  const [s, setS] = useState<State>(() =>
+    params.toString() === "" ? exampleState(new Date().toISOString().slice(0, 10)) : fromParams(new URLSearchParams(params.toString())),
+  );
   // Labels for what the visitor picked, shown while a lookup is still running.
   const [picked, setPicked] = useState<{ places: Record<string, Airport>; airlines: Record<string, AirlinePick> }>({ places: {}, airlines: {} });
   const today = new Date().toISOString().slice(0, 10);
   const update = (patch: Partial<State>) => {
     const next = { ...s, ...patch };
+    // The first change makes the answers the visitor's own.
+    setIsExample(false);
     setS(next);
     const qs = toQuery(next).toString();
     window.history.replaceState(null, "", `/flight-delay-compensation${qs ? `?${qs}` : ""}`);
@@ -200,6 +218,25 @@ export function Checker() {
           <h2 id="form-title" className="font-display-tight text-[1.5rem] font-bold text-ink md:text-[1.75rem]">
             {copy.title}
           </h2>
+          {isExample && (
+            <div data-testid="compensation-example" className="mt-4 flex flex-col gap-3 rounded-xl bg-sun/15 p-4 ring-1 ring-sun/50 sm:flex-row sm:items-center">
+              <p className="flex-1 text-[0.9375rem] leading-snug text-ink">
+                <span className="mr-2 inline-block rounded-full bg-sun px-2 py-0.5 text-[0.75rem] font-bold text-ink">{ecopy.label}</span>
+                {ecopy.text}
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsExample(false);
+                  setS(emptyState);
+                  window.history.replaceState(null, "", "/flight-delay-compensation");
+                }}
+                className="h-11 shrink-0 cursor-pointer rounded-full bg-white px-5 text-[0.9375rem] font-semibold text-ink ring-1 ring-line transition-colors hover:bg-mist"
+              >
+                {ecopy.clear}
+              </button>
+            </div>
+          )}
 
           <div className="mt-5 grid gap-3 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-start">
             <AirportField
@@ -323,7 +360,7 @@ export function Checker() {
 
         <div ref={resultRef} className="lg:sticky lg:top-24">
           {result ? (
-            <ResultTicket result={result} passengers={s.pax} />
+            <ResultTicket result={result} passengers={s.pax} example={isExample} />
           ) : (
             <section id="result" aria-labelledby="result-title" className="rounded-(--radius-panel) bg-board p-6 text-white shadow-(--shadow-float) md:p-7">
               <h2 id="result-title" className="font-display-tight text-[1.375rem] font-bold">
@@ -350,7 +387,8 @@ export function Checker() {
         </div>
       </div>
 
-      {result && from && to && airline && s.what && (
+      {/* The claim letter and share link are for the visitor's own flight, not the example. */}
+      {result && !isExample && from && to && airline && s.what && (
         <ClaimOptions
           result={result}
           shareUrl={shareUrl}
@@ -379,6 +417,7 @@ export function Checker() {
           )}
         >
           <span className="text-[0.875rem] text-white/80">
+            {isExample && `${ecopy.label}: `}
             {result.verdict === "not" ? compensationCopy.result.not : result.verdict === "maybe" ? compensationCopy.result.maybe : compensationCopy.result.owed}
           </span>
           <span className="tabular font-display-tight text-[1.375rem] font-extrabold text-sun">

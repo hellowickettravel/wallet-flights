@@ -3,16 +3,17 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { AnimatePresence, LayoutGroup, m } from "motion/react";
-import { ArrowUpRight, CaretLeft, CaretRight } from "@phosphor-icons/react";
+import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 import clsx from "clsx";
 import { SmartImage } from "@/components/ui/smart-image";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { origins, routesByOrigin, type Route } from "@/content/deals";
-import { dealLink, fareDates, stopsText } from "@/lib/deal-links";
+import { dealHref, fareDates, stopsText } from "@/lib/deal-links";
 import type { FareMap } from "@/lib/fares";
 import type { Fare } from "@/lib/travelpayouts";
 import { onRovingKeyDown } from "@/lib/roving";
 import { Price } from "@/components/currency/currency-provider";
+import { currencyCopy } from "@/content/currency";
 
 export function DealsRail({ fares }: { fares: FareMap }) {
   const [origin, setOrigin] = useState(origins[0].code);
@@ -107,8 +108,7 @@ export function DealsRail({ fares }: { fares: FareMap }) {
           </AnimatePresence>
         </ul>
         <p className="mt-6 text-[0.8125rem] text-ink-soft">
-          Lowest round-trip economy fares per person found in the last few days, in the departure city’s currency.
-          Prices change often; the provider confirms the final price when you book.
+          Lowest round-trip economy fares per person found in the last few days. {currencyCopy.converted}
         </p>
       </div>
     </section>
@@ -118,7 +118,7 @@ export function DealsRail({ fares }: { fares: FareMap }) {
 /** A featured route. Shows the recent cheapest fare when there is one; otherwise no price. */
 export function DealCard({ route, fare, subId, priority }: { route: Route; fare?: Fare; subId: string; priority?: boolean }) {
   const { destination: d, origin } = route;
-  const link = dealLink(fare, origin.code, d.airport, subId);
+  const href = dealHref(fare, origin.code, d.airport, subId);
   const body = (
     <>
       <div className="relative aspect-[4/3] overflow-hidden rounded-(--radius-card)">
@@ -136,7 +136,6 @@ export function DealCard({ route, fare, subId, priority }: { route: Route; fare?
         <div className="min-w-0">
           <h3 className="flex items-center gap-1 truncate text-[1.0625rem] font-semibold text-ink group-hover:text-action">
             {d.city}
-            {link.external && <ArrowUpRight className="size-4 shrink-0 text-ink-soft" weight="bold" aria-hidden />}
           </h3>
           <p className="truncate text-[0.875rem] text-ink-soft">
             {origin.city} to {d.city}
@@ -154,22 +153,17 @@ export function DealCard({ route, fare, subId, priority }: { route: Route; fare?
           <p className="shrink-0 pt-0.5 text-right text-[0.875rem] font-semibold text-action">Search dates</p>
         )}
       </div>
-      {link.external && <span className="sr-only"> (opens in a new tab)</span>}
     </>
   );
-  const cls = "group block rounded-(--radius-card) focus-visible:outline-offset-4";
+  // relative: keeps anything absolutely positioned (sr-only text) inside the card, so it can't
+  // escape the rail's scroll container and widen the page.
+  const cls = "group relative block rounded-(--radius-card) focus-visible:outline-offset-4";
   return (
     <>
-      {link.external ? (
-        <a href={link.href} rel="sponsored noopener" target="_blank" className={cls} data-sub={subId}>
-          {body}
-        </a>
-      ) : (
-        <Link href={link.href} className={cls} data-sub={subId}>
-          {body}
-        </Link>
-      )}
-      {/* Crawlable link to the route's own page (the card itself goes to booking or search). */}
+      <Link href={href} className={cls} data-sub={subId}>
+        {body}
+      </Link>
+      {/* Crawlable link to the route's own page (the card itself goes to the live search). */}
       <Link href={`/routes/${route.slug}`} className="mt-1 inline-block py-0.5 text-[0.8125rem] font-medium text-ink-soft underline decoration-line underline-offset-4 hover:text-action">
         {origin.city} to {d.city} flights
       </Link>

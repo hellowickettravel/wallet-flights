@@ -754,3 +754,33 @@ K/M amounts, at most 5 tiles, smaller tiles under 360px).
 lists 100+ currencies with the visitor's first; calendar and alert in PKR; switching to USD and GBP;
 invalid code → dollars; travellers count; blue trip switch). Full e2e: **358 passed**, 44 skipped, 0 failed.
 Not checkable locally (no fare data): server-rendered prices on home, deals, routes; verify on the live site.
+
+## Batch 9: client feedback, links stay on site, one date grid, compensation example (19 Oct 2026)
+
+**Deal links stay on Wallet Flights.** The fare board arrows, destination "Recent fares", deal cards, month
+bars and the route page's cheapest fare all opened the flight-search partner's own site (an affiliate link
+to its search) whenever a fare had a link. `dealHref()` (`src/lib/deal-links.ts`) now always goes to our
+/flights live search with the route, the fare's own dates, and the placement's `sub` (attribution rides on
+the search's marker). Past dates are replaced on /flights. "Opens in a new tab" branches removed.
+
+**Fare calendar, return trips: one grid, not two calendars** (owner's annotated mockup). `TripGrid`
+(`src/components/fare-calendar/trip-grid.tsx`) replaces the month day-calendar and the ±3-day grid: leaving
+dates down the side, return dates across the top, 7 × 7 return totals in the month calendar's colours. The
+picked cell is ringed and its two dates turn blue; the fares for that pair show beside the grid (from 1280px;
+below it on smaller screens), headed "Sun 1 Nov to Sun 8 Nov". Arrows move the window a week; picking keeps
+it in place; the month bars and trip length re-centre it. It never starts before today or the first day with
+fares. Cells use short prices ("£55", "20K" with "Prices in PKR" named once); full prices are in each cell's
+name. One-way trips keep the month calendar, also with fares beside it. The fares panel lays out by its own
+width (container queries).
+
+**Delay compensation: worked example** (owner's choice: the big amount gets interest). A first visit opens
+on a labelled example (easyJet, London Gatwick to Faro, 3 to 4 hours late, crew shortage: £350): an "Example"
+strip with "Clear the example", an "Example" badge and caption on the result. The first answer changed makes
+the form the visitor's; the claim letter and share link only appear then. Share links open as given.
+
+**Also:** /deals and destination grids get `grid-cols-1` on phones (a long converted price grew the single
+implicit column to 422px), deal cards are `relative` (their sr-only text escaped the rail's scroll), and the
+homepage rail's note no longer says "in the departure city's currency".
+
+**Test:** lint, typecheck, build pass. Tests rewritten for the grid (pick, highlight, fares beside it, arrows,
+URL nights), one way, the example, and the internal deal links. Full e2e **358 passed**, 44 skipped, 0 failed.

@@ -61,34 +61,59 @@ for (const path of ["/fare-calendar", "/flight-delay-compensation"]) {
   });
 }
 
-test("fare calendar: months, days, fares and a Select link into live search", async ({ page }) => {
+test("fare calendar: return trips pick both dates in one grid, and its fares show beside it", async ({ page }) => {
   await mockCalendar(page, calendarFixture());
   await page.goto("/fare-calendar?from=LON&to=BCN&trip=return&nights=7");
   const months = page.getByRole("list", { name: "Lowest fare in each month" });
   await expect(months.getByRole("button")).toHaveCount(12);
-  // Cheapest month: the first (out £50 + back £40). It opens in the calendar.
+  // Cheapest month: the first (out £50 + back £40). It opens in the grid.
   await expect(months.getByRole("button", { name: /£90, cheapest month/ })).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByRole("button", { name: /10 \w+: from £90, cheapest day this month/ })).toBeVisible();
 
-  const fares = page.getByRole("region", { name: /day,? 10 \w+$/ });
+  // One grid, not two calendars (owner, 19 Oct 2026): leaving dates down the side, return dates across.
+  const grid = page.getByRole("region", { name: "Pick your dates" });
+  await expect(grid).toBeVisible();
+  await expect(page.getByRole("button", { name: /cheapest day this month/ })).toHaveCount(0);
+  const chosen = grid.getByRole("button", { pressed: true });
+  await expect(chosen).toHaveAccessibleName(/^Leave \w+ 10 \w+, return \w+ 17 \w+: £90, cheapest$/);
+  // Its two dates are highlighted.
+  const blue = (name: RegExp, role: "rowheader" | "columnheader") =>
+    grid.getByRole(role, { name }).evaluate((el) => !!el.querySelector(".bg-action"));
+  expect(await blue(/^Leave \w+ 10 /, "rowheader")).toBe(true);
+  expect(await blue(/^Return \w+ 17 /, "columnheader")).toBe(true);
+
+  // The fares for that pair, beside the grid on wide screens.
+  const fares = page.getByRole("region", { name: /10 \w+ to \w+ 17 \w+$/ });
   await expect(fares.getByRole("listitem")).toHaveCount(2);
-  const select = fares.getByRole("link", { name: /^Select/ }).first();
-  const href = await select.getAttribute("href");
-  expect(href).toContain("/flights?");
+  const href = (await fares.getByRole("link", { name: /^Select/ }).first().getAttribute("href")) ?? "";
   expect(href).toContain("sub=calendar");
   expect(href).toContain("trip=round");
   expect(href).toMatch(/return=\d{4}-\d{2}-17/);
+  const [g, f] = await Promise.all([grid.boundingBox(), fares.boundingBox()]);
+  if ((page.viewportSize()?.width ?? 0) >= 1280) expect(f!.x).toBeGreaterThan(g!.x + g!.width - 1);
+  else expect(f!.y).toBeGreaterThan(g!.y);
+
+  // Another cell: returning on the 19th (£50 + £45). The grid stays put; the fares follow.
+  await grid.getByRole("button", { name: /^Leave \w+ 10 \w+, return \w+ 19 \w+: £95/ }).click();
+  await expect(grid.getByRole("button", { pressed: true })).toHaveAccessibleName(/return \w+ 19 \w+: £95/);
+  expect(await blue(/^Return \w+ 19 /, "columnheader")).toBe(true);
+  await expect(page.getByRole("region", { name: /10 \w+ to \w+ 19 \w+$/ })).toBeVisible();
+  await expect(page).toHaveURL(/nights=9/);
+
+  // A week later: the arrows move the grid; the choice stays.
+  const firstRow = () => grid.getByRole("rowheader").first().getAttribute("aria-label");
+  const before = await firstRow();
+  await grid.getByRole("button", { name: "Later dates" }).click();
+  await expect.poll(firstRow).not.toBe(before);
+  await grid.getByRole("button", { name: "Earlier dates" }).click();
+  await expect.poll(firstRow).toBe(before);
+
+  // Each trip length shows the cheapest return total the fares allow (7 nights: £50 out + £40 back).
+  await expect(page.getByLabel("Trip length").locator("option", { hasText: "1 week" })).toHaveText("1 week · from £90");
 
   // Direct only drops the connecting fare and raises the month low.
   if (await page.getByRole("button", { name: "Filters" }).isVisible()) await page.getByRole("button", { name: "Filters" }).click();
   await page.getByRole("switch", { name: "Direct flights only" }).check({ force: true });
-  await expect(months.getByRole("button", { name: /£100, cheapest month/ })).toBeVisible();
-
-  // Return trips get the flexible-dates grid.
-  await expect(page.getByRole("heading", { name: "Flexible by a few days?" })).toBeVisible();
-
-  // Each trip length shows the cheapest return total the fares allow (7 nights: £50 out + £40 back).
-  await expect(page.getByLabel("Trip length").locator("option", { hasText: "1 week" })).toHaveText("1 week · from £90");
+  await expect(months.getByRole("button", { name: /cheapest month/ })).toHaveAccessibleName(/£10[05], cheapest month/);
 });
 
 test("fare calendar: a price alert for the route on screen, only when alerts can be sent", async ({ page }) => {
@@ -199,12 +224,13 @@ test("fare calendar: with no location or popular routes, the visitor picks", asy
   await expect(page.getByText(/£\d/)).toHaveCount(0);
 });
 
-test("fare calendar: one way hides the trip length and the flexible grid", async ({ page }) => {
+test("fare calendar: one way keeps the month calendar, without the trip length or the date grid", async ({ page }) => {
   await mockCalendar(page, calendarFixture());
   await page.goto("/fare-calendar?from=LON&to=BCN&trip=oneway");
   await expect(page.getByRole("radio", { name: "One way" })).toHaveAttribute("aria-checked", "true");
   await expect(page.getByLabel("Trip length")).toBeDisabled();
-  await expect(page.getByRole("heading", { name: "Flexible by a few days?" })).toHaveCount(0);
+  await expect(page.getByRole("region", { name: "Pick your dates" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /10 \w+: from £50, cheapest day this month/ })).toBeVisible();
 });
 
 test("fare calendar: no fares shows the empty state, never made-up prices", async ({ page }) => {
@@ -215,16 +241,34 @@ test("fare calendar: no fares shows the empty state, never made-up prices", asyn
   await expect(page.getByRole("list", { name: "Lowest fare in each month" })).toHaveCount(0);
 });
 
-test("delay compensation: nothing is pre-filled and no result shows until it's answered", async ({ page }) => {
+test("delay compensation: a first visit opens on a labelled example; changing an answer makes it yours", async ({ page }) => {
+  // Owner, 19 Oct 2026: the amount up front gets interest. It must read as an example, not a promise.
   await page.goto("/flight-delay-compensation");
+  const example = page.getByTestId("compensation-example");
+  await expect(example).toContainText("This is an example");
+  const result = page.locator("#result");
+  await expect(result).toContainText("£350");
+  await expect(result).toContainText("Example result");
+  await expect(page.getByRole("combobox", { name: "Flew from" })).toHaveValue(/Gatwick|LGW/);
+  // No claim letter or share link for the example flight, and nothing in the URL.
+  await expect(page.getByRole("button", { name: "Write my claim letter" })).toHaveCount(0);
+  await expect(page).toHaveURL(/\/flight-delay-compensation$/);
+
+  // One change and the answers are the visitor's: the label goes, the tools appear.
+  await page.getByRole("radio", { name: "4 hours or more" }).click();
+  await expect(example).toHaveCount(0);
+  await expect(result).not.toContainText("Example result");
+  await expect(page).toHaveURL(/delay=4p/);
+  await expect(page.getByRole("button", { name: "Write my claim letter" })).toBeVisible();
+
+  // Or start from nothing.
+  await page.goto("/flight-delay-compensation");
+  await page.getByRole("button", { name: "Clear the example" }).click();
   for (const name of ["Flew from", "Flew to", "Airline"]) await expect(page.getByRole("combobox", { name })).toHaveValue("");
   await expect(page.getByLabel("Flight date")).toHaveValue("");
   await expect(page.getByRole("radio", { checked: true })).toHaveCount(0);
-  const result = page.locator("#result");
   await expect(result).toContainText("5 more answers and we’ll work it out.");
-  await expect(result).not.toContainText("You’re likely owed");
   await expect(page.getByRole("link", { name: /Claim with Compensair/ })).toHaveCount(0);
-  await expect(page).toHaveURL(/\/flight-delay-compensation$/);
 });
 
 test("delay compensation: an airline we don't know asks where it's licensed, only when that matters", async ({ page }) => {

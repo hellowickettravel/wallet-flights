@@ -27,7 +27,7 @@ function markerPos(km: number) {
  * The page's signature: a boarding-pass stub on navy. The amount is set large
  * in sun and changes with a short slide whenever an answer changes it.
  */
-export function ResultTicket({ result, passengers }: { result: Assessment; passengers: number }) {
+export function ResultTicket({ result, passengers, example = false }: { result: Assessment; passengers: number; example?: boolean }) {
   const { verdict, currency, perPassenger, total, band, bandAmounts, distanceKm, checks, limit } = result;
   const heading = verdict === "owed" ? copy.owed : verdict === "maybe" ? copy.maybe : copy.not;
 
@@ -47,6 +47,11 @@ export function ResultTicket({ result, passengers }: { result: Assessment; passe
             {verdict === "not" ? <XCircle className="size-4" weight="bold" aria-hidden /> : <CheckCircle className="size-4" weight="bold" aria-hidden />}
             {heading}
           </p>
+          {example && (
+            <span className="ml-2 inline-flex items-center rounded-full bg-white/15 px-3 py-1 text-[0.8125rem] font-semibold text-white ring-1 ring-white/30">
+              {compensationCopy.example.label}
+            </span>
+          )}
           <p className="mt-4 flex items-baseline gap-3">
             <AnimatePresence mode="popLayout" initial={false}>
               <m.span
@@ -66,6 +71,7 @@ export function ResultTicket({ result, passengers }: { result: Assessment; passe
             <span className="tabular font-semibold text-white">{formatMoney(total, currency)}</span> {copy.total(passengers)}
           </p>
           {result.halved && <p className="mt-1 text-[0.875rem] text-sun">{copy.halved}</p>}
+          {example && <p className="mt-2 text-[0.875rem] text-white/70">{compensationCopy.example.ticket}</p>}
         </div>
 
         <div className="mt-6">

@@ -16,7 +16,7 @@ import { destinationGuides, entryNote, usPassportNote } from "@/content/destinat
 import { destinationBySlug, destinations, regions } from "@/content/destinations";
 import { site } from "@/content/site";
 import { approxFlightTime } from "@/lib/demo-flights";
-import { dealLink, fareDates, stopsText } from "@/lib/deal-links";
+import { dealHref, fareDates, stopsText } from "@/lib/deal-links";
 import { destinationTileFares, monthCalendars } from "@/lib/fares";
 import { cheapestFare } from "@/lib/travelpayouts";
 import { Price } from "@/components/currency/currency-provider";
@@ -221,14 +221,10 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
             {fares.length > 0 ? (
               <ul className="mt-5 divide-y divide-white/10">
                 {fares.map(({ origin, fare }) => {
-                  const link = dealLink(fare, origin.code, d.airport, `destination_${d.slug}_fares_${origin.slug}`);
+                  const href = dealHref(fare, origin.code, d.airport, `destination_${d.slug}_fares_${origin.slug}`);
                   return (
                     <li key={origin.code}>
-                      <a
-                        href={link.href}
-                        {...(link.external ? { rel: "sponsored noopener", target: "_blank" } : {})}
-                        className="group flex items-center justify-between gap-4 py-3"
-                      >
+                      <Link href={href} className="group flex items-center justify-between gap-4 py-3">
                         <span>
                           <span className="block font-semibold group-hover:underline">From {origin.city}</span>
                           <span className="text-[0.875rem] text-white/65">
@@ -236,8 +232,7 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
                           </span>
                         </span>
                         <Price amount={fare.price} currency={fare.currency} className="tabular text-[1.25rem] font-bold text-sun" />
-                        {link.external && <span className="sr-only"> (opens in a new tab)</span>}
-                      </a>
+                      </Link>
                     </li>
                   );
                 })}
@@ -271,7 +266,7 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
         <section aria-labelledby="related-title" className="border-t border-line bg-mist py-14 md:py-20">
           <div className="container-page">
             <h2 id="related-title" className="font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">More in {regions.find((x) => x.id === d.region)?.label}</h2>
-            <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((r) => (
                 <li key={r.slug}>
                   <DestinationTile d={r} fare={tileFares[r.slug]} />

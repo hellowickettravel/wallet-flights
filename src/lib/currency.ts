@@ -103,6 +103,23 @@ export const moneySymbol = (c: DisplayCurrency) =>
     .formatToParts(0)
     .find((p) => p.type === "currency")!.value;
 
+/** A short number for tight spaces (board tiles, grid cells): "247", "1240", "113K", "3.5M". */
+export function compactNumber(n: number) {
+  if (n < 10_000) return String(Math.round(n));
+  if (n < 999_500) return `${Math.round(n / 1000)}K`;
+  const m = n / 1_000_000;
+  return `${m < 9.95 ? m.toFixed(1).replace(/\.0$/, "") : Math.round(m)}M`;
+}
+
+/** The symbol when it's one character ("£", "₹"), else "" (name the currency once nearby: "PKR"). */
+export const shortSymbol = (c: DisplayCurrency) => {
+  const sym = moneySymbol(c);
+  return [...sym].length === 1 ? sym : "";
+};
+
+/** "£45", "₹21K", or "118K" when the currency's symbol is longer than one character. */
+export const compactMoney = (amount: number, c: DisplayCurrency) => `${shortSymbol(c)}${compactNumber(amount)}`;
+
 /** "Pakistani Rupee" */
 export const currencyName = (c: DisplayCurrency) => {
   try {

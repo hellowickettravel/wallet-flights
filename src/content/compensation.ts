@@ -226,6 +226,18 @@ export const compensationCopy = {
   metaTitle: "Flight delay compensation calculator (UK261 and EU261)",
   metaDescription:
     "Check how much compensation you’re owed for a delayed, cancelled or overbooked flight under UK261 and EU261: £220 to £520 or €250 to €600 per passenger.",
+  /**
+   * The worked example a first visit opens with (owner, 19 Oct 2026: the big
+   * amount gets interest). Clearly labelled; the first answer the visitor
+   * changes makes the form theirs. The date is set `daysAgo` before today.
+   */
+  example: {
+    flight: { from: "LGW", to: "FAO", air: "U2", what: "delayed", delay: "3to4", why: "crew", pax: 1, daysAgo: 30 },
+    label: "Example",
+    text: "This is an example: an easyJet flight from London Gatwick to Faro that arrived 3 to 4 hours late because of a crew shortage. Change any answer to check your own flight.",
+    clear: "Clear the example",
+    ticket: "Example result. Change the answers for your own flight.",
+  },
   form: {
     title: "Your flight",
     from: "Flew from",
