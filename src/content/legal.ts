@@ -29,7 +29,7 @@ export const privacy: { intro: string; sections: LegalSection[] } = {
           "Searches: the routes, dates and number of travellers you search for. Live search on our Flights page is run by our flight search partner, which receives your search, IP address and device information to find prices, and measures searches and bookings with its own cookies. It only loads if you allow “Live flight search” cookies.",
           "Fare calendar starting point: when you open the fare calendar without choosing a route, our hosting provider passes our server your approximate location (worked out from your IP address) so we can start from an airport near you. We use it for that page only and don’t store it.",
           "Currency: on your first visit our hosting provider passes our server your country (worked out from your IP address) so we can show prices in its currency. We keep only the currency code, in the wf_cur cookie, never the country or IP address. Prices are converted at daily exchange rates published by the open-source currency-api project, fetched by our server, so your browser doesn’t contact it.",
-          "Technical data: if you allow analytics, aggregated usage statistics (pages viewed, device type, country, page speed) from Vercel Analytics, which doesn’t identify you.",
+          "Technical data: if you allow analytics, Google Analytics records the pages you view, how you arrived (for example from a search engine), your device and browser type and your approximate location, linked to a random ID stored in a cookie so it can tell visits apart. It works out your location from your IP address but doesn’t store the address. We’ve switched off Google signals and ad personalisation, so this data isn’t used for advertising. Vercel Analytics adds page views and page speed, in aggregate, without identifying you.",
           "Your cookie choice, stored in a cookie on your device.",
         ],
         "We don’t take payment on this website: when you book through a deal, you pay the provider on its own website. If our team books a flight for you, we’ll explain how to pay before booking, and we use payment details only to take that payment.",
@@ -60,7 +60,7 @@ export const privacy: { intro: string; sections: LegalSection[] } = {
       heading: "Who we share data with",
       body: [
         "When our team books a flight for you, we share traveller details with the airline or travel provider that issues the ticket; they use them under their own privacy policy. Messages you send us on WhatsApp are carried by WhatsApp (Meta), under WhatsApp’s terms and privacy policy.",
-        "We use trusted service providers to host the site (Vercel), send our emails (Resend) and run our inbox (Microsoft 365, through GoDaddy), keep alert sign-ups and price alerts (Upstash, connected through Vercel) and, with your consent, measure site usage (Vercel Analytics). Our flight search and affiliate partner provides our live search and affiliate links and acts as an independent controller for the data its search widget and links collect. Contact us and we’ll tell you who it is and where to find its privacy policy. We don’t sell your personal data.",
+        "We use trusted service providers to host the site (Vercel), send our emails (Resend) and run our inbox (Microsoft 365, through GoDaddy), keep alert sign-ups and price alerts (Upstash, connected through Vercel) and, with your consent, measure site usage (Google Analytics, run by Google, and Vercel Analytics). Our flight search and affiliate partner provides our live search and affiliate links and acts as an independent controller for the data its search widget and links collect. Contact us and we’ll tell you who it is and where to find its privacy policy. We don’t sell your personal data.",
         "Photos on the site load from Unsplash’s image servers, and airline logos from our affiliate network’s logo service. As with any image on the web, those servers receive your IP address and browser details when your browser fetches the picture. They don’t set cookies on our site, and we don’t send them anything else about you.",
         "Some of these providers may store data outside the UK, for example in the United States. Where they do, we rely on recognised safeguards such as the UK International Data Transfer Addendum or adequacy regulations.",
       ],
@@ -73,7 +73,7 @@ export const privacy: { intro: string; sections: LegalSection[] } = {
           "Bookings made by our team: for as long as we need them to look after the booking and to meet our legal and accounting obligations, then deleted.",
           "Fare-alert emails: until you unsubscribe. We don’t keep sign-ups that aren’t confirmed: the confirmation link carries the address itself and expires after 7 days.",
           "The record of your alerts: up to 12 months, then deleted. If you ask us to delete your data, we remove you from it too.",
-          "Analytics: aggregated and anonymous, kept for reporting.",
+          "Analytics: Google Analytics keeps visit-level data for no more than 14 months, then deletes it; reports built from it are aggregated. Vercel Analytics data is aggregated and anonymous.",
           "Your cookie choice: 6 months, then we ask again.",
         ],
       ],
@@ -199,7 +199,12 @@ export const cookies: { intro: string; sections: LegalSection[] } = {
     {
       heading: "Analytics (optional)",
       body: [
-        "With your consent we use Vercel Analytics and Speed Insights to count page views and measure page speed. They don’t set cookies or identify you, but we still ask first.",
+        "With your consent we use Google Analytics to see how visitors find and use the site, and Vercel Analytics and Speed Insights to count page views and measure page speed. Google Analytics sets:",
+        [
+          "_ga — a random ID that tells visits from the same browser apart (2 years).",
+          `_ga_${site.googleAnalyticsId.replace("G-", "")} — keeps track of the current visit (2 years).`,
+        ],
+        "Vercel Analytics and Speed Insights don’t set cookies. If you withdraw consent we delete the Google Analytics cookies from our domain and reload the page.",
       ],
     },
     {

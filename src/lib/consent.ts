@@ -1,13 +1,15 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { ANALYTICS_RENEW_BEFORE } from "./consent-flag";
 
 /**
  * Cookie consent (UK GDPR / PECR, EU ePrivacy). Optional categories stay off
  * until the visitor opts in. The choice itself is kept in a first-party,
  * strictly-necessary cookie `wf_consent` for 6 months.
  */
-export type Consent = { search: boolean; analytics: boolean; at: number };
+/** `renew`: analytics was allowed before Google Analytics was added, so we ask again (and keep it off until then). */
+export type Consent = { search: boolean; analytics: boolean; at: number; renew?: boolean };
 export type ConsentCategory = "search" | "analytics";
 
 export const CONSENT_COOKIE = "wf_consent";
@@ -29,7 +31,10 @@ function readCookie(): string | undefined {
 /** Parses "s1.a0.<unix ms>"; anything else counts as "not asked yet". */
 export function parseConsent(raw: string | undefined): Consent | null {
   const m = raw?.match(/^s([01])\.a([01])\.(\d+)$/);
-  return m ? { search: m[1] === "1", analytics: m[2] === "1", at: Number(m[3]) } : null;
+  if (!m) return null;
+  const at = Number(m[3]);
+  const renew = m[2] === "1" && at < ANALYTICS_RENEW_BEFORE;
+  return { search: m[1] === "1", analytics: m[2] === "1" && !renew, at, renew };
 }
 
 function snapshot(): Consent | null {
@@ -53,13 +58,15 @@ export function useConsent(): Consent | null | undefined {
 
 // Cookies the White Label (tpwdg.com) and its Snowplow tracker set on our domain.
 const SEARCH_COOKIES = [/^tpwl_/, /^hide_hotels$/, /^_sp_/];
+// Google Analytics: _ga and _ga_<measurement id>, set on the apex (.walletflights.com).
+const ANALYTICS_COOKIES = [/^_ga$/, /^_ga_/];
 
-function clearSearchCookies() {
+function clearCookies(patterns: RegExp[]) {
   const host = location.hostname;
   const domains = ["", host, `.${host}`, `.${host.split(".").slice(-2).join(".")}`];
   for (const c of document.cookie.split("; ")) {
     const name = c.split("=")[0];
-    if (!SEARCH_COOKIES.some((r) => r.test(name))) continue;
+    if (!patterns.some((r) => r.test(name))) continue;
     for (const d of domains) document.cookie = `${name}=; Max-Age=0; path=/${d ? `; domain=${d}` : ""}`;
   }
 }
@@ -68,11 +75,14 @@ export function saveConsent(choice: Omit<Consent, "at">) {
   const before = snapshot();
   const secure = location.protocol === "https:" ? "; Secure" : "";
   document.cookie = `${CONSENT_COOKIE}=s${choice.search ? 1 : 0}.a${choice.analytics ? 1 : 0}.${Date.now()}; Max-Age=${MAX_AGE}; path=/; SameSite=Lax${secure}`;
-  if (!choice.search) clearSearchCookies();
+  if (!choice.search) clearCookies(SEARCH_COOKIES);
+  if (!choice.analytics) clearCookies(ANALYTICS_COOKIES);
   document.documentElement.dataset.consent = "1";
   window.dispatchEvent(new Event(CHANGE));
   // A loaded third-party script can't be unloaded: start a clean page.
-  if (before?.search && !choice.search && document.querySelector("script[data-tpwl]")) location.reload();
+  const searchLoaded = before?.search && !choice.search && document.querySelector("script[data-tpwl]");
+  const analyticsLoaded = before?.analytics && !choice.analytics && document.querySelector('script[src*="googletagmanager.com/gtag/js"]');
+  if (searchLoaded || analyticsLoaded) location.reload();
 }
 
 export const openConsentSettings = () => window.dispatchEvent(new Event(OPEN));

@@ -27,6 +27,8 @@ export const site = {
   location: "London, United Kingdom",
   responseTime: "We reply within 24 hours",
   markets: "Travellers in the US and UK",
+  /** Google Analytics 4 property (owner, 20 Oct 2026). Loads only after the visitor allows analytics cookies. */
+  googleAnalyticsId: "G-R2NBBGX7CM",
   /** Claimed Trustpilot profile (checked 15 Oct 2026: no reviews yet, so we show no score). */
   trustpilot: "https://www.trustpilot.com/review/walletflights.com",
   social: [

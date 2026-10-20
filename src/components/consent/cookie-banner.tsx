@@ -36,7 +36,8 @@ export function CookieBanner() {
   );
 
   // undefined = server render / hydration: render it, CSS decides visibility.
-  const open = consent == null || reopened;
+  // `renew`: an older analytics choice that didn't cover Google Analytics.
+  const open = consent == null || consent.renew || reopened;
 
   useEffect(() => {
     if (!reopened) return;

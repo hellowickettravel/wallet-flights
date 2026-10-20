@@ -80,8 +80,12 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             </SiteOnly>
           </CurrencyProvider>
         </MotionProvider>
-        {/* Only on Vercel, where the /_vercel/* endpoints exist, and only after consent. */}
-        {process.env.VERCEL && <ConsentedAnalytics />}
+        {/* Both wait for consent. Vercel Analytics only on Vercel (it needs /_vercel/*); Google
+            Analytics on production builds, but not Vercel previews, so test deploys don't count. */}
+        <ConsentedAnalytics
+          vercel={Boolean(process.env.VERCEL)}
+          gaId={process.env.NODE_ENV === "production" && process.env.VERCEL_ENV !== "preview" ? site.googleAnalyticsId : undefined}
+        />
       </body>
     </html>
   );

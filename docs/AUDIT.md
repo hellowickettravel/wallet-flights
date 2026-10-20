@@ -879,3 +879,36 @@ Checked by hand on a local production build with sample data. Lint, typecheck an
 
 **Owner to do:** add `ADMIN_USERNAME` and `ADMIN_PASSWORD` in Vercel (Production), redeploy, then sign in at
 https://walletflights.com/admin.
+
+## Batch 13 — Google Analytics (20 Oct 2026)
+
+**Owner:** add the Google tag for property `G-R2NBBGX7CM` to walletflights.com.
+
+**Build:**
+- `site.googleAnalyticsId` (`src/content/site.ts`). `ConsentedAnalytics` loads gtag.js through `next/script`
+  (`afterInteractive`) only when the visitor has allowed the Analytics cookie category, next to Vercel
+  Analytics. GA runs on production builds but not on Vercel previews or `next dev`. Google signals and ad
+  personalisation are off in the `config` call, so the policies can say GA isn't used for advertising.
+  Client-side page changes are counted by GA4's enhanced measurement (browser history events, on by default).
+- Consent: an analytics "yes" given before 20 Oct 2026 06:15 UTC (`ANALYTICS_RENEW_BEFORE`) covered Vercel
+  Analytics only, so it counts as "ask again". The banner reopens, and GA stays off until a new choice. The
+  cookie policy promises "ask again where consent is needed". The head flag script applies the same rule,
+  so the banner doesn't flash. Withdrawing analytics deletes `_ga` / `_ga_*` from our domain and reloads the
+  page if gtag.js had loaded (the same as live search).
+- CSP: GA4 hosts from Google's CSP guide (script `*.googletagmanager.com`; img `*.google-analytics.com`,
+  `*.googletagmanager.com`; connect adds `*.analytics.google.com`).
+- Copy: the banner's Analytics category, privacy policy (what GA records, IP not stored, Google as a
+  provider, retention no more than 14 months) and cookie policy (`_ga`, `_ga_R2NBBGX7CM`, 2 years each).
+
+**Test:** e2e fixtures stub googletagmanager.com / google-analytics.com, so tests never send real hits.
+`consent.spec.ts` (desktop and mobile) covers:
+- nothing from Google before a choice
+- "Accept all" loads gtag.js with the ID, and the `config` call carries signals and ad personalisation off
+- an old analytics choice reopens the banner with no GA
+- withdrawing deletes the GA cookies and reloads without GA
+
+**Owner to do (GA admin):**
+- In the walletflights.com web stream, check that Enhanced measurement → Page views → "Page changes based on
+  browser history events" is on (it is by default).
+- Optionally set Data retention to 14 months.
+- Check Realtime after accepting cookies on the live site.

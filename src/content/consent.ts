@@ -25,7 +25,8 @@ export const consentCopy = {
     {
       id: "analytics",
       label: "Analytics",
-      description: "Counts page views and site speed with Vercel Analytics, in aggregate and without identifying you.",
+      description:
+        "Shows us how people find and use the site, and how fast pages load, with Google Analytics and Vercel Analytics. Google Analytics sets cookies to tell visits apart. We don’t use it for advertising.",
       locked: false,
     },
   ],

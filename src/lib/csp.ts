@@ -28,17 +28,23 @@ export const cspHosts = {
   logos: ["https://pics.avs.io"],
   // Vercel Analytics debug script (production serves it from /_vercel/ on our own host).
   analytics: ["https://va.vercel-scripts.com"],
+  // Google Analytics 4 (gtag.js), after analytics consent. Hosts from Google's CSP guide for GA4.
+  googleAnalytics: {
+    script: ["https://*.googletagmanager.com"],
+    img: ["https://*.google-analytics.com", "https://*.googletagmanager.com"],
+    connect: ["https://*.google-analytics.com", "https://*.analytics.google.com", "https://*.googletagmanager.com"],
+  },
 };
 
 export function contentSecurityPolicy() {
-  const { search, searchApi, searchImages, searchFonts, photos, logos, analytics } = cspHosts;
+  const { search, searchApi, searchImages, searchFonts, photos, logos, analytics, googleAnalytics: ga } = cspHosts;
   const directives: Record<string, string[]> = {
     "default-src": ["'self'"],
-    "script-src": ["'self'", "'unsafe-inline'", ...search, ...analytics],
+    "script-src": ["'self'", "'unsafe-inline'", ...search, ...analytics, ...ga.script],
     "style-src": ["'self'", "'unsafe-inline'", ...search, ...searchFonts.style],
-    "img-src": ["'self'", "data:", "blob:", ...photos, ...logos, ...search, ...searchImages],
+    "img-src": ["'self'", "data:", "blob:", ...photos, ...logos, ...search, ...searchImages, ...ga.img],
     "font-src": ["'self'", "data:", ...search, ...searchFonts.font],
-    "connect-src": ["'self'", ...search, ...searchApi, ...analytics],
+    "connect-src": ["'self'", ...search, ...searchApi, ...analytics, ...ga.connect],
     "frame-src": ["'self'", ...search],
     "worker-src": ["'self'", "blob:"],
     "object-src": ["'none'"],
