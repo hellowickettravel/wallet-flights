@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/footer";
 import { BackToTop } from "@/components/layout/back-to-top";
 import { CalendarTeaserLoader } from "@/components/layout/calendar-teaser-loader";
 import { NavProgress } from "@/components/layout/nav-progress";
+import { SiteOnly } from "@/components/layout/site-only";
 import { MotionProvider } from "@/components/motion-provider";
 import { CookieBanner } from "@/components/consent/cookie-banner";
 import { ConsentedAnalytics } from "@/components/consent/consented-analytics";
@@ -64,15 +65,19 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <MotionProvider>
           <CurrencyProvider rates={rates}>
             <NavProgress />
-            {/* First in the DOM so keyboard users reach the cookie choice first (it's fixed at the bottom). */}
-            <CookieBanner />
-            <Header />
+            <SiteOnly>
+              {/* First in the DOM so keyboard users reach the cookie choice first (it's fixed at the bottom). */}
+              <CookieBanner />
+              <Header />
+            </SiteOnly>
             <main id="main" className="flex-1">
               {children}
             </main>
-            <Footer />
-            <BackToTop />
-            <CalendarTeaserLoader />
+            <SiteOnly>
+              <Footer />
+              <BackToTop />
+              <CalendarTeaserLoader />
+            </SiteOnly>
           </CurrencyProvider>
         </MotionProvider>
         {/* Only on Vercel, where the /_vercel/* endpoints exist, and only after consent. */}

@@ -57,6 +57,9 @@ Read first: `CLAUDE.md`, `AGENTS.md`, `docs/IMPROVEMENT-PLAN.md` (the 4-phase pl
 - Page metadata goes through `pageMetadata()` (`src/lib/seo.ts`); JSON-LD through `src/lib/schema.ts`.
 
 ## Owner actions still open
+0. **Admin dashboard (batch 12, 20 Oct 2026):** add `ADMIN_USERNAME` and `ADMIN_PASSWORD` (a long one) in Vercel →
+   Settings → Environment Variables (Production), redeploy, and sign in at https://walletflights.com/admin.
+   It shows subscribers and price alerts recorded from 20 Oct 2026; earlier homepage sign-ups are in the info@ inbox.
 1. Done: `TRAVELPAYOUTS_TOKEN` is set in Production (fares live, checked 19 Oct 2026). Owner still to update the White Label domain (#23361) to the apex.
 2. Search Console:
    - the verification file is live at `/google4df2a790d730b8df.html`

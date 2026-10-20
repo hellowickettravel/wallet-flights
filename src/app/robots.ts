@@ -1,10 +1,10 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/content/site";
 
-// Kept out of crawls: API routes and the /go affiliate hand-off ("$" = exactly
-// /go, so a future /good-deals page isn't caught). /flights is *not* blocked:
+// Kept out of crawls: API routes, the admin dashboard and the /go affiliate
+// hand-off ("$" = exactly /go, so a future /good-deals page isn't caught). /flights is *not* blocked:
 // its pages say noindex, and Google can only see that if it may crawl them.
-const disallow = ["/api/", "/go$", "/go?"];
+const disallow = ["/api/", "/admin", "/go$", "/go?"];
 
 // Search engines and AI answer engines are named explicitly, so the policy is
 // visible and a future catch-all change can't silently drop them. Training

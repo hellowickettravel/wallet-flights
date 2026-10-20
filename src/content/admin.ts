@@ -1,0 +1,85 @@
+// Words on the admin dashboard (/admin). Only the owner sees them.
+export const adminCopy = {
+  metaTitle: "Admin",
+  signIn: {
+    title: "Sign in to the dashboard",
+    text: "Subscribers, price alerts and exports for Wallet Flights.",
+    username: "Username",
+    password: "Password",
+    button: "Sign in",
+    sending: "Signing in…",
+    invalid: "That username and password don’t match. Check them and try again.",
+    tooMany: "Too many tries. Wait 10 minutes, then try again.",
+    failed: "Sign-in isn’t working right now. Try again in a minute.",
+    notConfigured:
+      "Sign-in isn’t set up yet. Add ADMIN_USERNAME and ADMIN_PASSWORD in Vercel (Settings, Environment Variables), then redeploy.",
+  },
+  title: "Subscribers and alerts",
+  signOut: "Sign out",
+  noDatabase: "The database isn’t connected, so there’s nothing to show. Price alerts need Upstash for Redis in Vercel (Storage).",
+  databaseError: "The database didn’t answer. Reload the page in a minute.",
+  stats: {
+    subscribers: "Fare-alert subscribers",
+    alerts: "Active price alerts",
+    people: "People on any list",
+    sent: "Alert emails, last 30 days",
+  },
+  check: {
+    title: "Daily price check",
+    schedule: "Every price alert is checked once a day, around 07:00 UTC (08:00 UK time in summer, 07:00 in winter).",
+    next: "Next check",
+    last: "Last check",
+    never: "No check recorded yet. The first one after this update will show here.",
+    columns: ["When", "Alerts checked", "Routes", "Emails sent", "Failed"],
+  },
+  export: {
+    title: "Export",
+    text: "CSV files open in Excel, Numbers or Google Sheets.",
+    lists: {
+      contacts: { label: "Everyone", hint: "One row per email address, with what they signed up for" },
+      subscribers: { label: "Fare-alert subscribers", hint: "Homepage sign-ups, with the date they confirmed" },
+      alerts: { label: "Price alerts", hint: "Every route alert, its price and the emails it has sent" },
+      activity: { label: "Activity log", hint: "Sign-ups, alert emails and stops, newest first" },
+    },
+    consent:
+      "Only email people about what they signed up for. Fare-alert subscribers asked for fare alerts; price-alert users asked for emails about their routes only. Other marketing needs their consent first (UK GDPR and PECR).",
+  },
+  find: {
+    title: "Find a person",
+    label: "Email address",
+    button: "Show history",
+    none: (q: string) => `Nothing is held for ${q}.`,
+    since: "Fare alerts since",
+    notSubscribed: "Not signed up for fare alerts",
+    alerts: "Price alerts",
+    noAlerts: "No price alerts",
+    history: "History",
+    noHistory: "No activity recorded.",
+    delete: "Delete this person’s data",
+    deleteConfirm: (email: string) =>
+      `Delete everything held for ${email}? Their fare-alert sign-up, price alerts and history are removed, and no more alert emails go to them. This can’t be undone.`,
+    deleting: "Deleting…",
+    deleted: "Deleted. Nothing is held for this address any more.",
+    deleteFailed: "Couldn’t delete. Try again in a minute.",
+  },
+  alerts: {
+    title: "Price alerts",
+    columns: ["Email", "Route", "Trip", "Alert below", "Started", "Last alert email", "Emails sent"],
+    empty: "No price alerts yet. They appear here when a traveller confirms one on the fare calendar.",
+    notSent: "Not yet",
+  },
+  subscribers: {
+    title: "Fare-alert subscribers",
+    columns: ["Email", "Confirmed"],
+    empty: "No confirmed sign-ups recorded yet.",
+    // Sign-ups were only emailed to the inbox before the dashboard existed.
+    earlier: "Sign-ups confirmed before 20 Oct 2026 were emailed to info@walletflights.com and aren’t in this list.",
+  },
+  activity: {
+    title: "Recent activity",
+    columns: ["When", "Email", "What happened", "Route", "Price"],
+    empty: "Nothing recorded yet.",
+    retention: "The log keeps the latest 5,000 events from the past 12 months.",
+  },
+  showing: (shown: number, total: number) => `Showing the newest ${shown} of ${total}. The export has them all.`,
+} as const;

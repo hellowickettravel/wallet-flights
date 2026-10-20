@@ -11,7 +11,7 @@
 import type { LegalSection } from "@/components/legal/legal-page";
 import { company, companyLine, site } from "./site";
 
-export const legalUpdated = "16 October 2026";
+export const legalUpdated = "20 October 2026";
 
 export const privacy: { intro: string; sections: LegalSection[] } = {
   intro: `This policy explains what personal data ${site.name} collects, why, and the choices you have. ${site.name} is a trading name of ${company.legalName} (company number ${company.number}, registered office ${company.registeredOffice}), which is the controller of the data described here.`,
@@ -25,6 +25,7 @@ export const privacy: { intro: string; sections: LegalSection[] } = {
           "Bookings made by our team: if you ask us on WhatsApp to book a flight, the details the airline needs to issue a ticket (usually each traveller’s name as it appears on their passport, date of birth, and contact details), your travel dates and preferences, and our messages with you.",
           "Fare alerts: your email address, once you confirm it from the email we send. Fare alerts haven’t launched yet; until they do, we only use it to tell you when they launch.",
           "Price alerts on the fare calendar: your email address, the route, trip and price you chose, and when we last emailed you about it, once you confirm it from the email we send. We keep the alert until you stop it with the link in any alert email.",
+          "A record of your alerts: when you confirmed fare alerts or started, changed or stopped a price alert, and each alert email we sent you (the route and the fare). Our team uses it to answer your questions and see that alerts are working.",
           "Searches: the routes, dates and number of travellers you search for. Live search on our Flights page is run by our flight search partner, which receives your search, IP address and device information to find prices, and measures searches and bookings with its own cookies. It only loads if you allow “Live flight search” cookies.",
           "Fare calendar starting point: when you open the fare calendar without choosing a route, our hosting provider passes our server your approximate location (worked out from your IP address) so we can start from an airport near you. We use it for that page only and don’t store it.",
           "Currency: on your first visit our hosting provider passes our server your country (worked out from your IP address) so we can show prices in its currency. We keep only the currency code, in the wf_cur cookie, never the country or IP address. Prices are converted at daily exchange rates published by the open-source currency-api project, fetched by our server, so your browser doesn’t contact it.",
@@ -59,7 +60,7 @@ export const privacy: { intro: string; sections: LegalSection[] } = {
       heading: "Who we share data with",
       body: [
         "When our team books a flight for you, we share traveller details with the airline or travel provider that issues the ticket; they use them under their own privacy policy. Messages you send us on WhatsApp are carried by WhatsApp (Meta), under WhatsApp’s terms and privacy policy.",
-        "We use trusted service providers to host the site (Vercel), send our emails (Resend) and run our inbox (Microsoft 365, through GoDaddy), keep price alerts (Upstash, connected through Vercel) and, with your consent, measure site usage (Vercel Analytics). Our flight search and affiliate partner provides our live search and affiliate links and acts as an independent controller for the data its search widget and links collect. Contact us and we’ll tell you who it is and where to find its privacy policy. We don’t sell your personal data.",
+        "We use trusted service providers to host the site (Vercel), send our emails (Resend) and run our inbox (Microsoft 365, through GoDaddy), keep alert sign-ups and price alerts (Upstash, connected through Vercel) and, with your consent, measure site usage (Vercel Analytics). Our flight search and affiliate partner provides our live search and affiliate links and acts as an independent controller for the data its search widget and links collect. Contact us and we’ll tell you who it is and where to find its privacy policy. We don’t sell your personal data.",
         "Photos on the site load from Unsplash’s image servers, and airline logos from our affiliate network’s logo service. As with any image on the web, those servers receive your IP address and browser details when your browser fetches the picture. They don’t set cookies on our site, and we don’t send them anything else about you.",
         "Some of these providers may store data outside the UK, for example in the United States. Where they do, we rely on recognised safeguards such as the UK International Data Transfer Addendum or adequacy regulations.",
       ],
@@ -71,6 +72,7 @@ export const privacy: { intro: string; sections: LegalSection[] } = {
           "Contact messages: up to 24 months, then deleted.",
           "Bookings made by our team: for as long as we need them to look after the booking and to meet our legal and accounting obligations, then deleted.",
           "Fare-alert emails: until you unsubscribe. We don’t keep sign-ups that aren’t confirmed: the confirmation link carries the address itself and expires after 7 days.",
+          "The record of your alerts: up to 12 months, then deleted. If you ask us to delete your data, we remove you from it too.",
           "Analytics: aggregated and anonymous, kept for reporting.",
           "Your cookie choice: 6 months, then we ask again.",
         ],

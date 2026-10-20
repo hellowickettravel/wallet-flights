@@ -38,6 +38,9 @@ const nextConfig: NextConfig = {
             : []),
         ],
       },
+      // The admin dashboard and its API: never indexed, even if a link leaks.
+      { source: "/admin/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
+      { source: "/api/admin/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
     ];
   },
   images: {

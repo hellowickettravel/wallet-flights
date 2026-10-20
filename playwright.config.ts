@@ -16,8 +16,8 @@ export default defineConfig({
   webServer: {
     command: "npm run start -- -p 3100",
     // No real email; no rate limit (every test request comes from localhost); a
-    // known secret for the daily price-alert check.
-    env: { EMAIL_DRY_RUN: "1", RATE_LIMIT: "off", CRON_SECRET: "e2e-cron-secret" },
+    // known secret for the daily price-alert check; a test-only admin account.
+    env: { EMAIL_DRY_RUN: "1", RATE_LIMIT: "off", CRON_SECRET: "e2e-cron-secret", ADMIN_USERNAME: "e2e-admin", ADMIN_PASSWORD: "e2e-admin-password" },
     url: "http://localhost:3100",
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,

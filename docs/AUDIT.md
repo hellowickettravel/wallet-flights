@@ -828,3 +828,54 @@ Microsoft MX are unchanged.
 to the inbox with reply-to the visitor; a fare-alert confirmation goes to the traveller with reply-to info@;
 a 403 "domain is not verified" makes the form report the service unavailable (503) and logs the reason.
 Lint, typecheck, build pass; full e2e **360 passed**, 44 skipped, 0 failed.
+
+## Batch 12 — Admin dashboard (20 Oct 2026)
+
+**Owner:** a basic admin dashboard behind a sign-in: how many people subscribed, when the fare calendar's
+price alerts run, each subscriber's record, and exports for marketing.
+
+**Found first:** homepage fare-alert sign-ups were never stored (only emailed to info@), and price alerts kept
+only their last email. So the dashboard starts recording from this batch; earlier homepage sign-ups stay in
+the inbox (the page says so).
+
+**Build:**
+- `src/lib/redis.ts`: the shared Redis REST helper (price alerts moved onto it).
+- `src/lib/activity.ts`: confirmed subscribers (`wf:subscribers`), an activity log (`wf:activity`: confirmed
+  fare alerts, alert started/changed/sent/stopped; newest 5,000, none older than 12 months, pruned by the
+  daily check) and the last 30 check runs (`wf:checks`). Writes never fail a traveller's request. Alerts now
+  count their emails (`sends`).
+- `src/lib/admin-auth.ts`: one account from `ADMIN_USERNAME` / `ADMIN_PASSWORD` (Vercel env, set by the
+  owner); constant-time compare; 5 tries per IP per 10 minutes (same guard as the forms); the session is an
+  httpOnly, SameSite=Strict, 12-hour signed cookie. The account's fingerprint is part of what's signed, so
+  changing the password signs everyone out. Without both variables nobody can sign in.
+- `/admin` (`src/app/admin/page.tsx`, `src/components/admin/*`, copy in `src/content/admin.ts`):
+  - four counts, the daily check (next run in UK time, last 7 runs), and CSV exports (everyone, subscribers,
+    price alerts, activity) with a consent note
+  - find a person by email: what they signed up for, their alerts and a dated history, plus "Delete this
+    person's data" for erasure requests
+  - tables of alerts, subscribers and recent activity
+  - the public header, footer and cookie banner are left out (`SiteOnly`)
+- Kept out of search: `noindex` meta, an `X-Robots-Tag` header on `/admin` and `/api/admin/*`, and
+  `Disallow: /admin` in robots.txt.
+- CSV export (`/api/admin/export`): signed-in only, with a byte-order mark for Excel. Cells starting with
+  = + - @ get an apostrophe, so a sign-up's city can't run as a spreadsheet formula.
+- Privacy policy: the alert record and its 12-month retention, and Upstash keeps sign-ups (legal date 20 Oct 2026).
+
+**Design read:** an internal admin page for the owner. It uses the site's tokens (ink bar, mist ground, white
+panels, action blue for links and buttons, dear red only for delete). There is no motion. Tables scroll sideways
+inside focusable regions on phones. (The design-taste skill marks admin panels as out of its scope; only
+its contrast and empty-state rules were applied.)
+
+**Test:** new `tests/e2e/admin.spec.ts` (desktop and mobile), covering:
+- signed out: a sign-in form with no site chrome, and noindex
+- a wrong password, a cross-site post, a non-JSON post and a forged cookie are all refused
+- export and delete need a session
+- signed in: counts, the check, a person's record, the CSV contents and formula escaping, deleting a
+  person, and signing out
+- no overflow at 360/768/1280 and no serious axe issues
+
+Checked by hand on a local production build with sample data. Lint, typecheck and build pass; full e2e
+**366 passed**, 44 skipped, 0 failed.
+
+**Owner to do:** add `ADMIN_USERNAME` and `ADMIN_PASSWORD` in Vercel (Production), redeploy, then sign in at
+https://walletflights.com/admin.

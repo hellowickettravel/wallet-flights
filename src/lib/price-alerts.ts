@@ -2,19 +2,21 @@
 //
 // Sign-up is double opt-in: the alert travels inside the signed confirmation
 // link (src/lib/opt-in.ts) and is only saved once its owner confirms. Saved
-// alerts live in a Redis database over its REST API: in Vercel, Storage →
-// Upstash for Redis sets KV_REST_API_URL and KV_REST_API_TOKEN (the
-// UPSTASH_REDIS_REST_* names work too). Once a day the cron in vercel.json
+// alerts live in the site's Redis database (src/lib/redis.ts). Once a day the cron in vercel.json
 // calls /api/price-alerts/check, which finds each route's cheapest fare the
 // same way the fare calendar does and emails the alerts it's now below.
-// Development and the e2e server keep alerts in memory instead.
+// Development and the e2e server keep alerts in memory instead. Starts,
+// emails and stops are also written to the admin activity log (src/lib/activity.ts).
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { groupByDate, monthSummaries, noFilters } from "@/components/fare-calendar/model";
 import type { Currency } from "@/content/deals";
+import { tripText } from "@/content/fare-calendar";
+import { logEvent } from "@/lib/activity";
 import { convert, isDisplayCurrency, type DisplayCurrency } from "@/lib/currency";
 import { emailReady } from "@/lib/email";
 import { fareCalendar } from "@/lib/fare-calendar";
 import { getRates } from "@/lib/rates";
+import { localOnly, parseJson, redis, redisReady } from "@/lib/redis";
 import { createSignedToken } from "@/lib/opt-in";
 
 export type AlertPlace = { code: string; city: string };
@@ -46,6 +48,8 @@ export type Alert = AlertSpec & {
   /** The last alert email: when, and at what price. */
   sentAt?: number;
   sentPrice?: number;
+  /** How many alert emails this alert has sent (alerts saved before 20 Oct 2026 start at 0). */
+  sends?: number;
 };
 
 const KEY = "wf:price-alerts";
@@ -86,6 +90,9 @@ export function parseAlertSpec(body: Record<string, unknown> | null): AlertSpec 
 export const alertId = (s: AlertSpec) =>
   createHash("sha256").update(`${s.email.toLowerCase()}|${s.from.code}|${s.to.code}|${s.trip}|${s.nights}|${s.currency}`).digest("base64url").slice(0, 24);
 
+/** "London to Barcelona (return, 1 week)": how the admin log names an alert. */
+export const alertRoute = (a: Pick<AlertSpec, "from" | "to" | "trip" | "nights">) => `${a.from.city} to ${a.to.city} (${tripText(a.trip, a.nights)})`;
+
 // --- Storage ---------------------------------------------------------------
 
 type Store = {
@@ -96,30 +103,7 @@ type Store = {
   count(): Promise<number>;
 };
 
-const restUrl = () => process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-const restToken = () => process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
-/** Development and dry runs (the e2e server) may keep alerts in memory. */
-const localOnly = () => process.env.EMAIL_DRY_RUN === "1" || process.env.NODE_ENV !== "production";
-
-async function redis<T>(command: (string | number)[]): Promise<T> {
-  const res = await fetch(restUrl()!, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${restToken()}`, "Content-Type": "application/json" },
-    body: JSON.stringify(command),
-    cache: "no-store",
-  });
-  if (!res.ok) throw new Error(`Alert store error ${res.status}`);
-  return ((await res.json()) as { result: T }).result;
-}
-
-const parse = (json: string | null): Alert | null => {
-  if (!json) return null;
-  try {
-    return JSON.parse(json) as Alert;
-  } catch {
-    return null;
-  }
-};
+const parse = (json: string | null) => parseJson<Alert>(json);
 
 const redisStore: Store = {
   get: async (id) => parse(await redis<string | null>(["HGET", KEY, id])),
@@ -144,7 +128,7 @@ const memoryStore: Store = {
 };
 
 function store(): Store | null {
-  if (restUrl() && restToken()) return redisStore;
+  if (redisReady()) return redisStore;
   return localOnly() ? memoryStore : null;
 }
 
@@ -167,9 +151,11 @@ export async function saveAlert(spec: AlertSpec, now = Date.now()): Promise<Save
     const existing = await s.get(id);
     if (!existing && (await s.count()) >= MAX_ALERTS) return { ok: false, reason: "full" };
     // A new price starts fresh, so the next check can email straight away;
-    // the stop key stays, so links in earlier emails still work.
-    const alert: Alert = { ...spec, id, stopKey: existing?.stopKey ?? randomBytes(18).toString("base64url"), created: existing?.created ?? now };
+    // the stop key stays, so links in earlier emails still work, and so does
+    // the count of emails sent.
+    const alert: Alert = { ...spec, id, stopKey: existing?.stopKey ?? randomBytes(18).toString("base64url"), created: existing?.created ?? now, sends: existing?.sends };
     await s.put(alert);
+    await logEvent({ type: existing ? "alert-changed" : "alert-started", email: spec.email, route: alertRoute(spec), price: spec.max, currency: spec.currency, at: now });
     return { ok: true, alert };
   } catch (e) {
     console.error(e);
@@ -193,11 +179,27 @@ export async function removeAlertByToken(token: string): Promise<{ ok: true; ale
     const given = Buffer.from(key);
     if (want.length !== given.length || !timingSafeEqual(want, given)) return { ok: false, reason: "invalid" };
     await s.remove(id);
+    await logEvent({ type: "alert-stopped", email: alert.email, route: alertRoute(alert) });
     return { ok: true, alert };
   } catch (e) {
     console.error(e);
     return { ok: false, reason: "unavailable" };
   }
+}
+
+/** Every saved alert, for the admin dashboard. Null when there's no store; throws if it fails. */
+export async function listAlerts(): Promise<Alert[] | null> {
+  const s = store();
+  return s ? s.all() : null;
+}
+
+/** Erasure request: stops every alert for the address; returns how many. */
+export async function removeAlertsForEmail(email: string): Promise<number> {
+  const s = store();
+  if (!s) return 0;
+  const theirs = (await s.all()).filter((a) => a.email.toLowerCase() === email.trim().toLowerCase());
+  for (const a of theirs) await s.remove(a.id);
+  return theirs.length;
 }
 
 // --- The daily check -------------------------------------------------------
@@ -259,7 +261,8 @@ export async function checkAlerts(send: (a: Alert, fare: Cheapest) => Promise<bo
       summary.matched++;
       if (await send(a, fare)) {
         summary.sent++;
-        await s.put({ ...a, sentAt: now, sentPrice: fare.price });
+        await s.put({ ...a, sentAt: now, sentPrice: fare.price, sends: (a.sends ?? 0) + 1 });
+        await logEvent({ type: "alert-sent", email: a.email, route: alertRoute(a), price: fare.price, currency: a.currency, at: now });
       } else summary.failed++;
     }
   }

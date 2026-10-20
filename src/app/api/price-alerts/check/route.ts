@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { site } from "@/content/site";
+import { logCheck, pruneEvents } from "@/lib/activity";
 import { sendPriceAlert } from "@/lib/email";
 import { calendarLink, checkAlerts, linkOrigin, stopLinks } from "@/lib/price-alerts";
 
@@ -26,5 +27,8 @@ export async function GET(req: Request) {
   });
   if (!summary) return NextResponse.json({ error: "Price alerts are unavailable" }, { status: 503 });
   console.info("Price alert check", summary);
+  // The admin dashboard shows the last runs; the log drops events past a year.
+  await logCheck({ at: Date.now(), ...summary });
+  await pruneEvents();
   return NextResponse.json(summary, { headers: { "Cache-Control": "no-store" } });
 }
