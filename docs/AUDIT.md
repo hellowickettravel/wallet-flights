@@ -912,3 +912,19 @@ https://walletflights.com/admin.
   browser history events" is on (it is by default).
 - Optionally set Data retention to 14 months.
 - Check Realtime after accepting cookies on the live site.
+
+## Batch 14 — Travelpayouts Drive (22 Oct 2026)
+
+**Change:** the dashboard's "Manual installation" snippet for Drive in `<head>` on every page
+(`src/app/layout.tsx`; loader URL in `src/content/affiliates.ts`), so Travelpayouts can verify the install.
+- CSP: `mn-tz.com` and `*.mn-tz.com` added to script, connect and img. Any further host the loader pulls in
+  shows up as a "CSP violation" in the Vercel logs and needs adding to `cspHosts.drive`.
+- Consent: at the owner's request it loads on every page before a cookie choice (the dashboard's checker
+  visits as a new visitor).
+
+**Test:** lint and typecheck pass; the rendered `<head>` carries the script with the dashboard's attributes;
+e2e fixtures stub `mn-tz.com`. Vercel preview of the change built. The first production deploy of the merge
+failed fetching Google Fonts at build time (same files had built as a preview 27 s earlier), so it was
+redeployed.
+
+**Owner to do:** click "Check installation" on the Drive screen in the Travelpayouts dashboard.
