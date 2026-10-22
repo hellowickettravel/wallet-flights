@@ -43,3 +43,12 @@ export const searchGateCopy = {
   partner: "See prices on our partner’s site",
   partnerNote: "Opens our partner’s site in a new tab. We may earn a commission if you book; it doesn’t change your price.",
 } as const;
+
+/** Shown on /flights when the live search couldn't load (partner outage, blocker). */
+export const searchDownCopy = {
+  title: "Live prices aren’t loading right now",
+  body: "Our flight-search partner isn’t responding on this page. You can still compare the same prices on their site, or change your search below.",
+  partner: "See prices for this search",
+  partnerNoSearch: "Search flights on our partner’s site",
+  partnerNote: "Opens our partner’s site in a new tab. We may earn a commission if you book; it doesn’t change your price.",
+} as const;

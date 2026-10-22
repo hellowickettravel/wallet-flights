@@ -954,3 +954,24 @@ gate, the partner fallback link and Sub ID cleaning.
 **Owner to do (dashboard):** Drive is registered for `flights.walletflights.com`; add `walletflights.com` as
 the project's site and re-check Drive (send the new script if it differs). Update White Label #23361's domain
 to `https://walletflights.com`.
+
+## Batch 16 — /flights showed no results (22 Oct 2026)
+
+**Cause:** White Label #23361 no longer existed. `tpwdg.com/wl_web/main.js?wl_id=23361` answered
+`404 whitelabel web not found` without CORS headers, so the browser blocked the module script and
+`#tpwl-search` / `#tpwl-tickets` stayed empty, with no message. The owner found the White Label list empty
+and created #23761 for `walletflights.com`; its script loads with marker 567389.
+
+**Changes:**
+- `whiteLabelId` → `23761`.
+- If the widget script fails to load, /flights now shows "Live prices aren't loading right now" with a tracked
+  `tp.media` Aviasales link for the same search (Sub ID `<placement>_fallback`, `fallbackSearchUrl` in
+  `src/lib/white-label.ts`) and our own search form, instead of an empty box.
+
+**Test:** live walletflights.com with the script swapped to #23761 in Playwright: form fills from the URL
+(LON → NYC), "Searching at providers" starts, no CSP violations. Prices themselves weren't visible from the
+sandbox (its network blocks `apistp.com`). lint, typecheck, build (rates stubbed locally) and
+`flights.spec.ts` pass; a new test covers the 404 fallback.
+
+**Owner to do (dashboard):** restyle #23761 (colours above) if wanted; after deploy, run one search on
+/flights and confirm prices show.

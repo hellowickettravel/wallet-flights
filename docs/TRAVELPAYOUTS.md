@@ -9,7 +9,8 @@ the items listed under "Changes made".
 
 | What | Why |
 |---|---|
-| Created **White Label widget #23361** (project Walletflights, English, USD + GBP, hotels on) | Live search + results on walletflights.com/flights (see "White Label" below) |
+| Created **White Label widget #23361** (project Walletflights, English, USD + GBP, hotels on) | Live search + results on walletflights.com/flights (see "White Label" below). **Gone by 22 Oct 2026** (the White Label list was empty; tpwdg.com answered 404) |
+| 22 Oct 2026, by the owner: created **White Label #23761** (domain `walletflights.com`, project Walletflights, English, USD, default design) | Replaces #23361; `/flights` uses it (`src/content/affiliates.ts`). Our page config still hides hotels and the referral link and widens the currency menu. The custom colours above were on #23361 and need setting again on #23761 |
 | Styled it with our tokens: Manrope font (closest to Onest), radius 12, buttons/icons/links `#1F5BD8`, prices `#0A7F4F`, text `#0F1F3D`, strokes `#DFE6F0`, cards `#FFFFFF` | Matches `src/app/globals.css` |
 | Generated 6 sample links in the link generator (Sub IDs `deals_rail`, `sample`) | To copy the exact `tp.media` format and campaign IDs instead of guessing |
 

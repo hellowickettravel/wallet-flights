@@ -5,12 +5,11 @@ export const travelpayouts = {
   /** The "Walletflights" project (source) in the dashboard. */
   trs: "344771",
   /**
-   * White Label widget #23361. Registered in the dashboard for
-   * https://www.walletflights.com; the site moved to the apex on 16 Oct 2026
-   * and the widget's airport lookup still works there. TODO(confirm): owner to
-   * update the widget's domain to https://walletflights.com in the dashboard.
+   * White Label #23761, registered for walletflights.com (created by the owner
+   * on 22 Oct 2026). It replaced #23361, which no longer exists: tpwdg.com
+   * answered "whitelabel web not found" and /flights stayed empty.
    */
-  whiteLabelId: "23361",
+  whiteLabelId: "23761",
   /**
    * Travelpayouts Drive loader, from the dashboard's "Manual installation"
    * screen for walletflights.com (22 Oct 2026). Added to <head> on every page

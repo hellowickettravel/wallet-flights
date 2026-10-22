@@ -1,6 +1,6 @@
 import { expect, test } from "./fixtures";
 
-// /flights = Travelpayouts White Label #23361 (stubbed in tests, see fixtures.ts).
+// /flights = Travelpayouts White Label #23761 (stubbed in tests, see fixtures.ts).
 test.skip(process.env.NEXT_PUBLIC_DEMO_RESULTS === "true", "demo build replaces the White Label");
 
 test.describe("with live search allowed", () => {
@@ -18,7 +18,7 @@ test.describe("with live search allowed", () => {
     await expect(page).toHaveURL(/\/flights\?flightSearch=NYC0105DXB09051&origin_airports=1&destination_airports=0&marker=567389\.home_hero$/);
     await expect(page.locator("#tpwl-search")).toHaveText("White Label stub: NYC0105DXB09051 · marker 567389.home_hero");
     await expect(page.locator("#tpwl-tickets")).toBeAttached();
-    await expect(page.locator("script[data-tpwl]")).toHaveAttribute("src", "https://tpwdg.com/wl_web/main.js?wl_id=23361");
+    await expect(page.locator("script[data-tpwl]")).toHaveAttribute("src", "https://tpwdg.com/wl_web/main.js?wl_id=23761");
   });
 
   test("a place outside the built-in list reaches the White Label", async ({ page }) => {
@@ -66,6 +66,22 @@ test.describe("with live search allowed", () => {
     await page.goto("/?flightSearch=NYC1510LAX31101&destination_airports=1");
     await expect(page).toHaveURL(/\/flights\?flightSearch=NYC1510LAX31101&destination_airports=1/);
     await expect(page.locator("#tpwl-search")).toContainText("NYC1510LAX31101");
+  });
+
+  test("if the widget can't load, the same search is offered on the partner's site, tracked", async ({ page }) => {
+    // What tpwdg.com answers for a White Label that's switched off (seen for #23761, 22 Oct 2026).
+    await page.route("https://tpwdg.com/**", (r) => r.fulfill({ status: 404, contentType: "text/plain", body: "whitelabel web not found" }));
+    await page.goto("/flights?trip=round&from0=LON&to0=NYC&date0=2030-03-10&return=2030-03-17&sub=home_hero");
+    const down = page.getByTestId("search-down");
+    await expect(down).toContainText("Live prices aren’t loading right now");
+    const link = page.getByTestId("fallback-search");
+    await expect(link).toHaveAttribute("rel", "sponsored noopener");
+    await expect(link).toHaveAttribute(
+      "href",
+      "https://tp.media/r?campaign_id=100&marker=567389&p=4114&sub_id=home_hero_fallback&trs=344771&u=https%3A%2F%2Fwww.aviasales.com%2Fsearch%2FLON1003NYC17031",
+    );
+    // The search form stays usable, filled with the same trip.
+    await expect(page.getByRole("form", { name: "Search flights" })).toBeVisible();
   });
 
   test("a direct visit still tags the placement", async ({ page }) => {

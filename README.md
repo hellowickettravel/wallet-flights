@@ -38,7 +38,7 @@ First-time Playwright setup locally: `npx playwright install chromium`.
    both are cookieless).
 
 ### Travelpayouts
-See [`docs/TRAVELPAYOUTS.md`](docs/TRAVELPAYOUTS.md): `/flights` runs White Label widget #23361
+See [`docs/TRAVELPAYOUTS.md`](docs/TRAVELPAYOUTS.md): `/flights` runs White Label widget #23761
 (configured for `https://www.walletflights.com`), prices come from the Aviasales Data API, and every
 partner link is a `tp.media` affiliate link with marker 567389 and a placement `sub_id`.
 

@@ -176,7 +176,7 @@ Dashboard audit and IDs: [`docs/TRAVELPAYOUTS.md`](TRAVELPAYOUTS.md).
 
 | Area | Job | Source of truth |
 |---|---|---|
-| `/flights` | Live search + results on our domain | Travelpayouts White Label widget #23361 (script + `#tpwl-search`/`#tpwl-tickets`), consent-gated |
+| `/flights` | Live search + results on our domain | Travelpayouts White Label widget #23761 (script + `#tpwl-search`/`#tpwl-tickets`), consent-gated |
 | Homepage search | Feeds the White Label (`flightSearch`, `origin/destination_airports`, `currency`, `marker=567389.<sub_id>`) | `src/lib/white-label.ts` |
 | Deals, fare board, destination tiles, guides | Real cheapest fares, hidden when none | Aviasales Data API `prices_for_dates`, cached hourly (`src/lib/travelpayouts.ts`) |
 | `/routes/[slug]` (new, 37 pages) | Route page: cheapest fare, cheapest-month calendar, search, extras | `grouped_prices?group_by=month` |

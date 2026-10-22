@@ -83,3 +83,16 @@ export function partnerSearchUrl(q: SearchQuery | null, subId: string) {
   const path = q ? `/search/${toFlightSearch(q).flightSearch}` : "/";
   return affiliateUrl("aviasales", aviasalesUrl(path), subId);
 }
+
+/**
+ * The partner-site link for the search the White Label was given (its
+ * `?flightSearch=` and `marker=567389.<sub_id>` params), for when the widget
+ * can't load. Tagged `<sub_id>_fallback` so these clicks show up on their own
+ * in Travelpayouts reports.
+ */
+export function fallbackSearchUrl(params: URLSearchParams) {
+  const fs = params.get("flightSearch");
+  const sub = params.get("marker")?.split(".")[1] || "flights_page";
+  const path = fs && /^[A-Za-z0-9-]{1,80}$/.test(fs) ? `/search/${fs}` : "/";
+  return affiliateUrl("aviasales", aviasalesUrl(path), `${sub}_fallback`);
+}
