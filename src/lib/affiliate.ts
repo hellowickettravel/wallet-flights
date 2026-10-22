@@ -2,10 +2,13 @@ import { programs, travelpayouts, type ProgramId } from "@/content/affiliates";
 
 /**
  * Sub IDs name the placement a click came from, so Travelpayouts reports
- * (Group by SubID) show which button earns. Letters, digits, `_` and `-` only.
+ * (Group by SubID) show which button earns. Travelpayouts allows Latin
+ * letters, digits and `_` only (support article 203955653), so anything else,
+ * including the `-` in our slugs, becomes `_`: "destination_new-york_hotels" →
+ * "destination_new_york_hotels". Used for links and the live search's marker alike.
  */
 export type SubId = string;
-const cleanSub = (s: SubId) => s.toLowerCase().replace(/[^a-z0-9_-]+/g, "_").slice(0, 64);
+export const cleanSubId = (s: SubId) => s.toLowerCase().replace(/[^a-z0-9_]+/g, "_").slice(0, 64) || "site";
 
 /**
  * Affiliate link in the exact format the dashboard's link generator produces:
@@ -15,7 +18,7 @@ export function affiliateUrl(program: ProgramId, destination: string, subId: Sub
   const pr = programs[program];
   return (
     `https://tp.media/r?campaign_id=${pr.campaignId}&marker=${travelpayouts.marker}&p=${pr.p}` +
-    `&sub_id=${encodeURIComponent(cleanSub(subId))}&trs=${travelpayouts.trs}&u=${encodeURIComponent(destination)}`
+    `&sub_id=${encodeURIComponent(cleanSubId(subId))}&trs=${travelpayouts.trs}&u=${encodeURIComponent(destination)}`
   );
 }
 

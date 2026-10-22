@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { ANALYTICS_RENEW_BEFORE } from "./consent-flag";
+import { CONSENT_REGION_COOKIE } from "./consent-region";
 
 /**
  * Cookie consent (UK GDPR / PECR, EU ePrivacy). Optional categories stay off
@@ -56,6 +57,20 @@ export function useConsent(): Consent | null | undefined {
   return useSyncExternalStore(subscribe, snapshot, () => undefined);
 }
 
+/**
+ * Live search before the visitor has chosen: on outside the UK, EU/EEA and
+ * Switzerland (the proxy's wf_geo cookie is "0"), off everywhere else.
+ */
+export const searchByDefault = () => new RegExp(`(?:^|; )${CONSENT_REGION_COOKIE}=0(?:;|$)`).test(document.cookie);
+
+/** Whether live search may load: the visitor's choice, else the region default. `undefined` while server-rendering. */
+export function useSearchAllowed(): boolean | undefined {
+  const consent = useConsent();
+  const byDefault = useSyncExternalStore(subscribe, searchByDefault, () => false);
+  if (consent === undefined) return undefined;
+  return consent?.search ?? byDefault;
+}
+
 // Cookies the White Label (tpwdg.com) and its Snowplow tracker set on our domain.
 const SEARCH_COOKIES = [/^tpwl_/, /^hide_hotels$/, /^_sp_/];
 // Google Analytics: _ga and _ga_<measurement id>, set on the apex (.walletflights.com).
@@ -80,7 +95,7 @@ export function saveConsent(choice: Omit<Consent, "at">) {
   document.documentElement.dataset.consent = "1";
   window.dispatchEvent(new Event(CHANGE));
   // A loaded third-party script can't be unloaded: start a clean page.
-  const searchLoaded = before?.search && !choice.search && document.querySelector("script[data-tpwl]");
+  const searchLoaded = (before?.search ?? searchByDefault()) && !choice.search && document.querySelector("script[data-tpwl]");
   const analyticsLoaded = before?.analytics && !choice.analytics && document.querySelector('script[src*="googletagmanager.com/gtag/js"]');
   if (searchLoaded || analyticsLoaded) location.reload();
 }

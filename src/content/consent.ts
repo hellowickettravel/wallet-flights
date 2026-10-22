@@ -3,6 +3,8 @@
 export const consentCopy = {
   title: "Cookies on Wallet Flights",
   body: "We use necessary cookies to remember this choice. With your permission we’d also like to load our flight-search partner and measure how the site is used.",
+  /** Outside the UK, EU/EEA and Switzerland, where live search is on until switched off. */
+  bodySearchOn: "We use necessary cookies to remember this choice. Live search from our flight-search partner is on, and you can switch it off here. With your permission we’d also like to measure how the site is used.",
   accept: "Accept all",
   reject: "Reject all",
   manage: "Manage choices",
@@ -37,4 +39,7 @@ export const searchGateCopy = {
   body: "Our live search is run by our flight search partner, which sets its own cookies. Allow live flight search to compare prices from airlines and travel sites here on Wallet Flights.",
   allow: "Allow live search",
   settings: "Cookie settings",
+  /** Fallback that needs no cookies on our site: the same search on our partner's own site, through our affiliate link. */
+  partner: "See prices on our partner’s site",
+  partnerNote: "Opens our partner’s site in a new tab. We may earn a commission if you book; it doesn’t change your price.",
 } as const;

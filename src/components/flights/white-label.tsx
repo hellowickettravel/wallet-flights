@@ -2,12 +2,13 @@
 
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { useSearchParams } from "next/navigation";
-import { ShieldCheck } from "@phosphor-icons/react";
+import { ArrowUpRight, ShieldCheck } from "@phosphor-icons/react";
 import { searchCurrencies, travelpayouts } from "@/content/affiliates";
 import { searchGateCopy } from "@/content/consent";
-import { openConsentSettings, saveConsent, useConsent } from "@/lib/consent";
+import { openConsentSettings, saveConsent, useConsent, useSearchAllowed } from "@/lib/consent";
 import { parseSearch, withDefaultDates } from "@/lib/search-query";
-import { whiteLabelParams } from "@/lib/white-label";
+import { partnerSearchUrl, whiteLabelParams } from "@/lib/white-label";
+import { cleanSubId, sponsoredLink } from "@/lib/affiliate";
 import { readDisplayCurrency, setDisplayCurrency, useDisplayCurrency } from "@/components/currency/currency-provider";
 import { isDisplayCurrency } from "@/lib/currency";
 
@@ -22,7 +23,7 @@ const todayIso = () => new Date().toISOString().slice(0, 10);
  */
 function prepareUrl(params: URLSearchParams) {
   if (params.has("flightSearch")) return;
-  const sub = (params.get("sub") ?? "flights_page").replace(/[^a-z0-9_]/gi, "_");
+  const sub = cleanSubId(params.get("sub") ?? "flights_page");
   const parsed = parseSearch(params);
   // Prices open in the visitor's currency (the widget's own menu can still change it).
   const currency = readDisplayCurrency();
@@ -79,7 +80,9 @@ export function WhiteLabel() {
   const consent = useConsent();
   const params = useSearchParams();
   const hydrated = useSyncExternalStore(noop, () => true, () => false);
-  const allowed = !!consent?.search;
+  // The visitor's choice, or on by default outside the UK / EU (see consent-region.ts).
+  const searchAllowed = useSearchAllowed();
+  const allowed = !!searchAllowed;
   const shown = useDisplayCurrency();
   // The currency the widget was loaded with (undefined until it is).
   const loadedWith = useRef<string | null | undefined>(undefined);
@@ -131,8 +134,13 @@ export function WhiteLabel() {
 
   // Until the stored choice is known, hold the space of the consent notice (what
   // a first visit shows), so the page doesn't shift when it appears.
-  if (!hydrated || consent === undefined) return <GateSpace />;
-  if (!allowed) return <SearchGate hasQuery={parseSearch(new URLSearchParams(params.toString())).ok} analytics={!!consent?.analytics} />;
+  if (!hydrated || searchAllowed === undefined) return <GateSpace />;
+  if (!allowed) {
+    const parsed = parseSearch(new URLSearchParams(params.toString()));
+    const query = parsed.ok ? withDefaultDates(parsed.query, todayIso()) : null;
+    const partnerHref = partnerSearchUrl(query, `${params.get("sub") ?? "flights_page"}_partner`);
+    return <SearchGate hasQuery={parsed.ok} analytics={!!consent?.analytics} partnerHref={partnerHref} />;
+  }
 
   return (
     <div className="space-y-6" data-testid="white-label">
@@ -142,7 +150,7 @@ export function WhiteLabel() {
   );
 }
 
-function SearchGate({ hasQuery, analytics }: { hasQuery: boolean; analytics: boolean }) {
+function SearchGate({ hasQuery, analytics, partnerHref }: { hasQuery: boolean; analytics: boolean; partnerHref?: string }) {
   return (
     <div role="region" aria-labelledby="search-gate-title" className="mx-auto max-w-2xl rounded-(--radius-panel) bg-white p-7 text-center shadow-(--shadow-float) ring-1 ring-line sm:p-10">
       <ShieldCheck className="mx-auto size-10 text-action" weight="duotone" aria-hidden />
@@ -163,6 +171,15 @@ function SearchGate({ hasQuery, analytics }: { hasQuery: boolean; analytics: boo
           {searchGateCopy.settings}
         </button>
       </div>
+      {partnerHref && (
+        <div className="mt-6 border-t border-line pt-6">
+          <a href={partnerHref} {...sponsoredLink} data-testid="partner-search" className="inline-flex items-center gap-1.5 font-semibold text-action underline underline-offset-2 hover:text-action-deep">
+            {searchGateCopy.partner}
+            <ArrowUpRight className="size-4" weight="bold" aria-hidden />
+          </a>
+          <p className="mx-auto mt-2 max-w-prose text-[0.8125rem] text-ink-soft">{searchGateCopy.partnerNote}</p>
+        </div>
+      )}
     </div>
   );
 }

@@ -11,7 +11,7 @@
 import type { LegalSection } from "@/components/legal/legal-page";
 import { company, companyLine, site } from "./site";
 
-export const legalUpdated = "20 October 2026";
+export const legalUpdated = "22 October 2026";
 
 export const privacy: { intro: string; sections: LegalSection[] } = {
   intro: `This policy explains what personal data ${site.name} collects, why, and the choices you have. ${site.name} is a trading name of ${company.legalName} (company number ${company.number}, registered office ${company.registeredOffice}), which is the controller of the data described here.`,
@@ -26,7 +26,7 @@ export const privacy: { intro: string; sections: LegalSection[] } = {
           "Fare alerts: your email address, once you confirm it from the email we send. Fare alerts haven’t launched yet; until they do, we only use it to tell you when they launch.",
           "Price alerts on the fare calendar: your email address, the route, trip and price you chose, and when we last emailed you about it, once you confirm it from the email we send. We keep the alert until you stop it with the link in any alert email.",
           "A record of your alerts: when you confirmed fare alerts or started, changed or stopped a price alert, and each alert email we sent you (the route and the fare). Our team uses it to answer your questions and see that alerts are working.",
-          "Searches: the routes, dates and number of travellers you search for. Live search on our Flights page is run by our flight search partner, which receives your search, IP address and device information to find prices, and measures searches and bookings with its own cookies. It only loads if you allow “Live flight search” cookies.",
+          "Searches: the routes, dates and number of travellers you search for. Live search on our Flights page is run by our flight search partner, which receives your search, IP address and device information to find prices, and measures searches and bookings with its own cookies. In the UK, the EU/EEA and Switzerland it only loads if you allow “Live flight search” cookies; elsewhere it loads by default and you can switch it off under “Cookie settings”.",
           "Fare calendar starting point: when you open the fare calendar without choosing a route, our hosting provider passes our server your approximate location (worked out from your IP address) so we can start from an airport near you. We use it for that page only and don’t store it.",
           "Currency: on your first visit our hosting provider passes our server your country (worked out from your IP address) so we can show prices in its currency. We keep only the currency code, in the wf_cur cookie, never the country or IP address. Prices are converted at daily exchange rates published by the open-source currency-api project, fetched by our server, so your browser doesn’t contact it.",
           "Technical data: if you allow analytics, Google Analytics records the pages you view, how you arrived (for example from a search engine), your device and browser type and your approximate location, linked to a random ID stored in a cookie so it can tell visits apart. It works out your location from your IP address but doesn’t store the address. We’ve switched off Google signals and ad personalisation, so this data isn’t used for advertising. Vercel Analytics adds page views and page speed, in aggregate, without identifying you.",
@@ -165,12 +165,12 @@ export const terms: { intro: string; sections: LegalSection[] } = {
 };
 
 export const cookies: { intro: string; sections: LegalSection[] } = {
-  intro: "This page explains the cookies and similar technologies used on Wallet Flights, and how to change your choice. Optional cookies are off until you allow them.",
+  intro: "This page explains the cookies and similar technologies used on Wallet Flights, and how to change your choice. Optional cookies are off until you allow them, except live flight search for visitors outside the UK, the EU/EEA and Switzerland, which is on until you switch it off.",
   sections: [
     {
       heading: "Your choice",
       body: [
-        "When you first visit, we ask whether you allow optional cookies. You can accept all, reject all, or choose by category, and change your mind at any time with “Cookie settings” at the bottom of every page. Rejecting doesn’t stop you using the site; live search on the Flights page just stays off until you allow it.",
+        "When you first visit, we ask whether you allow optional cookies. You can accept all, reject all, or choose by category, and change your mind at any time with “Cookie settings” at the bottom of every page. Rejecting doesn’t stop you using the site; live search on the Flights page just stays off until you allow it. Outside the UK, the EU/EEA and Switzerland, live search is on from your first visit; switch it off in “Cookie settings” if you prefer.",
       ],
     },
     {
@@ -179,6 +179,7 @@ export const cookies: { intro: string; sections: LegalSection[] } = {
         [
           "wf_consent — remembers your cookie choice. Set by Wallet Flights, kept for 6 months.",
           "wf_cur — remembers the currency we show prices in: on your first visit, the currency of the country your IP address is in (only the currency is saved, not your location); after that, whatever you pick in the currency menu. Set by Wallet Flights, kept for 12 months.",
+          "wf_geo — remembers whether live search waits for your choice: on your first visit, whether your IP address is in the UK, the EU/EEA or Switzerland (only a yes or no is saved, not your location). Set by Wallet Flights, kept for 30 days.",
           "wf_teaser (stored in your browser for this visit only, not a cookie) — remembers that we’ve shown you the fare calendar suggestion, so it appears at most once per visit. Cleared when you close the tab.",
         ],
         "These are needed for the site to work and don’t require consent.",
@@ -187,7 +188,7 @@ export const cookies: { intro: string; sections: LegalSection[] } = {
     {
       heading: "Live flight search (optional)",
       body: [
-        "Our Flights page shows live prices with a search widget from our flight search partner. It only loads after you allow this category. It sets:",
+        "Our Flights page shows live prices with a search widget from our flight search partner. In the UK, the EU/EEA and Switzerland it only loads after you allow this category; elsewhere it loads by default until you switch it off. It sets:",
         [
           "tpwl_currency and tpwl_locale — remember the currency and language you picked in the search (up to 1 year).",
           "hide_hotels — remembers if you hid hotel suggestions.",

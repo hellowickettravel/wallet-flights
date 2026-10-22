@@ -76,8 +76,13 @@ Used in destination guides now: Trip.com hotels, Kiwitaxi, Economybookings, Aira
 ## Notes and risks
 
 - Live search depends on the White Label script (`tpwdg.com`), which also loads a Snowplow
-  analytics tracker and sets `tpwl_currency`, `tpwl_locale`, `hide_hotels` cookies. It is
-  therefore loaded only after the visitor allows **search cookies** (see cookie policy).
+  analytics tracker and sets `tpwl_currency`, `tpwl_locale`, `hide_hotels` cookies. In the UK,
+  EU/EEA and Switzerland it loads only after the visitor allows **search cookies**; elsewhere it
+  loads by default (`wf_geo` cookie, `src/lib/consent-region.ts`). Visitors who decline get a
+  tracked Aviasales deep link for the same search instead (Sub ID `<placement>_partner`).
+- Sub IDs: letters, digits and `_` only (Travelpayouts rule); `cleanSubId` enforces it.
+- Drive (22 Oct): the dashboard's Drive screen is registered to `flights.walletflights.com`, not
+  `walletflights.com`; the owner needs to add the apex as the project site.
 - Data API prices are cached search results, not live quotes; the UI labels them
   "found recently" and hides any route with no cached price.
 - The API token lives only in `TRAVELPAYOUTS_TOKEN` (Vercel env + `.env.local`), never in git.

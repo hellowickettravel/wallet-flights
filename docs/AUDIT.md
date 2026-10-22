@@ -928,3 +928,29 @@ failed fetching Google Fonts at build time (same files had built as a preview 27
 redeployed.
 
 **Owner to do:** click "Check installation" on the Drive screen in the Travelpayouts dashboard.
+
+## Batch 15 — Travelpayouts commission fixes (22 Oct 2026)
+
+**Why:** no commission. Audit found tracking correct (marker 567389, trs 344771) but most visitors never
+reached a bookable price: /flights showed only the "Allow live search" box until consent, and there was no
+other route to the partner. Owner approved both changes below on 22 Oct 2026.
+
+**Changes:**
+- Live search loads by default outside the UK, EU/EEA and Switzerland. The proxy sets `wf_geo` ("1" = ask
+  first, "0" = on) from `x-vercel-ip-country` (`src/lib/consent-region.ts`); an unknown country asks first.
+  The visitor's own choice still wins and "Reject all" switches it off. Banner copy says search is on there.
+  Cookie and privacy policies updated (new necessary cookie `wf_geo`, 30 days).
+- The consent box on /flights now also offers "See prices on our partner's site": a `tp.media` Aviasales link
+  for the same search (`partnerSearchUrl` in `src/lib/white-label.ts`), Sub ID `<placement>_partner`.
+  Reverses the 19 Oct "no links out" rule, at the owner's request.
+- Sub IDs: Travelpayouts allows letters, digits and `_` only. `cleanSubId` (`src/lib/affiliate.ts`) now turns
+  `-` into `_` for links and the live-search marker alike (`destination_new-york_hotels` →
+  `destination_new_york_hotels`). Reports grouped by Sub ID show the new names from this deploy on.
+
+**Test:** lint, typecheck, build (exchange rates stubbed locally; the sandbox blocks the rates CDN) and
+`flights.spec.ts` + `consent.spec.ts` on desktop and mobile. New tests cover the region default, the UK/EU
+gate, the partner fallback link and Sub ID cleaning.
+
+**Owner to do (dashboard):** Drive is registered for `flights.walletflights.com`; add `walletflights.com` as
+the project's site and re-check Drive (send the new script if it differs). Update White Label #23361's domain
+to `https://walletflights.com`.
