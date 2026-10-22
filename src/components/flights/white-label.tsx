@@ -1,15 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useSearchParams } from "next/navigation";
-import { ShieldCheck } from "@phosphor-icons/react";
+import { ArrowUpRight, CloudWarning, ShieldCheck } from "@phosphor-icons/react";
 import { searchCurrencies, travelpayouts } from "@/content/affiliates";
-import { searchGateCopy } from "@/content/consent";
-import { openConsentSettings, saveConsent, useConsent } from "@/lib/consent";
-import { parseSearch, withDefaultDates } from "@/lib/search-query";
-import { whiteLabelParams } from "@/lib/white-label";
+import { searchDownCopy, searchGateCopy } from "@/content/consent";
+import { openConsentSettings, saveConsent, useConsent, useSearchAllowed } from "@/lib/consent";
+import { parseSearch, withDefaultDates, type SearchQuery } from "@/lib/search-query";
+import { fallbackSearchUrl, partnerSearchUrl, whiteLabelParams } from "@/lib/white-label";
+import { cleanSubId, sponsoredLink } from "@/lib/affiliate";
 import { readDisplayCurrency, setDisplayCurrency, useDisplayCurrency } from "@/components/currency/currency-provider";
 import { isDisplayCurrency } from "@/lib/currency";
+import { SearchPanel } from "@/components/search/search-panel";
 
 const SCRIPT_SRC = `https://tpwdg.com/wl_web/main.js?wl_id=${travelpayouts.whiteLabelId}`;
 const noop = () => () => {};
@@ -22,7 +24,7 @@ const todayIso = () => new Date().toISOString().slice(0, 10);
  */
 function prepareUrl(params: URLSearchParams) {
   if (params.has("flightSearch")) return;
-  const sub = (params.get("sub") ?? "flights_page").replace(/[^a-z0-9_]/gi, "_");
+  const sub = cleanSubId(params.get("sub") ?? "flights_page");
   const parsed = parseSearch(params);
   // Prices open in the visitor's currency (the widget's own menu can still change it).
   const currency = readDisplayCurrency();
@@ -48,7 +50,7 @@ function urlCurrency(currency: string) {
   setWidgetCurrency(currency);
 }
 
-function loadScript(visitorCurrency: string | null) {
+function loadScript(visitorCurrency: string | null, onError: () => void) {
   if (document.querySelector("script[data-tpwl]")) {
     // The widget mounts once per page load; coming back via client-side
     // navigation needs a fresh document.
@@ -71,26 +73,40 @@ function loadScript(visitorCurrency: string | null) {
   s.async = true;
   s.src = SCRIPT_SRC;
   s.dataset.tpwl = "";
+  // A 404 from tpwdg.com (widget switched off or deleted in the dashboard: it
+  // then answers without CORS headers) or a blocker lands here.
+  s.onerror = onError;
   document.head.appendChild(s);
 }
 
-/** Travelpayouts White Label #23361: live search and results on our own page. */
+/** Travelpayouts White Label #23761: live search and results on our own page. */
 export function WhiteLabel() {
   const consent = useConsent();
   const params = useSearchParams();
   const hydrated = useSyncExternalStore(noop, () => true, () => false);
-  const allowed = !!consent?.search;
+  // The visitor's choice, or on by default outside the UK / EU (see consent-region.ts).
+  const searchAllowed = useSearchAllowed();
+  const allowed = !!searchAllowed;
   const shown = useDisplayCurrency();
   // The currency the widget was loaded with (undefined until it is).
   const loadedWith = useRef<string | null | undefined>(undefined);
+  // Set when the widget script fails to load: the page then offers the same
+  // search on the partner's site instead of an empty box.
+  const [down, setDown] = useState<{ href: string; query: SearchQuery | null } | null>(null);
 
   useEffect(() => {
     if (!allowed) return;
+    const given = parseSearch(new URLSearchParams(window.location.search));
     prepareUrl(new URLSearchParams(window.location.search));
     const currency = readDisplayCurrency();
     if (currency) urlCurrency(currency);
     loadedWith.current = currency;
-    loadScript(currency);
+    loadScript(currency, () =>
+      setDown({
+        href: fallbackSearchUrl(new URLSearchParams(window.location.search)),
+        query: given.ok ? withDefaultDates(given.query, todayIso()) : null,
+      }),
+    );
     // Once, on permission: the widget manages the URL after that.
   }, [allowed]);
 
@@ -131,8 +147,15 @@ export function WhiteLabel() {
 
   // Until the stored choice is known, hold the space of the consent notice (what
   // a first visit shows), so the page doesn't shift when it appears.
-  if (!hydrated || consent === undefined) return <GateSpace />;
-  if (!allowed) return <SearchGate hasQuery={parseSearch(new URLSearchParams(params.toString())).ok} analytics={!!consent?.analytics} />;
+  if (!hydrated || searchAllowed === undefined) return <GateSpace />;
+  if (!allowed) {
+    const parsed = parseSearch(new URLSearchParams(params.toString()));
+    const query = parsed.ok ? withDefaultDates(parsed.query, todayIso()) : null;
+    const partnerHref = partnerSearchUrl(query, `${params.get("sub") ?? "flights_page"}_partner`);
+    return <SearchGate hasQuery={parsed.ok} analytics={!!consent?.analytics} partnerHref={partnerHref} />;
+  }
+
+  if (down) return <SearchDown {...down} />;
 
   return (
     <div className="space-y-6" data-testid="white-label">
@@ -142,7 +165,7 @@ export function WhiteLabel() {
   );
 }
 
-function SearchGate({ hasQuery, analytics }: { hasQuery: boolean; analytics: boolean }) {
+function SearchGate({ hasQuery, analytics, partnerHref }: { hasQuery: boolean; analytics: boolean; partnerHref?: string }) {
   return (
     <div role="region" aria-labelledby="search-gate-title" className="mx-auto max-w-2xl rounded-(--radius-panel) bg-white p-7 text-center shadow-(--shadow-float) ring-1 ring-line sm:p-10">
       <ShieldCheck className="mx-auto size-10 text-action" weight="duotone" aria-hidden />
@@ -163,6 +186,41 @@ function SearchGate({ hasQuery, analytics }: { hasQuery: boolean; analytics: boo
           {searchGateCopy.settings}
         </button>
       </div>
+      {partnerHref && (
+        <div className="mt-6 border-t border-line pt-6">
+          <a href={partnerHref} {...sponsoredLink} data-testid="partner-search" className="inline-flex items-center gap-1.5 font-semibold text-action underline underline-offset-2 hover:text-action-deep">
+            {searchGateCopy.partner}
+            <ArrowUpRight className="size-4" weight="bold" aria-hidden />
+          </a>
+          <p className="mx-auto mt-2 max-w-prose text-[0.8125rem] text-ink-soft">{searchGateCopy.partnerNote}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SearchDown({ href, query }: { href: string; query: SearchQuery | null }) {
+  const hasSearch = href.includes("%2Fsearch%2F");
+  return (
+    <div className="space-y-6">
+      <div role="region" aria-labelledby="search-down-title" data-testid="search-down" className="mx-auto max-w-2xl rounded-(--radius-panel) bg-white p-7 text-center shadow-(--shadow-float) ring-1 ring-line sm:p-10">
+        <CloudWarning className="mx-auto size-10 text-action" weight="duotone" aria-hidden />
+        <h2 id="search-down-title" className="mt-4 font-display-tight text-[1.625rem] font-bold text-ink">
+          {searchDownCopy.title}
+        </h2>
+        <p className="mx-auto mt-3 max-w-prose text-pretty leading-relaxed text-ink-soft">{searchDownCopy.body}</p>
+        <a
+          href={href}
+          {...sponsoredLink}
+          data-testid="fallback-search"
+          className="mt-7 inline-flex h-12 items-center gap-1.5 rounded-full bg-action px-6 font-semibold text-white hover:bg-action-deep"
+        >
+          {hasSearch ? searchDownCopy.partner : searchDownCopy.partnerNoSearch}
+          <ArrowUpRight className="size-4" weight="bold" aria-hidden />
+        </a>
+        <p className="mx-auto mt-3 max-w-prose text-[0.8125rem] text-ink-soft">{searchDownCopy.partnerNote}</p>
+      </div>
+      <SearchPanel variant="bar" initial={query ?? undefined} subId="flights_fallback" />
     </div>
   );
 }

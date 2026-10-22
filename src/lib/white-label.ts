@@ -1,4 +1,5 @@
 import { travelpayouts } from "@/content/affiliates";
+import { affiliateUrl, aviasalesUrl, cleanSubId } from "@/lib/affiliate";
 import type { SearchQuery } from "@/lib/search-query";
 
 export type Seg = { from: string; to: string; date: string };
@@ -69,6 +70,29 @@ export function whiteLabelParams(q: SearchQuery, subId: string, visitorCurrency?
   // The visitor's own currency (header picker / country) wins over the trip's.
   const currency = visitorCurrency ?? currencyFor(q);
   if (currency) p.set("currency", currency);
-  p.set("marker", `${travelpayouts.marker}.${subId.replace(/[^a-z0-9_]/gi, "_")}`);
+  p.set("marker", `${travelpayouts.marker}.${cleanSubId(subId)}`);
   return p;
+}
+
+/**
+ * The same search on the partner's own site, through our affiliate link
+ * (marker + sub_id), for visitors who don't allow live search here. With no
+ * search, the partner's home page.
+ */
+export function partnerSearchUrl(q: SearchQuery | null, subId: string) {
+  const path = q ? `/search/${toFlightSearch(q).flightSearch}` : "/";
+  return affiliateUrl("aviasales", aviasalesUrl(path), subId);
+}
+
+/**
+ * The partner-site link for the search the White Label was given (its
+ * `?flightSearch=` and `marker=567389.<sub_id>` params), for when the widget
+ * can't load. Tagged `<sub_id>_fallback` so these clicks show up on their own
+ * in Travelpayouts reports.
+ */
+export function fallbackSearchUrl(params: URLSearchParams) {
+  const fs = params.get("flightSearch");
+  const sub = params.get("marker")?.split(".")[1] || "flights_page";
+  const path = fs && /^[A-Za-z0-9-]{1,80}$/.test(fs) ? `/search/${fs}` : "/";
+  return affiliateUrl("aviasales", aviasalesUrl(path), `${sub}_fallback`);
 }

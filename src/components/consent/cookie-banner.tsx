@@ -5,7 +5,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { Cookie } from "@phosphor-icons/react";
 import clsx from "clsx";
 import { consentCopy as c } from "@/content/consent";
-import { onConsentOpen, saveConsent, useConsent, type ConsentCategory } from "@/lib/consent";
+import { onConsentOpen, saveConsent, useConsent, useSearchAllowed, type ConsentCategory } from "@/lib/consent";
 
 /**
  * UK/EU consent banner. Accept and Reject carry equal weight (ICO guidance);
@@ -19,6 +19,7 @@ import { onConsentOpen, saveConsent, useConsent, type ConsentCategory } from "@/
  */
 export function CookieBanner() {
   const consent = useConsent();
+  const searchAllowed = useSearchAllowed();
   const [reopened, setReopened] = useState(false);
   const [manage, setManage] = useState(false);
   // null = show what's stored; set once the visitor flips a switch.
@@ -45,7 +46,7 @@ export function CookieBanner() {
   }, [reopened]);
 
   if (!open) return null;
-  const choice = edited ?? { search: consent?.search ?? false, analytics: consent?.analytics ?? false };
+  const choice = edited ?? { search: searchAllowed ?? false, analytics: consent?.analytics ?? false };
 
   function done(next: Record<ConsentCategory, boolean>) {
     saveConsent(next);
@@ -72,7 +73,7 @@ export function CookieBanner() {
             {c.title}
           </h2>
           <p className="mt-1.5 text-pretty text-[0.9375rem] leading-relaxed text-ink-soft">
-            {c.body}{" "}
+            {consent == null && searchAllowed ? c.bodySearchOn : c.body}{" "}
             <Link href="/cookie-policy" className="font-semibold text-action underline underline-offset-2 hover:text-action-deep">
               {c.policyLabel}
             </Link>
