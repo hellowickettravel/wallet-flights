@@ -8,6 +8,7 @@ import { test as base, expect } from "@playwright/test";
  * - The Travelpayouts White Label script (tpwdg.com) is replaced by a stub that
  *   writes the search it received into #tpwl-search, so tests don't depend on a
  *   third-party service. tp.media affiliate redirects are stubbed the same way.
+ * - The Travelpayouts Drive loader (mn-tz.com) answers with an empty script.
  * - Google Analytics (googletagmanager.com, google-analytics.com) answers with
  *   GA_STUB, so tests never send hits to the real property.
  * - Photos are blocked (CDN may be unreachable in CI).
@@ -45,6 +46,7 @@ export const test = base.extend<{ consent: "unset" | "rejected" | "search" | "an
       await context.addCookies([{ name: "wf_consent", value, url: baseURL! }]);
     }
     await context.route("https://tpwdg.com/**", (r) => r.fulfill({ contentType: "application/javascript", body: WIDGET_STUB }));
+    await context.route("https://mn-tz.com/**", (r) => r.fulfill({ contentType: "application/javascript", body: "" }));
     await context.route("https://tp.media/**", (r) => r.fulfill({ contentType: "text/html", body: "<!doctype html><title>tp.media stub</title><h1>Partner</h1>" }));
     await context.route(/^https:\/\/[^/]*(googletagmanager|google-analytics)\.com\//, (r) => r.fulfill({ contentType: "application/javascript", body: GA_STUB }));
     await context.route("https://images.unsplash.com/**", (r) => r.abort());

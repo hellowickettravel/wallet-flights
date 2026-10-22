@@ -26,6 +26,8 @@ export const cspHosts = {
   photos: ["https://images.unsplash.com"],
   // Airline logos.
   logos: ["https://pics.avs.io"],
+  // Travelpayouts Drive loader, in <head> on every page (src/app/layout.tsx).
+  drive: ["https://mn-tz.com", "https://*.mn-tz.com"],
   // Vercel Analytics debug script (production serves it from /_vercel/ on our own host).
   analytics: ["https://va.vercel-scripts.com"],
   // Google Analytics 4 (gtag.js), after analytics consent. Hosts from Google's CSP guide for GA4.
@@ -37,14 +39,14 @@ export const cspHosts = {
 };
 
 export function contentSecurityPolicy() {
-  const { search, searchApi, searchImages, searchFonts, photos, logos, analytics, googleAnalytics: ga } = cspHosts;
+  const { search, searchApi, searchImages, searchFonts, photos, logos, drive, analytics, googleAnalytics: ga } = cspHosts;
   const directives: Record<string, string[]> = {
     "default-src": ["'self'"],
-    "script-src": ["'self'", "'unsafe-inline'", ...search, ...analytics, ...ga.script],
+    "script-src": ["'self'", "'unsafe-inline'", ...search, ...drive, ...analytics, ...ga.script],
     "style-src": ["'self'", "'unsafe-inline'", ...search, ...searchFonts.style],
-    "img-src": ["'self'", "data:", "blob:", ...photos, ...logos, ...search, ...searchImages, ...ga.img],
+    "img-src": ["'self'", "data:", "blob:", ...photos, ...logos, ...search, ...searchImages, ...drive, ...ga.img],
     "font-src": ["'self'", "data:", ...search, ...searchFonts.font],
-    "connect-src": ["'self'", ...search, ...searchApi, ...analytics, ...ga.connect],
+    "connect-src": ["'self'", ...search, ...searchApi, ...drive, ...analytics, ...ga.connect],
     "frame-src": ["'self'", ...search],
     "worker-src": ["'self'", "blob:"],
     "object-src": ["'none'"],
