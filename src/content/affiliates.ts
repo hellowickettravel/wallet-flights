@@ -11,6 +11,12 @@ export const travelpayouts = {
    * update the widget's domain to https://walletflights.com in the dashboard.
    */
   whiteLabelId: "23361",
+  /**
+   * Travelpayouts Drive loader, from the dashboard's "Manual installation"
+   * screen for walletflights.com (22 Oct 2026). Added to <head> on every page
+   * (src/app/layout.tsx) so the dashboard can verify the install.
+   */
+  driveScript: "https://mn-tz.com/MzQ0Nzcx.js?t=344771",
 } as const;
 
 /**

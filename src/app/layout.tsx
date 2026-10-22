@@ -13,7 +13,17 @@ import { CookieBanner } from "@/components/consent/cookie-banner";
 import { ConsentedAnalytics } from "@/components/consent/consented-analytics";
 import { CurrencyProvider } from "@/components/currency/currency-provider";
 import { site } from "@/content/site";
+import { travelpayouts } from "@/content/affiliates";
 import "./globals.css";
+
+// Travelpayouts Drive: the dashboard's install snippet, which adds its loader to <head>.
+const DRIVE_SCRIPT = `(function () {
+  var script = document.createElement("script");
+  script.async = 1;
+  script.setAttribute("data-cmp-ab","2");
+  script.src = ${JSON.stringify(travelpayouts.driveScript)};
+  document.head.appendChild(script);
+})();`;
 
 const onest = Onest({ subsets: ["latin"], variable: "--font-onest", display: "swap" });
 const bricolage = Bricolage_Grotesque({
@@ -60,6 +70,17 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`${onest.variable} ${bricolage.variable} ${jetbrains.variable} antialiased`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: `${CONSENT_FLAG_SCRIPT};${CURRENCY_FLAG_SCRIPT}` }} />
+        {/* Attributes as in the dashboard snippet (they keep WordPress optimisers away; harmless here). */}
+        <script
+          {...{ nowprocket: "" }}
+          data-noptimize="1"
+          data-cfasync="false"
+          data-wpfc-render="false"
+          seraph-accel-crit="1"
+          data-no-defer="1"
+          data-cmp-ab="2"
+          dangerouslySetInnerHTML={{ __html: DRIVE_SCRIPT }}
+        />
       </head>
       <body className="flex min-h-dvh flex-col">
         <MotionProvider>
