@@ -23,8 +23,16 @@ const todayIso = () => new Date().toISOString().slice(0, 10);
  * reads the URL once when it loads.
  */
 function prepareUrl(params: URLSearchParams) {
-  if (params.has("flightSearch")) return;
   const sub = cleanSubId(params.get("sub") ?? "flights_page");
+  if (params.has("flightSearch")) {
+    // Already in the widget's own format (a shared or reloaded results link):
+    // keep the search, but make sure the marker still names the placement.
+    if (params.has("marker")) return;
+    params.delete("sub");
+    params.set("marker", `${travelpayouts.marker}.${sub}`);
+    window.history.replaceState(null, "", `/flights?${params.toString()}`);
+    return;
+  }
   const parsed = parseSearch(params);
   // Prices open in the visitor's currency (the widget's own menu can still change it).
   const currency = readDisplayCurrency();

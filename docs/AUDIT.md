@@ -975,3 +975,27 @@ sandbox (its network blocks `apistp.com`). lint, typecheck, build (rates stubbed
 
 **Owner to do (dashboard):** restyle #23761 (colours above) if wanted; after deploy, run one search on
 /flights and confirm prices show.
+
+## Batch 17 — Every booking path earns commission (25 Oct 2026)
+
+**Plan:** owner asked that any booking made through the site earns commission. Checked every booking
+path in the code and on live walletflights.com (headless Chromium) for marker 567389 and project 344771.
+
+| Booking path | Result |
+|---|---|
+| /flights live search (White Label #23761) | Pass. Script 200, `"marker": "567389"`, hotels off. A homepage search lands on `/flights?flightSearch=…&marker=567389.home_hero`; the marker survives the widget's own URL rewrites |
+| Results link already in the widget's format (`?flightSearch=…&sub=…`, no marker) | **Fixed.** The Sub ID was dropped (bookings still counted for 567389 through the White Label's own config, just without the placement). `prepareUrl` now adds `marker=567389.<sub>` |
+| Consent box partner link, widget-down fallback, /go handoff | Pass. `tp.media` → 302 to aviasales.com with `marker=567389.<click>` (checked live) |
+| Deals, fare board, destination and route search forms | Pass. Stay on /flights with their Sub ID in the marker |
+| Flight-delay claims (Compensair) | Pass. `tp.media` link, campaign 86, marker 567389, trs 344771 |
+| Drive | Pass. Loader `mn-tz.com/MzQ0Nzcx.js?t=344771` on every page checked |
+| Old project IDs / Hotellook / subdomains in code | None in `src/` (only history in docs) |
+
+**Test:** lint, typecheck, build (rates stubbed locally) and the full e2e suite: 378 passed; the 6 failures
+are `currency.spec.ts`, which needs the live rates feed the sandbox blocks, and fail the same without this
+change. New test: a widget-format results link gets our marker.
+
+**Owner to check live:** one real search on /flights, click a result's price, and confirm the
+aviasales.com/partner URL carries `marker=567389` (the sandbox can't load search results). Check that
+`flights.walletflights.com` and `booking.walletflights.com` (old White Label pages) are gone or carry 567389.
+

@@ -26,6 +26,15 @@ test.describe("with live search allowed", () => {
     await expect(page).toHaveURL(/\/flights\?flightSearch=NYC0105KHI09051&marker=567389\.home_hero$/);
   });
 
+  test("a results link in the widget's own format still gets our marker", async ({ page }) => {
+    await page.goto("/flights?flightSearch=LON1003NYC17031&sub=shared-link");
+    await expect(page).toHaveURL(/\/flights\?flightSearch=LON1003NYC17031&marker=567389\.shared_link$/);
+    await expect(page.locator("#tpwl-search")).toHaveText("White Label stub: LON1003NYC17031 · marker 567389.shared_link");
+    // A marker already there is left alone.
+    await page.goto("/flights?flightSearch=LON1003NYC17031&marker=567389.home_hero");
+    await expect(page).toHaveURL(/\/flights\?flightSearch=LON1003NYC17031&marker=567389\.home_hero$/);
+  });
+
   test("UK departures price in pounds and airports are flagged", async ({ page }) => {
     await page.goto("/flights?trip=round&cabin=business&adults=2&children=1&from0=LHR&to0=JFK&date0=2030-03-10&return=2030-03-17&sub=test");
     await expect(page).toHaveURL(/flightSearch=LHR1003JFK1703c21&origin_airports=0%2C1&destination_airports=0%2C1&currency=GBP&marker=567389\.test/);
