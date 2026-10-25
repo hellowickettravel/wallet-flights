@@ -82,8 +82,24 @@ Used in destination guides now: Trip.com hotels, Kiwitaxi, Economybookings, Aira
   loads by default (`wf_geo` cookie, `src/lib/consent-region.ts`). Visitors who decline get a
   tracked Aviasales deep link for the same search instead (Sub ID `<placement>_partner`).
 - Sub IDs: letters, digits and `_` only (Travelpayouts rule); `cleanSubId` enforces it.
-- Drive (22 Oct): the dashboard's Drive screen is registered to `flights.walletflights.com`, not
-  `walletflights.com`; the owner needs to add the apex as the project site.
+- Drive (25 Oct): active for `walletflights.com`, Monetization boost "Maximum", link switching on
+  all 41 brands (Drive has no flights-only mode; owner kept it). Loader in `<head>` on every page.
+
+## State on 25 Oct 2026 (owner's dashboard check, flights only)
+
+- White Label #23761: domain `walletflights.com`, project Walletflights, USD, English, flights
+  search page; **Show hotels switched off** in the dashboard (25 Oct). Its script answers 200 with
+  `"marker": "567389"` and `"showHotels": false`.
+- Flight programs joined in project 344771: **Aviasales** (50% of its revenue), **Trip.com**
+  (1–5.5%), **Compensair** (delay claims, €5–12). Kiwi.com, Agoda, Traveloka, Omio, 12Go, AirHelp,
+  KKday and Rakuten Travel are locked behind the bulk "Unlock more programs" review (it would also
+  join ~34 non-flight programs, so it was not clicked). Booking.com flights was refused for low traffic.
+- Tracked short links created in the dashboard (all Aviasales home page): `home_hero`
+  https://aviasales.tpo.lv/dNJcR7dF, `flights_fallback` https://aviasales.tpo.lv/wHyWw0jT,
+  `consent_box` https://aviasales.tpo.lv/EJwEWgV5. The site doesn't use them: its `tp.media` links
+  carry the same marker and project, plus the visitor's actual search and a per-placement Sub ID.
+  They're kept for social posts and anywhere a short link is handier.
+- Not in use: the old project IDs and Hotellook. Nothing in `src/` points at them.
 - Data API prices are cached search results, not live quotes; the UI labels them
   "found recently" and hides any route with no cached price.
 - The API token lives only in `TRAVELPAYOUTS_TOKEN` (Vercel env + `.env.local`), never in git.
