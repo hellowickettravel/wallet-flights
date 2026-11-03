@@ -8,10 +8,15 @@ import { AirplaneTakeoff, ArrowUpRight, CalendarCheck, CaretRight, Lightbulb, Ma
 import { ParallaxHero } from "@/components/destinations/parallax-hero";
 import { DestinationTile } from "@/components/destinations/destination-tile";
 import { SearchPanel } from "@/components/search/search-panel";
+import { SmartImage } from "@/components/ui/smart-image";
+import { AirportTabs } from "@/components/destinations/airport-tabs";
+import { MonthStrip } from "@/components/destinations/month-strip";
+import { QuestionList } from "@/components/destinations/question-list";
+import { destinationDepth } from "@/content/destination-depth";
 import { airports } from "@/content/airports";
 import { MonthCalendar } from "@/components/destinations/month-calendar";
 import { TripExtras } from "@/components/destinations/trip-extras";
-import { originByCode, routes } from "@/content/deals";
+import { originByCode, routePagesTo, routes } from "@/content/deals";
 import { destinationGuides, entryNote, usPassportNote } from "@/content/destination-guides";
 import { destinationBySlug, destinations, regions } from "@/content/destinations";
 import { site } from "@/content/site";
@@ -87,18 +92,35 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
       a: destinationQuestions.flightTime.a(timesFrom),
     },
     entry: {
-      q: destinationQuestions.entry.q(d.country),
+      q: destinationQuestions.entry.q(/^United /.test(d.country) ? `the ${d.country}` : d.country),
       rest: `${entryNote}${notUkUs ? ` ${usPassportNote}` : ""}`,
     },
   };
+  // Batch 7: cities with photo-led content get the at-a-glance layout; the rest keep the approved page.
+  const depth = destinationDepth[slug];
+  const v = depth?.visual;
+  const entryAnswer = `${destinationQuestions.entryLead} ${guide.entry.label}. ${qa.entry.rest}`;
+  const questions = v
+    ? [
+        { q: qa.bestTime.q, a: qa.bestTime.a },
+        { q: qa.airports.q, a: qa.airports.a },
+        { q: qa.flightTime.q, a: qa.flightTime.a },
+        { q: qa.entry.q, a: entryAnswer, link: { label: guide.entry.label, href: guide.entry.url } },
+        { q: `What’s the best way to get around ${d.city}?`, a: depth.gettingAround },
+        { q: `How many days do you need in ${d.city}?`, a: depth.daysNeeded },
+      ]
+    : [];
+  const cityRoutes = v ? routePagesTo(slug) : routes.filter((r) => r.destination.slug === slug);
+  const cal = calendars[0];
+  const cheapest = cal?.months.length ? cal.months.reduce((a, b) => (b.price < a.price ? b : a)) : undefined;
+
   const jsonLd = {
     "@graph": [
-      faqPage([
-        qa.bestTime,
-        qa.airports,
-        qa.flightTime,
-        { q: qa.entry.q, a: `${destinationQuestions.entryLead} ${guide.entry.label} (${guide.entry.url}). ${qa.entry.rest}` },
-      ]),
+      faqPage(
+        v
+          ? questions.map((x) => ({ q: x.q, a: x.a }))
+          : [qa.bestTime, qa.airports, qa.flightTime, { q: qa.entry.q, a: `${destinationQuestions.entryLead} ${guide.entry.label} (${guide.entry.url}). ${qa.entry.rest}` }],
+      ),
       {
         "@type": "TouristDestination",
         name: d.city,
@@ -158,43 +180,58 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
             ))}
           </dl>
 
+          {v ? (
+            <>
+              <h2 className="mt-12 font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">Getting in from the airport</h2>
+              <div className="mt-5">
+                <AirportTabs airports={depth.airports} />
+              </div>
+              <h2 className="mt-12 font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">Good to know</h2>
+              <div className="mt-4">
+                <QuestionList items={questions} />
+              </div>
+            </>
+          ) : (
+            <>
           <h2 className="mt-12 font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">Things to do in {d.city}</h2>
-          <ol className="mt-6 space-y-4">
-            {guide.highlights.map((h, i) => (
-              <li key={h} className="flex gap-4">
-                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-ink font-display-tight font-bold text-sun">{i + 1}</span>
-                <span className="pt-1.5 text-[1.0625rem] text-ink">{h}</span>
-              </li>
-            ))}
-          </ol>
+            <ol className="mt-6 space-y-4">
+              {guide.highlights.map((h, i) => (
+                <li key={h} className="flex gap-4">
+                  <span className="grid size-9 shrink-0 place-items-center rounded-full bg-ink font-display-tight font-bold text-sun">{i + 1}</span>
+                  <span className="pt-1.5 text-[1.0625rem] text-ink">{h}</span>
+                </li>
+              ))}
+            </ol>
+  
+            <h2 className="mt-12 font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">Visiting {d.city}</h2>
+            {/* Answer-first questions; the same text feeds the FAQPage markup below. */}
+            <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">{qa.bestTime.q}</h3>
+            <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">
+              <strong className="font-semibold text-ink">{guide.bestTime}.</strong> {guide.whenToGo}
+            </p>
+            <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">{qa.airports.q}</h3>
+            <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">{guide.flying}</p>
+            <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">{qa.flightTime.q}</h3>
+            <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">{qa.flightTime.a}</p>
+            <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">{qa.entry.q}</h3>
+            <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">
+              {destinationQuestions.entryLead}{" "}
+              <a href={guide.entry.url} target="_blank" rel="noopener" className="inline-flex items-center gap-1 font-semibold text-action hover:underline">
+                {guide.entry.label}
+                <ArrowUpRight className="size-3.5" weight="bold" aria-hidden />
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
+              . {qa.entry.rest}
+            </p>
+  
+              </>
+          )}
 
-          <h2 className="mt-12 font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">Visiting {d.city}</h2>
-          {/* Answer-first questions; the same text feeds the FAQPage markup below. */}
-          <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">{qa.bestTime.q}</h3>
-          <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">
-            <strong className="font-semibold text-ink">{guide.bestTime}.</strong> {guide.whenToGo}
-          </p>
-          <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">{qa.airports.q}</h3>
-          <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">{guide.flying}</p>
-          <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">{qa.flightTime.q}</h3>
-          <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">{qa.flightTime.a}</p>
-          <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">{qa.entry.q}</h3>
-          <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">
-            {destinationQuestions.entryLead}{" "}
-            <a href={guide.entry.url} target="_blank" rel="noopener" className="inline-flex items-center gap-1 font-semibold text-action hover:underline">
-              {guide.entry.label}
-              <ArrowUpRight className="size-3.5" weight="bold" aria-hidden />
-              <span className="sr-only"> (opens in a new tab)</span>
-            </a>
-            . {qa.entry.rest}
-          </p>
-
-          {routes.some((r) => r.destination.slug === slug) && (
+          {cityRoutes.length > 0 && (
             <>
               <h2 className="mt-12 font-display-tight text-[1.375rem] font-bold text-ink">Popular routes to {d.city}</h2>
               <ul className="mt-4 flex flex-wrap gap-2">
-                {routes
-                  .filter((r) => r.destination.slug === slug)
+                {cityRoutes
                   .map((r) => (
                     <li key={r.slug}>
                       <Link href={`/routes/${r.slug}`} className="inline-flex h-10 items-center rounded-full px-4 font-semibold text-ink ring-1 ring-line hover:bg-mist">
@@ -246,6 +283,72 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
           </div>
         </aside>
       </div>
+
+      {v && (
+        <section aria-labelledby="days-title" className="border-t border-line bg-mist py-14 md:py-20">
+          <div className="container-page">
+            <h2 id="days-title" className="font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">
+              3 days in {d.city}
+            </h2>
+            <ol className="mt-8 grid gap-5 md:grid-cols-3">
+              {v.days.map((day, i) => (
+                <li key={i} className="overflow-hidden rounded-(--radius-card) bg-white ring-1 ring-line">
+                  <div className="relative aspect-[3/2]">
+                    <SmartImage photo={day.photo} sizes="(min-width: 768px) 400px, 100vw" />
+                    <span className="absolute top-3 left-3 rounded-full bg-ink px-3 py-1 font-display-tight text-[0.875rem] font-bold text-sun">Day {i + 1}</span>
+                  </div>
+                  <div className="p-5">
+                    <h3 className="font-display-tight text-[1.25rem] leading-snug font-bold text-ink">{depth.itinerary[i]?.title}</h3>
+                    <ul className="mt-3 flex flex-wrap gap-1.5">
+                      {day.stops.map((stop) => (
+                        <li key={stop} className="rounded-full bg-mist px-3 py-1 text-[0.875rem] text-ink">
+                          {stop}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+      )}
+
+      {v && (
+        <section aria-labelledby="stay-title" className="border-t border-line py-14 md:py-20">
+          <div className="container-page">
+            <h2 id="stay-title" className="font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">
+              Where to stay
+            </h2>
+            <ul className="mt-8 grid gap-4 sm:grid-cols-3">
+              {v.stay.map((n) => (
+                <li key={n.name} className="relative aspect-[16/9] overflow-hidden rounded-(--radius-card) sm:aspect-[4/3]">
+                  <SmartImage photo={n.photo} sizes="(min-width: 640px) 400px, 100vw" />
+                  <span aria-hidden className="absolute inset-0 bg-[linear-gradient(0deg,rgb(15_31_61/0.82)_0%,rgb(15_31_61/0.2)_50%,transparent_75%)]" />
+                  <span className="absolute inset-x-0 bottom-0 p-5">
+                    <span className="block font-display-tight text-[1.375rem] leading-tight font-bold text-white">{n.name}</span>
+                    <span className="block text-[0.875rem] text-white/85">Best for {n.bestFor[0].toLowerCase() + n.bestFor.slice(1)}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
+      {v && (
+        <section aria-labelledby="when-title" className="border-t border-line py-14 md:py-20">
+          <div className="container-page">
+            <h2 id="when-title" className="font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">
+              When to go
+            </h2>
+            <p className="mt-2 text-[1.0625rem] font-medium text-ink">{guide.bestTime}</p>
+            <div className="mt-6">
+              <MonthStrip weather={depth.weather} climate={depth.climate?.months} cheapestMonth={cheapest ? Number(cheapest.month.slice(5, 7)) - 1 : undefined} cheapestLabel={cal ? `Cheapest from ${cal.origin.city}` : undefined} />
+            </div>
+          </div>
+        </section>
+      )}
 
       {calendars.length > 0 && (
         <section aria-labelledby="months-title" className="border-t border-line py-14 md:py-20">

@@ -1085,3 +1085,14 @@ guides, click-out measurement and the Next.js security upgrade stay. The deeper 
 redesign. Tests that described the reverted layout were returned to their originals.
 
 **Plan (each phase signed off before the next):** see `docs/PLAN.md`, Batch 7.
+
+## Batch 21 — London, photo-led at-a-glance layout (3 Nov 2026, awaiting owner sign-off)
+
+Owner direction: "users don't come to read essays; think like a user." London only, on the approved
+page: the numbered "Things to do" list and the 3-day plan merged into **3 photo day cards** (stops by
+name only); **airport tabs** with one line per way into town (service · time · sourced fare); the four
+answers plus "getting around" and "days needed" **folded into a closed accordion** (answers in the HTML,
+FAQPage matches); **3 photo "where to stay" tiles** in the "More in Europe" style; a **When to go** month
+strip with one line. Six Unsplash photos added (credited on /photo-credits). Height 5,716 px desktop
+(1.32× the approved 4,333) and 10,247 px phone; no overflow, no page errors, axe clean. The other 19
+cities keep the approved layout until London is signed off.

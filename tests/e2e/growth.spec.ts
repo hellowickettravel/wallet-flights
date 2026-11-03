@@ -104,6 +104,32 @@ test.describe("destination depth content (kept for the phase 2 redesign)", () =>
   // the deeper content above is kept for the phase 2 redesign (docs/PLAN.md).
 });
 
+test.describe("photo-led destination layout (Batch 7, London first)", () => {
+  test("London: airport tabs, questions folded away, 3 photo day cards, 3 photo stay tiles", async ({ page }) => {
+    await page.goto("/destinations/london");
+    await expect(page.getByRole("tab", { name: "Heathrow" })).toHaveAttribute("aria-selected", "true");
+    await page.getByRole("tab", { name: "Gatwick" }).click();
+    await expect(page.getByText("Gatwick Express")).toBeVisible();
+    // Questions start closed; one opens on tap.
+    const q = page.getByRole("button", { name: "How many days do you need in London?" });
+    await expect(q).toHaveAttribute("aria-expanded", "false");
+    await q.click();
+    await expect(q).toHaveAttribute("aria-expanded", "true");
+    await expect(page.getByRole("region", { name: "3 days in London" }).locator("ol > li")).toHaveCount(3);
+    await expect(page.getByRole("region", { name: "Where to stay" }).locator("ul > li")).toHaveCount(3);
+  });
+
+  test("London's FAQPage markup matches the questions on the page; other cities keep the approved layout", async ({ request }) => {
+    const london = await (await request.get("/destinations/london")).text();
+    const faq = jsonLd(london).find((d) => d["@type"] === "FAQPage");
+    expect(faq.mainEntity).toHaveLength(6);
+    for (const x of faq.mainEntity) expect(visible(london), x.name).toContain(x.acceptedAnswer.text.slice(0, 40));
+    const paris = await (await request.get("/destinations/paris")).text();
+    expect(visible(paris)).toContain("Things to do in Paris");
+    expect(visible(paris)).not.toContain("3 days in Paris");
+  });
+});
+
 test.describe("click-out measurement", () => {
   test.use({ consent: "analytics" });
 
