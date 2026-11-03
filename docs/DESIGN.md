@@ -246,3 +246,38 @@ photography and icons over decoration.
 - **Touch**: every pressable control shows a pointer; on touch screens a press dims it while the
   finger is down. Tap targets are at least 24 px on phones (checked by `experience.spec.ts`).
 
+
+---
+
+## Batch 7 — Destination page redesign spec (3 Nov 2026, awaiting owner sign-off)
+
+**Principle:** the approved page is the skeleton. Depth goes *inside* it, carried by photography and
+progressive disclosure, never by stacking more same-weight sections. Budget: at most ~1.4× the approved
+height (≤ ~6,000 px at 1440 px; ≤ ~10,500 px on a phone). Every new block has an image or a clear job;
+the fare board stays the one signature element.
+
+```
+┌───────────────────────────── HERO PHOTO + "Flights to London" ─────────────────────────────┐
+└──────────────────────────────────────── SEARCH BAR ────────────────────────────────────────┘
+┌ LEFT (unchanged column) ──────────────────────────────┐  ┌ RIGHT (unchanged) ───────────┐
+│ 3 facts (as today)                                    │  │ RECENT FARES board (sticky)  │
+│ THINGS TO DO → 3 photo cards [img][img][img]          │  │                              │
+│   title + one line each                               │  │                              │
+│ VISITING LONDON → the 4 answers (as today)            │  └──────────────────────────────┘
+│ GETTING IN FROM THE AIRPORT → tabs [LHR|LGW|STN]      │
+│   2–3 rows per tab: service · time · fare (source)    │
+│ POPULAR ROUTES → chips from all 8 cities (as today)   │
+│ FLIGHT TIP (as today)                                 │
+└───────────────────────────────────────────────────────┘
+┌ YOUR 3 DAYS (mist band) ── [photo card Day 1][Day 2][Day 3]: one line per morning/afternoon/evening ┐
+┌ WHERE TO STAY ── photo tiles like "More in Europe": [Bankside][Covent Garden][S Kensington][Shoreditch]
+│   name + "best for" on the photo, one sentence below                                              │
+┌ CHEAPEST MONTH (as today) ── with a thin best-weather row above the month bars                      ┐
+┌ MORE QUESTIONS ── accordion (answers in the HTML): getting around, days needed, city-specific        ┐
+┌ PLAN THE REST OF YOUR TRIP (as today) ── MORE IN EUROPE (as today) ─────────────────────────────────┐
+```
+
+**Photography:** ~7 Unsplash photos per city (3 things to do, reused on the day cards, plus 3–4
+neighbourhoods), self-describing alt text, credited on /photo-credits, same `SmartImage` loader and
+tinted fallback as today. **Type, colour, radius:** unchanged tokens. **Motion:** none new.
+**Rollout:** London only → screenshots for sign-off → top 5 → the rest.
