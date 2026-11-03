@@ -11,7 +11,7 @@ export const cheapFlights: Guide = {
   title: "How to find cheap flights: a step-by-step search routine",
   seoTitle: "How to find cheap flights: a step-by-step routine",
   excerpt:
-    "A search routine that works on any route: flexible dates, nearby airports, one-way tickets, bag fees and price alerts, without the myths about magic booking days.",
+    "A search routine for any route: flexible dates, nearby airports, one-way tickets, bag fees and price alerts, without the myths about magic booking days.",
   topic: "booking",
   published: "2026-11-03",
   photo: photos.guideCheapFlights,

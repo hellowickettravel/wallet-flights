@@ -122,7 +122,7 @@ test.describe("destination guides, phase 2", () => {
     const section = page.getByRole("region", { name: "Getting from the airport to London" });
     await expect(section.getByRole("heading", { name: /Heathrow/ })).toBeVisible();
     await expect(section.getByText(/^Train: Heathrow Express$/)).toBeAttached();
-    await expect(section.getByRole("link", { name: /Source: Heathrow Express/ })).toHaveAttribute("href", /heathrowexpress\.com/);
+    await expect(section.getByRole("link", { name: /^Source\s*: Heathrow Express/ })).toHaveAttribute("href", /heathrowexpress\.com/);
     await expect(page.getByRole("region", { name: "London month by month" }).locator("ol").first().locator("> li")).toHaveCount(12);
   });
 });
