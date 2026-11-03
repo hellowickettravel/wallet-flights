@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PageHeader } from "@/components/ui/page-header";
-import { origins, routePages, routePagesByOrigin } from "@/content/deals";
+import { routeOrigins, routePages, routePagesByOrigin } from "@/content/deals";
 import { routesHub } from "@/content/routes-hub";
 import { itemList, jsonLdHtml, webPage } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
@@ -16,7 +16,7 @@ export default function RoutesHubPage() {
     <>
       <PageHeader title={routesHub.title} intro={routesHub.intro} crumbs={[{ label: "Routes", href: "/routes" }]} />
       <div className="container-page grid gap-x-8 gap-y-12 py-12 sm:grid-cols-2 md:py-16 lg:grid-cols-3">
-        {origins.map((o) => {
+        {routeOrigins.filter((o) => routePagesByOrigin[o.code].length > 0).map((o) => {
           const list = [...routePagesByOrigin[o.code]].sort((a, b) => a.destination.city.localeCompare(b.destination.city));
           return (
             <section key={o.code} aria-labelledby={`from-${o.slug}`}>

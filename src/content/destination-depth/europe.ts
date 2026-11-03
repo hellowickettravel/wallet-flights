@@ -2,6 +2,7 @@ import type { DestinationDepth } from "./types";
 
 // Fares and journey times checked 3 Nov 2026 on the pages linked beside them.
 // Where an operator's page didn't give a current fare, none is shown.
+// Neighbourhoods, day plans and getting around rewritten in more depth (3 Nov 2026).
 
 const heathrow = { label: "Heathrow: getting to central London", url: "https://www.heathrow.com/transport-and-directions/getting-to-central-london" };
 const heathrowExpress = { label: "Heathrow Express: fares", url: "https://www.heathrowexpress.com/journey-planning/heathrow-london" };
@@ -45,18 +46,19 @@ export const europeDepth: Record<string, DestinationDepth> = {
     ],
     weather: "MMMGBBBBBGMM",
     neighbourhoods: [
-      { name: "South Bank and Bankside", bestFor: "First visits", text: "On the river between the London Eye and Tower Bridge, a walk from Westminster, Tate Modern and Borough Market." },
-      { name: "Covent Garden and Soho", bestFor: "Theatre and nightlife", text: "The West End’s theatres, restaurants and bars on the doorstep. Lively late, and among the most expensive places to stay." },
-      { name: "South Kensington", bestFor: "Museums and families", text: "The Natural History, Science and V&A museums, Hyde Park nearby and a quieter feel after dark." },
-      { name: "Shoreditch", bestFor: "Food and a younger crowd", text: "Street food, markets, bars and street art in East London, with fast links to the City." },
-      { name: "King’s Cross", bestFor: "Rail connections", text: "The Eurostar, trains north and six Underground lines, around a redeveloped canal-side quarter." },
+      { name: "South Bank and Bankside", bestFor: "First visits", text: "A riverside strip from the London Eye to Tower Bridge, with Tate Modern, Shakespeare’s Globe and Borough Market along the way. Westminster is one bridge away, and Waterloo and London Bridge stations put most of the city within a short ride. Hotels here cost more at weekends, when the area is busiest." },
+      { name: "Covent Garden and Soho", bestFor: "Theatre and nightlife", text: "The heart of the West End: theatres, restaurants and bars on every street, and the British Museum and National Gallery within a walk. It stays lively late, so ask for a room away from the street. Among the most expensive places to stay in London." },
+      { name: "South Kensington", bestFor: "Museums and families", text: "Home of the Natural History Museum, the Science Museum and the V&A, all free to enter, with Hyde Park a few minutes away. Elegant, safe and calm after dark, and on the Piccadilly line straight from Heathrow." },
+      { name: "Shoreditch", bestFor: "Food and a younger crowd", text: "East London’s street-food markets, independent shops, bars and street art, around Brick Lane and Spitalfields. Prices are often lower than in the West End, and the Elizabeth line and Overground link it quickly to the rest of the city." },
+      { name: "King’s Cross", bestFor: "Rail connections", text: "The Eurostar, trains to the north and Scotland, and six Underground lines, around a redeveloped canal-side quarter of restaurants and squares. A practical base if you’re travelling on, with the British Library and Regent’s Canal close by." },
     ],
     itinerary: [
-      { title: "Westminster and the South Bank", text: "Start at Westminster Abbey and the Houses of Parliament, cross the river and walk the South Bank past the London Eye to Tate Modern. Finish with food at Borough Market." },
-      { title: "Museums and the West End", text: "Spend the morning at the British Museum, then walk through Covent Garden and Trafalgar Square to the National Gallery. Book a West End show for the evening." },
-      { title: "The Tower and East London", text: "See the Tower of London and walk over Tower Bridge, then head to Shoreditch and Spitalfields for markets and dinner, or take a river boat to Greenwich." },
+      { title: "Westminster and the South Bank", morning: "Visit Westminster Abbey when it opens, then see the Houses of Parliament and Big Ben from Parliament Square.", afternoon: "Cross Westminster Bridge and walk the South Bank past the London Eye to Tate Modern, stopping at the riverside book market under Waterloo Bridge.", evening: "Eat at Borough Market or along Bankside, then cross the Millennium Bridge for St Paul’s Cathedral lit up at night." },
+      { title: "Museums and the West End", morning: "Spend the morning at the British Museum, which is free; arrive early for the Egyptian and Greek galleries.", afternoon: "Walk through Covent Garden to Trafalgar Square and the National Gallery, then on through St James’s Park to Buckingham Palace.", evening: "See a West End show; day seats and same-day booth tickets are often much cheaper than booking ahead." },
+      { title: "The Tower and East London", morning: "Be at the Tower of London for opening to see the Crown Jewels before the queues, then walk over Tower Bridge.", afternoon: "Head to Spitalfields Market and Brick Lane, or take a river boat to Greenwich for the Royal Observatory and the Cutty Sark.", evening: "Have dinner in Shoreditch, or in Greenwich if you went by boat, and ride the Elizabeth line or DLR back." },
     ],
     daysNeeded: "Three to four days covers the main sights. With a week you can add Greenwich, Hampton Court, or a day trip to Windsor or Oxford.",
+    gettingAround: "The Underground, buses, Overground and the Elizabeth line cover the whole city, and you can tap in with a contactless bank card or phone instead of buying a ticket. Fares are capped each day and week, so you never pay more than a set amount. Buses don’t take cash.",
     essentials: { currency: "Pound sterling (GBP)", plugs: "Type G, 230V", language: "English" },
     faqs: [
       {
@@ -95,18 +97,19 @@ export const europeDepth: Record<string, DestinationDepth> = {
     ],
     weather: "MMGBBBGGBBMM",
     neighbourhoods: [
-      { name: "Le Marais", bestFor: "First visits", text: "Central and walkable, with medieval streets, galleries, falafel and the Place des Vosges." },
-      { name: "Saint-Germain-des-Prés", bestFor: "Classic Left Bank cafés", text: "Literary cafés, bookshops and the Luxembourg Gardens, close to the Musée d’Orsay. Polished and pricey." },
-      { name: "Latin Quarter", bestFor: "Value near the centre", text: "Student streets around the Sorbonne and the Panthéon, a short walk from Notre-Dame." },
-      { name: "Montmartre", bestFor: "A village feel", text: "Hilltop lanes, Sacré-Cœur and views over the city. Hotels can be cheaper, but it’s further from the main sights." },
-      { name: "Canal Saint-Martin", bestFor: "Local bars and restaurants", text: "Tree-lined canal banks where Parisians picnic, with good food at lower prices than the centre." },
+      { name: "Le Marais", bestFor: "First visits", text: "Medieval lanes on the Right Bank, full of galleries, boutiques, falafel shops and the arcaded Place des Vosges. You can walk to Notre-Dame, the Louvre and the Pompidou Centre. Lively at weekends, when many shops stay open on Sundays." },
+      { name: "Saint-Germain-des-Prés", bestFor: "Classic Left Bank cafés", text: "The Paris of literary cafés, bookshops and the Luxembourg Gardens, a short walk from the Musée d’Orsay and the Seine. Polished, safe and expensive, with small hotels in old buildings." },
+      { name: "Latin Quarter", bestFor: "Value near the centre", text: "The student quarter around the Sorbonne and the Panthéon, with cheaper restaurants and hotels than its neighbours. Notre-Dame and the islands are a few minutes away, and RER B runs straight to both airports." },
+      { name: "Montmartre", bestFor: "A village feel", text: "Hilltop lanes, the Sacré-Cœur basilica and views over the city, with artists in the Place du Tertre. Hotels can cost less, but it’s further from the main sights and the streets are steep." },
+      { name: "Canal Saint-Martin", bestFor: "Local bars and restaurants", text: "Tree-lined canal banks where Parisians picnic, with good bistros and bars at lower prices than the centre. Close to Gare du Nord for the Eurostar and RER B." },
     ],
     itinerary: [
-      { title: "The islands and the Left Bank", text: "Begin at Notre-Dame and Sainte-Chapelle on the Île de la Cité, wander the Latin Quarter to the Luxembourg Gardens, and walk along the Seine at sunset." },
-      { title: "The Louvre to the Eiffel Tower", text: "See the Louvre in the morning, stroll the Tuileries and the Champs-Élysées to the Arc de Triomphe, then cross to the Eiffel Tower as it lights up." },
-      { title: "Orsay, the Marais and Montmartre", text: "Visit the Musée d’Orsay, lunch in the Marais, then climb to Montmartre and Sacré-Cœur for the evening view." },
+      { title: "The islands and the Left Bank", morning: "See Notre-Dame and the stained glass of Sainte-Chapelle on the Île de la Cité; book Sainte-Chapelle ahead.", afternoon: "Wander the Latin Quarter to the Panthéon and spend an hour in the Luxembourg Gardens.", evening: "Walk along the Seine at sunset, or take an evening river cruise from near the Eiffel Tower." },
+      { title: "The Louvre to the Eiffel Tower", morning: "Enter the Louvre on a timed ticket as it opens, and pick two or three wings rather than trying to see everything.", afternoon: "Stroll through the Tuileries, up the Champs-Élysées to the Arc de Triomphe, and climb it for the view.", evening: "Cross to the Eiffel Tower as it lights up; book a lift slot in advance or watch the sparkle from the Trocadéro." },
+      { title: "Orsay, the Marais and Montmartre", morning: "See the Impressionists at the Musée d’Orsay, booked ahead for an early slot.", afternoon: "Cross the river for lunch in the Marais and walk to the Place des Vosges.", evening: "Take the metro to Montmartre, climb to Sacré-Cœur for the view, and have dinner on the hill." },
     ],
     daysNeeded: "Three to four days covers the main sights. Add a day for Versailles, which is a short train ride away.",
+    gettingAround: "The metro reaches almost everywhere within a few minutes’ walk, with RER trains for the airports and Versailles. Load tickets onto a Navigo Easy pass or buy them in the Île-de-France Mobilités app. Central Paris is also very walkable.",
     essentials: { currency: "Euro (EUR)", plugs: "Types C and E, 230V", language: "French" },
     faqs: [
       {
@@ -143,18 +146,19 @@ export const europeDepth: Record<string, DestinationDepth> = {
     ],
     weather: "MMGBBGMMBBMM",
     neighbourhoods: [
-      { name: "Centro Storico", bestFor: "First visits", text: "Around the Pantheon and Piazza Navona, so you can walk to most sights. Busy by day and pricey to stay in." },
-      { name: "Trastevere", bestFor: "Restaurants and evenings out", text: "Cobbled lanes and trattorias across the Tiber. Lively, and loud late at night." },
-      { name: "Monti", bestFor: "Near the Colosseum", text: "Wine bars, small shops and the Forum at the end of the street." },
-      { name: "Prati", bestFor: "The Vatican and quieter nights", text: "Elegant streets by the Vatican, with good value restaurants and a calmer feel." },
-      { name: "Around Termini", bestFor: "Budget and transport", text: "Cheaper hotels next to the airport train and the metro. Less charming, and busier at night." },
+      { name: "Centro Storico", bestFor: "First visits", text: "The historic centre around the Pantheon and Piazza Navona, where most sights are within a walk and the streets are full of cafés. Busy by day and expensive to stay in, but nothing beats stepping out onto a piazza in the morning." },
+      { name: "Trastevere", bestFor: "Restaurants and evenings out", text: "Cobbled lanes, ivy-covered houses and trattorias across the Tiber, a short walk from the centre over the river. Very lively at night, so it can be loud; ask for a room off the main squares." },
+      { name: "Monti", bestFor: "Near the Colosseum", text: "Rome’s oldest residential quarter, with wine bars, vintage shops and the Roman Forum at the end of the street. Central, characterful and close to Cavour and Colosseo metro stations." },
+      { name: "Prati", bestFor: "The Vatican and quieter nights", text: "Wide, elegant streets next to the Vatican, with good-value restaurants and shopping on Via Cola di Rienzo. Calmer than the centre at night, and a pleasant walk across the river to Piazza Navona." },
+      { name: "Around Termini", bestFor: "Budget and transport", text: "Cheaper hotels next to the main station, the Leonardo Express to Fiumicino and both metro lines. Less charming and busier at night, but practical for a short stay or an early train." },
     ],
     itinerary: [
-      { title: "Ancient Rome", text: "See the Colosseum, the Roman Forum and the Palatine Hill on one timed ticket, then spend the evening in Monti." },
-      { title: "The Vatican and Trastevere", text: "Book an early slot for the Vatican Museums and the Sistine Chapel, visit St Peter’s Basilica, then cross to Trastevere for dinner." },
-      { title: "Piazzas and fountains", text: "Walk from the Pantheon to Piazza Navona, the Trevi Fountain and the Spanish Steps, and end in the Villa Borghese gardens." },
+      { title: "Ancient Rome", morning: "Start at the Colosseum on a timed ticket as it opens, before the heat and the crowds.", afternoon: "Use the same ticket for the Roman Forum and the Palatine Hill, then climb to the Capitoline Hill for the view over the Forum.", evening: "Walk to Monti for an aperitivo and dinner in its small streets." },
+      { title: "The Vatican and Trastevere", morning: "Book an early slot for the Vatican Museums and the Sistine Chapel, and allow three hours.", afternoon: "Visit St Peter’s Basilica, dressed with shoulders and knees covered, and climb the dome if you have the energy.", evening: "Cross the river to Trastevere for dinner in a trattoria and a walk through its lanes." },
+      { title: "Piazzas and fountains", morning: "See the Pantheon early, then Piazza Navona before it fills up.", afternoon: "Walk to the Trevi Fountain and the Spanish Steps, and on to the Villa Borghese gardens; the Borghese Gallery needs a booking.", evening: "End with a sunset view from the Pincio terrace over Piazza del Popolo, and dinner nearby." },
     ],
     daysNeeded: "Three days covers the major sights. With four or five you can slow down or add a day trip to Ostia Antica or Tivoli.",
+    gettingAround: "Walking is the best way to see the historic centre, where most sights are close together. Rome’s metro has three lines and misses much of the centre, so buses and trams fill the gaps. You can tap a contactless bank card at metro gates and on many buses.",
     essentials: { currency: "Euro (EUR)", plugs: "Types C, F and L, 230V", language: "Italian" },
     faqs: [
       {
@@ -185,18 +189,19 @@ export const europeDepth: Record<string, DestinationDepth> = {
     ],
     weather: "MMGGBBGGBGMM",
     neighbourhoods: [
-      { name: "Gothic Quarter", bestFor: "First visits", text: "The medieval heart of the city, around the cathedral, within walking distance of the old town and the sea." },
-      { name: "El Born", bestFor: "Bars and the Picasso Museum", text: "Narrow streets of cocktail bars and boutiques next to the Gothic Quarter." },
-      { name: "Eixample", bestFor: "Gaudí and quieter nights", text: "Grand avenues with Casa Batlló, La Pedrera and the Sagrada Família, and well connected by metro." },
-      { name: "Gràcia", bestFor: "A local feel", text: "Small squares, cafés and independent shops, below Park Güell." },
-      { name: "Barceloneta", bestFor: "The beach", text: "The old fishing quarter by the city beach, known for seafood. Busy in summer." },
+      { name: "Gothic Quarter", bestFor: "First visits", text: "The medieval heart of the city around the cathedral, a maze of narrow streets between La Rambla and Via Laietana. You can walk to El Born, the port and the beach. Busy and sometimes noisy, so choose a hotel on a quieter lane." },
+      { name: "El Born", bestFor: "Bars and the Picasso Museum", text: "Narrow streets of cocktail bars, tapas and boutiques around the Santa Maria del Mar basilica, next to the Gothic Quarter. Close to the Parc de la Ciutadella and a walk from the beach." },
+      { name: "Eixample", bestFor: "Gaudí and quieter nights", text: "The grid of grand avenues with Casa Batlló, La Pedrera and the Sagrada Família. Calmer than the old town, with plenty of hotels, restaurants and metro lines in every direction." },
+      { name: "Gràcia", bestFor: "A local feel", text: "A former village of small squares, cafés and independent shops below Park Güell, popular with people who live in Barcelona. Further from the beach, but well connected by metro." },
+      { name: "Barceloneta", bestFor: "The beach", text: "The old fishing quarter by the city beach, known for its seafood restaurants. Lovely in spring and autumn, very busy in summer, and a short walk from the old town." },
     ],
     itinerary: [
-      { title: "The old town and the sea", text: "Explore the Gothic Quarter and the cathedral, cross into El Born, then walk to Barceloneta for the beach and a late seafood dinner." },
-      { title: "Gaudí’s Barcelona", text: "Visit the Sagrada Família on a timed ticket, walk Passeig de Gràcia past Casa Batlló and La Pedrera, and spend the evening in Gràcia." },
-      { title: "Park Güell and Montjuïc", text: "See Park Güell in the morning, then ride up Montjuïc for gardens, museums and views, and finish with tapas in Poble-sec." },
+      { title: "The old town and the sea", morning: "Explore the Gothic Quarter and the cathedral before the tour groups arrive.", afternoon: "Cross into El Born for the Picasso Museum and Santa Maria del Mar, then walk through the Ciutadella park.", evening: "Head to Barceloneta for the beach at sunset and a seafood dinner; Barcelona eats late, often after 9pm." },
+      { title: "Gaudí’s Barcelona", morning: "Visit the Sagrada Família on a timed ticket, ideally in the morning light.", afternoon: "Walk down Passeig de Gràcia past Casa Batlló and La Pedrera, and go inside one of them.", evening: "Spend the evening in Gràcia’s squares, moving between small bars for tapas." },
+      { title: "Park Güell and Montjuïc", morning: "See Park Güell on a timed ticket, early, for the mosaics and the view.", afternoon: "Ride the cable car or funicular up Montjuïc for its gardens, the castle and the art museum.", evening: "Come down to Poble-sec for tapas on Carrer de Blai." },
     ],
     daysNeeded: "Three to four days. Add a day for Montserrat or the beaches along the coast.",
+    gettingAround: "The metro is fast and covers most of the city, with buses and the old-town streets best on foot. Buy a T-casual ten-journey ticket, or a travel card for unlimited rides. The airport metro needs its own Airport ticket.",
     essentials: { currency: "Euro (EUR)", plugs: "Types C and F, 230V", language: "Catalan and Spanish" },
     faqs: [
       {
@@ -227,18 +232,19 @@ export const europeDepth: Record<string, DestinationDepth> = {
     ],
     weather: "MMBBBBGGBBMM",
     neighbourhoods: [
-      { name: "Baixa and Chiado", bestFor: "First visits", text: "The flat, central grid by the river, with Chiado’s cafés and shops just above it." },
-      { name: "Alfama", bestFor: "Old Lisbon and fado", text: "Steep, winding lanes below the castle, with fado houses and viewpoints. Hard going with heavy bags." },
-      { name: "Bairro Alto and Príncipe Real", bestFor: "Nightlife and boutiques", text: "Bars spill into the streets in Bairro Alto; Príncipe Real next door is quieter and greener." },
-      { name: "Cais do Sodré", bestFor: "The riverside", text: "Food hall, bars and the train to Cascais and the beaches." },
-      { name: "Belém", bestFor: "Monuments and a slower pace", text: "Further west by the river, near the monastery and the tower, and quieter at night." },
+      { name: "Baixa and Chiado", bestFor: "First visits", text: "The flat, central grid between the river and Rossio, with Chiado’s cafés, bookshops and theatres just above it. Everything is within a walk, and trams and the metro start here." },
+      { name: "Alfama", bestFor: "Old Lisbon and fado", text: "The oldest quarter, with steep, winding lanes below the castle, fado houses and viewpoints over the river. Atmospheric, but hard going with heavy bags, and few cars can reach the hotels." },
+      { name: "Bairro Alto and Príncipe Real", bestFor: "Nightlife and boutiques", text: "Bairro Alto’s bars spill onto the streets late into the night. Príncipe Real, next door, is quieter and greener, with design shops, a garden square and some of the city’s best boutique hotels." },
+      { name: "Cais do Sodré", bestFor: "The riverside", text: "A riverside district with the Time Out Market food hall, bars and the train station for Cascais and the beaches. Handy for day trips, and lively at night." },
+      { name: "Belém", bestFor: "Monuments and a slower pace", text: "Further west by the river, near the Jerónimos Monastery, the Belém Tower and the custard-tart bakery. Quiet at night, and a tram or train ride from the centre." },
     ],
     itinerary: [
-      { title: "Baixa, Chiado and the viewpoints", text: "Start at Praça do Comércio, walk up through Baixa to Chiado, and ride a tram or funicular to the viewpoints of Bairro Alto." },
-      { title: "Alfama and the castle", text: "Climb to the Castelo de São Jorge, wander Alfama via the Miradouro de Santa Luzia, and book a fado dinner." },
-      { title: "Belém, or a day in Sintra", text: "See the Jerónimos Monastery and the Belém Tower, with custard tarts in between, or take the train to Sintra’s palaces instead." },
+      { title: "Baixa, Chiado and the viewpoints", morning: "Start at Praça do Comércio on the river and walk up through Baixa to Rossio.", afternoon: "Take the Santa Justa lift, or walk, up to Chiado and the Bairro Alto viewpoints.", evening: "Watch the sunset from the Miradouro de São Pedro de Alcântara, then eat in Bairro Alto or Príncipe Real." },
+      { title: "Alfama and the castle", morning: "Climb to the Castelo de São Jorge as it opens for the views over the city.", afternoon: "Wander down through Alfama by way of the Miradouro de Santa Luzia, and see the cathedral.", evening: "Book dinner at a fado house, where the music is part of the evening." },
+      { title: "Belém, or a day in Sintra", morning: "Take the tram or train to Belém and visit the Jerónimos Monastery.", afternoon: "See the Belém Tower and the Monument to the Discoveries, with custard tarts at the bakery nearby.", evening: "Or spend the whole day in Sintra’s palaces instead, taking the train from Rossio and returning for dinner in Cais do Sodré." },
     ],
     daysNeeded: "Three days for the city. Add one or two for Sintra and the coast at Cascais.",
+    gettingAround: "Walking, with help on the hills from the metro, trams and the Santa Justa lift. Load a rechargeable Navegante card for metro, tram and bus trips. Tram 28 is scenic but very crowded; go early.",
     essentials: { currency: "Euro (EUR)", plugs: "Types C and F, 230V", language: "Portuguese" },
     faqs: [
       {
@@ -247,7 +253,7 @@ export const europeDepth: Record<string, DestinationDepth> = {
       },
       {
         q: "Is Lisbon hilly?",
-        a: "Very. The old neighbourhoods climb steep, cobbled streets that can be slippery. Trams, funiculars and the Santa Justa lift help, and comfortable shoes matter.",
+        a: "Very. The old neighbourhoods climb steep, cobbled streets that can be slippery. Trams, the metro and the Santa Justa lift help, and comfortable shoes matter.",
       },
     ],
     guides: ["ees-etias-uk-us-travellers", "europe-shoulder-season", "carry-on-only-checklist"],

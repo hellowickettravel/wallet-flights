@@ -2,6 +2,7 @@ import type { DestinationDepth } from "./types";
 
 // Fares and journey times checked 3 Nov 2026 on the pages linked beside them.
 // Where an operator's page didn't give a current fare, none is shown.
+// Neighbourhoods, day plans and getting around rewritten in more depth (3 Nov 2026).
 
 const limousineHnd = { label: "Airport Limousine Bus: Haneda to Shinjuku", url: "https://www.limousinebus.co.jp/en/line/detail/Haneda-Shinjuku/" };
 const limousineNrt = { label: "Airport Limousine Bus: Narita and Tokyo Station", url: "https://www.limousinebus.co.jp/en/timetable/detail/Narita-Tokyo/?dir=2" };
@@ -37,18 +38,19 @@ export const asiaPacificDepth: Record<string, DestinationDepth> = {
     ],
     weather: "GGBBGMMMMBBG",
     neighbourhoods: [
-      { name: "Shinjuku", bestFor: "First visits and nightlife", text: "Tokyo’s biggest rail hub, with skyscraper views, izakaya alleys and trains to almost everywhere." },
-      { name: "Shibuya", bestFor: "Shopping and youth culture", text: "The famous crossing, department stores and Harajuku a short walk away." },
-      { name: "Asakusa", bestFor: "Old Tokyo and value", text: "Senso-ji temple, traditional shops and some of the city’s better-value hotels." },
-      { name: "Ginza and Tokyo Station", bestFor: "Upscale stays and the Shinkansen", text: "Department stores and sushi counters, next to the bullet trains to Kyoto and beyond." },
-      { name: "Ueno", bestFor: "Museums and Narita trains", text: "Ueno Park’s museums and zoo, with the Skyliner straight to Narita." },
+      { name: "Shinjuku", bestFor: "First visits and nightlife", text: "Tokyo’s biggest rail hub, with skyscrapers, department stores and the tiny bars of Golden Gai and Omoide Yokocho. Trains go almost everywhere from here, including to Hakone and Mount Fuji. Busy, bright and safe at all hours." },
+      { name: "Shibuya", bestFor: "Shopping and youth culture", text: "The famous crossing, new towers with rooftop views and Harajuku a short walk away. Good for shopping and nightlife, and on the Yamanote line round the city." },
+      { name: "Asakusa", bestFor: "Old Tokyo and value", text: "Around Senso-ji temple, with traditional shops, rickshaws and river cruises. Some of Tokyo’s better-value hotels, though it’s further from the west of the city." },
+      { name: "Ginza and Tokyo Station", bestFor: "Upscale stays and the Shinkansen", text: "Department stores, galleries and sushi counters, next to the bullet trains for Kyoto and the airport buses. Polished and expensive, and quiet at night." },
+      { name: "Ueno", bestFor: "Museums and Narita trains", text: "Ueno Park’s museums and zoo, the Ameyoko market street, and the Skyliner straight to Narita. Good value and well connected." },
     ],
     itinerary: [
-      { title: "Asakusa and Ueno", text: "See Senso-ji early, before the crowds, walk Nakamise shopping street, then spend the afternoon in Ueno Park and its museums." },
-      { title: "Meiji Jingu to Shinjuku", text: "Walk through the Meiji Jingu shrine forest to Harajuku, cross Shibuya Crossing, and end with dinner in Shinjuku’s small-bar alleys." },
-      { title: "Markets and the bay", text: "Have breakfast at the Tsukiji Outer Market, stroll Ginza, and spend the evening at Odaiba, or take a day trip to Kamakura, Hakone or Nikko instead." },
+      { title: "Asakusa and Ueno", morning: "Visit Senso-ji early, before the crowds, and walk Nakamise shopping street.", afternoon: "Take the metro to Ueno Park for the Tokyo National Museum, then browse the Ameyoko market street.", evening: "Ride up the Tokyo Skytree or eat at a small restaurant in Asakusa as the temple lights up." },
+      { title: "Meiji Jingu to Shinjuku", morning: "Walk through the forest to the Meiji Jingu shrine, then into Harajuku’s backstreets.", afternoon: "Cross Shibuya Crossing and see it from above at one of the new observation decks.", evening: "Take the train to Shinjuku for dinner in the small-bar alleys of Omoide Yokocho or Golden Gai." },
+      { title: "Markets and the bay", morning: "Have breakfast at the Tsukiji Outer Market’s food stalls.", afternoon: "Stroll Ginza and the gardens of Hama-rikyu, or take a day trip to Kamakura, Hakone or Nikko instead.", evening: "Spend the evening at Odaiba on the bay, or in an izakaya near Tokyo Station." },
     ],
     daysNeeded: "Four to five days for Tokyo itself. Add more for Kyoto, a Shinkansen ride away, or for Hakone and Nikko.",
+    gettingAround: "Trains and the metro. A rechargeable IC card such as Suica or Pasmo works on almost every train, metro and bus, and in many shops, so you rarely need tickets; you can also add one to your phone. The JR Yamanote line loops round the main districts.",
     essentials: { currency: "Japanese yen (JPY)", plugs: "Types A and B, 100V", language: "Japanese" },
     faqs: [
       {
@@ -78,18 +80,19 @@ export const asiaPacificDepth: Record<string, DestinationDepth> = {
     ],
     weather: "MMMGBBBBBGMM",
     neighbourhoods: [
-      { name: "Seminyak", bestFor: "Restaurants and beach clubs", text: "Stylish places to eat and drink on a long sandy beach, close to the airport." },
-      { name: "Ubud", bestFor: "Culture and rice terraces", text: "The island’s cultural centre, in the hills, with temples, craft villages and yoga retreats." },
-      { name: "Canggu", bestFor: "Surf and cafés", text: "Surf beaches, rice fields and café culture popular with longer-stay visitors." },
-      { name: "Uluwatu", bestFor: "Cliffs and sunsets", text: "Clifftop hotels above surf breaks on the southern peninsula." },
-      { name: "Sanur", bestFor: "Families and calm water", text: "A quieter east-coast town with a reef-sheltered beach and a seafront path." },
+      { name: "Seminyak", bestFor: "Restaurants and beach clubs", text: "Stylish restaurants, boutiques and beach clubs on a long sandy beach, about half an hour from the airport outside rush hour. Sunsets here are a nightly event. Busy roads, so walking is limited." },
+      { name: "Ubud", bestFor: "Culture and rice terraces", text: "The island’s cultural centre in the green hills, with temples, the Sacred Monkey Forest, craft villages, yoga retreats and rice terraces nearby. Cooler at night, but there’s no beach." },
+      { name: "Canggu", bestFor: "Surf and cafés", text: "Surf beaches, rice fields and café culture, popular with longer-stay visitors and remote workers. Traffic on its narrow roads can be heavy at busy times." },
+      { name: "Uluwatu", bestFor: "Cliffs and sunsets", text: "Clifftop hotels above famous surf breaks on the southern Bukit peninsula, with the Uluwatu temple and small coves below. You’ll need a driver or scooter to get around." },
+      { name: "Sanur", bestFor: "Families and calm water", text: "A quieter east-coast town with a reef-sheltered beach, a long seafront path and boats to Nusa Lembongan. Relaxed, and closer to Ubud than the west coast." },
     ],
     itinerary: [
-      { title: "Ubud", text: "Visit the Sacred Monkey Forest Sanctuary, the royal palace and the market, and walk the Campuhan Ridge path in the late afternoon." },
-      { title: "Rice terraces and water temples", text: "See the Tegallalang rice terraces early, then the holy springs at Tirta Empul, dressed for a temple visit." },
-      { title: "The south coast", text: "Spend the day on the beach, then watch the sunset and a Kecak dance at Uluwatu Temple on the cliffs." },
+      { title: "Ubud", morning: "Walk the Campuhan Ridge path early, before the heat.", afternoon: "Visit the Sacred Monkey Forest Sanctuary, the royal palace and Ubud market; keep bags closed near the monkeys.", evening: "Watch a traditional dance performance at one of Ubud’s temples or the palace." },
+      { title: "Rice terraces and water temples", morning: "See the Tegallalang rice terraces early, before the crowds.", afternoon: "Visit the holy springs at Tirta Empul, wearing a sarong; one is usually provided at the entrance.", evening: "Have dinner overlooking the rice fields around Ubud." },
+      { title: "The south coast", morning: "Spend the morning on the beach at Seminyak or Sanur.", afternoon: "Drive to the Bukit peninsula for Padang Padang or another of the small coves below the cliffs.", evening: "Watch the sunset and a Kecak fire dance at Uluwatu Temple." },
     ],
     daysNeeded: "A week lets you split your time between Ubud and the coast. With four or five days, pick one base.",
+    gettingAround: "By car with a driver, or with ride-hailing apps, as there is almost no public transport for visitors. Many people hire a driver for the day for longer trips. Scooters are common, but only ride one if you hold the right licence and your insurance covers it.",
     essentials: { currency: "Indonesian rupiah (IDR)", plugs: "Types C and F, 230V", language: "Indonesian and Balinese" },
     faqs: [
       {
@@ -119,18 +122,19 @@ export const asiaPacificDepth: Record<string, DestinationDepth> = {
     ],
     weather: "MGGGGGGGGGMM",
     neighbourhoods: [
-      { name: "Marina Bay", bestFor: "The skyline", text: "Gardens by the Bay and the waterfront, with some of the city’s most expensive hotels." },
-      { name: "Chinatown", bestFor: "Food and value", text: "Hawker centres, temples and shophouses, central and well connected by MRT." },
-      { name: "Clarke Quay and the river", bestFor: "Nightlife", text: "Riverside bars and restaurants, a walk from Marina Bay." },
-      { name: "Little India and Kampong Glam", bestFor: "Culture and cheaper rooms", text: "Colourful streets, the Sultan Mosque and some of Singapore’s better-value hotels." },
-      { name: "Sentosa", bestFor: "Families and resorts", text: "An island of beaches, theme parks and resorts, linked to the city by road and monorail." },
+      { name: "Marina Bay", bestFor: "The skyline", text: "Gardens by the Bay, the waterfront promenade and the city’s best-known hotels, with skyline views at every turn. Expensive, but every main sight is close by." },
+      { name: "Chinatown", bestFor: "Food and value", text: "Hawker centres, temples and restored shophouses, with some of the city’s better-value hotels. Central, and on several MRT lines." },
+      { name: "Clarke Quay and the river", bestFor: "Nightlife", text: "Riverside bars and restaurants in old warehouses, a walk along the river from Marina Bay. Lively and loud late at night." },
+      { name: "Little India and Kampong Glam", bestFor: "Culture and cheaper rooms", text: "Colourful streets, temples, the Sultan Mosque and the boutiques of Haji Lane. Good food at low prices and some of the cheaper hotels in the city." },
+      { name: "Sentosa", bestFor: "Families and resorts", text: "An island of beaches, theme parks and resorts, linked to the city by road, cable car and monorail. Great with children; quieter for exploring the rest of the city." },
     ],
     itinerary: [
-      { title: "Marina Bay", text: "Walk the waterfront to the Merlion, explore Gardens by the Bay, and stay for the evening light show among the Supertrees." },
-      { title: "Chinatown, Kampong Glam and Little India", text: "Eat your way through a hawker centre, visit the Buddha Tooth Relic Temple, then the Sultan Mosque and the streets of Little India." },
-      { title: "Gardens and Orchard Road", text: "Start in the Singapore Botanic Gardens, shop on Orchard Road, and spend the evening on Sentosa or at the Night Safari." },
+      { title: "Marina Bay", morning: "Walk the waterfront from the Merlion to the Helix Bridge before the heat builds.", afternoon: "Explore the Cloud Forest and Flower Dome at Gardens by the Bay, out of the sun.", evening: "Stay for the free evening light show among the Supertrees, then see the skyline from the bay." },
+      { title: "Chinatown, Kampong Glam and Little India", morning: "Have breakfast at a Chinatown hawker centre and visit the Buddha Tooth Relic Temple.", afternoon: "See the Sultan Mosque and Haji Lane in Kampong Glam, then the temples and shops of Little India.", evening: "Eat dinner at a hawker centre such as Lau Pa Sat or Newton." },
+      { title: "Gardens and Orchard Road", morning: "Start early in the Singapore Botanic Gardens, a UNESCO World Heritage Site.", afternoon: "Shop or escape the heat in the malls of Orchard Road.", evening: "Spend the evening on Sentosa, or at the Night Safari, booked ahead." },
     ],
     daysNeeded: "Three to four days. Singapore also works well as a stopover of one or two nights on the way to Australia or Asia.",
+    gettingAround: "The MRT and buses reach almost everywhere, and you can tap a contactless bank card or phone to pay. Taxis and ride-hailing are easy to find, and many sights are linked by covered walkways out of the sun and rain.",
     essentials: { currency: "Singapore dollar (SGD)", plugs: "Type G, 230V", language: "English, Mandarin, Malay and Tamil" },
     faqs: [
       {
@@ -170,18 +174,19 @@ export const asiaPacificDepth: Record<string, DestinationDepth> = {
     ],
     weather: "BBGMMMMMMMBB",
     neighbourhoods: [
-      { name: "Rattanakosin (Old Town)", bestFor: "Temples", text: "The Grand Palace, Wat Pho and riverside views, though fewer hotels and no Skytrain." },
-      { name: "Banglamphu and Khao San", bestFor: "Budget stays", text: "Backpacker bars and cheap guesthouses, a walk from the old town’s temples." },
-      { name: "Riverside", bestFor: "Hotels with a view", text: "Grand hotels on the Chao Phraya, with river boats to the sights." },
-      { name: "Sukhumvit", bestFor: "Nightlife and malls", text: "Long, busy road on the Skytrain line, with restaurants, rooftop bars and shopping." },
-      { name: "Silom", bestFor: "Night markets and parks", text: "The business district by Lumphini Park, with street food and the Skytrain and MRT." },
+      { name: "Rattanakosin (Old Town)", bestFor: "Temples", text: "The Grand Palace, Wat Pho and riverside views, with small guesthouses and boutique hotels. Few Skytrain links, so you’ll rely on river boats and taxis." },
+      { name: "Banglamphu and Khao San", bestFor: "Budget stays", text: "Backpacker bars, street food and cheap guesthouses around Khao San Road, a walk from the old town’s temples. Noisy at night." },
+      { name: "Riverside", bestFor: "Hotels with a view", text: "Grand hotels on the Chao Phraya, many with free shuttle boats, and river boats to the main sights. Calm and scenic." },
+      { name: "Sukhumvit", bestFor: "Nightlife and malls", text: "A long, busy road on the Skytrain line, with restaurants from street stalls to rooftop bars, and large malls. Convenient for getting around." },
+      { name: "Silom", bestFor: "Night markets and parks", text: "The business district by Lumphini Park, with street food, night markets, the Skytrain and the MRT. Good for a central, well-connected stay." },
     ],
     itinerary: [
-      { title: "Palaces and temples", text: "See the Grand Palace and Wat Phra Kaew early, then Wat Pho’s reclining Buddha, and take the ferry to Wat Arun. Eat dinner in Chinatown’s Yaowarat Road." },
-      { title: "Markets and modern Bangkok", text: "Spend a weekend morning at Chatuchak market, or visit the Jim Thompson House, then the Siam malls and a rooftop bar at sunset." },
-      { title: "Canals or Ayutthaya", text: "Take a long-tail boat through the Thonburi canals and relax in Lumphini Park, or go north for a day among the ruins of Ayutthaya." },
+      { title: "Palaces and temples", morning: "Arrive at the Grand Palace and Wat Phra Kaew as they open, dressed for the temple dress code.", afternoon: "See the reclining Buddha at Wat Pho, then take the ferry across the river to Wat Arun.", evening: "Eat your way along Yaowarat Road in Chinatown." },
+      { title: "Markets and modern Bangkok", morning: "Spend a weekend morning at Chatuchak market, or visit the Jim Thompson House on a weekday.", afternoon: "Explore the Siam malls and their food halls in the heat of the day.", evening: "Watch the sunset from a rooftop bar over the city." },
+      { title: "Canals or Ayutthaya", morning: "Take a long-tail boat through the Thonburi canals.", afternoon: "Relax in Lumphini Park, or have a traditional Thai massage at Wat Pho’s school.", evening: "Or go north for the whole day among the temple ruins of Ayutthaya, returning by train or boat." },
     ],
     daysNeeded: "Three to four days. Bangkok is also a common starting point for trips to the islands or the north.",
+    gettingAround: "The BTS Skytrain and MRT underground are the fastest way round central Bangkok, and river boats run along the Chao Phraya to the old town. Taxis should use the meter, and ride-hailing apps are widely used. Traffic can be very slow at rush hour.",
     essentials: { currency: "Thai baht (THB)", plugs: "Types A, B, C and O, 220V", language: "Thai" },
     faqs: [
       {
@@ -211,18 +216,19 @@ export const asiaPacificDepth: Record<string, DestinationDepth> = {
     ],
     weather: "GGBBBGGGBBBG",
     neighbourhoods: [
-      { name: "The Rocks and Circular Quay", bestFor: "First visits", text: "Beside the Opera House and Harbour Bridge, with ferries leaving for the beaches and the zoo." },
-      { name: "CBD and Darling Harbour", bestFor: "Convenience", text: "Central, with plenty of hotels, restaurants and the main train lines." },
-      { name: "Surry Hills", bestFor: "Food and cafés", text: "Terraced streets of restaurants, cafés and bars, a walk from Central station." },
-      { name: "Bondi", bestFor: "The beach", text: "Sydney’s best-known beach and the start of the coastal walk to Coogee." },
-      { name: "Manly", bestFor: "A relaxed base", text: "Beaches and a laid-back seafront, half an hour from the city by ferry." },
+      { name: "The Rocks and Circular Quay", bestFor: "First visits", text: "The historic quarter beside the Opera House and Harbour Bridge, where ferries leave for the beaches and the zoo. Expensive, but the views are the point." },
+      { name: "CBD and Darling Harbour", bestFor: "Convenience", text: "The city centre, with plenty of hotels, restaurants and the main train lines, and the waterfront at Darling Harbour. Busy by day, quieter at night." },
+      { name: "Surry Hills", bestFor: "Food and cafés", text: "Terraced streets of excellent restaurants, cafés and bars, a walk from Central station. A local feel close to the centre." },
+      { name: "Bondi", bestFor: "The beach", text: "Sydney’s best-known beach, its ocean pool and the start of the coastal walk to Coogee. About half an hour from the city by bus." },
+      { name: "Manly", bestFor: "A relaxed base", text: "Beaches, a laid-back seafront and a ferry ride of about half an hour across the harbour to Circular Quay." },
     ],
     itinerary: [
-      { title: "The harbour", text: "Start at Circular Quay, tour the Opera House, walk through the Royal Botanic Garden to Mrs Macquarie’s Chair, and end in The Rocks." },
-      { title: "Bondi to Coogee", text: "Walk the coastal path from Bondi past Tamarama and Bronte to Coogee, swim if it’s warm, and have dinner in Surry Hills." },
-      { title: "Ferries, or the Blue Mountains", text: "Take the ferry to Manly or Taronga Zoo for harbour views, or spend the day walking in the Blue Mountains instead." },
+      { title: "The harbour", morning: "Start at Circular Quay and take a tour inside the Opera House.", afternoon: "Walk through the Royal Botanic Garden to Mrs Macquarie’s Chair, then explore The Rocks’ lanes and markets.", evening: "Have dinner with a view of the bridge, or climb it at dusk on a booked climb." },
+      { title: "Bondi to Coogee", morning: "Walk the coastal path from Bondi past Tamarama and Bronte to Coogee, about 6 km.", afternoon: "Swim at one of the beaches or ocean pools if it’s warm, between the flags.", evening: "Head back to the city for dinner in Surry Hills." },
+      { title: "Ferries, or the Blue Mountains", morning: "Take the ferry to Manly for harbour views on the way.", afternoon: "Walk to Shelly Beach, or take the ferry to Taronga Zoo instead.", evening: "Or spend the whole day walking in the Blue Mountains, by train from Central." },
     ],
     daysNeeded: "Four to five days, plus a day for the Blue Mountains.",
+    gettingAround: "Trains, buses, ferries and light rail all take Opal or a contactless bank card or phone, with daily and weekly fare caps. Ferries are the most scenic way to cross the harbour. Ride-hailing and taxis are easy to find.",
     essentials: { currency: "Australian dollar (AUD)", plugs: "Type I, 230V", language: "English" },
     faqs: [
       {
@@ -252,18 +258,19 @@ export const asiaPacificDepth: Record<string, DestinationDepth> = {
     ],
     weather: "GBBMMMMMMBBG",
     neighbourhoods: [
-      { name: "Connaught Place", bestFor: "First visits", text: "The colonnaded centre of New Delhi, with restaurants, shops and metro lines in every direction." },
-      { name: "Paharganj", bestFor: "Budget stays", text: "Cheap hotels by New Delhi railway station. Hectic, but handy for trains and the airport metro." },
-      { name: "Old Delhi", bestFor: "Heritage and food", text: "Chandni Chowk’s markets, the Red Fort and Jama Masjid, with a few heritage hotels." },
-      { name: "Hauz Khas", bestFor: "Cafés and nightlife", text: "A lakeside village of bars and boutiques around medieval ruins in South Delhi." },
-      { name: "Aerocity", bestFor: "Early flights", text: "Modern hotels next to the airport, on the Airport Express Line." },
+      { name: "Connaught Place", bestFor: "First visits", text: "The colonnaded circle at the centre of New Delhi, with restaurants, shops and metro lines in every direction. A good mid-range base." },
+      { name: "Paharganj", bestFor: "Budget stays", text: "Cheap hotels in busy, narrow streets by New Delhi railway station. Hectic, but handy for trains and the airport metro." },
+      { name: "Old Delhi", bestFor: "Heritage and food", text: "Chandni Chowk’s markets, the Red Fort and Jama Masjid, with a few heritage hotels in old havelis. Crowded and chaotic in the best way." },
+      { name: "Hauz Khas", bestFor: "Cafés and nightlife", text: "A lakeside village of bars, cafés and boutiques around medieval ruins in South Delhi. Popular with younger locals." },
+      { name: "Aerocity", bestFor: "Early flights", text: "Modern hotels next to the airport, on the Airport Express Line, for a late arrival or an early departure." },
     ],
     itinerary: [
-      { title: "Old Delhi", text: "See the Red Fort and Jama Masjid, then take a cycle rickshaw through Chandni Chowk’s markets and stop for street food." },
-      { title: "New Delhi", text: "Visit Humayun’s Tomb, walk in Lodhi Garden, pass India Gate, and end at the Qutub Minar in the south of the city." },
-      { title: "Agra and the Taj Mahal", text: "Take an early train or a tour to Agra for the Taj Mahal and Agra Fort. The Taj is closed on Fridays." },
+      { title: "Old Delhi", morning: "See the Red Fort as it opens, then the courtyard of Jama Masjid.", afternoon: "Take a cycle rickshaw through Chandni Chowk’s markets and stop for street food.", evening: "Visit the Gurudwara Bangla Sahib in the evening, where visitors are welcome at the community kitchen." },
+      { title: "New Delhi", morning: "Start at Humayun’s Tomb in the morning light.", afternoon: "Walk in Lodhi Garden, then pass India Gate on the way to the Qutub Minar in the south of the city.", evening: "Eat in Hauz Khas village, by the lake and ruins." },
+      { title: "Agra and the Taj Mahal", morning: "Take an early train or tour to Agra, aiming to reach the Taj Mahal soon after it opens.", afternoon: "See Agra Fort, across the river bend from the Taj.", evening: "Return to Delhi in the evening. The Taj Mahal is closed on Fridays." },
     ],
     daysNeeded: "Two to three days for Delhi. Most visitors add Agra and Jaipur for the Golden Triangle, about a week in all.",
+    gettingAround: "The Delhi Metro is clean, cheap and covers most of the city, including the airport; use a token or a travel card. For other journeys, use ride-hailing apps or prepaid taxis, and agree the fare first for auto-rickshaws.",
     essentials: { currency: "Indian rupee (INR)", plugs: "Types C, D and M, 230V", language: "Hindi and English" },
     faqs: [
       {

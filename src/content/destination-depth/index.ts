@@ -20,39 +20,51 @@ export const weatherLegend = {
 
 export const modeLabel: Record<TransferMode, string> = { train: "Train", metro: "Metro", bus: "Bus", taxi: "Taxi" };
 
-/** Headings and fixed lines for the destination page sections. */
+/** Headings, intros and fixed lines for the destination page sections, in page order. */
 export const depthCopy = {
-  airports: { title: (city: string) => `Getting from the airport to ${city}`, check: "Times and fares change, so check before you travel:", checked: (date: string) => `Checked ${date}.` },
+  menu: { overview: "Overview", airports: "Airports", months: "When to go", plan: "3-day plan", stay: "Where to stay", costs: "Costs", faqs: "Questions", routes: "Flights from" },
+  airports: {
+    title: (city: string) => `Getting from the airport to ${city}`,
+    intro: "Each airport, how far it is from the centre, and the quickest and cheapest ways into town.",
+    check: "Times and fares change, so check before you travel:",
+    checked: (date: string) => `Checked ${date}.`,
+  },
   months: {
-    title: (city: string) => `${city} month by month`,
-    intro: "When the weather is at its best, and the cheapest month to fly from recent fares.",
-    note: "A guide to the seasons, not a forecast.",
+    title: (city: string) => `When to go to ${city}`,
+    intro: "The months with the best weather, and the cheapest month to fly in recent fares. A guide to the seasons, not a forecast.",
+    calendar: (city: string) => `Cheapest month to fly to ${city}`,
   },
   plan: {
-    title: (city: string) => `Things to do in ${city}`,
+    title: (city: string) => `A 3-day plan for ${city}`,
+    intro: "A first visit, day by day, with the main sights in an order that saves time on the move.",
+    highlights: "Don’t miss",
     dayPlan: (n: number) => `A ${n}-day plan for a first visit`,
     tripName: (n: number, city: string) => `A ${n}-day plan for ${city}`,
     day: (n: number) => `Day ${n}`,
+    parts: { morning: "Morning", afternoon: "Afternoon", evening: "Evening" },
+    tip: "Flight tip",
   },
-  stay: { title: (city: string) => `Where to stay in ${city}`, bestFor: "Best for" },
+  stay: { title: (city: string) => `Where to stay in ${city}`, intro: "The neighbourhoods that suit a first visit, and who each one is best for.", bestFor: "Best for" },
   costs: {
     title: (city: string) => `What a trip to ${city} costs`,
+    intro: "The prices we can stand behind: recent fares and the operators’ own transport prices.",
     flights: "Return flight",
-    flightsFrom: (origin: string) => `Cheapest recent fare from ${origin}`,
+    flightsFrom: (origin: string) => `From ${origin}`,
     noFlights: "Search your dates for live prices",
     transfer: "Airport to the centre",
     transferNone: "See the operators’ own pages for fares",
-    money: "Money",
-    note: "We only show prices we’ve seen on the operator’s own page or in recent fare searches. Food, hotels and activities depend on your style of travel.",
+    around: "Getting around",
+    note: "Hotels, food and activities depend on how you like to travel, so we don’t guess at them.",
   },
   essentials: { currency: "Currency", plugs: "Plugs", language: "Language" },
-  faqs: { title: (city: string) => `${city}: questions travellers ask` },
+  faqs: { title: (city: string) => `${city}: questions travellers ask`, intro: "Short answers first, with the official page where it matters." },
   routes: {
     title: (city: string) => `Flights to ${city} from the UK and US`,
+    intro: "Flight times, distances, time differences and fares from each departure city.",
     route: (from: string) => `From ${from}`,
     search: (from: string) => `Search from ${from}`,
   },
-  guides: { title: "Before you go" },
+  guides: { title: "Before you go", intro: "Our guides to the rules and decisions that matter for this trip." },
 } as const;
 
 /** City-wide questions built from the structured content above. */
@@ -60,7 +72,5 @@ export const depthQuestions = {
   transfer: (airport: string, city: string) => `How do I get from ${airport} to ${city} city centre?`,
   stay: (city: string) => `Where should I stay in ${city}?`,
   days: (city: string) => `How many days do you need in ${city}?`,
-  currency: (country: string) => `What currency is used in ${country}?`,
-  plugs: (country: string) => `What plugs and voltage does ${country} use?`,
-  language: (city: string) => `What language is spoken in ${city}?`,
+  gettingAround: (city: string) => `What’s the best way to get around ${city}?`,
 } as const;

@@ -16,6 +16,8 @@ export const timeZones: Record<string, string> = {
   MAN: "Europe/London",
   ORD: "America/Chicago",
   ATL: "America/New_York",
+  BHX: "Europe/London",
+  BOS: "America/New_York",
   // Destinations (slugs in src/content/destinations.ts)
   london: "Europe/London",
   paris: "Europe/Paris",
@@ -47,6 +49,8 @@ export const originAirports: Record<string, string> = {
   MAN: "Manchester Airport is the main airport for the north of England, with flights across Europe and some long-haul routes.",
   ORD: "O’Hare handles Chicago’s international flights; Midway is mainly for flights within the US.",
   ATL: "Hartsfield-Jackson Atlanta International is the city’s airport and Delta’s main hub.",
+  BHX: "Birmingham Airport, east of the city, has flights across Europe and some long-haul routes, and its own railway station, Birmingham International.",
+  BOS: "Boston Logan International handles the city’s flights, close to downtown across the harbour.",
 };
 
 /** Passenger-rights notes by departure country, with the official source. */
