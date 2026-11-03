@@ -53,6 +53,13 @@ export const photos = {
   guideEntryPermits: p("photo-1581553673739-c4906b5d0de8", "An open passport with entry stamps on its pages", "#888f8b", "Kit (formerly ConvertKit)", "kit"),
   guideHalfTerm: p("photo-1763618769312-d9eba1b1bce5", "Two boys watching planes through an airport window", "#6a6a6c", "Rochelle Lee", "bestlifanna"),
   guideCarryOn: p("photo-1526857240824-92be52581d9b", "Clothes and shoes packed in a suitcase", "#8ca6c0", "Arnel Hasanovic", "arnelhasanovic"),
+  // London destination redesign, phase 2 of Batch 7 (chosen on Unsplash, 3 Nov 2026).
+  londonAbbey: p("photo-1633094625975-1b70f1ccf1df", "Westminster Abbey’s west towers against a blue sky", "#8cc0f3", "Ian Branch", "thebranches"),
+  londonMuseum: p("photo-1770910339393-6894daf06334", "The glass and steel roof of the British Museum’s Great Court", "#a6c0c0", "Adrien Olichon", "adrienolichon"),
+  londonTowerBridge: p("photo-1533204515132-035bc8d4128c", "Tower Bridge over the Thames at sunset", "#262626", "Shannon Tremaine", "shantricky"),
+  londonBankside: p("photo-1577229846672-ce3b93d35c26", "The Millennium Bridge leading across the Thames to St Paul’s Cathedral", "#262626", "Viktor Forgacs", "sonance"),
+  londonCoventGarden: p("photo-1632941382113-c1060f70ac07", "The Covent Garden Market building", "#d9c0a6", "PLANT", "plant"),
+  londonBrickLane: p("photo-1707996231530-6a629cc90990", "A rainy street of brick buildings and shopfronts on Brick Lane", "#404040", "Flavio Vallone", "fotartistadigitale"),
   // Growth proposal phase 2, month 1 guides (chosen on Unsplash, 3 Nov 2026).
   guideLayover: p("photo-1490430657723-4d607c1503fc", "Looking up at an arrivals and departures board in an airport", "#405973", "JESHOOTS.COM", "jeshoots"),
   guideCheckIn: p("photo-1730288278805-42d46b17438d", "Travellers queueing at airport check-in counters", "#a6a6a6", "Edwin Petrus", "ep_petrus"),

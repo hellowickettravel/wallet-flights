@@ -43,13 +43,11 @@ test("route pages are indexable, listed in the sitemap and answer the flight-tim
 test("destination pages answer best time, airport, flight time and visa questions in FAQPage markup", async ({ request }) => {
   const html = await (await request.get("/destinations/tokyo")).text();
   const faq = jsonLd(html).find((d) => d["@type"] === "FAQPage");
-  // The four original questions come first; phase 2 (3 Nov 2026) adds the rest.
-  expect(faq.mainEntity.map((q: { name: string }) => q.name).slice(0, 5)).toEqual([
+  expect(faq.mainEntity.map((q: { name: string }) => q.name)).toEqual([
     "When is the best time to visit Tokyo?",
     "Which airport do I fly into for Tokyo?",
     "How long is the flight to Tokyo from the UK and US?",
     "Do I need a visa to visit Japan?",
-    "How do I get from Haneda to Tokyo city centre?",
   ]);
   for (const q of faq.mainEntity.slice(1, 3)) expect(visible(html)).toContain(q.acceptedAnswer.text.slice(0, 50));
   expect(html).toContain("<title>Tokyo flights: best time to visit and fares | Wallet Flights</title>");

@@ -279,3 +279,18 @@ pillars). Month 1 is built in this batch; months 2 and 3 are scheduled in `docs/
 The 6 × 20 matrix gives 80 new pages (117 in all). Reaching 100+ new needs more departure cities
 (e.g. Birmingham, Edinburgh, Boston, Miami) or more destinations. That's the owner's choice of market,
 so it's listed in `docs/HANDOFF.md` rather than invented here.
+
+---
+
+# Batch 7 — Destination page redesign, done properly (from 3 Nov 2026)
+
+The phase 2 layout was rejected (see `docs/AUDIT.md`, Batch 20) and the approved page restored. The
+redesign now follows the proposal's own roadmap, with a sign-off at each gate.
+
+| Phase | Work | Exit (owner signs off) |
+|---|---|---|
+| 0 | Restore the approved destination page live | Done when merged |
+| 1 | Design spec in `docs/DESIGN.md`: the approved page is the skeleton; length ≤ ~1.4× (≤ ~6,000 px desktop); photography carries each new block (neighbourhood photo tiles in the style of "More in Europe", one photo per day of the plan); progressive disclosure (airport tabs, FAQ accordion with answers in the HTML); one signature element; no new section without an image or a clear job | Spec approved before code |
+| 2 | London only, built to the spec with Unsplash photos; before/after screenshots at 1440 px and on a phone | Screenshots approved |
+| 3 | Top 5: London, Paris, Rome, Dubai, New York | Approved |
+| 4 | The other 15; climate and food data once en.wikipedia.org and www.numbeo.com are allowed | Approved |

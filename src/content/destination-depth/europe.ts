@@ -1,3 +1,4 @@
+import { photos } from "../images";
 import type { DestinationDepth } from "./types";
 
 // Fares and journey times checked 3 Nov 2026 on the pages linked beside them.
@@ -14,6 +15,18 @@ const tmbAirport = { label: "TMB: Airport ticket", url: "https://www.tmb.cat/en/
 export const europeDepth: Record<string, DestinationDepth> = {
   london: {
     checked: "2026-11-03",
+    visual: {
+      days: [
+        { photo: photos.londonAbbey, stops: ["Westminster Abbey", "South Bank walk", "Tate Modern", "Borough Market"] },
+        { photo: photos.londonMuseum, stops: ["British Museum", "Covent Garden", "National Gallery", "A West End show"] },
+        { photo: photos.londonTowerBridge, stops: ["Tower of London", "Tower Bridge", "Brick Lane", "Shoreditch"] },
+      ],
+      stay: [
+        { name: "South Bank and Bankside", bestFor: "First visits", photo: photos.londonBankside },
+        { name: "Covent Garden and Soho", bestFor: "Theatre and nightlife", photo: photos.londonCoventGarden },
+        { name: "Shoreditch", bestFor: "Food and a younger crowd", photo: photos.londonBrickLane },
+      ],
+    },
     airports: [
       {
         code: "LHR",

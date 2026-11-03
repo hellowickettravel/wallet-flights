@@ -26,7 +26,7 @@ export function GuideSection({ id, title, intro, tone = "white", children }: { i
 export function SectionMenu({ items }: { items: { id: string; label: string }[] }) {
   return (
     <nav aria-label="On this page" className="sticky top-[4.5rem] z-30 border-y border-line bg-white/95 backdrop-blur-md">
-      <ul className="container-page flex gap-1 overflow-x-auto py-2 [scrollbar-width:none]">
+      <ul className="container-page relative flex gap-1 overflow-x-auto py-2 [scrollbar-width:none]">
         {items.map((it) => (
           <li key={it.id} className="shrink-0">
             <a href={`#${it.id}`} className="inline-flex h-10 items-center rounded-full px-4 text-[0.9375rem] font-semibold whitespace-nowrap text-ink-soft hover:bg-mist hover:text-ink">

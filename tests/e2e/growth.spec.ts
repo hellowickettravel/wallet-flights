@@ -84,7 +84,7 @@ test.describe("route matrix", () => {
   });
 });
 
-test.describe("destination guides, phase 2", () => {
+test.describe("destination depth content (kept for the phase 2 redesign)", () => {
   test("every destination has its depth content, and the guides it links exist", () => {
     for (const d of destinations) {
       const depth = destinationDepth[d.slug];
@@ -100,31 +100,33 @@ test.describe("destination guides, phase 2", () => {
     }
   });
 
-  for (const slug of ["london", "tokyo", "cusco"]) {
-    test(`${slug}: 10+ visible FAQs in FAQPage markup, a 3-day plan, and routes from every city`, async ({ request }) => {
-      const html = await (await request.get(`/destinations/${slug}`)).text();
-      const graph = jsonLd(html);
-      const faq = graph.find((d) => d["@type"] === "FAQPage");
-      expect(faq.mainEntity.length).toBeGreaterThanOrEqual(10);
-      for (const q of faq.mainEntity) expect(visible(html), q.name).toContain(q.acceptedAnswer.text.slice(0, 40));
-      const trip = graph.find((d) => d["@type"] === "TouristTrip");
-      expect(trip.itinerary.itemListElement).toHaveLength(3);
-      expect(graph.find((d) => d["@type"] === "TouristDestination")).toBeTruthy();
-      // Eight departure cities, less the city itself (and the UK cities for London).
-      const city = destinations.find((d) => d.slug === slug)!;
-      const links = [...html.matchAll(/href="(\/routes\/[^"]+-to-[^"]+)"/g)].map((m) => m[1]).filter((h) => h.endsWith(`-to-${slug}`));
-      const search = (html.match(new RegExp(`destination_${slug}_from_`, "g")) ?? []).length;
-      expect(new Set(links).size + search, city.city).toBeGreaterThanOrEqual(slug === "london" ? 5 : 8);
-    });
-  }
+  // The destination page itself is back to its approved layout (3 Nov 2026);
+  // the deeper content above is kept for the phase 2 redesign (docs/PLAN.md).
+});
 
-  test("London shows its airport transfers with sourced fares", async ({ page }) => {
+test.describe("photo-led destination layout (Batch 7, London first)", () => {
+  test("London: airport tabs, questions folded away, 3 photo day cards, 3 photo stay tiles", async ({ page }) => {
     await page.goto("/destinations/london");
-    const section = page.getByRole("region", { name: "Getting from the airport to London" });
-    await expect(section.getByRole("heading", { name: /Heathrow/ })).toBeVisible();
-    await expect(section.getByText(/^Train: Heathrow Express$/)).toBeAttached();
-    await expect(section.getByRole("link", { name: /^Source\s*: Heathrow Express/ })).toHaveAttribute("href", /heathrowexpress\.com/);
-    await expect(page.getByRole("region", { name: "London month by month" }).locator("ol").first().locator("> li")).toHaveCount(12);
+    await expect(page.getByRole("tab", { name: "Heathrow" })).toHaveAttribute("aria-selected", "true");
+    await page.getByRole("tab", { name: "Gatwick" }).click();
+    await expect(page.getByText("Gatwick Express")).toBeVisible();
+    // Questions start closed; one opens on tap.
+    const q = page.getByRole("button", { name: "How many days do you need in London?" });
+    await expect(q).toHaveAttribute("aria-expanded", "false");
+    await q.click();
+    await expect(q).toHaveAttribute("aria-expanded", "true");
+    await expect(page.getByRole("region", { name: "3 days in London" }).locator("ol > li")).toHaveCount(3);
+    await expect(page.getByRole("region", { name: "Where to stay" }).locator("ul > li")).toHaveCount(3);
+  });
+
+  test("London's FAQPage markup matches the questions on the page; other cities keep the approved layout", async ({ request }) => {
+    const london = await (await request.get("/destinations/london")).text();
+    const faq = jsonLd(london).find((d) => d["@type"] === "FAQPage");
+    expect(faq.mainEntity).toHaveLength(6);
+    for (const x of faq.mainEntity) expect(visible(london), x.name).toContain(x.acceptedAnswer.text.slice(0, 40));
+    const paris = await (await request.get("/destinations/paris")).text();
+    expect(visible(paris)).toContain("Things to do in Paris");
+    expect(visible(paris)).not.toContain("3 days in Paris");
   });
 });
 
@@ -132,22 +134,22 @@ test.describe("click-out measurement", () => {
   test.use({ consent: "analytics" });
 
   test("links into the fare search send a fare_search event with the placement", async ({ page }) => {
-    await page.goto("/destinations/cusco");
+    await page.goto("/routes/london-to-tokyo");
     await expect.poll(() => page.evaluate(() => typeof (window as unknown as { gtag?: unknown }).gtag)).toBe("function");
-    const link = page.locator('a[href*="destination_cusco_from_"]').first();
+    const link = page.locator('a[href^="/flights?"][href*="sub=route_london-to-tokyo"]').first();
     await link.evaluate((a) => a.addEventListener("click", (e) => e.preventDefault()));
     await link.click();
     const events = await page.evaluate(() =>
       ((window as unknown as { dataLayer: IArguments[] }).dataLayer ?? []).map((a) => Array.from(a)).filter((a) => a[0] === "event"),
     );
-    expect(events).toContainEqual(["event", "fare_search", expect.objectContaining({ placement: expect.stringContaining("destination_cusco_from_"), page_path: "/destinations/cusco" })]);
+    expect(events).toContainEqual(["event", "fare_search", expect.objectContaining({ placement: expect.stringContaining("route_london-to-tokyo"), page_path: "/routes/london-to-tokyo" })]);
   });
 
   test("no events without analytics consent", async ({ browser, baseURL }) => {
     const ctx = await browser.newContext();
     await ctx.addCookies([{ name: "wf_consent", value: `s0.a0.${Date.now()}`, url: baseURL! }]);
     const page = await ctx.newPage();
-    await page.goto("/destinations/cusco");
+    await page.goto("/routes/london-to-tokyo");
     expect(await page.evaluate(() => typeof (window as unknown as { gtag?: unknown }).gtag)).toBe("undefined");
     await ctx.close();
   });

@@ -4,6 +4,8 @@
 // checked; anything we couldn't check is left out and the reader is sent to
 // the operator's own page instead.
 
+import type { Photo } from "../images";
+
 export type Source = { label: string; url: string };
 
 export type TransferMode = "train" | "metro" | "bus" | "taxi";
@@ -52,7 +54,20 @@ export type Neighbourhood = {
 /** One day of the first-visit plan, split the way people plan a day. */
 export type ItineraryDay = { title: string; morning: string; afternoon: string; evening: string };
 
+/**
+ * The photo-led layout (Batch 7): at-a-glance blocks with a picture and a few
+ * words each. A city gets the new layout only once it has this; the others
+ * keep the approved page.
+ */
+export type DestinationVisual = {
+  /** One per itinerary day, in order: a photo and the stops by name. */
+  days: { photo: Photo; stops: string[] }[];
+  /** Three neighbourhood tiles; names match `neighbourhoods`. */
+  stay: { name: string; bestFor: string; photo: Photo }[];
+};
+
 export type DestinationDepth = {
+  visual?: DestinationVisual;
   /** ISO date this guide's facts were last checked. */
   checked: string;
   airports: AirportGuide[];
