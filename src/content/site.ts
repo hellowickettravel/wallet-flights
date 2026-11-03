@@ -95,6 +95,7 @@ export const mainNav: readonly NavItem[] = [
       { label: "Search flights", href: "/flights", description: "Compare live prices, cheapest first" },
       { label: "Fare calendar", href: "/fare-calendar", description: "The cheapest month and day to fly" },
       { label: "Flight deals", href: "/deals", description: "Low fares found from the US and UK" },
+      { label: "Flight routes", href: "/routes", description: "Flight times and fares by route" },
       { label: "Airlines", href: "/airlines", description: "The airlines we compare" },
     ],
   },
@@ -125,6 +126,7 @@ export const footerNav = [
     links: [
       { label: "Flights", href: "/flights" },
       { label: "Flight deals", href: "/deals" },
+      { label: "Flight routes", href: "/routes" },
       { label: "Destinations", href: "/destinations" },
       { label: "Airlines", href: "/airlines" },
       { label: "Fare calendar", href: "/fare-calendar" },

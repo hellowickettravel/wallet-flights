@@ -4,20 +4,27 @@ import { pageMetadata, unsplashShareImage } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { AirplaneTakeoff, ArrowUpRight, CalendarCheck, CaretRight, Lightbulb, MapPin } from "@phosphor-icons/react/dist/ssr";
+import { AirplaneTakeoff, ArrowUpRight, CalendarCheck, CaretRight, Coins, Lightbulb, MagnifyingGlass, MapPin, Plug, Translate } from "@phosphor-icons/react/dist/ssr";
 import { ParallaxHero } from "@/components/destinations/parallax-hero";
 import { DestinationTile } from "@/components/destinations/destination-tile";
+import { AirportTransfers } from "@/components/destinations/airport-transfers";
+import { MonthStrip } from "@/components/destinations/month-strip";
 import { SearchPanel } from "@/components/search/search-panel";
+import { GuideCard } from "@/components/guides/guide-card";
 import { airports } from "@/content/airports";
 import { MonthCalendar } from "@/components/destinations/month-calendar";
 import { TripExtras } from "@/components/destinations/trip-extras";
-import { originByCode, routes } from "@/content/deals";
+import { origins, routeBySlug } from "@/content/deals";
 import { destinationGuides, entryNote, usPassportNote } from "@/content/destination-guides";
+import { depthCopy, destinationDepth } from "@/content/destination-depth";
 import { destinationBySlug, destinations, regions } from "@/content/destinations";
+import { guideBySlug } from "@/content/guides";
 import { site } from "@/content/site";
 import { approxFlightTime } from "@/lib/demo-flights";
 import { dealHref, fareDates, stopsText } from "@/lib/deal-links";
+import { depthAnswers } from "@/lib/destination-faqs";
 import { destinationTileFares, monthCalendars } from "@/lib/fares";
+import type { QuickAnswer } from "@/lib/route-facts";
 import { cheapestFare } from "@/lib/travelpayouts";
 import { Price } from "@/components/currency/currency-provider";
 
@@ -29,28 +36,67 @@ export async function generateMetadata({ params }: PageProps<"/destinations/[slu
   const { slug } = await params;
   const d = destinationBySlug[slug];
   if (!d) return {};
-  // Flight times are shown from the other gateway city, never from the city itself.
-  const from = ["New York", "London"].filter((c) => c !== d.city).join(" and ");
   return pageMetadata({
     title: `${d.city} flights: best time to visit and fares`,
-    description: `How long the flight to ${d.city} is from ${from}, the best months to visit, which airport to use, and entry rules for UK and US travellers.`,
+    description: `Flights to ${d.city}: the best months to visit, getting in from the airport, where to stay, a 3-day plan and live fares from the UK and US.`,
     path: `/destinations/${d.slug}`,
     image: unsplashShareImage(d.photo),
   });
+}
+
+/** A quick answer; `inline` puts the official link in the middle of the sentence (the entry question). */
+type Answer = QuickAnswer & { inline?: { lead: string; link: { label: string; href: string }; rest: string } };
+
+const h2 = "font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]";
+
+function ExternalLink({ label, href }: { label: string; href: string }) {
+  return (
+    <a href={href} target="_blank" rel="noopener" className="inline-flex items-center gap-1 font-semibold text-action hover:underline">
+      {label}
+      <ArrowUpRight className="size-3.5" weight="bold" aria-hidden />
+      <span className="sr-only"> (opens in a new tab)</span>
+    </a>
+  );
+}
+
+function AnswerText({ x }: { x: Answer }) {
+  if (x.inline)
+    return (
+      <p className="leading-relaxed text-ink/85">
+        {x.inline.lead} <ExternalLink {...x.inline.link} />. {x.inline.rest}
+      </p>
+    );
+  return (
+    <p className="leading-relaxed text-ink/85">
+      {x.a}
+      {x.link && (
+        <>
+          {" "}
+          {x.link.external ? (
+            <ExternalLink label={x.link.label} href={x.link.href} />
+          ) : (
+            <Link href={x.link.href} className="font-semibold text-action underline-offset-4 hover:underline">
+              {x.link.label}
+            </Link>
+          )}
+        </>
+      )}
+    </p>
+  );
 }
 
 export default async function DestinationPage({ params }: PageProps<"/destinations/[slug]">) {
   const { slug } = await params;
   const d = destinationBySlug[slug];
   const guide = destinationGuides[slug];
-  if (!d || !guide) notFound();
+  const depth = destinationDepth[slug];
+  if (!d || !guide || !depth) notFound();
 
   const airport = airports.find((a) => a.code === d.airport);
   const fromNyc = approxFlightTime("JFK", d.airport);
   const fromLon = approxFlightTime("LHR", d.airport);
-  // Departure cities: our featured routes to this place, plus New York and London.
-  const fromCodes = [...new Set(["NYC", "LON", ...routes.filter((r) => r.destination.slug === slug).map((r) => r.origin.code)])];
-  const fromOrigins = fromCodes.map((c) => originByCode[c]).filter((o) => o.apiCode !== d.cityCode);
+  // Fares from all six departure cities (except the city itself); month calendars from New York and London.
+  const fromOrigins = origins.filter((o) => o.apiCode !== d.cityCode);
   const related = destinations.filter((x) => x.region === d.region && x.slug !== d.slug).slice(0, 3);
   const [fareList, calendars, tileFares] = await Promise.all([
     Promise.all(fromOrigins.map(async (o) => ({ origin: o, fare: await cheapestFare(o.apiCode, d.cityCode, o.currency) }))),
@@ -72,6 +118,9 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
         .filter(Boolean)
         .join(" · "),
     },
+    { icon: Coins, label: depthCopy.essentials.currency, value: depth.essentials.currency },
+    { icon: Plug, label: depthCopy.essentials.plugs, value: depth.essentials.plugs },
+    { icon: Translate, label: depthCopy.essentials.language, value: depth.essentials.language },
   ];
 
   const timesFrom = [
@@ -79,26 +128,38 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
     d.city !== "New York" && { from: "New York", time: fromNyc },
   ].filter((t) => !!t);
   const notUkUs = d.country !== "United Kingdom" && d.country !== "United States";
-  const qa = {
-    bestTime: { q: destinationQuestions.bestTime.q(d.city), a: destinationQuestions.bestTime.a(guide.bestTime, guide.whenToGo) },
-    airports: { q: destinationQuestions.airports.q(d.city), a: guide.flying },
-    flightTime: {
+  const entryRest = `${entryNote}${notUkUs ? ` ${usPassportNote}` : ""}`;
+  // The four original questions, then the phase-2 ones (transfers, where to stay, days, money, plugs, language, city-specific).
+  const answers: Answer[] = [
+    { q: destinationQuestions.bestTime.q(d.city), a: destinationQuestions.bestTime.a(guide.bestTime, guide.whenToGo) },
+    { q: destinationQuestions.airports.q(d.city), a: guide.flying },
+    {
       q: destinationQuestions.flightTime.q(d.city, d.city === "London" ? "the US" : d.city === "New York" ? "the UK" : "the UK and US"),
       a: destinationQuestions.flightTime.a(timesFrom),
     },
-    entry: {
+    {
       q: destinationQuestions.entry.q(d.country),
-      rest: `${entryNote}${notUkUs ? ` ${usPassportNote}` : ""}`,
+      a: `${destinationQuestions.entryLead} ${guide.entry.label} (${guide.entry.url}). ${entryRest}`,
+      inline: { lead: destinationQuestions.entryLead, link: { label: guide.entry.label, href: guide.entry.url }, rest: entryRest },
     },
-  };
+    ...depthAnswers(d),
+  ];
+
+  // Cheapest departure month in the first calendar (New York, or London for New York itself).
+  const cal = calendars[0];
+  const cheapest = cal?.months.length ? cal.months.reduce((a, b) => (b.price < a.price ? b : a)) : undefined;
+  const cheapestMonth = cheapest ? Number(cheapest.month.slice(5, 7)) - 1 : undefined;
+
+  const cityRoutes = origins
+    .filter((o) => o.apiCode !== d.cityCode)
+    .map((o) => ({ origin: o, route: routeBySlug[`${o.slug}-to-${d.slug}`] }))
+    .filter((x) => x.route || !(x.origin.code === "MAN" && d.slug === "london"));
+  const readNext = depth.guides.flatMap((s) => (guideBySlug[s] ? [guideBySlug[s]] : []));
+  const transferFares = depth.airports.flatMap((a) => a.transfers.filter((t) => t.fare).map((t) => ({ airport: a, t })));
+
   const jsonLd = {
     "@graph": [
-      faqPage([
-        qa.bestTime,
-        qa.airports,
-        qa.flightTime,
-        { q: qa.entry.q, a: `${destinationQuestions.entryLead} ${guide.entry.label} (${guide.entry.url}). ${qa.entry.rest}` },
-      ]),
+      faqPage(answers),
       {
         "@type": "TouristDestination",
         name: d.city,
@@ -106,6 +167,17 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
         url: `${site.url}/destinations/${d.slug}`,
         image: unsplashShareImage(d.photo).url,
         containedInPlace: { "@type": "Country", name: d.country },
+        touristType: ["Leisure travellers"],
+      },
+      {
+        "@type": "TouristTrip",
+        name: depthCopy.plan.tripName(depth.itinerary.length, d.city),
+        description: depth.daysNeeded,
+        itinerary: {
+          "@type": "ItemList",
+          numberOfItems: depth.itinerary.length,
+          itemListElement: depth.itinerary.map((day, i) => ({ "@type": "ListItem", position: i + 1, name: `${depthCopy.plan.day(i + 1)}: ${day.title}`, description: day.text })),
+        },
       },
       breadcrumbList([
         { label: "Home", href: "/" },
@@ -147,8 +219,8 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
       </div>
 
       <div className="container-page grid gap-12 py-14 md:py-20 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
-        <div>
-          <dl className="grid gap-5 sm:grid-cols-3">
+        <div className="min-w-0">
+          <dl className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {facts.map(({ icon: Icon, label, value }) => (
               <div key={label} className="rounded-(--radius-card) bg-mist p-5">
                 <Icon className="size-6 text-action" aria-hidden />
@@ -157,65 +229,10 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
               </div>
             ))}
           </dl>
-
-          <h2 className="mt-12 font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">Things to do in {d.city}</h2>
-          <ol className="mt-6 space-y-4">
-            {guide.highlights.map((h, i) => (
-              <li key={h} className="flex gap-4">
-                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-ink font-display-tight font-bold text-sun">{i + 1}</span>
-                <span className="pt-1.5 text-[1.0625rem] text-ink">{h}</span>
-              </li>
-            ))}
-          </ol>
-
-          <h2 className="mt-12 font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">Visiting {d.city}</h2>
-          {/* Answer-first questions; the same text feeds the FAQPage markup below. */}
-          <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">{qa.bestTime.q}</h3>
-          <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">
-            <strong className="font-semibold text-ink">{guide.bestTime}.</strong> {guide.whenToGo}
-          </p>
-          <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">{qa.airports.q}</h3>
-          <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">{guide.flying}</p>
-          <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">{qa.flightTime.q}</h3>
-          <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">{qa.flightTime.a}</p>
-          <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">{qa.entry.q}</h3>
-          <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">
-            {destinationQuestions.entryLead}{" "}
-            <a href={guide.entry.url} target="_blank" rel="noopener" className="inline-flex items-center gap-1 font-semibold text-action hover:underline">
-              {guide.entry.label}
-              <ArrowUpRight className="size-3.5" weight="bold" aria-hidden />
-              <span className="sr-only"> (opens in a new tab)</span>
-            </a>
-            . {qa.entry.rest}
-          </p>
-
-          {routes.some((r) => r.destination.slug === slug) && (
-            <>
-              <h2 className="mt-12 font-display-tight text-[1.375rem] font-bold text-ink">Popular routes to {d.city}</h2>
-              <ul className="mt-4 flex flex-wrap gap-2">
-                {routes
-                  .filter((r) => r.destination.slug === slug)
-                  .map((r) => (
-                    <li key={r.slug}>
-                      <Link href={`/routes/${r.slug}`} className="inline-flex h-10 items-center rounded-full px-4 font-semibold text-ink ring-1 ring-line hover:bg-mist">
-                        From {r.origin.city}
-                      </Link>
-                    </li>
-                  ))}
-              </ul>
-            </>
-          )}
-
-          <div className="mt-10 flex gap-4 rounded-(--radius-card) bg-sun/20 p-5 ring-1 ring-sun/50">
-            <Lightbulb className="size-6 shrink-0 text-ink" weight="fill" aria-hidden />
-            <p className="leading-relaxed text-ink">
-              <strong className="font-semibold">Flight tip: </strong>
-              {guide.tip}
-            </p>
-          </div>
+          <AirportTransfers city={d.city} airports={depth.airports} checked={depth.checked} />
         </div>
 
-        <aside aria-labelledby="fares-title">
+        <aside aria-labelledby="fares-title" className="lg:sticky lg:top-24 lg:self-start">
           <div className="rounded-(--radius-panel) bg-board p-6 text-white md:p-7">
             <h2 id="fares-title" className="font-display-tight text-[1.5rem] font-bold">Recent fares to {d.city}</h2>
             {fares.length > 0 ? (
@@ -247,15 +264,196 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
         </aside>
       </div>
 
-      {calendars.length > 0 && (
-        <section aria-labelledby="months-title" className="border-t border-line py-14 md:py-20">
-          <div className="container-page">
-            <h2 id="months-title" className="font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">
-              Cheapest month to fly to {d.city}
+      <section aria-labelledby="months-title" className="border-t border-line py-14 md:py-20">
+        <div className="container-page">
+          <h2 id="months-title" className={h2}>
+            {depthCopy.months.title(d.city)}
+          </h2>
+          <p className="mt-2 max-w-2xl text-ink-soft">
+            {depthCopy.months.intro} {depthCopy.months.note}
+          </p>
+          <div className="mt-8">
+            <MonthStrip weather={depth.weather} climate={depth.climate?.months} cheapestMonth={cheapestMonth} cheapestLabel={cal ? `Cheapest from ${cal.origin.city}` : undefined} />
+          </div>
+          {calendars.length > 0 && (
+            <>
+              <h3 className="mt-12 text-[1.25rem] font-semibold text-ink">Cheapest month to fly to {d.city}</h3>
+              <div className="mt-4">
+                <MonthCalendar calendars={calendars} to={d.airport} subPrefix={`destination_${d.slug}`} />
+              </div>
+            </>
+          )}
+        </div>
+      </section>
+
+      <section aria-labelledby="plan-title" className="border-t border-line bg-mist py-14 md:py-20">
+        <div className="container-page grid gap-12 lg:grid-cols-[1fr_1.3fr] lg:gap-16">
+          <div>
+            <h2 id="plan-title" className={h2}>
+              {depthCopy.plan.title(d.city)}
             </h2>
-            <div className="mt-6">
-              <MonthCalendar calendars={calendars} to={d.airport} subPrefix={`destination_${d.slug}`} />
+            <ul className="mt-6 space-y-3">
+              {guide.highlights.map((h) => (
+                <li key={h} className="flex gap-3 text-[1.0625rem] text-ink">
+                  <span className="mt-2.5 size-2 shrink-0 rounded-full bg-action" aria-hidden />
+                  {h}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-8 flex gap-4 rounded-(--radius-card) bg-sun/20 p-5 ring-1 ring-sun/50">
+              <Lightbulb className="size-6 shrink-0 text-ink" weight="fill" aria-hidden />
+              <p className="leading-relaxed text-ink">
+                <strong className="font-semibold">Flight tip: </strong>
+                {guide.tip}
+              </p>
             </div>
+          </div>
+          <div>
+            <h3 className="text-[1.25rem] font-semibold text-ink">{depthCopy.plan.dayPlan(depth.itinerary.length)}</h3>
+            {/* A real sequence, so the days are numbered. */}
+            <ol className="mt-5 space-y-4">
+              {depth.itinerary.map((day, i) => (
+                <li key={day.title} className="flex gap-4 rounded-(--radius-card) bg-white p-5 ring-1 ring-line">
+                  <span className="grid size-10 shrink-0 place-items-center rounded-full bg-ink font-display-tight font-bold text-sun" aria-hidden>
+                    {i + 1}
+                  </span>
+                  <div>
+                    <h4 className="font-semibold text-ink">
+                      <span className="sr-only">{depthCopy.plan.day(i + 1)}: </span>
+                      {day.title}
+                    </h4>
+                    <p className="mt-1 leading-relaxed text-ink/85">{day.text}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-4 leading-relaxed text-ink-soft">{depth.daysNeeded}</p>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="stay-title" className="py-14 md:py-20">
+        <div className="container-page">
+          <h2 id="stay-title" className={h2}>
+            {depthCopy.stay.title(d.city)}
+          </h2>
+          <dl className="mt-8 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+            {depth.neighbourhoods.map((n) => (
+              <div key={n.name} className="border-t-2 border-ink pt-4">
+                <dt>
+                  <span className="block font-display-tight text-[1.25rem] font-bold text-ink">{n.name}</span>
+                  <span className="mt-1 block text-[0.875rem] font-semibold text-action">
+                    {depthCopy.stay.bestFor}: {n.bestFor.toLowerCase()}
+                  </span>
+                </dt>
+                <dd className="mt-2 leading-relaxed text-ink/85">{n.text}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      <section aria-labelledby="costs-title" className="border-t border-line py-14 md:py-20">
+        <div className="container-page max-w-4xl">
+          <h2 id="costs-title" className={h2}>
+            {depthCopy.costs.title(d.city)}
+          </h2>
+          <dl className="mt-8 divide-y divide-line border-y border-line">
+            <div className="grid gap-2 py-5 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-10">
+              <dt className="font-semibold text-ink">{depthCopy.costs.flights}</dt>
+              <dd>
+                {fares.length > 0 ? (
+                  <ul className="space-y-1">
+                    {fares.slice(0, 3).map(({ origin, fare }) => (
+                      <li key={origin.code} className="text-ink/85">
+                        {depthCopy.costs.flightsFrom(origin.city)}: <Price amount={fare.price} currency={fare.currency} className="tabular font-semibold text-fare" />
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <Link href={dealHref(undefined, "NYC", d.airport, `destination_${d.slug}_costs`)} className="inline-flex items-center gap-2 font-semibold text-action hover:underline">
+                    <MagnifyingGlass className="size-4" weight="bold" aria-hidden />
+                    {depthCopy.costs.noFlights}
+                  </Link>
+                )}
+              </dd>
+            </div>
+            <div className="grid gap-2 py-5 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-10">
+              <dt className="font-semibold text-ink">{depthCopy.costs.transfer}</dt>
+              <dd className="text-ink/85">
+                {transferFares.length > 0 ? (
+                  <ul className="space-y-1">
+                    {transferFares.map(({ airport: a, t }) => (
+                      <li key={`${a.code}-${t.name}`}>
+                        {t.name} from {a.name}: <span className="tabular font-semibold text-fare">{t.fare?.text}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  depthCopy.costs.transferNone
+                )}
+              </dd>
+            </div>
+            <div className="grid gap-2 py-5 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-10">
+              <dt className="font-semibold text-ink">{depthCopy.costs.money}</dt>
+              <dd className="text-ink/85">{depth.essentials.currency}</dd>
+            </div>
+          </dl>
+          <p className="mt-4 text-[0.9375rem] leading-relaxed text-ink-soft">{depthCopy.costs.note}</p>
+        </div>
+      </section>
+
+      <section aria-labelledby="faq-title" className="border-t border-line py-14 md:py-20">
+        <div className="container-page max-w-4xl">
+          <h2 id="faq-title" className={h2}>
+            {depthCopy.faqs.title(d.city)}
+          </h2>
+          {/* Answer-first; the same text feeds the FAQPage markup below. */}
+          <div className="mt-8 divide-y divide-line border-y border-line">
+            {answers.map((x) => (
+              <div key={x.q} className="grid gap-2 py-6 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] md:gap-10">
+                <h3 className="text-[1.0625rem] leading-snug font-semibold text-ink">{x.q}</h3>
+                <AnswerText x={x} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="routes-title" className="border-t border-line bg-mist py-14 md:py-20">
+        <div className="container-page">
+          <h2 id="routes-title" className={h2}>
+            {depthCopy.routes.title(d.city)}
+          </h2>
+          <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {cityRoutes.map(({ origin, route }) => (
+              <li key={origin.code}>
+                <Link
+                  href={route ? `/routes/${route.slug}` : dealHref(undefined, origin.code, d.airport, `destination_${d.slug}_from_${origin.slug}`)}
+                  className="flex h-full items-center justify-between gap-3 rounded-(--radius-card) bg-white px-5 py-4 font-semibold text-ink ring-1 ring-line hover:text-action"
+                >
+                  {route ? depthCopy.routes.route(origin.city) : depthCopy.routes.search(origin.city)}
+                  <CaretRight className="size-4 shrink-0" aria-hidden />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {readNext.length > 0 && (
+        <section aria-labelledby="guides-title" className="py-14 md:py-20">
+          <div className="container-page">
+            <h2 id="guides-title" className={h2}>
+              {depthCopy.guides.title}
+            </h2>
+            <ul className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {readNext.map((g) => (
+                <li key={g.slug}>
+                  <GuideCard guide={g} />
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
       )}
@@ -265,7 +463,7 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
       {related.length > 0 && (
         <section aria-labelledby="related-title" className="border-t border-line bg-mist py-14 md:py-20">
           <div className="container-page">
-            <h2 id="related-title" className="font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">More in {regions.find((x) => x.id === d.region)?.label}</h2>
+            <h2 id="related-title" className={h2}>More in {regions.find((x) => x.id === d.region)?.label}</h2>
             <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((r) => (
                 <li key={r.slug}>

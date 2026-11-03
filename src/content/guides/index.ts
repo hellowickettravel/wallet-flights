@@ -14,6 +14,10 @@ import { eesEtias } from "./ees-etias-uk-us-travellers";
 import { bagFees } from "./hand-luggage-sizes-bag-fees";
 import { estaAndEta } from "./esta-and-uk-eta";
 import { halfTermFlights } from "./half-term-flights";
+import { howLongALayover } from "./how-long-a-layover";
+import { howEarlyAirport } from "./how-early-to-get-to-the-airport";
+import { cheapFlights } from "./how-to-find-cheap-flights";
+import { londonAirports } from "./london-airports-guide";
 
 export type { Guide, GuideSection, GuideTable, Topic, TopicId } from "./types";
 
@@ -31,6 +35,11 @@ export const topicById = Object.fromEntries(topics.map((t) => [t.id, t])) as Rec
 // Same-day guides keep this order (Array.prototype.sort is stable): the
 // research plan's priority order, docs/SEO-CONTENT-PLAN.md.
 export const guides: Guide[] = [
+  // Growth proposal phase 2, month 1 (3 Nov 2026).
+  londonAirports,
+  cheapFlights,
+  howEarlyAirport,
+  howLongALayover,
   powerBankRules,
   twentyFourHourRule,
   flightRights,

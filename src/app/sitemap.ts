@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { routes } from "@/content/deals";
+import { routePages, routeWave } from "@/content/deals";
 import { destinations } from "@/content/destinations";
 import { guides } from "@/content/guides";
 import { site } from "@/content/site";
@@ -14,7 +14,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page("/destinations", updated.destinations),
     ...destinations.map((d) => page(`/destinations/${d.slug}`, updated.destinations)),
     // Every route page answers the flight-time and route questions, so all are listed (fares or not).
-    ...routes.map((r) => page(`/routes/${r.slug}`, updated.routes)),
+    page("/routes", updated.routesHub),
+    ...routePages.map((r) => page(`/routes/${r.slug}`, routeWave(r.slug) === 0 ? updated.routes : updated.routeWaves[routeWave(r.slug)])),
     page("/airlines", updated.airlines),
     page("/fare-calendar", updated.fareCalendar),
     page("/flight-delay-compensation", updated.compensation),

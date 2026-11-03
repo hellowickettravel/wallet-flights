@@ -22,6 +22,8 @@ const pages = [
   "/destinations",
   "/destinations/london",
   "/routes/new-york-to-london",
+  "/routes",
+  "/routes/london-to-tokyo",
   "/travel-guides",
   "/travel-guides/when-to-book-international-flights",
   "/airlines",

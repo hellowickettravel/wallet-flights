@@ -999,3 +999,46 @@ change. New test: a widget-format results link gets our marker.
 aviasales.com/partner URL carries `marker=567389` (the sandbox can't load search results). Check that
 `flights.walletflights.com` and `booking.walletflights.com` (old White Label pages) are gone or carry 567389.
 
+
+## Batch 18 — Growth proposal phase 2, month 1 (3 Nov 2026)
+
+**Plan:** client-approved proposal (see `docs/PLAN.md`, Batch 6): deeper destination guides, every
+route pair, a monthly guide rhythm, technical SEO and measurement.
+
+**Changes:**
+- **Routes:** `src/content/deals.ts` builds all 117 pairs; featured routes (homepage, /deals, ticker)
+  unchanged so fare API calls don't grow. 77 route pages live (37 + wave 1 of 40, ranked from
+  `docs/SEO-KEYWORD-RESEARCH.md` 8.2); wave 2 (40) staged. US cities to New York get the DOT domestic
+  3-hour rule and no entry question; UK→New York and US→London link the ESTA/ETA guide. New `/routes`
+  hub (CollectionPage), breadcrumb "Home / Routes / A to B", "More flight routes" on every route page,
+  "Flight routes" in the menu and footer. Unpublished routes render the noindex not-found page
+  (`dynamicParams` isn't available with Cache Components).
+- **Destinations:** new sections (airports and transfers, month strip, 3-day plan, where to stay,
+  costs, 11–13 FAQs, routes from all 6 cities, related guides); fares from all 6 cities in the aside.
+  Transfer fares only where an official page gave them (checked 3 Nov 2026 by web search restricted to
+  the operators' and authorities' domains: TfL/Heathrow, Heathrow Express, MTA, Île-de-France
+  Mobilités, Trenitalia, TMB, Limousine Bus, Changi, BMTA, ADO, Metrobús CDMX). Found on the way:
+  Paris's Roissybus stopped on 1 March 2026, so it isn't listed.
+- **Guides:** four new guides with sources; legacy `/flight-booking-tips` and
+  `/how-to-find-the-cheapest-flights` now redirect to the cheap-flights guide.
+- **Measurement:** `src/lib/track.ts` + `ClickTracker` send `fare_search` and `click_out` to GA4 with
+  the placement Sub ID, only with analytics consent; the privacy policy says so (updated 3 Nov 2026).
+  Report template in `docs/REPORTING.md`.
+- `llms.txt` / `llms-full.txt` list every live route and the new destination answers.
+
+**Limits found:** the sandbox's network blocks Wikipedia, Numbeo and direct page fetches, so monthly
+climate figures and food/daily costs aren't on the pages. Nothing was filled in from memory; the
+components show them as soon as sourced data is added.
+
+**Test:** lint, typecheck, build (exchange rates stubbed locally; the sandbox blocks the rates CDN),
+full e2e suite (see the PR for the result). New `tests/e2e/growth.spec.ts`: matrix counts and waves,
+sitemap/hub contents, unpublished routes noindex, related links, domestic rules, destination depth
+data, 10+ visible FAQs with FAQPage, TouristTrip, routes from every city, sourced transfer fares, and
+GA events only with consent. axe now also covers `/routes`, a domestic route, `/destinations/london`
+and `/destinations/cusco`. Screenshots at 1440 and on a Pixel 7: no horizontal overflow, no errors.
+
+**Security (same batch):** the production build flagged Next.js 16.4.0 as affected by known
+vulnerabilities; `npm audit` confirmed critical advisories (GHSA-2464-fhr4-w9xw, GHSA-673q-mjm6-r5xr)
+and a moderate one (GHSA-p3m5-59mp-jv5r) for 16.0.0–16.4.0. Upgraded `next` and `eslint-config-next` to
+16.4.4 (patch release, pinned) in its own commit; the full suite was re-run on it. Still open:
+`nodemailer` 10.0.14 moderate advisory (address parsing), fixed in 10.3.x, left for a separate change.

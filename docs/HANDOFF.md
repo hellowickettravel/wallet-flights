@@ -8,6 +8,26 @@ dropdowns, hero fare ticker, route price alerts, email through the Microsoft 365
 `docs/AUDIT.md`. Batch 8 (19 Oct): prices in the visitor's currency (country on first visit via
 `src/proxy.ts`, picker in the header, CLDR country table, daily rates in `src/lib/rates.ts`); see `docs/AUDIT.md`.
 
+**Growth proposal phase 2 (3 Nov 2026), month 1 built:** all 20 destination guides deepened, 77 route
+pages live (wave 2 of 40 staged), `/routes` hub, four new guides, GA4 click-out events, Next.js 16.4.4
+(critical security fixes). See `docs/PLAN.md` Batch 6, `docs/AUDIT.md` Batch 18 and
+`docs/REPORTING.md`.
+
+### Phase 2: what's next
+1. **Early December 2026:** if at least half of route wave 1 is indexed (Search Console → URL
+   Inspection or the Pages report), add `2` to `liveRouteWaves` in `src/content/deals.ts`, set
+   `updated.routeWaves[2]` to that day, rebuild and push. The test `growth.spec.ts` follows automatically.
+2. **Month 2 and 3 guides (4 a month):** next in line in `docs/SEO-CONTENT-PLAN.md`.
+3. **Climate tables and trip costs:** the sandbox couldn't read Wikipedia or Numbeo. Allow those hosts in
+   the cloud environment's network settings (or work locally), then add `climate` (with its source) to each
+   city in `src/content/destination-depth/*` and any sourced daily costs. The month strip shows
+   temperatures as soon as `climate` exists.
+4. **Owner decisions:** (a) more departure cities (Birmingham, Edinburgh, Boston, Miami…) if the target is
+   100+ *new* route pages: the 6 × 20 matrix stops at 117 in all, 80 new; (b) GA4 custom dimensions for
+   `placement` and `link_domain` (`docs/REPORTING.md`); (c) Search Console access for the monthly report.
+5. **Security:** `nodemailer` 10.0.14 has a moderate advisory (address parsing), fixed in 10.3.x; worth a
+   separate upgrade and a test of the contact form's backup SMTP path.
+
 Read first: `CLAUDE.md`, `AGENTS.md`, `docs/IMPROVEMENT-PLAN.md` (the 4-phase plan),
 `docs/SITE-AUDIT.md` (audit findings with evidence) and the end of `docs/AUDIT.md` (what each phase changed).
 

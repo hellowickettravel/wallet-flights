@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { trackEvent } from "@/lib/track";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, LayoutGroup, m } from "motion/react";
 import { AirplaneLanding, AirplaneTakeoff, ArrowsDownUp, ArrowsLeftRight, MagnifyingGlass, Plus, X } from "@phosphor-icons/react";
@@ -126,6 +127,7 @@ export function SearchPanel({ initial, defaultFrom = "NYC", defaultTo, variant =
       legs: visibleLegs.map((l) => ({ from: l.from!, to: l.to!, date: l.date })),
       returnDate: trip === "round" ? returnDate : undefined,
     };
+    trackEvent("fare_search", { placement: subId, page_path: location.pathname });
     router.push(`/flights?${serializeSearch(query)}&sub=${encodeURIComponent(subId)}`);
   }
 

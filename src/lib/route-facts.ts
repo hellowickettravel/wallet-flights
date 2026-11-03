@@ -1,6 +1,6 @@
 import { originAirports, rights, timeZones } from "@/content/route-facts";
 import { cacheLife } from "next/cache";
-import { routeBySlug, type Route } from "@/content/deals";
+import { isDomestic, routeBySlug, type Route } from "@/content/deals";
 import { airports } from "@/content/airports";
 import { destinationGuides, entryNote, usPassportNote } from "@/content/destination-guides";
 import { routeQuestions } from "@/content/quick-answers";
@@ -68,7 +68,10 @@ export function routeRights(r: Route) {
     const band = nearEdge ? undefined : rights.uk.bands.find((b) => exactKm < b.max)?.label;
     return { text: rights.uk.text, band, source: rights.uk.source };
   }
-  if (usOrigins.has(r.origin.code)) return { text: rights.us.text, band: undefined, source: rights.us.source };
+  if (usOrigins.has(r.origin.code)) {
+    const rule = isDomestic(r) ? rights.usDomestic : rights.us;
+    return { text: rule.text, band: undefined, source: rule.source };
+  }
   return null;
 }
 
@@ -125,7 +128,7 @@ export function routeQuickAnswers(r: Route, timeDiff: string | null): QuickAnswe
           },
         ]
       : []),
-    ...(guide
+    ...(guide && !isDomestic(r)
       ? [
           showEntryLink
             ? { q: q.entry.q(d.city), a: entryNote, link: { label: guide.entry.label, href: guide.entry.url, external: true } }

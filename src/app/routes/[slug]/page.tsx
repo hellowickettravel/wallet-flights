@@ -7,7 +7,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { SearchPanel } from "@/components/search/search-panel";
 import { MonthCalendar } from "@/components/destinations/month-calendar";
 import { TripExtras } from "@/components/destinations/trip-extras";
-import { routeBySlug, routes } from "@/content/deals";
+import { routeBySlug, routePages, routePagesByOrigin, routePagesTo } from "@/content/deals";
 import { destinationGuides } from "@/content/destination-guides";
 import { routeQuestions } from "@/content/quick-answers";
 import { routeGuides } from "@/content/route-facts";
@@ -21,7 +21,7 @@ import { cheapestFare } from "@/lib/travelpayouts";
 import { Price } from "@/components/currency/currency-provider";
 
 export function generateStaticParams() {
-  return routes.map((r) => ({ slug: r.slug }));
+  return routePages.map((r) => ({ slug: r.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps<"/routes/[slug]">): Promise<Metadata> {
@@ -49,10 +49,16 @@ export default async function RoutePage({ params }: PageProps<"/routes/[slug]">)
   // Answer-first questions (flight time, distance, time difference, airports,
   // rights, entry), shown on the page and in the FAQPage markup.
   const answers = routeQuickAnswers(r, await routeTimeDifference(r.slug));
+  const transatlantic = (isUkOrigin(r) && d.slug === "new-york") || (!isUkOrigin(r) && d.slug === "london");
   const beforeYouFly = [
     ...(isUkOrigin(r) ? routeGuides.uk : routeGuides.us),
     ...(routeGuides.schengenSlugs.includes(d.slug) ? [routeGuides.schengen] : []),
+    ...(transatlantic ? [routeGuides.transatlantic] : []),
   ].flatMap((s) => (guideBySlug[s] ? [guideBySlug[s]] : []));
+  // Internal links: the same destination from our other departure cities, and
+  // other destinations from this city (published route pages only).
+  const sameDestination = routePagesTo(d.slug).filter((x) => x.slug !== r.slug);
+  const sameOrigin = routePagesByOrigin[origin.code].filter((x) => x.slug !== r.slug);
   const jsonLd = {
     "@graph": [
       webPage("WebPage", `/routes/${r.slug}`, `Flights from ${origin.city} to ${d.city}`, routeSeo(r).description, {
@@ -71,7 +77,7 @@ export default async function RoutePage({ params }: PageProps<"/routes/[slug]">)
         title={`Flights from ${origin.city} to ${d.city}`}
         intro={routeSeo(r).lead}
         crumbs={[
-          { label: "Deals", href: "/deals" },
+          { label: "Routes", href: "/routes" },
           { label: `${origin.city} to ${d.city}`, href: `/routes/${r.slug}` },
         ]}
       />
@@ -207,6 +213,47 @@ export default async function RoutePage({ params }: PageProps<"/routes/[slug]">)
       )}
 
       <TripExtras slug={d.slug} city={d.city} subPrefix={sub} />
+
+      <section aria-labelledby="more-routes-title" className="border-t border-line bg-mist py-14 md:py-20">
+        <div className="container-page">
+          <h2 id="more-routes-title" className="font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">
+            More flight routes
+          </h2>
+          <div className="mt-8 grid gap-10 md:grid-cols-2">
+            {sameDestination.length > 0 && (
+              <div>
+                <h3 className="font-semibold text-ink">Flights to {d.city} from other cities</h3>
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {sameDestination.map((x) => (
+                    <li key={x.slug}>
+                      <Link href={`/routes/${x.slug}`} className="inline-flex min-h-10 items-center rounded-full bg-white px-4 font-semibold text-ink ring-1 ring-line hover:text-action">
+                        {x.origin.city} to {d.city}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <div>
+              <h3 className="font-semibold text-ink">More flights from {origin.city}</h3>
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {sameOrigin.map((x) => (
+                  <li key={x.slug}>
+                    <Link href={`/routes/${x.slug}`} className="inline-flex min-h-10 items-center rounded-full bg-white px-4 font-semibold text-ink ring-1 ring-line hover:text-action">
+                      {x.destination.city}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <p className="mt-8">
+            <Link href="/routes" className="font-semibold text-action underline-offset-4 hover:underline">
+              All flight routes
+            </Link>
+          </p>
+        </div>
+      </section>
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(jsonLd)} />
     </div>
   );

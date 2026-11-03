@@ -2,7 +2,9 @@
 // site for AI assistants and answer engines. Built from src/content only, so
 // it can't drift from what the pages say.
 import { aboutEarn, aboutIntro } from "@/content/about";
-import { routes } from "@/content/deals";
+import { routePages } from "@/content/deals";
+import { destinationDepth } from "@/content/destination-depth";
+import { depthAnswers } from "@/lib/destination-faqs";
 import { destinationGuides } from "@/content/destination-guides";
 import { destinations } from "@/content/destinations";
 import { guides, plainText } from "@/content/guides";
@@ -52,7 +54,8 @@ export function llmsTxt() {
     `- [Flight delay compensation checker](${url("/flight-delay-compensation")}): what UK261 and EU261 say you're owed`,
     "",
     "## Routes (flight time, distance, time difference, airports, passenger rights)",
-    ...routes.map((r) => `- [${r.origin.city} to ${r.destination.city}](${url(`/routes/${r.slug}`)})`),
+    `- [All flight routes](${url("/routes")})`,
+    ...routePages.map((r) => `- [${r.origin.city} to ${r.destination.city}](${url(`/routes/${r.slug}`)})`),
     "",
     "## Travel guides",
     ...guides.map((g) => `- [${g.title}](${url(`/travel-guides/${g.slug}`)}): ${g.excerpt}`),
@@ -71,7 +74,7 @@ export function llmsTxt() {
 
 export async function llmsFullTxt() {
   // The time difference reads the clock, so it comes from the cached helper.
-  const diffs = await Promise.all(routes.map((r) => routeTimeDifference(r.slug)));
+  const diffs = await Promise.all(routePages.map((r) => routeTimeDifference(r.slug)));
   return [
     ...header(),
     "## Help centre",
@@ -84,11 +87,18 @@ export async function llmsFullTxt() {
         `Page: ${url(`/destinations/${d.slug}`)}`,
         `Main airport: ${d.airport}`,
         ...(g ? [g.intro, `Best time to visit: ${g.bestTime}.`, g.whenToGo, `Highlights: ${g.highlights.join("; ")}.`, `Flying there: ${g.flying}`, `Tip: ${g.tip}`, `Entry requirements: ${g.entry.label} (${g.entry.url})`] : []),
+        ...(destinationDepth[d.slug]
+          ? [
+              `Where to stay: ${destinationDepth[d.slug].neighbourhoods.map((n) => `${n.name} (${n.bestFor.toLowerCase()})`).join("; ")}.`,
+              `A ${destinationDepth[d.slug].itinerary.length}-day plan: ${destinationDepth[d.slug].itinerary.map((x, i) => `Day ${i + 1}, ${x.title}: ${x.text}`).join(" ")}`,
+              ...depthAnswers(d).flatMap((x) => [`**${x.q}**`, x.a]),
+            ]
+          : []),
         "",
       ];
     }),
     "## Routes",
-    ...routes.flatMap((r, i) => [
+    ...routePages.flatMap((r, i) => [
       `### ${r.origin.city} to ${r.destination.city}`,
       `Page: ${url(`/routes/${r.slug}`)}`,
       // Flight times and distances are estimates from the great-circle distance, as on the page.
