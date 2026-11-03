@@ -1068,3 +1068,20 @@ short of the proposal, layout not organised. Self-review agreed on all five poin
 
 **Still waiting on network access:** monthly climate figures and food/daily costs (en.wikipedia.org and
 www.numbeo.com to be allowed in the cloud environment, then a new session).
+
+## Batch 20 — Destination page restored; phased redesign plan (3 Nov 2026)
+
+**Owner and client feedback:** the phase 2 destination page "looks like content thrown on a page"; the
+client preferred the page before. Before/after comparison of /destinations/london with real photos:
+4,333 px tall → 10,325 px on desktop (2.4×), 7,629 → 19,098 px on a phone; ten stacked sections of
+same-weight cards and no photography between the hero and the footer tiles.
+
+**Root cause:** depth was added as more sections instead of inside the approved layout, all 20 pages
+shipped at once, and the proposal's own order (top 5 pages first, with sign-off) was skipped.
+
+**Change:** `src/app/destinations/[slug]/page.tsx` restored to the approved version (83e7589). Routes,
+guides, click-out measurement and the Next.js security upgrade stay. The deeper content
+(`src/content/destination-depth/`) and its components stay in the repo, unused on the page, for the
+redesign. Tests that described the reverted layout were returned to their originals.
+
+**Plan (each phase signed off before the next):** see `docs/PLAN.md`, Batch 7.
