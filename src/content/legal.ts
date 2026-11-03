@@ -11,7 +11,7 @@
 import type { LegalSection } from "@/components/legal/legal-page";
 import { company, companyLine, site } from "./site";
 
-export const legalUpdated = "22 October 2026";
+export const legalUpdated = "3 November 2026";
 
 export const privacy: { intro: string; sections: LegalSection[] } = {
   intro: `This policy explains what personal data ${site.name} collects, why, and the choices you have. ${site.name} is a trading name of ${company.legalName} (company number ${company.number}, registered office ${company.registeredOffice}), which is the controller of the data described here.`,
@@ -29,7 +29,7 @@ export const privacy: { intro: string; sections: LegalSection[] } = {
           "Searches: the routes, dates and number of travellers you search for. Live search on our Flights page is run by our flight search partner, which receives your search, IP address and device information to find prices, and measures searches and bookings with its own cookies. In the UK, the EU/EEA and Switzerland it only loads if you allow “Live flight search” cookies; elsewhere it loads by default and you can switch it off under “Cookie settings”.",
           "Fare calendar starting point: when you open the fare calendar without choosing a route, our hosting provider passes our server your approximate location (worked out from your IP address) so we can start from an airport near you. We use it for that page only and don’t store it.",
           "Currency: on your first visit our hosting provider passes our server your country (worked out from your IP address) so we can show prices in its currency. We keep only the currency code, in the wf_cur cookie, never the country or IP address. Prices are converted at daily exchange rates published by the open-source currency-api project, fetched by our server, so your browser doesn’t contact it.",
-          "Technical data: if you allow analytics, Google Analytics records the pages you view, how you arrived (for example from a search engine), your device and browser type and your approximate location, linked to a random ID stored in a cookie so it can tell visits apart. It works out your location from your IP address but doesn’t store the address. We’ve switched off Google signals and ad personalisation, so this data isn’t used for advertising. Vercel Analytics adds page views and page speed, in aggregate, without identifying you.",
+          "Technical data: if you allow analytics, Google Analytics records the pages you view, how you arrived (for example from a search engine), when you start a flight search or follow a link to a partner site (which page and button, not what you book), your device and browser type and your approximate location, linked to a random ID stored in a cookie so it can tell visits apart. It works out your location from your IP address but doesn’t store the address. We’ve switched off Google signals and ad personalisation, so this data isn’t used for advertising. Vercel Analytics adds page views and page speed, in aggregate, without identifying you.",
           "Your cookie choice, stored in a cookie on your device.",
         ],
         "We don’t take payment on this website: when you book through a deal, you pay the provider on its own website. If our team books a flight for you, we’ll explain how to pay before booking, and we use payment details only to take that payment.",

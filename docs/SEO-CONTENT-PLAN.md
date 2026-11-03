@@ -53,14 +53,28 @@ Existing guides were retitled to their top searches: "Best time to book internat
 | ✅ 16 Oct | `hand-luggage-sizes-bag-fees` | airline baggage fees comparison | **Live.** `/airline-baggage-fees` now redirects here. US airline sizes from their own pages; UK airline pages blocked checking, so readers are sent to them. |
 | ✅ 16 Oct | `esta-and-uk-eta` | uk eta for us citizens / esta for usa from uk | **Live.** ESTA $40.62 from 16 Oct 2026; UK ETA £20. Re-check both fees monthly. |
 | ✅ 16 Oct | `half-term-flights` | cheap half term flights | **Live**, ahead of February half-term planning. |
-| 4 | `how-long-a-layover` | how long is a good layover for international flights | |
-| 5 | `how-to-find-cheap-flights` | how to find cheap flights | Then point `/how-to-find-the-cheapest-flights` and `/flight-booking-tips` here. |
+| ✅ 3 Nov | `how-long-a-layover` | how long is a good layover for international flights | **Live** (Growth proposal month 1). |
+| ✅ 3 Nov | `how-to-find-cheap-flights` | how to find cheap flights | **Live.** `/how-to-find-the-cheapest-flights` and `/flight-booking-tips` now redirect here. |
 | 6 | `are-last-minute-flights-cheaper` | are last minute flights cheaper | Link from `/deals`; keep `/last-minute-flight-deals` → `/deals`. |
 | 6 | `first-long-haul-flight-tips` | long haul flight tips | |
-| 7 | `how-early-to-get-to-the-airport` | how early should I get to the airport for an international flight | Quote airline check-in deadlines from airline pages. |
+| ✅ 3 Nov | `how-early-to-get-to-the-airport` | how early should I get to the airport for an international flight | **Live.** BA, American and Delta deadlines. |
 | 8 | `jet-lag-tips` | jet lag tips | Health-adjacent: cite the NHS, no medical advice. |
 
+## Growth proposal phase 2: guide schedule (4 a month)
+
+| Month | Guides |
+|---|---|
+| 1 (Nov 2026) | ✅ how-long-a-layover, ✅ how-early-to-get-to-the-airport, ✅ how-to-find-cheap-flights, ✅ london-airports-guide |
+| 2 (Dec 2026) | are-last-minute-flights-cheaper, first-long-haul-flight-tips, new-york-airports-guide (JFK, Newark, LaGuardia), checked-baggage-allowances |
+| 3 (Jan 2027) | jet-lag-tips (NHS sources), cheapest-time-to-fly-to-europe, flying-with-children, uk-eta-for-us-citizens (only if the ESTA/ETA guide doesn't already rank) |
+
+Each follows the rules below. Re-rank months 2 and 3 from Search Console queries before writing.
+
 ## Route pages: next steps
+
+**3 Nov 2026 (Growth proposal phase 2):** every pair of the 6 departure cities and 20 destinations is
+defined (117). Live: the original 37 plus wave 1 (40, the 27 ranked pairs below and 13 more). Wave 2
+(the other 40) goes live when half of wave 1 is indexed; see `docs/HANDOFF.md`.
 
 1. **Week 1 (done in code):** all 37 indexable, in the sitemap, titled "{A} to {B} flight time, distance
    and fares", with a quick-answers block and "Before you fly" guide links.

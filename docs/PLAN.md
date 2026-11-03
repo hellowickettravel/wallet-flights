@@ -236,3 +236,46 @@ Compensair: campaign_id 86, p 4129, Sub ID `compensation_compensair`; fee copy f
 terms ("No win, no fee", 25–35% only if paid). AirHelp is unavailable to the project until it has three
 months of steady traffic (then "Submit for review", owner's call), so its card is hidden.
 Open items, `TODO(confirm)`: legal wording review.
+
+---
+
+# Batch 6 — Growth proposal, phase 2 (approved 3 Nov 2026)
+
+Client-approved proposal "Turning your destination pages into a traffic engine" (90 days, four
+pillars). Month 1 is built in this batch; months 2 and 3 are scheduled in `docs/REPORTING.md` and
+`docs/SEO-CONTENT-PLAN.md`.
+
+| Pillar | Proposal | Built (3 Nov 2026) |
+|---|---|---|
+| A. Destination guides | All 20 to full depth: airports + transfers, month-by-month weather + fares, 3-day plan, neighbourhoods, trip budget, 10+ FAQs, routes from 6+ cities, related guides | All 20. Data in `src/content/destination-depth/` (one file per region); template `src/app/destinations/[slug]/page.tsx`. Climate figures and food costs wait for sources (see below) |
+| B. Route pages | A page for every popular pair from the 6 departure cities, wave 1 (40) then wave 2 (60+) | Every pair: 6 × 20 = 117 (less the two home cities and Manchester–London). 37 existing + wave 1 (40) live; wave 2 (40) staged in `liveRouteWaves`. New `/routes` hub, related-route links, US domestic rules |
+| C. Travel guides | 4 a month, 12 in 90 days | Month 1: layovers, how early to get to the airport, how to find cheap flights, London airports |
+| D. Technical SEO | Structured data, internal links, speed, title testing | TouristTrip + 10+ question FAQPage on destinations, BreadcrumbList via Routes, CollectionPage `/routes`; menu, footer, deals, destinations and guides all link routes; `llms.txt` covers every route; GA4 `fare_search` / `click_out` events for the monthly report |
+
+## Destination page (after phase 2)
+
+| # | Section | Job |
+|---|---|---|
+| 1 | Hero + search | Unchanged |
+| 2 | Facts (6) + recent fares from all 6 cities | Airport, best time, flight time, currency, plugs, language |
+| 3 | Getting from the airport | Each airport: services, journey times, fares only where an official page gives them, with the source |
+| 4 | Month by month | 12-month strip (best / good / mixed weather), cheapest month from recent fares, then the fare calendar |
+| 5 | Things to do + 3-day plan | Highlights, flight tip, numbered days (a real sequence) |
+| 6 | Where to stay | 3 to 5 neighbourhoods, "best for" |
+| 7 | What a trip costs | Live flight fare, checked transfer fares, currency. No invented food or hotel prices |
+| 8 | Questions travellers ask | 11 to 13 questions, all visible, same text in FAQPage |
+| 9 | Flights from the UK and US | All 6 departure cities: route page when live, otherwise a tracked search |
+| 10 | Before you go | 3 related guides |
+| 11 | Partner links, more in the region | Unchanged |
+
+## Not possible from this sandbox (needs network access to the sources)
+
+- Monthly climate tables (high, low, rain) per city: the `climate` field and the strip support them;
+  add with the source when en.wikipedia.org (or national met-office sites) can be read.
+- Food and daily costs in the trip budget: no source the sandbox can read. Left out rather than guessed.
+
+## Gap to the proposal's "100+ new route pages"
+
+The 6 × 20 matrix gives 80 new pages (117 in all). Reaching 100+ new needs more departure cities
+(e.g. Birmingham, Edinburgh, Boston, Miami) or more destinations. That's the owner's choice of market,
+so it's listed in `docs/HANDOFF.md` rather than invented here.

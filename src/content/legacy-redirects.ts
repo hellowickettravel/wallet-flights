@@ -27,8 +27,8 @@ export const legacyRedirects: { source: string; destination: string }[] = [
   { source: "/airline-baggage-fees", destination: "/travel-guides/hand-luggage-sizes-bag-fees" },
   { source: "/off-season-travel-deals", destination: "/travel-guides/europe-shoulder-season" },
   { source: "/peak-season-vs-off-peak-flights", destination: "/travel-guides/europe-shoulder-season" },
-  { source: "/flight-booking-tips", destination: "/travel-guides" },
-  { source: "/how-to-find-the-cheapest-flights", destination: "/travel-guides" },
+  { source: "/flight-booking-tips", destination: "/travel-guides/how-to-find-cheap-flights" },
+  { source: "/how-to-find-the-cheapest-flights", destination: "/travel-guides/how-to-find-cheap-flights" },
 
   // Deals
   { source: "/last-minute-flight-deals", destination: "/deals" },

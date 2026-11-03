@@ -53,6 +53,11 @@ export const photos = {
   guideEntryPermits: p("photo-1581553673739-c4906b5d0de8", "An open passport with entry stamps on its pages", "#888f8b", "Kit (formerly ConvertKit)", "kit"),
   guideHalfTerm: p("photo-1763618769312-d9eba1b1bce5", "Two boys watching planes through an airport window", "#6a6a6c", "Rochelle Lee", "bestlifanna"),
   guideCarryOn: p("photo-1526857240824-92be52581d9b", "Clothes and shoes packed in a suitcase", "#8ca6c0", "Arnel Hasanovic", "arnelhasanovic"),
+  // Growth proposal phase 2, month 1 guides (chosen on Unsplash, 3 Nov 2026).
+  guideLayover: p("photo-1490430657723-4d607c1503fc", "Looking up at an arrivals and departures board in an airport", "#405973", "JESHOOTS.COM", "jeshoots"),
+  guideCheckIn: p("photo-1730288278805-42d46b17438d", "Travellers queueing at airport check-in counters", "#a6a6a6", "Edwin Petrus", "ep_petrus"),
+  guideCheapFlights: p("photo-1508745453110-c69ab4be30cb", "A traveller using a laptop on a train", "#f3f3f3", "KOBU Agency", "kobuagency"),
+  guideLondonAirports: p("photo-1705662143994-1f237b825e88", "The entrance to Heathrow Terminal 2", "#737373", "CabService London", "taxiservicelondon"),
 } satisfies Record<string, Photo>;
 
 export function unsplashUrl(id: string, width: number, quality = 72) {

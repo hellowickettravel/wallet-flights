@@ -53,11 +53,13 @@ export const originAirports: Record<string, string> = {
 /** Guides linked from route pages, by departure country ("Before you fly"). */
 export const routeGuides = {
   title: "Before you fly",
-  uk: ["uk-airport-liquids-rules", "power-bank-rules-on-planes", "flight-cancelled-or-delayed-rights"],
-  us: ["24-hour-flight-cancellation-rule", "power-bank-rules-on-planes", "flight-cancelled-or-delayed-rights"],
+  uk: ["uk-airport-liquids-rules", "how-early-to-get-to-the-airport", "power-bank-rules-on-planes", "flight-cancelled-or-delayed-rights"],
+  us: ["24-hour-flight-cancellation-rule", "how-early-to-get-to-the-airport", "power-bank-rules-on-planes", "flight-cancelled-or-delayed-rights"],
   /** Added for destinations in the Schengen area. */
   schengen: "ees-etias-uk-us-travellers",
   schengenSlugs: ["paris", "rome", "barcelona", "lisbon"],
+  /** Added for UK cities to New York and US cities to London: the ESTA and UK ETA guide. */
+  transatlantic: "esta-and-uk-eta",
 };
 
 export const rights = {
@@ -73,6 +75,11 @@ export const rights = {
   },
   us: {
     text: "Under US Department of Transportation rules, if the airline cancels your flight or changes it significantly and you choose not to travel, you’re entitled to a refund, even on a non-refundable ticket. On international trips, leaving 6 hours or more earlier, or arriving 6 hours or more later, than scheduled counts as a significant change.",
+    source: { label: "US Department of Transportation: Refunds", url: "https://www.transportation.gov/individuals/aviation-consumer-protection/refunds" },
+  },
+  /** US cities to New York (same DOT page; domestic trips use the 3-hour threshold). */
+  usDomestic: {
+    text: "Under US Department of Transportation rules, if the airline cancels your flight or changes it significantly and you choose not to travel, you’re entitled to a refund, even on a non-refundable ticket. On flights within the US, leaving 3 hours or more earlier, or arriving 3 hours or more later, than scheduled counts as a significant change.",
     source: { label: "US Department of Transportation: Refunds", url: "https://www.transportation.gov/individuals/aviation-consumer-protection/refunds" },
   },
 } as const;

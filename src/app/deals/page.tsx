@@ -38,6 +38,12 @@ export default async function DealsPage() {
           <h2 id="route-guides" className="font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">
             Flight routes by departure city
           </h2>
+          <p className="mt-2 text-ink-soft">
+            Featured routes below.{" "}
+            <Link href="/routes" className="font-semibold text-action underline-offset-4 hover:underline">
+              See all flight routes
+            </Link>
+          </p>
           <div className="mt-8 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
             {origins.map((o) => (
               <div key={o.code}>
