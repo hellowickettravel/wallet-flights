@@ -25,13 +25,14 @@ const visible = (html: string) =>
 
 test.describe("route matrix", () => {
   test("covers every pair once, in the planned waves", () => {
-    expect(allRoutePairs).toHaveLength(117); // 6 × 20, less the two home cities and Manchester to London
-    expect(new Set(allRoutePairs.map((r) => r.slug)).size).toBe(117);
+    expect(allRoutePairs).toHaveLength(156); // 8 × 20, less the two home cities and Manchester and Birmingham to London
+    expect(new Set(allRoutePairs.map((r) => r.slug)).size).toBe(156);
+    expect(allRoutePairs.length - routes.length).toBeGreaterThanOrEqual(100); // the proposal's "100+ new route pages"
     // Featured routes keep their slugs and are all in the matrix.
     for (const r of routes) expect(routeWave(r.slug), r.slug).toBe(0);
     expect(allRoutePairs.filter((r) => routeWave(r.slug) === 1)).toHaveLength(40);
-    expect(allRoutePairs.filter((r) => routeWave(r.slug) === 2)).toHaveLength(40);
-    const live = 37 + (liveRouteWaves.includes(1) ? 40 : 0) + (liveRouteWaves.includes(2) ? 40 : 0);
+    expect(allRoutePairs.filter((r) => routeWave(r.slug) === 2)).toHaveLength(79);
+    const live = 37 + (liveRouteWaves.includes(1) ? 40 : 0) + (liveRouteWaves.includes(2) ? 79 : 0);
     expect(routePages).toHaveLength(live);
   });
 
@@ -109,11 +110,11 @@ test.describe("destination guides, phase 2", () => {
       const trip = graph.find((d) => d["@type"] === "TouristTrip");
       expect(trip.itinerary.itemListElement).toHaveLength(3);
       expect(graph.find((d) => d["@type"] === "TouristDestination")).toBeTruthy();
-      // Six departure cities, less the city itself (and Manchester for London).
+      // Eight departure cities, less the city itself (and the UK cities for London).
       const city = destinations.find((d) => d.slug === slug)!;
       const links = [...html.matchAll(/href="(\/routes\/[^"]+-to-[^"]+)"/g)].map((m) => m[1]).filter((h) => h.endsWith(`-to-${slug}`));
       const search = (html.match(new RegExp(`destination_${slug}_from_`, "g")) ?? []).length;
-      expect(new Set(links).size + search, city.city).toBeGreaterThanOrEqual(slug === "london" ? 4 : 6);
+      expect(new Set(links).size + search, city.city).toBeGreaterThanOrEqual(slug === "london" ? 5 : 8);
     });
   }
 

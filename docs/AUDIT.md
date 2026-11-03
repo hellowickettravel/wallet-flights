@@ -1042,3 +1042,29 @@ vulnerabilities; `npm audit` confirmed critical advisories (GHSA-2464-fhr4-w9xw,
 and a moderate one (GHSA-p3m5-59mp-jv5r) for 16.0.0–16.4.0. Upgraded `next` and `eslint-config-next` to
 16.4.4 (patch release, pinned) in its own commit; the full suite was re-run on it. Still open:
 `nodemailer` 10.0.14 moderate advisory (address parsing), fixed in 10.3.x, left for a separate change.
+
+## Batch 19 — Owner review of phase 2: depth, layout, route count (3 Nov 2026)
+
+**Owner feedback:** not satisfied: content too thin and templated, promised data missing, route count
+short of the proposal, layout not organised. Self-review agreed on all five points.
+
+**Changes:**
+- **Layout (destination page):** sticky "On this page" menu under the header; every section uses one
+  wrapper (`GuideSection`: full-width band, left-aligned heading and one-line intro, alternating white
+  and mist); airports as cards (main airport full width, ways into town side by side); "When to go"
+  pairs the season text with the month strip; the 3-day plan is three day cards split into morning,
+  afternoon and evening, with "Don't miss" and the flight tip below; neighbourhoods as cards with a
+  "best for" label; costs as three cards (flights, airport to centre, getting around); FAQs and routes
+  full width. Facts sit two across on phones.
+- **Content:** every city's neighbourhoods rewritten to two or three sentences (what it's like, what's
+  close, the catch); day plans rewritten as morning, afternoon and evening; new "getting around" answer
+  per city. The FAQ no longer pads with currency, plugs and language (they stay in the facts); it now
+  has 10 to 11 real questions. Fact-checked on the way: Lisbon's Glória funicular (suspended since its
+  September 2025 crash), Dubai Museum (closed for renovation), Barcelona's T-casual (not shareable) and
+  contactless claims for Paris and Lisbon were removed. Copy fixes: "the United Kingdom", proper nouns
+  kept in labels.
+- **Routes:** Birmingham and Boston added as route-only departure cities (`extraRouteOrigins`), so the
+  matrix is 156 pairs: 37 + 119 new, meeting the proposal's 100+. Wave 1 (40) live; wave 2 (79) staged.
+
+**Still waiting on network access:** monthly climate figures and food/daily costs (en.wikipedia.org and
+www.numbeo.com to be allowed in the cloud environment, then a new session).

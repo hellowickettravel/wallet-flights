@@ -4,7 +4,7 @@
 import { aboutEarn, aboutIntro } from "@/content/about";
 import { routePages } from "@/content/deals";
 import { destinationDepth } from "@/content/destination-depth";
-import { depthAnswers } from "@/lib/destination-faqs";
+import { depthAnswers, lowerFirst } from "@/lib/destination-faqs";
 import { destinationGuides } from "@/content/destination-guides";
 import { destinations } from "@/content/destinations";
 import { guides, plainText } from "@/content/guides";
@@ -89,8 +89,8 @@ export async function llmsFullTxt() {
         ...(g ? [g.intro, `Best time to visit: ${g.bestTime}.`, g.whenToGo, `Highlights: ${g.highlights.join("; ")}.`, `Flying there: ${g.flying}`, `Tip: ${g.tip}`, `Entry requirements: ${g.entry.label} (${g.entry.url})`] : []),
         ...(destinationDepth[d.slug]
           ? [
-              `Where to stay: ${destinationDepth[d.slug].neighbourhoods.map((n) => `${n.name} (${n.bestFor.toLowerCase()})`).join("; ")}.`,
-              `A ${destinationDepth[d.slug].itinerary.length}-day plan: ${destinationDepth[d.slug].itinerary.map((x, i) => `Day ${i + 1}, ${x.title}: ${x.text}`).join(" ")}`,
+              `Where to stay: ${destinationDepth[d.slug].neighbourhoods.map((n) => `${n.name} (${lowerFirst(n.bestFor)})`).join("; ")}.`,
+              `A ${destinationDepth[d.slug].itinerary.length}-day plan: ${destinationDepth[d.slug].itinerary.map((x, i) => `Day ${i + 1}, ${x.title}: ${x.morning} ${x.afternoon} ${x.evening}`).join(" ")}`,
               ...depthAnswers(d).flatMap((x) => [`**${x.q}**`, x.a]),
             ]
           : []),

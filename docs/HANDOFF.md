@@ -14,6 +14,10 @@ pages live (wave 2 of 40 staged), `/routes` hub, four new guides, GA4 click-out 
 `docs/REPORTING.md`.
 
 ### Phase 2: what's next
+0. **Batch 19 (3 Nov 2026, owner review):** destination layout and content rewritten, Birmingham and Boston
+   added as route departure cities (156 pairs, 119 new). Next session, once en.wikipedia.org and
+   www.numbeo.com are allowed: add `climate` per city (Wikipedia's climate tables, citing the national met
+   service) and sourced daily costs.
 1. **Early December 2026:** if at least half of route wave 1 is indexed (Search Console → URL
    Inspection or the Pages report), add `2` to `liveRouteWaves` in `src/content/deals.ts`, set
    `updated.routeWaves[2]` to that day, rebuild and push. The test `growth.spec.ts` follows automatically.
@@ -22,8 +26,7 @@ pages live (wave 2 of 40 staged), `/routes` hub, four new guides, GA4 click-out 
    the cloud environment's network settings (or work locally), then add `climate` (with its source) to each
    city in `src/content/destination-depth/*` and any sourced daily costs. The month strip shows
    temperatures as soon as `climate` exists.
-4. **Owner decisions:** (a) more departure cities (Birmingham, Edinburgh, Boston, Miami…) if the target is
-   100+ *new* route pages: the 6 × 20 matrix stops at 117 in all, 80 new; (b) GA4 custom dimensions for
+4. **Owner decisions:** (a) done in batch 19: Birmingham and Boston added (swap them in `extraRouteOrigins` if preferred); (b) GA4 custom dimensions for
    `placement` and `link_domain` (`docs/REPORTING.md`); (c) Search Console access for the monthly report.
 5. **Security:** `nodemailer` 10.0.14 has a moderate advisory (address parsing), fixed in 10.3.x; worth a
    separate upgrade and a test of the contact form's backup SMTP path.

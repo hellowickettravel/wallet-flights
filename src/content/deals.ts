@@ -56,8 +56,21 @@ export const routesByOrigin = Object.fromEntries(origins.map((o) => [o.code, rou
 // waves so indexing can be checked between them. The featured routes above
 // stay the ones with fares on the homepage and /deals (each fare is an API
 // call); route pages are the wider set. A city never flies to itself, and
-// Manchester to London is left out (it's a train journey, not a flight search).
-const skipPairs = new Set(["MAN-london"]);
+// Manchester and Birmingham to London are left out (train journeys, not flight searches).
+const skipPairs = new Set(["MAN-london", "BHX-london"]);
+
+/**
+ * Departure cities with route pages but no featured deals (3 Nov 2026): the
+ * proposal's "100+ new route pages" needs more than the 6 deal cities' 80. One
+ * more UK and one more US city with strong long-haul demand. Add or swap
+ * cities here; fares on their pages come from the same Data API.
+ */
+export const extraRouteOrigins: Origin[] = [
+  { code: "BHX", apiCode: "BHX", city: "Birmingham", slug: "birmingham", currency: "GBP", country: "United Kingdom" },
+  { code: "BOS", apiCode: "BOS", city: "Boston", slug: "boston", currency: "USD", country: "United States" },
+];
+/** Every departure city with route pages: the six deal cities, then the extras. */
+export const routeOrigins: Origin[] = [...origins, ...extraRouteOrigins];
 
 /**
  * Wave 1 (live 3 Nov 2026): the 27 pairs ranked by search demand in
@@ -77,7 +90,7 @@ const wave1 = [
 ];
 
 /**
- * Waves whose route pages are published. Wave 2 is every remaining pair (40);
+ * Waves whose route pages are published. Wave 2 is every remaining pair (79);
  * add 2 here once at least half of wave 1 shows "URL is on Google" in Search
  * Console (planned for early December 2026, see docs/HANDOFF.md).
  */
@@ -85,7 +98,7 @@ export const liveRouteWaves: number[] = [1];
 
 const pair = (origin: Origin, destination: Destination): Route => ({ slug: `${origin.slug}-to-${destination.slug}`, origin, destination });
 const featuredSlugs = new Set(routes.map((r) => r.slug));
-const allPairs = origins.flatMap((o) =>
+const allPairs = routeOrigins.flatMap((o) =>
   Object.values(destinationBySlug)
     .filter((d) => d.cityCode !== o.apiCode && !skipPairs.has(`${o.code}-${d.slug}`))
     .map((d) => pair(o, d)),
@@ -109,7 +122,7 @@ export const routePages: Route[] = [
 
 export const routeBySlug = Object.fromEntries(routePages.map((r) => [r.slug, r])) as Record<string, Route>;
 /** Published route pages from each departure city, featured ones first. */
-export const routePagesByOrigin = Object.fromEntries(origins.map((o) => [o.code, routePages.filter((r) => r.origin.code === o.code)])) as Record<string, Route[]>;
+export const routePagesByOrigin = Object.fromEntries(routeOrigins.map((o) => [o.code, routePages.filter((r) => r.origin.code === o.code)])) as Record<string, Route[]>;
 /** Published route pages to each destination (by destination slug). */
 export const routePagesTo = (slug: string) => routePages.filter((r) => r.destination.slug === slug);
 

@@ -2,10 +2,13 @@ import { depthQuestions, destinationDepth, type AirportGuide, type Transfer } fr
 import type { Destination } from "@/content/destinations";
 import type { QuickAnswer } from "@/lib/route-facts";
 
-/** "the" before country names that need it in a question ("the United Kingdom"). */
-export const countryName = (country: string) => (/^(United|Netherlands)/.test(country) ? `the ${country}` : country);
 
-const transferLine = (t: Transfer) => `${t.name} runs to ${t.to}${t.time ? ` in ${t.time}` : ""}${t.fare ? ` (${t.fare.text})` : ""}.`;
+/** "First visits" → "first visits", keeping proper nouns ("old Tokyo") intact. */
+export const lowerFirst = (text: string) => text[0].toLowerCase() + text.slice(1);
+
+/** "From £10 booked in advance" reads "from £10 booked in advance" mid-sentence. */
+const midSentence = (text: string) => text.replace(/^(From|About)\b/, (w) => w.toLowerCase());
+const transferLine = (t: Transfer) => `${t.name} runs to ${t.to}${t.time ? ` in ${t.time}` : ""}${t.fare ? ` (${midSentence(t.fare.text)})` : ""}.`;
 
 /** One answer covering every way into town from the main airport. */
 export function transferAnswer(a: AirportGuide) {
@@ -15,8 +18,8 @@ export function transferAnswer(a: AirportGuide) {
 /** Where-to-stay answer: the first-visit pick, then two alternatives. */
 function stayAnswer(slug: string) {
   const [first, ...rest] = destinationDepth[slug].neighbourhoods;
-  const others = rest.slice(0, 2).map((n) => `${n.name} (${n.bestFor.toLowerCase()})`);
-  return `For a first visit, ${first.name}: ${first.text}${others.length ? ` Also consider ${others.join(" or ")}.` : ""}`;
+  const others = rest.slice(0, 2).map((n) => `${n.name} (${lowerFirst(n.bestFor)})`);
+  return `For a first visit, ${first.name}. ${first.text}${others.length ? ` Also consider ${others.join(" or ")}.` : ""}`;
 }
 
 /**
@@ -28,7 +31,6 @@ export function depthAnswers(d: Destination): QuickAnswer[] {
   const depth = destinationDepth[d.slug];
   if (!depth) return [];
   const main = depth.airports[0];
-  const country = countryName(d.country);
   return [
     {
       q: depthQuestions.transfer(main.name === d.city ? `${main.name} airport` : main.name, d.city),
@@ -37,9 +39,7 @@ export function depthAnswers(d: Destination): QuickAnswer[] {
     },
     { q: depthQuestions.stay(d.city), a: stayAnswer(d.slug) },
     { q: depthQuestions.days(d.city), a: depth.daysNeeded },
-    { q: depthQuestions.currency(country), a: `${depth.essentials.currency}.` },
-    { q: depthQuestions.plugs(country), a: `${depth.essentials.plugs}. Bring an adapter if your plugs are a different type.` },
-    { q: depthQuestions.language(d.city), a: `${depth.essentials.language}.` },
+    { q: depthQuestions.gettingAround(d.city), a: depth.gettingAround },
     ...depth.faqs,
   ];
 }

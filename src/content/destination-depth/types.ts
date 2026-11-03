@@ -42,9 +42,15 @@ export type WeatherMonths = string;
 /** Average temperatures and rain per month, January first. Only added with a source. */
 export type ClimateMonth = { highC: number; lowC: number; rainMm: number };
 
-export type Neighbourhood = { name: string; bestFor: string; text: string };
+export type Neighbourhood = {
+  name: string;
+  bestFor: string;
+  /** Two or three sentences: what it's like, what's close by, and the catch. */
+  text: string;
+};
 
-export type ItineraryDay = { title: string; text: string };
+/** One day of the first-visit plan, split the way people plan a day. */
+export type ItineraryDay = { title: string; morning: string; afternoon: string; evening: string };
 
 export type DestinationDepth = {
   /** ISO date this guide's facts were last checked. */
@@ -57,6 +63,8 @@ export type DestinationDepth = {
   itinerary: ItineraryDay[];
   /** "How many days do you need?", answer first. */
   daysNeeded: string;
+  /** "What's the best way to get around?", answer first: the systems and the ticket to use. */
+  gettingAround: string;
   essentials: {
     currency: string;
     /** Plug types and mains voltage. */

@@ -7,8 +7,8 @@ import { routeQuestions } from "@/content/quick-answers";
 import { approxFlightTime } from "@/lib/demo-flights";
 import { distanceKm } from "@/lib/geo";
 
-const ukOrigins = new Set(["LON", "MAN"]);
-const usOrigins = new Set(["NYC", "LAX", "ORD", "ATL"]);
+const ukOrigins = new Set(["LON", "MAN", "BHX"]);
+const usOrigins = new Set(["NYC", "LAX", "ORD", "ATL", "BOS"]);
 const mainAirport = (code: string) => (code === "NYC" ? "JFK" : code === "LON" ? "LHR" : code);
 /** The airport the distance is measured from, as shown to readers. */
 export const mainAirportName = (code: string) => (code === "NYC" ? "JFK" : code === "LON" ? "Heathrow" : code);

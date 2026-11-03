@@ -2,6 +2,7 @@ import type { DestinationDepth } from "./types";
 
 // Fares and journey times checked 3 Nov 2026 on the pages linked beside them.
 // Where an operator's page didn't give a current fare, none is shown.
+// Neighbourhoods, day plans and getting around rewritten in more depth (3 Nov 2026).
 
 const adoPlaya = { label: "ADO: Cancún Airport to Playa del Carmen", url: "https://international.ado.com.mx/ado-bus/cancun-airport-to-playa-del-carmen" };
 const metrobusAicm = { label: "Mexico City Airport: Metrobús", url: "https://www.aicm.com.mx/transportation/metrobus" };
@@ -24,18 +25,19 @@ export const americasDepth: Record<string, DestinationDepth> = {
     ],
     weather: "BBBBGMMMMMGB",
     neighbourhoods: [
-      { name: "Hotel Zone", bestFor: "Beach resorts", text: "A long strip of resorts between the Caribbean and the lagoon." },
-      { name: "Downtown Cancún", bestFor: "Value and local food", text: "Cheaper hotels, taco stands and the ADO bus station." },
-      { name: "Playa del Carmen", bestFor: "A walkable town", text: "Beach town south of Cancún with a pedestrian main street and ferries to Cozumel." },
-      { name: "Tulum", bestFor: "Ruins and cenotes", text: "Clifftop Mayan ruins, boutique hotels and cenotes nearby, further south again." },
-      { name: "Isla Mujeres", bestFor: "A slower pace", text: "A small island a short ferry ride from Cancún, with calm beaches." },
+      { name: "Hotel Zone", bestFor: "Beach resorts", text: "A long strip of resorts between the Caribbean and the lagoon, with beaches, restaurants and nightlife. Buses run its whole length." },
+      { name: "Downtown Cancún", bestFor: "Value and local food", text: "Cheaper hotels, taco stands, the Parque de las Palapas and the ADO bus station. Less polished, more local." },
+      { name: "Playa del Carmen", bestFor: "A walkable town", text: "A beach town south of Cancún with a pedestrian main street, restaurants and ferries to Cozumel." },
+      { name: "Tulum", bestFor: "Ruins and cenotes", text: "Clifftop Mayan ruins, boutique hotels on the beach and cenotes nearby, about two hours south." },
+      { name: "Isla Mujeres", bestFor: "A slower pace", text: "A small island a short ferry ride from Cancún, with calm beaches and golf carts instead of cars." },
     ],
     itinerary: [
-      { title: "Beach and the Mayan museum", text: "Spend the morning on a Hotel Zone beach, visit the Museo Maya de Cancún, and eat downtown around Parque de las Palapas." },
-      { title: "Isla Mujeres", text: "Take the ferry to Isla Mujeres, hire a golf cart to explore, and swim at Playa Norte." },
-      { title: "Chichén Itzá or Tulum", text: "Leave early for Chichén Itzá with a swim in a cenote on the way back, or visit the ruins at Tulum by the sea." },
+      { title: "Beach and the Mayan museum", morning: "Spend the morning on a Hotel Zone beach.", afternoon: "Visit the Museo Maya de Cancún and the small San Miguelito ruins beside it.", evening: "Eat downtown around the Parque de las Palapas." },
+      { title: "Isla Mujeres", morning: "Take an early ferry to Isla Mujeres.", afternoon: "Hire a golf cart to explore the island and swim at Playa Norte.", evening: "Watch the sunset on the island before the ferry back." },
+      { title: "Chichén Itzá or Tulum", morning: "Leave early for Chichén Itzá to arrive before the crowds and heat.", afternoon: "Swim in a cenote on the way back.", evening: "Or visit the ruins at Tulum by the sea and stay for dinner in the town." },
     ],
     daysNeeded: "A week for beaches and day trips, or three to four days if you stay in one place.",
+    gettingAround: "R-1 buses run the length of the Hotel Zone and into downtown, and ADO buses connect the coast’s towns. Taxis don’t use meters, so agree the price first. Many visitors book transfers or hire a car for day trips.",
     essentials: { currency: "Mexican peso (MXN); US dollars are widely accepted in the Hotel Zone", plugs: "Types A and B, 127V", language: "Spanish" },
     faqs: [
       {
@@ -70,18 +72,19 @@ export const americasDepth: Record<string, DestinationDepth> = {
     ],
     weather: "GGGBBBGGBBGG",
     neighbourhoods: [
-      { name: "Copacabana", bestFor: "First visits", text: "The famous beach and promenade, with plenty of hotels and the metro." },
-      { name: "Ipanema and Leblon", bestFor: "Upmarket beach stays", text: "Rio’s smartest beaches, restaurants and shops." },
-      { name: "Santa Teresa", bestFor: "Bohemian charm", text: "A hilltop neighbourhood of artists’ studios, guesthouses and views." },
-      { name: "Botafogo", bestFor: "Bars and Sugarloaf views", text: "A lively, local area between the centre and the beaches." },
-      { name: "Centro and Lapa", bestFor: "History and samba", text: "Colonial streets, the Selarón steps and Lapa’s nightlife; quieter at weekends." },
+      { name: "Copacabana", bestFor: "First visits", text: "The famous beach and promenade, with plenty of hotels in every price range and the metro. Lively day and night." },
+      { name: "Ipanema and Leblon", bestFor: "Upmarket beach stays", text: "Rio’s smartest beaches, restaurants and shops, with the Lagoa behind. Safer-feeling and more expensive." },
+      { name: "Santa Teresa", bestFor: "Bohemian charm", text: "A hilltop neighbourhood of artists’ studios, guesthouses and views, reached by its old tram." },
+      { name: "Botafogo", bestFor: "Bars and Sugarloaf views", text: "A lively, local area between the centre and the beaches, with good bars and the metro." },
+      { name: "Centro and Lapa", bestFor: "History and samba", text: "Colonial streets, the Selarón steps and Lapa’s samba nightlife; very quiet at weekends by day." },
     ],
     itinerary: [
-      { title: "Christ the Redeemer and Santa Teresa", text: "Take the train up Corcovado to Christ the Redeemer, explore Santa Teresa’s lanes, and hear live samba in Lapa that night." },
-      { title: "Sugarloaf and the beaches", text: "Ride the cable car up Sugarloaf Mountain, spend the afternoon on Copacabana or Ipanema, and watch the sunset from Arpoador." },
-      { title: "Gardens and the centre", text: "Walk in the Botanical Garden and around the Lagoa, then visit the Selarón steps and the Theatro Municipal downtown." },
+      { title: "Christ the Redeemer and Santa Teresa", morning: "Take the train up Corcovado to Christ the Redeemer early, before the clouds and crowds.", afternoon: "Explore Santa Teresa’s lanes, studios and views.", evening: "Hear live samba in Lapa." },
+      { title: "Sugarloaf and the beaches", morning: "Ride the cable car up Sugarloaf Mountain in the morning.", afternoon: "Spend the afternoon on Copacabana or Ipanema beach.", evening: "Watch the sunset from the Arpoador rock between them." },
+      { title: "Gardens and the centre", morning: "Walk in the Botanical Garden and around the Lagoa.", afternoon: "Visit the Selarón steps and the Theatro Municipal downtown.", evening: "Have dinner in Botafogo or Leblon." },
     ],
     daysNeeded: "Four to five days.",
+    gettingAround: "The metro links the centre with Copacabana, Ipanema and Barra, and ride-hailing apps are widely used for other trips. Keep phones and valuables out of sight on the street and on the beach.",
     essentials: { currency: "Brazilian real (BRL)", plugs: "Types C and N; 127V in most of Rio", language: "Portuguese" },
     faqs: [
       {
@@ -112,18 +115,19 @@ export const americasDepth: Record<string, DestinationDepth> = {
     ],
     weather: "BBBBGGMMMGBB",
     neighbourhoods: [
-      { name: "Centro Histórico", bestFor: "First visits", text: "The Zócalo, the cathedral and Templo Mayor, with museums and murals all around." },
-      { name: "Roma Norte", bestFor: "Food and nightlife", text: "Tree-lined streets of cafés, restaurants and bars." },
-      { name: "Condesa", bestFor: "Parks and a relaxed feel", text: "Art Deco buildings around Parque México, next to Roma." },
-      { name: "Polanco", bestFor: "Upscale stays and museums", text: "Smart hotels and restaurants by Chapultepec Park." },
+      { name: "Centro Histórico", bestFor: "First visits", text: "The Zócalo, the cathedral and Templo Mayor, with museums and Diego Rivera murals all around. Busy by day, quieter at night." },
+      { name: "Roma Norte", bestFor: "Food and nightlife", text: "Tree-lined streets of cafés, restaurants and bars, and some of the city’s best food." },
+      { name: "Condesa", bestFor: "Parks and a relaxed feel", text: "Art Deco buildings around Parque México, next to Roma, with dog walkers and cafés." },
+      { name: "Polanco", bestFor: "Upscale stays and museums", text: "Smart hotels and restaurants by Chapultepec Park and its museums." },
       { name: "Coyoacán", bestFor: "A village feel", text: "Colonial plazas, markets and the Frida Kahlo Museum in the south of the city." },
     ],
     itinerary: [
-      { title: "The historic centre", text: "Start at the Zócalo with the cathedral and Templo Mayor, see Diego Rivera’s murals in the Palacio Nacional, and end at the Palacio de Bellas Artes." },
-      { title: "Chapultepec and Roma", text: "Spend the morning at the National Museum of Anthropology in Chapultepec Park, then eat and drink your way through Roma and Condesa." },
-      { title: "Teotihuacan or Coyoacán", text: "Leave early to climb the pyramids at Teotihuacan, or visit the Frida Kahlo Museum in Coyoacán and the boats of Xochimilco." },
+      { title: "The historic centre", morning: "Start at the Zócalo with the cathedral and Templo Mayor.", afternoon: "See Diego Rivera’s murals in the Palacio Nacional, then walk to the Palacio de Bellas Artes.", evening: "View the centre from the Torre Latinoamericana at dusk." },
+      { title: "Chapultepec and Roma", morning: "Spend the morning at the National Museum of Anthropology in Chapultepec Park.", afternoon: "Walk through Chapultepec and on to Condesa’s parks.", evening: "Eat and drink your way through Roma Norte." },
+      { title: "Teotihuacan or Coyoacán", morning: "Leave early to climb the pyramids at Teotihuacan before the heat.", afternoon: "Or visit the Frida Kahlo Museum in Coyoacán, booked ahead.", evening: "Ride a trajinera boat at Xochimilco, or have dinner in Coyoacán’s plazas." },
     ],
     daysNeeded: "Four to five days, including a day trip to Teotihuacan.",
+    gettingAround: "The metro and Metrobús are cheap and cover much of the city, paid with a rechargeable card. Ride-hailing apps are easy and widely used, especially at night. Traffic can be slow, so allow time.",
     essentials: { currency: "Mexican peso (MXN)", plugs: "Types A and B, 127V", language: "Spanish" },
     faqs: [
       {
@@ -149,16 +153,17 @@ export const americasDepth: Record<string, DestinationDepth> = {
     ],
     weather: "MMMGBBBBBGMM",
     neighbourhoods: [
-      { name: "Historic centre", bestFor: "First visits", text: "Around the Plaza de Armas, with Inca walls and colonial churches on every street." },
-      { name: "San Blas", bestFor: "Views and artisans", text: "A steep, whitewashed quarter of workshops and small guesthouses above the centre." },
-      { name: "Sacred Valley", bestFor: "Lower altitude and Machu Picchu trains", text: "Towns such as Urubamba and Ollantaytambo sit lower than Cusco and close to the trains." },
+      { name: "Historic centre", bestFor: "First visits", text: "Around the Plaza de Armas, with Inca walls and colonial churches on every street. Everything is within a walk." },
+      { name: "San Blas", bestFor: "Views and artisans", text: "A steep, whitewashed quarter of workshops, cafés and small guesthouses above the centre. Charming, but the climb is hard at altitude." },
+      { name: "Sacred Valley", bestFor: "Lower altitude and Machu Picchu trains", text: "Towns such as Urubamba and Ollantaytambo sit lower than Cusco and close to the trains for Machu Picchu." },
     ],
     itinerary: [
-      { title: "Settle in slowly", text: "Take it easy at altitude: walk the Plaza de Armas, see the Qorikancha temple, and browse the San Pedro market." },
-      { title: "The Sacred Valley", text: "Visit the market and ruins at Pisac and the fortress at Ollantaytambo, and stay the night in the valley." },
-      { title: "Machu Picchu", text: "Take the train to Aguas Calientes and enter Machu Picchu on your timed ticket, booked well ahead." },
+      { title: "Settle in slowly", morning: "Rest on arrival and walk the Plaza de Armas gently; drink water.", afternoon: "See the Qorikancha temple and the cathedral.", evening: "Browse the San Pedro market area and have an early dinner." },
+      { title: "The Sacred Valley", morning: "Visit the market and ruins at Pisac.", afternoon: "Continue to the fortress and old town of Ollantaytambo.", evening: "Stay the night in the valley, close to the train." },
+      { title: "Machu Picchu", morning: "Take an early train to Aguas Calientes.", afternoon: "Enter Machu Picchu on your timed ticket, booked well ahead.", evening: "Return by train to the valley or Cusco." },
     ],
     daysNeeded: "Four to five days with Machu Picchu and the Sacred Valley, and more if you hike the Inca Trail.",
+    gettingAround: "Walk in the centre, taking it slowly at altitude, and use registered taxis or your hotel’s drivers for longer trips. Trains to Machu Picchu leave from Cusco’s Poroy station and from Ollantaytambo; book them with your entry ticket.",
     essentials: { currency: "Peruvian sol (PEN)", plugs: "Types A and C, 220V", language: "Spanish and Quechua" },
     faqs: [
       {
@@ -206,18 +211,19 @@ export const americasDepth: Record<string, DestinationDepth> = {
     ],
     weather: "MMMGBBGGBBGM",
     neighbourhoods: [
-      { name: "Midtown", bestFor: "First visits", text: "Times Square, Broadway and Central Park, with subway lines in every direction." },
-      { name: "Lower Manhattan", bestFor: "History and harbour views", text: "The 9/11 Memorial, Wall Street and ferries to the Statue of Liberty." },
-      { name: "Greenwich Village and SoHo", bestFor: "Walking and restaurants", text: "Low-rise streets of cafés, shops and live music." },
-      { name: "Upper West Side", bestFor: "Families and quieter nights", text: "Between Central Park and the Hudson, near the Natural History Museum." },
-      { name: "Williamsburg, Brooklyn", bestFor: "Bars and skyline views", text: "Across the river, with restaurants, nightlife and often lower hotel prices." },
+      { name: "Midtown", bestFor: "First visits", text: "Times Square, Broadway theatres, Central Park and the Empire State Building, with subway lines in every direction. Busy and expensive, but convenient." },
+      { name: "Lower Manhattan", bestFor: "History and harbour views", text: "The 9/11 Memorial, Wall Street, the Brooklyn Bridge and the ferries to the Statue of Liberty. Quiet at weekends." },
+      { name: "Greenwich Village and SoHo", bestFor: "Walking and restaurants", text: "Low-rise streets of cafés, shops, jazz clubs and Washington Square Park." },
+      { name: "Upper West Side", bestFor: "Families and quieter nights", text: "Between Central Park and the Hudson, near the Natural History Museum, with a residential feel." },
+      { name: "Williamsburg, Brooklyn", bestFor: "Bars and skyline views", text: "Across the river, with restaurants, nightlife, waterfront parks and often lower hotel prices." },
     ],
     itinerary: [
-      { title: "Midtown", text: "Walk through the south of Central Park, see MoMA or the view from Top of the Rock, and end with a Broadway show near Times Square." },
-      { title: "Lower Manhattan and Brooklyn", text: "Take the ferry to the Statue of Liberty and Ellis Island, visit the 9/11 Memorial, and walk the Brooklyn Bridge to DUMBO at sunset." },
-      { title: "Museums and the High Line", text: "Spend the morning at the Met, walk the High Line to Chelsea Market, and have dinner in Greenwich Village." },
+      { title: "Midtown", morning: "Walk through the south of Central Park from Columbus Circle.", afternoon: "See MoMA, then the view from Top of the Rock or the Empire State Building.", evening: "End with a Broadway show near Times Square; same-day tickets are often cheaper." },
+      { title: "Lower Manhattan and Brooklyn", morning: "Take an early ferry to the Statue of Liberty and Ellis Island, booked ahead.", afternoon: "Visit the 9/11 Memorial and walk through the Financial District.", evening: "Walk the Brooklyn Bridge to DUMBO at sunset and eat in Brooklyn." },
+      { title: "Museums and the High Line", morning: "Spend the morning at the Met on Fifth Avenue.", afternoon: "Walk the High Line to Chelsea Market and the Hudson Yards.", evening: "Have dinner in Greenwich Village and hear live jazz." },
     ],
     daysNeeded: "Four to five days for a first visit.",
+    gettingAround: "The subway runs around the clock and reaches most places; tap a contactless bank card or phone with OMNY, and fares are capped after a set number of rides each week. Manhattan is easy to walk, and yellow cabs and ride-hailing fill the gaps.",
     essentials: { currency: "US dollar (USD)", plugs: "Types A and B, 120V", language: "English" },
     faqs: [
       {
