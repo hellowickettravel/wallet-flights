@@ -1,0 +1,269 @@
+{
+  "$comment": "The 30-day calendar from PLAN.md as data. Fares are what walletflights.com showed on 2026-11-04 (per the plan); fetch-fares re-checks each on render day and writes the live figure to scripts/<day>.json. Never edit a price here without a source.",
+  "planDate": "2026-11-04",
+  "faresSnapshotDate": "2026-11-04",
+  "days": [
+    {
+      "day": 1, "date": "2026-11-09", "weekday": "Mon", "series": "GuessTheFare", "audience": "UK",
+      "hook": "Guess what London to Rome cost this week",
+      "scenes": "Colosseum aerial with hook → 3 options £39 / £129 / £249 → 3-2-1 → £39 slams in, small \"found 9 Nov, prices change\".",
+      "cta": "Comment your guess",
+      "lengthSec": 10,
+      "fares": [{ "from": "London", "to": "Rome", "price": 39, "currency": "GBP", "trip": "return", "route": "london-to-rome", "role": "answer" }],
+      "options": [39, 129, 249],
+      "broll": ["Colosseum aerial"],
+      "keyword": "ROME",
+      "claims": []
+    },
+    {
+      "day": 2, "date": "2026-11-10", "weekday": "Tue", "series": "Pov", "audience": "US",
+      "hook": "POV: you checked the flight price again and it went up",
+      "scenes": "Laptop glow close-up → slow push on a tired face → price number ticks up.",
+      "cta": "Send to the friend who's \"waiting for it to drop\"",
+      "lengthSec": 7, "fares": [], "broll": ["laptop glow close-up at night", "tired face lit by screen"], "keyword": null, "claims": []
+    },
+    {
+      "day": 3, "date": "2026-11-11", "weekday": "Wed", "series": "PlaneSecret", "audience": "UK",
+      "hook": "That tiny hole in the plane window has a job",
+      "scenes": "Macro of the window hole → 3-pane cutaway animation → pressure balance explained in one line.",
+      "cta": "Follow for one secret a week",
+      "lengthSec": 18, "fares": [], "broll": ["airplane window macro"], "keyword": null,
+      "claims": ["Window 'breather/bleed hole' equalises pressure between inner and middle panes so the outer pane carries the cabin pressure load — verify on an aviation/manufacturer source"]
+    },
+    {
+      "day": 4, "date": "2026-11-12", "weekday": "Thu", "series": "BookingHack", "audience": "US",
+      "hook": "Stop booking return tickets by default",
+      "scenes": "Myth: return is always cheaper → Truth: two one-ways on different airlines can beat it → How: search one-way both directions, compare total.",
+      "cta": "Save for your next trip",
+      "lengthSec": 25, "fares": [], "broll": ["airport departures board", "phone flight search"], "keyword": null, "claims": []
+    },
+    {
+      "day": 5, "date": "2026-11-13", "weekday": "Fri", "series": "MapIt", "audience": "UK",
+      "hook": "How far £50 gets you from London this winter",
+      "scenes": "Dark map, London pulses → arcs fly to Rome £39 and Lisbon £49 (add any other sub-£50 route live that day) → \"Where would you go?\"",
+      "cta": "Where would you go?",
+      "lengthSec": 18,
+      "origin": "London", "budget": { "amount": 50, "currency": "GBP" },
+      "fares": [
+        { "from": "London", "to": "Rome", "price": 39, "currency": "GBP", "trip": "return", "route": "london-to-rome" },
+        { "from": "London", "to": "Lisbon", "price": 49, "currency": "GBP", "trip": "return", "route": "london-to-lisbon" }
+      ],
+      "broll": [], "keyword": null, "claims": []
+    },
+    {
+      "day": 6, "date": "2026-11-14", "weekday": "Sat", "series": "HotTake", "audience": "UK",
+      "hook": "Reclining on a 2-hour flight: fine or rude?",
+      "scenes": "Seat-back POV → split screen A FINE / B RUDE → hold on question.",
+      "cta": "Comment A or B", "lengthSec": 9, "optionA": "FINE", "optionB": "RUDE",
+      "fares": [], "broll": ["airplane seat back POV"], "keyword": null, "claims": []
+    },
+    {
+      "day": 7, "date": "2026-11-15", "weekday": "Sun", "series": "WeekendReceipt", "audience": "UK",
+      "hook": "A Lisbon weekend from London: the real total",
+      "scenes": "Till-roll receipt prints line by line: flight £49, 2 nights (live price), tram day pass, food → total stamps.",
+      "cta": "Comment LISBON for the dates", "lengthSec": 30,
+      "fares": [{ "from": "London", "to": "Lisbon", "price": 49, "currency": "GBP", "trip": "return", "route": "london-to-lisbon" }],
+      "receiptLines": [
+        { "label": "Return flight London–Lisbon", "source": "fare" },
+        { "label": "2 nights", "source": "TODO(confirm): live hotel price on render day" },
+        { "label": "Tram day pass", "source": "TODO(confirm): Carris official fare" },
+        { "label": "Food", "source": "TODO(confirm): sourced estimate" }
+      ],
+      "broll": ["Lisbon tram", "Lisbon rooftops"], "keyword": "LISBON", "claims": ["Hotel, tram and food prices need a source each"]
+    },
+    {
+      "day": 8, "date": "2026-11-16", "weekday": "Mon", "series": "GuessTheFare", "audience": "US",
+      "hook": "New York to Cancún in January. Guess the round trip.",
+      "scenes": "Turquoise beach → 3 options → reveal $229.",
+      "cta": "Comment your guess", "lengthSec": 10,
+      "fares": [{ "from": "New York", "to": "Cancún", "price": 229, "currency": "USD", "trip": "return", "route": "new-york-to-cancun", "role": "answer", "travelMonth": "2027-01" }],
+      "options": null, "broll": ["turquoise beach Cancun aerial"], "keyword": "CANCUN", "claims": []
+    },
+    {
+      "day": 9, "date": "2026-11-17", "weekday": "Tue", "series": "CheaperThan", "audience": "UK",
+      "hook": "Flying to Lisbon vs taking the train to Manchester",
+      "scenes": "Split screen: London–Lisbon return £49 vs a peak London–Manchester train (live fare, verified) → \"make it make sense\".",
+      "cta": "Send to someone who still takes the train", "lengthSec": 12,
+      "fares": [{ "from": "London", "to": "Lisbon", "price": 49, "currency": "GBP", "trip": "return", "route": "london-to-lisbon" }],
+      "comparison": { "label": "Peak London–Manchester train", "price": null, "currency": "GBP", "source": "TODO(confirm): National Rail / Avanti live fare on render day" },
+      "broll": ["UK train platform"], "keyword": null, "claims": ["Train fare must be live and sourced"]
+    },
+    {
+      "day": 10, "date": "2026-11-18", "weekday": "Wed", "series": "BookingHack", "audience": "UK",
+      "hook": "London has 6 airports. Most people search one.",
+      "scenes": "Map pins Heathrow, Gatwick, Stansted, Luton, City, Southend → one search, all six → same route, different price.",
+      "cta": "Save", "lengthSec": 25,
+      "airports": ["LHR", "LGW", "STN", "LTN", "LCY", "SEN"],
+      "fares": [], "broll": [], "keyword": null,
+      "claims": ["'Same route, different price' needs real per-airport fares from the site on render day"]
+    },
+    {
+      "day": 11, "date": "2026-11-19", "weekday": "Thu", "series": "PlaneSecret", "audience": "US",
+      "hook": "Why the cabin lights dim before landing",
+      "scenes": "Cabin dimming clip → eyes-adjusting explainer (evacuation readiness) → window blinds up for the same reason.",
+      "cta": "Follow", "lengthSec": 15, "fares": [], "broll": ["dim airplane cabin"], "keyword": null,
+      "claims": ["Dimming for dark adaptation / evacuation readiness and blinds up — verify on FAA/CAA or airline safety source"]
+    },
+    {
+      "day": 12, "date": "2026-11-20", "weekday": "Fri", "series": "Pov", "audience": "UK",
+      "hook": "POV: you're in the aisle seat and the window person needs the loo again",
+      "scenes": "Three quick stock cuts, each one more tired → freeze frame.",
+      "cta": "Tag your window-seat friend", "lengthSec": 7, "fares": [], "broll": ["airplane aisle seat"], "keyword": null, "claims": []
+    },
+    {
+      "day": 13, "date": "2026-11-21", "weekday": "Sat", "series": "MapIt", "audience": "US",
+      "hook": "From New York, here's how far $500 takes you",
+      "scenes": "NYC pulses → arcs: Cancún $229, London $404, Rome $455, Lisbon $475 → \"Pick one\".",
+      "cta": "Comment the city", "lengthSec": 18,
+      "origin": "New York", "budget": { "amount": 500, "currency": "USD" },
+      "fares": [
+        { "from": "New York", "to": "Cancún", "price": 229, "currency": "USD", "trip": "return", "route": "new-york-to-cancun" },
+        { "from": "New York", "to": "London", "price": 404, "currency": "USD", "trip": "return", "route": "new-york-to-london" },
+        { "from": "New York", "to": "Rome", "price": 455, "currency": "USD", "trip": "return", "route": "new-york-to-rome" },
+        { "from": "New York", "to": "Lisbon", "price": 475, "currency": "USD", "trip": "return", "route": "new-york-to-lisbon" }
+      ],
+      "broll": [], "keyword": null, "claims": []
+    },
+    {
+      "day": 14, "date": "2026-11-22", "weekday": "Sun", "series": "BookingHack", "audience": "UK",
+      "hook": "Flight delayed 3+ hours? You might be owed up to £520",
+      "scenes": "Delay board → UK261 bands: £220 short-haul, £350 medium, £260–£520 long-haul (top band needs 4 h+), not owed for \"extraordinary circumstances\" → \"check if you qualify\" (site's delay-compensation page, soft link #1).",
+      "cta": "Send to whoever's flight got delayed", "lengthSec": 25, "showsSite": true, "siteSoftLink": "/flight-delay-compensation",
+      "fares": [], "broll": ["airport delay board"], "keyword": null,
+      "claims": ["UK261 bands £220 / £350 / £260–£520, 3h threshold, 4h+ for full long-haul, extraordinary circumstances — verify on caa.co.uk / gov.uk"]
+    },
+    {
+      "day": 15, "date": "2026-11-23", "weekday": "Mon", "series": "BookingHack", "audience": "US",
+      "hook": "The 24-hour rule most Americans don't use",
+      "scenes": "US DOT rule: free cancel within 24 h on qualifying bookings → how to use it to lock a fare and keep looking.",
+      "cta": "Save before Thanksgiving", "lengthSec": 22, "fares": [], "broll": ["phone booking flight"], "keyword": null,
+      "claims": ["US DOT 24-hour rule (14 CFR 259.5): qualifying conditions incl. booked ≥7 days before departure; hold-or-cancel option — verify on transportation.gov"]
+    },
+    {
+      "day": 16, "date": "2026-11-24", "weekday": "Tue", "series": "GuessTheFare", "audience": "UK",
+      "hook": "Manchester to Barcelona. Guess the round trip.",
+      "scenes": "Barcelona aerial → options → reveal £44.",
+      "cta": "Comment your guess", "lengthSec": 10,
+      "fares": [{ "from": "Manchester", "to": "Barcelona", "price": 44, "currency": "GBP", "trip": "return", "route": "manchester-to-barcelona", "role": "answer" }],
+      "options": null, "broll": ["Barcelona aerial"], "keyword": "BARCELONA", "claims": []
+    },
+    {
+      "day": 17, "date": "2026-11-25", "weekday": "Wed", "series": "HotTake", "audience": "US",
+      "hook": "Who gets the middle armrest?",
+      "scenes": "Three seats graphic → A middle seat / B whoever grabs it → hold.",
+      "cta": "Comment A or B", "lengthSec": 9, "optionA": "MIDDLE SEAT", "optionB": "WHOEVER GRABS IT",
+      "fares": [], "broll": [], "keyword": null, "claims": []
+    },
+    {
+      "day": 18, "date": "2026-11-26", "weekday": "Thu", "series": "Pov", "audience": "US",
+      "hook": "POV: the Thanksgiving security line",
+      "scenes": "Long queue time-lapse → \"we're moving!\" → it stops again.",
+      "cta": "Send to your travel buddy", "lengthSec": 7, "fares": [], "broll": ["airport security queue time-lapse"], "keyword": null, "claims": []
+    },
+    {
+      "day": 19, "date": "2026-11-27", "weekday": "Fri", "series": "BookingHack", "audience": "US",
+      "hook": "Is that Black Friday flight deal actually a deal? 10-second test",
+      "scenes": "Fake \"70% off\" banner → compare against the usual fare on a fare calendar → rule of thumb. Screen-record of comparing (soft link #2).",
+      "cta": "Save", "lengthSec": 25, "showsSite": true, "siteSoftLink": "/fare-calendar",
+      "fares": [], "broll": [], "keyword": null,
+      "claims": ["Banner is clearly a mock-up, labelled as an example; screen-record must show real site data on render day"]
+    },
+    {
+      "day": 20, "date": "2026-11-28", "weekday": "Sat", "series": "CheaperThan", "audience": "US",
+      "hook": "Chicago to Cancún costs less than you think",
+      "scenes": "Round trip $205 vs a common US cost picked on render day (verified, sourced) → beach payoff.",
+      "cta": "Send to your group chat", "lengthSec": 12,
+      "fares": [{ "from": "Chicago", "to": "Cancún", "price": 205, "currency": "USD", "trip": "return", "route": "chicago-to-cancun" }],
+      "comparison": { "label": "TODO(confirm): common US cost picked on render day", "price": null, "currency": "USD", "source": "TODO(confirm)" },
+      "broll": ["Cancun beach"], "keyword": "CANCUN", "claims": ["Comparison cost must be verified and sourced"]
+    },
+    {
+      "day": 21, "date": "2026-11-29", "weekday": "Sun", "series": "PlaneSecret", "audience": "UK",
+      "hook": "See those little triangles above some seats?",
+      "scenes": "Zoom on the cabin triangle sticker → crew use it to find the best wing view → \"book that row for the view\".",
+      "cta": "Follow", "lengthSec": 15, "fares": [], "broll": ["airplane cabin wall triangle sticker", "wing view from window"], "keyword": null,
+      "claims": ["Triangle marks the row with the best view of the wings for crew checks — verify on aviation source"]
+    },
+    {
+      "day": 22, "date": "2026-11-30", "weekday": "Mon", "series": "GuessTheFare", "audience": "UK",
+      "hook": "London to Dubai. Guess the round trip.",
+      "scenes": "Burj Khalifa sunrise → options → reveal £269.",
+      "cta": "Comment your guess", "lengthSec": 10,
+      "fares": [{ "from": "London", "to": "Dubai", "price": 269, "currency": "GBP", "trip": "return", "route": "london-to-dubai", "role": "answer" }],
+      "options": null, "broll": ["Burj Khalifa sunrise"], "keyword": "DUBAI", "claims": []
+    },
+    {
+      "day": 23, "date": "2026-12-01", "weekday": "Tue", "series": "BookingHack", "audience": "UK", "variant": "leaveCalendar",
+      "hook": "7 days of annual leave = 16 days off this Christmas",
+      "scenes": "Calendar animation: book 21–24 and 29–31 Dec around the bank holidays → Sat 19 Dec to Sun 3 Jan lights up.",
+      "cta": "Send to your manager (joke), save", "lengthSec": 20,
+      "leave": { "book": ["2026-12-21", "2026-12-22", "2026-12-23", "2026-12-24", "2026-12-29", "2026-12-30", "2026-12-31"], "offFrom": "2026-12-19", "offTo": "2027-01-03" },
+      "fares": [], "broll": [], "keyword": null,
+      "claims": ["England & Wales bank holidays 25 Dec, 28 Dec (Boxing Day substitute), 1 Jan 2027 — verify on gov.uk/bank-holidays"]
+    },
+    {
+      "day": 24, "date": "2026-12-02", "weekday": "Wed", "series": "MapIt", "audience": "UK",
+      "hook": "Winter sun from London under £300",
+      "scenes": "London pulses → arcs: Rome £39, Lisbon £49, Dubai £269 → temperature chips on each pin (live).",
+      "cta": "Comment where you'd go", "lengthSec": 18,
+      "origin": "London", "budget": { "amount": 300, "currency": "GBP" },
+      "fares": [
+        { "from": "London", "to": "Rome", "price": 39, "currency": "GBP", "trip": "return", "route": "london-to-rome" },
+        { "from": "London", "to": "Lisbon", "price": 49, "currency": "GBP", "trip": "return", "route": "london-to-lisbon" },
+        { "from": "London", "to": "Dubai", "price": 269, "currency": "GBP", "trip": "return", "route": "london-to-dubai" }
+      ],
+      "broll": [], "keyword": null, "claims": ["Temperature chips must come from a live/official weather source on render day"]
+    },
+    {
+      "day": 25, "date": "2026-12-03", "weekday": "Thu", "series": "Pov", "audience": "US",
+      "hook": "POV: 'just one cheap weekend' and now you've planned four",
+      "scenes": "Tabs multiplying on a laptop → map pins dropping → smile.",
+      "cta": "Send to your travel twin", "lengthSec": 7, "fares": [], "broll": ["laptop many browser tabs"], "keyword": null, "claims": []
+    },
+    {
+      "day": 26, "date": "2026-12-04", "weekday": "Fri", "series": "HotTake", "audience": "UK",
+      "hook": "Clapping when the plane lands: yes or no?",
+      "scenes": "Landing clip → A YES / B NO → hold.",
+      "cta": "Comment A or B", "lengthSec": 8, "optionA": "YES", "optionB": "NO",
+      "fares": [], "broll": ["plane landing"], "keyword": null, "claims": []
+    },
+    {
+      "day": 27, "date": "2026-12-05", "weekday": "Sat", "series": "WeekendReceipt", "audience": "US",
+      "hook": "A Mexico City long weekend from LA: the real total",
+      "scenes": "Receipt prints: flight $325, 3 nights (live), metro card, tacos → total.",
+      "cta": "Comment CDMX for dates", "lengthSec": 30,
+      "fares": [{ "from": "Los Angeles", "to": "Mexico City", "price": 325, "currency": "USD", "trip": "return", "route": "los-angeles-to-mexico-city" }],
+      "receiptLines": [
+        { "label": "Round trip LA–Mexico City", "source": "fare" },
+        { "label": "3 nights", "source": "TODO(confirm): live hotel price on render day" },
+        { "label": "Metro card", "source": "TODO(confirm): official Metro CDMX fare" },
+        { "label": "Tacos", "source": "TODO(confirm): sourced estimate" }
+      ],
+      "broll": ["Mexico City street", "tacos al pastor"], "keyword": "CDMX", "claims": ["Hotel, metro and food prices need a source each"]
+    },
+    {
+      "day": 28, "date": "2026-12-06", "weekday": "Sun", "series": "PlaneSecret", "audience": "US",
+      "hook": "Why plane windows are never square",
+      "scenes": "Square-corner stress animation → rounded window spreads the load → 1950s lesson in one line.",
+      "cta": "Follow", "lengthSec": 18, "fares": [], "broll": ["airplane window exterior"], "keyword": null,
+      "claims": ["de Havilland Comet 1954 accidents / metal fatigue at corners — verify wording on an official/accident-report source"]
+    },
+    {
+      "day": 29, "date": "2026-12-07", "weekday": "Mon", "series": "BookingHack", "audience": "UK", "variant": "leaveCalendar",
+      "hook": "Easter 2027: 8 days of leave = 16 days off",
+      "scenes": "Calendar: Good Fri 26 Mar + Easter Mon 29 Mar → book 22–25 Mar and 30 Mar–2 Apr → Sat 20 Mar to Sun 4 Apr lights up.",
+      "cta": "Save, book early", "lengthSec": 20,
+      "leave": { "book": ["2027-03-22", "2027-03-23", "2027-03-24", "2027-03-25", "2027-03-30", "2027-03-31", "2027-04-01", "2027-04-02"], "offFrom": "2027-03-20", "offTo": "2027-04-04" },
+      "fares": [], "broll": [], "keyword": null,
+      "claims": ["Good Friday 26 Mar 2027 and Easter Monday 29 Mar 2027 — verify on gov.uk/bank-holidays"]
+    },
+    {
+      "day": 30, "date": "2026-12-08", "weekday": "Tue", "series": "GuessTheFare", "audience": "US",
+      "hook": "New York to Tokyo. Guess the round trip.",
+      "scenes": "Shibuya at night → options → reveal $674 → \"new one every week, follow\".",
+      "cta": "Follow", "lengthSec": 10,
+      "fares": [{ "from": "New York", "to": "Tokyo", "price": 674, "currency": "USD", "trip": "return", "route": "new-york-to-tokyo", "role": "answer" }],
+      "options": null, "broll": ["Shibuya crossing at night"], "keyword": "TOKYO", "claims": []
+    }
+  ]
+}

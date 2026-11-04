@@ -1,0 +1,98 @@
+{
+  "day": 1,
+  "date": "2026-11-09",
+  "series": "GuessTheFare",
+  "audience": "UK",
+  "voice": "bf_emma",
+  "hook": "Guess what London to Rome cost this week",
+  "tag": "GUESS THE FARE",
+  "cta": "Comment your guess",
+  "fares": [
+    {
+      "from": "London",
+      "to": "Rome",
+      "price": 39,
+      "currency": "GBP",
+      "trip": "return",
+      "route": "london-to-rome",
+      "role": "answer",
+      "snapshotPrice": 39,
+      "foundOn": "2026-11-04",
+      "status": "snapshot",
+      "url": "https://www.walletflights.com/routes/london-to-rome",
+      "error": "fetch failed: Error: getaddrinfo ENOTFOUND www.walletflights.com"
+    }
+  ],
+  "brollQueries": [
+    "Colosseum aerial"
+  ],
+  "sources": [],
+  "segments": [
+    {
+      "id": "hook",
+      "say": "Guess what London to Rome cost this week.",
+      "text": "Guess what London to Rome cost this week",
+      "pauseAfterMs": 250
+    },
+    {
+      "id": "options",
+      "say": "Thirty-nine, one twenty-nine, or two forty-nine pounds?",
+      "text": "£39, £129, or £249?",
+      "pauseAfterMs": 200
+    },
+    {
+      "id": "countdown",
+      "say": "Three, two, one.",
+      "text": "3, 2, 1",
+      "pauseAfterMs": 120
+    },
+    {
+      "id": "reveal",
+      "say": "Thirty-nine pounds, return.",
+      "text": "£39 return.",
+      "pauseAfterMs": 250
+    },
+    {
+      "id": "cta",
+      "say": "Comment your guess.",
+      "text": "Comment your guess."
+    }
+  ],
+  "data": {
+    "fare": {
+      "from": "London",
+      "to": "Rome",
+      "price": 39,
+      "currency": "GBP",
+      "trip": "return",
+      "route": "london-to-rome",
+      "role": "answer",
+      "snapshotPrice": 39,
+      "foundOn": "2026-11-04",
+      "status": "snapshot",
+      "url": "https://www.walletflights.com/routes/london-to-rome",
+      "error": "fetch failed: Error: getaddrinfo ENOTFOUND www.walletflights.com"
+    },
+    "options": [
+      39,
+      129,
+      249
+    ],
+    "city": "Rome"
+  },
+  "caption": {
+    "keywordLine": "Cheap flights London to Rome: £39 return this week",
+    "valueLine": "Found 4 Nov on a cheapest-first search. Prices move, so check your dates.",
+    "prompt": "Comment ROME and I'll send you the cheapest dates.",
+    "hashtags": [
+      "#cheapflights",
+      "#londontravel",
+      "#romeitaly",
+      "#budgettravel",
+      "#travelhacks"
+    ]
+  },
+  "uncertain": [
+    "London→Rome £39 NOT re-checked on walletflights.com (fetch failed: Error: getaddrinfo ENOTFOUND www.walletflights.com); showing the 2026-11-04 plan figure"
+  ]
+}

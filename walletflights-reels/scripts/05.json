@@ -1,0 +1,137 @@
+{
+  "day": 5,
+  "date": "2026-11-13",
+  "series": "MapIt",
+  "audience": "UK",
+  "voice": "bf_emma",
+  "hook": "How far £50 gets you from London this winter",
+  "tag": "MAP IT",
+  "cta": "Where would you go?",
+  "fares": [
+    {
+      "from": "London",
+      "to": "Rome",
+      "price": 39,
+      "currency": "GBP",
+      "trip": "return",
+      "route": "london-to-rome",
+      "snapshotPrice": 39,
+      "foundOn": "2026-11-04",
+      "status": "snapshot",
+      "url": "https://www.walletflights.com/routes/london-to-rome",
+      "error": "fetch failed: Error: getaddrinfo ENOTFOUND www.walletflights.com"
+    },
+    {
+      "from": "London",
+      "to": "Lisbon",
+      "price": 49,
+      "currency": "GBP",
+      "trip": "return",
+      "route": "london-to-lisbon",
+      "snapshotPrice": 49,
+      "foundOn": "2026-11-04",
+      "status": "snapshot",
+      "url": "https://www.walletflights.com/routes/london-to-lisbon",
+      "error": "fetch failed: Error: getaddrinfo ENOTFOUND www.walletflights.com"
+    }
+  ],
+  "brollQueries": [],
+  "sources": [],
+  "segments": [
+    {
+      "id": "hook",
+      "say": "How far does fifty pounds get you from London this winter?",
+      "text": "How far does £50 get you from London this winter?",
+      "pauseAfterMs": 700
+    },
+    {
+      "id": "stop-0",
+      "say": "Rome. Thirty-nine pounds return.",
+      "text": "Rome. £39 return.",
+      "pauseAfterMs": 1000
+    },
+    {
+      "id": "stop-1",
+      "say": "Lisbon. Forty-nine pounds return.",
+      "text": "Lisbon. £49 return.",
+      "pauseAfterMs": 1000
+    },
+    {
+      "id": "end",
+      "say": "Both under fifty pounds. Where would you go? Comment the city.",
+      "text": "Both under £50. Where would you go? Comment the city."
+    }
+  ],
+  "data": {
+    "origin": {
+      "name": "London",
+      "lngLat": [
+        -0.1276,
+        51.5072
+      ]
+    },
+    "budgetLabel": "£50",
+    "stops": [
+      {
+        "name": "Rome",
+        "lngLat": [
+          12.4964,
+          41.9028
+        ],
+        "fare": {
+          "from": "London",
+          "to": "Rome",
+          "price": 39,
+          "currency": "GBP",
+          "trip": "return",
+          "route": "london-to-rome",
+          "snapshotPrice": 39,
+          "foundOn": "2026-11-04",
+          "status": "snapshot",
+          "url": "https://www.walletflights.com/routes/london-to-rome",
+          "error": "fetch failed: Error: getaddrinfo ENOTFOUND www.walletflights.com"
+        }
+      },
+      {
+        "name": "Lisbon",
+        "lngLat": [
+          -9.1393,
+          38.7223
+        ],
+        "fare": {
+          "from": "London",
+          "to": "Lisbon",
+          "price": 49,
+          "currency": "GBP",
+          "trip": "return",
+          "route": "london-to-lisbon",
+          "snapshotPrice": 49,
+          "foundOn": "2026-11-04",
+          "status": "snapshot",
+          "url": "https://www.walletflights.com/routes/london-to-lisbon",
+          "error": "fetch failed: Error: getaddrinfo ENOTFOUND www.walletflights.com"
+        }
+      }
+    ],
+    "endLine": "Where would you go?",
+    "mapStyle": "offline"
+  },
+  "caption": {
+    "keywordLine": "How far £50 gets you from London: Rome £39, Lisbon £49 return",
+    "valueLine": "Cheapest return fares found 4 Nov. Prices move, so check your dates.",
+    "prompt": "Where would you go? Comment the city and I'll send you the cheapest dates.",
+    "hashtags": [
+      "#cheapflights",
+      "#londontravel",
+      "#uktravel",
+      "#budgettravel",
+      "#travelhacks"
+    ]
+  },
+  "uncertain": [
+    "London→Rome £39 NOT re-checked on walletflights.com (fetch failed: Error: getaddrinfo ENOTFOUND www.walletflights.com); showing the 2026-11-04 plan figure",
+    "London→Lisbon £49 NOT re-checked on walletflights.com (fetch failed: Error: getaddrinfo ENOTFOUND www.walletflights.com); showing the 2026-11-04 plan figure",
+    "Plan says \"add any other sub-£50 route live that day\": needs a look at walletflights.com/deals on render day",
+    "Hook says \"this winter\": check the fares' travel dates fall in winter"
+  ]
+}

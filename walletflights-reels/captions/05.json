@@ -1,0 +1,214 @@
+{
+  "source": "script-aligned (Kokoro segment timings)",
+  "durationMs": 12920,
+  "segments": [
+    {
+      "id": "hook",
+      "startMs": 120,
+      "endMs": 2947,
+      "text": "How far does £50 get you from London this winter?"
+    },
+    {
+      "id": "stop-0",
+      "startMs": 3647,
+      "endMs": 5534,
+      "text": "Rome. £39 return."
+    },
+    {
+      "id": "stop-1",
+      "startMs": 6534,
+      "endMs": 8566,
+      "text": "Lisbon. £49 return."
+    },
+    {
+      "id": "end",
+      "startMs": 9566,
+      "endMs": 12720,
+      "text": "Both under £50. Where would you go? Comment the city."
+    }
+  ],
+  "captions": [
+    {
+      "text": "How",
+      "startMs": 120,
+      "endMs": 343,
+      "timestampMs": 231,
+      "confidence": null
+    },
+    {
+      "text": " far",
+      "startMs": 343,
+      "endMs": 565,
+      "timestampMs": 454,
+      "confidence": null
+    },
+    {
+      "text": " does",
+      "startMs": 565,
+      "endMs": 831,
+      "timestampMs": 698,
+      "confidence": null
+    },
+    {
+      "text": " £50",
+      "startMs": 831,
+      "endMs": 1268,
+      "timestampMs": 1049,
+      "confidence": null
+    },
+    {
+      "text": " get",
+      "startMs": 1268,
+      "endMs": 1491,
+      "timestampMs": 1379,
+      "confidence": null
+    },
+    {
+      "text": " you",
+      "startMs": 1491,
+      "endMs": 1713,
+      "timestampMs": 1602,
+      "confidence": null
+    },
+    {
+      "text": " from",
+      "startMs": 1713,
+      "endMs": 1979,
+      "timestampMs": 1846,
+      "confidence": null
+    },
+    {
+      "text": " London",
+      "startMs": 1979,
+      "endMs": 2330,
+      "timestampMs": 2155,
+      "confidence": null
+    },
+    {
+      "text": " this",
+      "startMs": 2330,
+      "endMs": 2596,
+      "timestampMs": 2463,
+      "confidence": null
+    },
+    {
+      "text": " winter?",
+      "startMs": 2596,
+      "endMs": 2947,
+      "timestampMs": 2771,
+      "confidence": null
+    },
+    {
+      "text": " Rome.",
+      "startMs": 3647,
+      "endMs": 4041,
+      "timestampMs": 3844,
+      "confidence": null
+    },
+    {
+      "text": " £39",
+      "startMs": 4041,
+      "endMs": 5013,
+      "timestampMs": 4527,
+      "confidence": null
+    },
+    {
+      "text": " return.",
+      "startMs": 5013,
+      "endMs": 5534,
+      "timestampMs": 5274,
+      "confidence": null
+    },
+    {
+      "text": " Lisbon.",
+      "startMs": 6534,
+      "endMs": 7074,
+      "timestampMs": 6804,
+      "confidence": null
+    },
+    {
+      "text": " £49",
+      "startMs": 7074,
+      "endMs": 8026,
+      "timestampMs": 7550,
+      "confidence": null
+    },
+    {
+      "text": " return.",
+      "startMs": 8026,
+      "endMs": 8566,
+      "timestampMs": 8296,
+      "confidence": null
+    },
+    {
+      "text": " Both",
+      "startMs": 9566,
+      "endMs": 9854,
+      "timestampMs": 9710,
+      "confidence": null
+    },
+    {
+      "text": " under",
+      "startMs": 9854,
+      "endMs": 10188,
+      "timestampMs": 10021,
+      "confidence": null
+    },
+    {
+      "text": " £50.",
+      "startMs": 10188,
+      "endMs": 10661,
+      "timestampMs": 10424,
+      "confidence": null
+    },
+    {
+      "text": " Where",
+      "startMs": 10661,
+      "endMs": 10995,
+      "timestampMs": 10828,
+      "confidence": null
+    },
+    {
+      "text": " would",
+      "startMs": 10995,
+      "endMs": 11329,
+      "timestampMs": 11162,
+      "confidence": null
+    },
+    {
+      "text": " you",
+      "startMs": 11329,
+      "endMs": 11570,
+      "timestampMs": 11449,
+      "confidence": null
+    },
+    {
+      "text": " go?",
+      "startMs": 11570,
+      "endMs": 11765,
+      "timestampMs": 11667,
+      "confidence": null
+    },
+    {
+      "text": " Comment",
+      "startMs": 11765,
+      "endMs": 12191,
+      "timestampMs": 11978,
+      "confidence": null
+    },
+    {
+      "text": " the",
+      "startMs": 12191,
+      "endMs": 12432,
+      "timestampMs": 12312,
+      "confidence": null
+    },
+    {
+      "text": " city.",
+      "startMs": 12432,
+      "endMs": 12720,
+      "timestampMs": 12576,
+      "confidence": null
+    }
+  ]
+}

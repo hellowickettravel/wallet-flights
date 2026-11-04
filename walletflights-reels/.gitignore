@@ -1,0 +1,20 @@
+node_modules
+dist
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# Generated media (rebuilt by the pipeline; deliverables are shared, not committed)
+out/
+audio/
+assets/*/
+!assets/.gitkeep
+remotion/public/generated/
+
+# Local tools and model weights
+tools/.venv/
+tools/kokoro/*.onnx
+tools/kokoro/*.bin
+tools/whisper.cpp/
+__pycache__/

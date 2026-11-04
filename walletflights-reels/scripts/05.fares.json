@@ -1,0 +1,32 @@
+{
+  "day": 5,
+  "checkedAt": "2026-11-04T21:05:15.590Z",
+  "fares": [
+    {
+      "from": "London",
+      "to": "Rome",
+      "price": 39,
+      "currency": "GBP",
+      "trip": "return",
+      "route": "london-to-rome",
+      "snapshotPrice": 39,
+      "foundOn": "2026-11-04",
+      "status": "snapshot",
+      "url": "https://www.walletflights.com/routes/london-to-rome",
+      "error": "fetch failed: Error: getaddrinfo ENOTFOUND www.walletflights.com"
+    },
+    {
+      "from": "London",
+      "to": "Lisbon",
+      "price": 49,
+      "currency": "GBP",
+      "trip": "return",
+      "route": "london-to-lisbon",
+      "snapshotPrice": 49,
+      "foundOn": "2026-11-04",
+      "status": "snapshot",
+      "url": "https://www.walletflights.com/routes/london-to-lisbon",
+      "error": "fetch failed: Error: getaddrinfo ENOTFOUND www.walletflights.com"
+    }
+  ]
+}

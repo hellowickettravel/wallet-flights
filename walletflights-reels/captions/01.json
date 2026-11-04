@@ -1,0 +1,178 @@
+{
+  "source": "script-aligned (Kokoro segment timings)",
+  "durationMs": 10115,
+  "segments": [
+    {
+      "id": "hook",
+      "startMs": 120,
+      "endMs": 2211,
+      "text": "Guess what London to Rome cost this week"
+    },
+    {
+      "id": "options",
+      "startMs": 2461,
+      "endMs": 5504,
+      "text": "£39, £129, or £249?"
+    },
+    {
+      "id": "countdown",
+      "startMs": 5704,
+      "endMs": 6781,
+      "text": "3, 2, 1"
+    },
+    {
+      "id": "reveal",
+      "startMs": 6901,
+      "endMs": 8547,
+      "text": "£39 return."
+    },
+    {
+      "id": "cta",
+      "startMs": 8797,
+      "endMs": 9915,
+      "text": "Comment your guess."
+    }
+  ],
+  "captions": [
+    {
+      "text": "Guess",
+      "startMs": 120,
+      "endMs": 418,
+      "timestampMs": 269,
+      "confidence": null
+    },
+    {
+      "text": " what",
+      "startMs": 418,
+      "endMs": 674,
+      "timestampMs": 546,
+      "confidence": null
+    },
+    {
+      "text": " London",
+      "startMs": 674,
+      "endMs": 1013,
+      "timestampMs": 843,
+      "confidence": null
+    },
+    {
+      "text": " to",
+      "startMs": 1013,
+      "endMs": 1186,
+      "timestampMs": 1099,
+      "confidence": null
+    },
+    {
+      "text": " Rome",
+      "startMs": 1186,
+      "endMs": 1442,
+      "timestampMs": 1314,
+      "confidence": null
+    },
+    {
+      "text": " cost",
+      "startMs": 1442,
+      "endMs": 1699,
+      "timestampMs": 1570,
+      "confidence": null
+    },
+    {
+      "text": " this",
+      "startMs": 1699,
+      "endMs": 1955,
+      "timestampMs": 1827,
+      "confidence": null
+    },
+    {
+      "text": " week",
+      "startMs": 1955,
+      "endMs": 2211,
+      "timestampMs": 2083,
+      "confidence": null
+    },
+    {
+      "text": " £39,",
+      "startMs": 2461,
+      "endMs": 3070,
+      "timestampMs": 2765,
+      "confidence": null
+    },
+    {
+      "text": " £129,",
+      "startMs": 3070,
+      "endMs": 4220,
+      "timestampMs": 3645,
+      "confidence": null
+    },
+    {
+      "text": " or",
+      "startMs": 4220,
+      "endMs": 4388,
+      "timestampMs": 4304,
+      "confidence": null
+    },
+    {
+      "text": " £249?",
+      "startMs": 4388,
+      "endMs": 5504,
+      "timestampMs": 4946,
+      "confidence": null
+    },
+    {
+      "text": " 3,",
+      "startMs": 5704,
+      "endMs": 5982,
+      "timestampMs": 5843,
+      "confidence": null
+    },
+    {
+      "text": " 2,",
+      "startMs": 5982,
+      "endMs": 6260,
+      "timestampMs": 6121,
+      "confidence": null
+    },
+    {
+      "text": " 1",
+      "startMs": 6260,
+      "endMs": 6781,
+      "timestampMs": 6520,
+      "confidence": null
+    },
+    {
+      "text": " £39",
+      "startMs": 6901,
+      "endMs": 7973,
+      "timestampMs": 7437,
+      "confidence": null
+    },
+    {
+      "text": " return.",
+      "startMs": 7973,
+      "endMs": 8547,
+      "timestampMs": 8260,
+      "confidence": null
+    },
+    {
+      "text": " Comment",
+      "startMs": 8797,
+      "endMs": 9252,
+      "timestampMs": 9025,
+      "confidence": null
+    },
+    {
+      "text": " your",
+      "startMs": 9252,
+      "endMs": 9559,
+      "timestampMs": 9405,
+      "confidence": null
+    },
+    {
+      "text": " guess.",
+      "startMs": 9559,
+      "endMs": 9915,
+      "timestampMs": 9737,
+      "confidence": null
+    }
+  ]
+}
