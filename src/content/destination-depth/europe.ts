@@ -14,7 +14,30 @@ const tmbAirport = { label: "TMB: Airport ticket", url: "https://www.tmb.cat/en/
 
 export const europeDepth: Record<string, DestinationDepth> = {
   london: {
-    checked: "2026-11-03",
+    // Batch 22 fields checked 5 Nov 2026: GOV.UK (999 and 112), Visit London
+    // (tipping, Night Tube, free museums), TfL (contactless and capping),
+    // Windsor council and GWR (day-trip journey times).
+    checked: "2026-11-05",
+    timeZone: "Europe/London",
+    localTips: [
+      { icon: "money", title: "Tap your card everywhere", text: "Contactless cards and phones work in almost every shop, pub and taxi. London buses don’t take cash at all." },
+      { icon: "transport", title: "One card for every journey", text: "Touch in with the same card or phone each time, and on the Tube touch out too. Daily and weekly caps only work if you stick to one." },
+      { icon: "ticket", title: "The big museums are free", text: "The British Museum, National Gallery, Tate Modern, V&A and Natural History Museum charge nothing to enter. Special exhibitions are paid, so book those ahead." },
+      { icon: "safety", title: "Watch your phone", text: "Phone snatching by thieves on bikes is common in busy areas. Step back from the kerb to use your phone, and keep it in a zipped pocket on crowded streets." },
+      { icon: "etiquette", title: "Stand on the right", text: "On Tube escalators, stand on the right and leave the left side free for people walking. Let passengers off the train before you board." },
+    ],
+    foods: [
+      { name: "Full English breakfast", text: "Eggs, bacon, sausage, beans, toast and mushrooms, served all morning in cafés across the city." },
+      { name: "Fish and chips", text: "Battered cod or haddock with thick chips, best from a traditional chip shop and eaten with salt and vinegar." },
+      { name: "Sunday roast", text: "Roast meat with Yorkshire pudding, potatoes, vegetables and gravy, served in pubs on Sundays, when it’s worth booking." },
+      { name: "Pie and mash", text: "A minced beef pie with mashed potato and green parsley liquor, the old working lunch of East London pie shops." },
+      { name: "Afternoon tea", text: "Sandwiches, scones with clotted cream and jam, and cakes with a pot of tea, served in hotels and tea rooms." },
+    ],
+    dayTrips: [
+      { name: "Windsor", time: "25 to 50 minutes by train from Paddington, changing at Slough", text: "Windsor Castle, the oldest occupied castle in the world, sits a short walk from the station, with Eton and the Thames across the bridge.", photo: photos.londonTripWindsor },
+      { name: "Oxford", time: "About 1 hour by train from Paddington", text: "Walk between the colleges, the Radcliffe Camera and the Bodleian Library, then punt on the river or visit the free Ashmolean Museum.", photo: photos.londonTripOxford },
+      { name: "Bath", time: "About 1 hour 30 minutes by train from Paddington", text: "The Roman Baths, Bath Abbey and the Georgian terraces of the Royal Crescent, all within walking distance of the station.", photo: photos.londonTripBath },
+    ],
     visual: {
       days: [
         { photo: photos.londonAbbey, stops: ["Westminster Abbey", "South Bank walk", "Tate Modern", "Borough Market"] },
@@ -72,8 +95,27 @@ export const europeDepth: Record<string, DestinationDepth> = {
     ],
     daysNeeded: "Three to four days covers the main sights. With a week you can add Greenwich, Hampton Court, or a day trip to Windsor or Oxford.",
     gettingAround: "The Underground, buses, Overground and the Elizabeth line cover the whole city, and you can tap in with a contactless bank card or phone instead of buying a ticket. Fares are capped each day and week, so you never pay more than a set amount. Buses don’t take cash.",
-    essentials: { currency: "Pound sterling (GBP)", plugs: "Type G, 230V", language: "English" },
+    essentials: {
+      currency: "Pound sterling (GBP)",
+      plugs: "Type G, 230V",
+      language: "English",
+      emergency: "999 or 112",
+      tipping: "10 to 15% in restaurants if service isn’t already on the bill; not expected in pubs",
+      water: "Tap water is safe to drink",
+    },
     faqs: [
+      {
+        q: "Do I need cash in London?",
+        a: "Rarely. Cards and phone payments are accepted almost everywhere, and buses don’t take cash. A little cash helps at some market stalls, but you can travel the whole city without it.",
+      },
+      {
+        q: "Can I use my own contactless card on the Tube?",
+        a: "Yes. Contactless cards and phones from abroad work on the Tube, buses and trains in London, with the same daily and weekly caps. Your bank may charge a foreign transaction fee on each payment.",
+      },
+      {
+        q: "Does the Tube run all night?",
+        a: "Only at weekends. The Night Tube runs through Friday and Saturday nights on the Victoria, Central, Jubilee, Northern and Piccadilly lines; on other nights, night buses take over.",
+      },
       {
         q: "Which Heathrow terminal does my airline use?",
         a: "Your booking and boarding pass show it, and Heathrow’s website lists airlines by terminal. Travel between terminals is free on the trains that link them, but allow extra time if you need to change.",
