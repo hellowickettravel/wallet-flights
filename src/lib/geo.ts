@@ -14,6 +14,7 @@ export const geo: Record<string, [lat: number, lon: number, utc: number]> = {
   SIN: [1.36, 103.99, 8], HND: [35.55, 139.78, 9], ICN: [37.46, 126.44, 9], DPS: [-8.75, 115.17, 8],
   SYD: [-33.94, 151.18, 10], CUN: [21.04, -86.87, -5], MEX: [19.44, -99.07, -6], GIG: [-22.81, -43.25, -3],
   LIM: [-12.02, -77.11, -5], CUZ: [-13.54, -71.94, -5],
+  RAK: [31.61, -8.04, 1], AUH: [24.43, 54.65, 4],
 };
 
 export function distanceKm(a: string, b: string) {

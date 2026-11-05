@@ -34,6 +34,8 @@ export const airports: Airport[] = [
   { code: "IST", city: "Istanbul", name: "Istanbul Airport", country: "Türkiye" },
   { code: "DXB", city: "Dubai", name: "Dubai Intl", country: "United Arab Emirates" },
   { code: "DOH", city: "Doha", name: "Hamad Intl", country: "Qatar" },
+  { code: "AUH", city: "Abu Dhabi", name: "Zayed Intl", country: "United Arab Emirates" },
+  { code: "RAK", city: "Marrakech", name: "Marrakesh Menara", country: "Morocco" },
   { code: "CAI", city: "Cairo", name: "Cairo Intl", country: "Egypt" },
   { code: "LOS", city: "Lagos", name: "Murtala Muhammed Intl", country: "Nigeria" },
   { code: "ACC", city: "Accra", name: "Kotoka Intl", country: "Ghana" },

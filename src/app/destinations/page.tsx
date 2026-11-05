@@ -6,7 +6,7 @@ import { destinations, regions } from "@/content/destinations";
 import { destinationTileFares } from "@/lib/fares";
 
 const description =
-  "Best time to visit, main airports, flight times from London and New York, and recent fares for 20 popular destinations in Europe, Asia, Africa and the Americas.";
+  `Best time to visit, main airports, flight times from London and New York, and recent fares for ${destinations.length} popular destinations in Europe, Asia, Africa and the Americas.`;
 
 export const metadata = pageMetadata({
   title: "Flight destinations: best time to visit and fares",
@@ -50,7 +50,7 @@ export default async function DestinationsPage() {
             </div>
             <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {list.map((d, i) => (
-                <li key={d.slug} className={i === 0 ? "sm:col-span-2 lg:col-span-1 lg:row-span-1" : undefined}>
+                <li key={d.slug}>
                   <DestinationTile d={d} fare={fares[d.slug]} priority={ri === 0 && i < 3} />
                 </li>
               ))}

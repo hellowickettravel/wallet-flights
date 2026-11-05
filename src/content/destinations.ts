@@ -1,4 +1,7 @@
 import { photos, type Photo } from "./images";
+import { europeNewDestinations } from "./new-destinations/europe";
+import { middleEastAfricaNewDestinations } from "./new-destinations/middle-east-africa";
+import { americasNewDestinations } from "./new-destinations/americas";
 
 export type Region = "europe" | "asia-pacific" | "middle-east-africa" | "americas";
 
@@ -45,6 +48,10 @@ export const destinations: Destination[] = [
   { slug: "mexico-city", city: "Mexico City", country: "Mexico", airport: "MEX", cityCode: "MEX", region: "americas", photo: photos.mexicoCity, blurb: "Tacos al pastor, murals and world-class museums." },
   { slug: "cusco", city: "Cusco", country: "Peru", airport: "CUZ", cityCode: "CUZ", region: "americas", photo: photos.cusco, blurb: "The way in to Machu Picchu and the Sacred Valley." },
   { slug: "new-york", city: "New York", country: "United States", airport: "JFK", cityCode: "NYC", region: "americas", photo: photos.newYork, blurb: "Five boroughs, endless neighbourhoods to eat your way through." },
+  // Batch 22 (5 Nov 2026): six per region.
+  ...europeNewDestinations,
+  ...middleEastAfricaNewDestinations,
+  ...americasNewDestinations,
 ];
 
 export const destinationBySlug = Object.fromEntries(destinations.map((d) => [d.slug, d])) as Record<string, Destination>;
