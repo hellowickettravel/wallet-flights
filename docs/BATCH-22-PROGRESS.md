@@ -38,6 +38,7 @@ from here. The full brief and rules: `docs/BATCH-22-BRIEF.md`.
 | 3 | Scaffolding: `src/content/photos/*.ts`, `src/content/new-destinations/*.ts` wired into destinations + destination-guides; RAK/AUH airports + coordinates; /destinations grid fixed for 6 per region | Done |
 | 3b | Branch pushed; draft PR https://github.com/hellowickettravel/wallet-flights/pull/9 | Done |
 | 4 | Agents launched (5 Nov): UI (template + widgets + London), Content ×4 (Europe+Amsterdam, Asia-Pacific, ME&A+Marrakech+Abu Dhabi, Americas+Miami), Guides A–D (5 each, slugs in the brief). All 9 stopped at the account's 5-hour usage limit after research, before writing (only a few photos saved). Resumed after the reset with "save after each city/guide". If they stop again, check the files: each city/guide on disk is done; redo only what's missing | Running (resumed) |
+| 4b | 6 Nov: new session (another account) resumed on branch `claude/beautiful-goodall-u4jvf3` (based on `claude/destinations-v2-blog-batch`; this session may only push there). State found: schema + scaffolding, London Batch 22 fields, 1 guide (`are-last-minute-flights-cheaper`), photos for guides A–C and Dubai/Abu Dhabi. Not started: UI template/widgets, every other city, Amsterdam/Marrakech/Abu Dhabi/Miami entries, 19 guides. Agents relaunched with the same brief | Running |
 | 5 | Admin merge: register 20 guides in `src/content/guides/index.ts`, update `deals.ts` comment, tests (`growth.spec.ts` counts: pairs 156 → 188, wave 2 79 → 111; `content.spec.ts` destinations 20 → 24; paris "Things to do" check), llms | To do |
 | 6 | Build, lint, typecheck, e2e (`PW_CHROMIUM_PATH=/opt/pw-browsers/chromium`), screenshots 1440 + phone, fix | To do |
 | 7 | `docs/AUDIT.md` Batch 22 + `docs/HANDOFF.md`, commit, push, PR, merge to main (Vercel deploys) | To do |
@@ -45,7 +46,7 @@ from here. The full brief and rules: `docs/BATCH-22-BRIEF.md`.
 
 ## If you are a new session picking this up
 
-1. `git fetch origin claude/destinations-v2-blog-batch && git checkout claude/destinations-v2-blog-batch`
+1. `git fetch origin claude/beautiful-goodall-u4jvf3 && git checkout claude/beautiful-goodall-u4jvf3` (latest; older work on `claude/destinations-v2-blog-batch`)
 2. Read this file, then `docs/BATCH-22-BRIEF.md`.
 3. Check which agent outputs exist: `git status`, `ls src/content/guides`, and the content files for
    empty `localTips`/`dayTrips`. Re-run only the missing parts, following the brief.
