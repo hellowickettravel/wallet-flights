@@ -23,6 +23,68 @@ export const modeLabel: Record<TransferMode, string> = { train: "Train", metro: 
 /** Headings, intros and fixed lines for the destination page sections, in page order. */
 export const depthCopy = {
   menu: { overview: "Overview", airports: "Airports", months: "When to go", plan: "3-day plan", stay: "Where to stay", costs: "Costs", faqs: "Questions", routes: "Flights from" },
+  /** Batch 22 page (destination v2): the sticky "On this page" menu, in page order. */
+  nav: {
+    overview: "Overview",
+    flights: "Flight times",
+    airports: "Airports",
+    plan: "3-day plan",
+    stay: "Where to stay",
+    months: "When to go",
+    tips: "Know before you go",
+    food: "What to eat",
+    trips: "Day trips",
+    faqs: "Questions",
+    guides: "Before you go",
+  },
+  overview: {
+    title: (city: string) => `${city} at a glance`,
+    intro: "The essentials for planning the trip, with recent fares and the local time.",
+    highlights: "Don’t miss",
+    tip: "Flight tip",
+  },
+  tripEssentials: {
+    title: "Trip essentials",
+    localTime: (city: string) => `Local time in ${city}`,
+    sameTime: (city: string) => `Same time as ${city}`,
+    ahead: (hours: string, city: string) => `${hours} ahead of ${city}`,
+    behind: (hours: string, city: string) => `${hours} behind ${city}`,
+    rateNote: "Today’s exchange rate, for guidance.",
+    rows: { currency: "Currency", plugs: "Plugs", language: "Language", emergency: "Emergency", tipping: "Tipping", water: "Tap water" },
+  },
+  flightTimes: {
+    title: (city: string) => `Flight times to ${city}`,
+    intro: "Approximate nonstop flying time, distance and time difference from each city we cover. Each city links to its route guide or a live search.",
+    cols: { from: "From", time: "Flying time", distance: "Distance", diff: "Time difference" },
+    from: (city: string) => `From ${city}`,
+    /** Completes the link text for screen readers: "Route guide from Boston". */
+    linkFrom: (city: string) => `from ${city}`,
+    connection: "usually with a connection",
+    distance: (km: string, miles: string) => `${km} km (${miles} mi)`,
+    route: "Route guide",
+    search: "Search flights",
+    note: "Flying times are estimates for a nonstop flight between the main airports; distances are straight-line between them.",
+  },
+  dayPlan: {
+    show: "Show the day",
+    hide: "Hide the day",
+  },
+  tips: {
+    title: (city: string) => `Know before you go to ${city}`,
+    intro: "Money, tickets, safety and manners: the small things that make the first day easier.",
+  },
+  food: {
+    title: (city: string) => `What to eat in ${city}`,
+    intro: "Local dishes and drinks worth trying, and where people go for them.",
+  },
+  dayTrips: {
+    title: (city: string) => `Day trips from ${city}`,
+    intro: "Three well-known days out, with the usual journey time each way.",
+  },
+  beforeYouGo: {
+    title: "Before you go",
+    intro: (city: string) => `Our guides to the rules and choices that matter for a trip to ${city}.`,
+  },
   airports: {
     title: (city: string) => `Getting from the airport to ${city}`,
     intro: "Each airport, how far it is from the centre, and the quickest and cheapest ways into town.",

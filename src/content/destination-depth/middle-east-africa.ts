@@ -1,3 +1,4 @@
+import { photos } from "../images";
 import type { DestinationDepth } from "./types";
 
 // Journey times checked 3 Nov 2026 on the pages linked beside them. Where an
@@ -5,7 +6,44 @@ import type { DestinationDepth } from "./types";
 
 export const middleEastAfricaDepth: Record<string, DestinationDepth> = {
   dubai: {
-    checked: "2026-11-03",
+    // Batch 22 fields checked 6 Nov 2026: u.ae (999 police, 998 ambulance),
+    // RTA (nol card, metro cabins, no eating or drinking on the metro and tram),
+    // DEWA via Gulf News (tap water meets WHO guidelines), Visit Dubai (tipping),
+    // RTA (Hatta Express bus), GOV.UK (visa on arrival, travel advice).
+    checked: "2026-11-06",
+    timeZone: "Asia/Dubai",
+    localTips: [
+      { icon: "transport", title: "Get a nol card", text: "One nol card pays for the metro, tram, buses and water buses. Top it up at any metro station." },
+      { icon: "etiquette", title: "Check the metro cabin", text: "Each train has a Gold Class cabin for Gold card holders and cabins for women and children only. Check the signs on the platform before you board." },
+      { icon: "food", title: "No snacks on the metro", text: "Eating and drinking aren’t allowed on the metro or tram, and inspectors fine people for it. Wait until you’re out of the station." },
+      { icon: "dress", title: "Cover up in malls and mosques", text: "Swimwear is for the beach and the pool. In malls, souks and the old town, cover your shoulders and knees." },
+      { icon: "health", title: "Bring your prescription", text: "Some common medicines are controlled in the UAE. Carry a copy of your prescription and check GOV.UK before you pack." },
+      { icon: "weather", title: "Plan around the heat", text: "From about May to September, do outdoor sights early or after sunset. Carry water, even on short walks." },
+    ],
+    foods: [
+      { name: "Machboos", text: "Spiced rice cooked with chicken, lamb or fish, the Emirati home dish, served in Emirati restaurants around Al Fahidi and Al Seef." },
+      { name: "Luqaimat", text: "Small fried dumplings drizzled with date syrup, sold hot at Emirati cafés and food stalls, especially in winter." },
+      { name: "Shawarma", text: "Spit-roasted chicken or lamb wrapped in flatbread with garlic sauce, from the late-night cafeterias of Deira and Bur Dubai." },
+      { name: "Karak chai", text: "Strong tea boiled with milk, sugar and cardamom, poured at roadside cafeterias across the city." },
+      { name: "Dates and Arabic coffee", text: "Light, cardamom-scented gahwa poured in small cups with dates, the traditional welcome, offered in hotel lobbies and Emirati cafés." },
+    ],
+    dayTrips: [
+      { name: "Abu Dhabi", time: "About 1 hour 30 minutes by car or intercity bus", text: "The UAE’s capital, for the Sheikh Zayed Grand Mosque, free to visit, and the Louvre Abu Dhabi on Saadiyat Island.", photo: photos.dubaiTripAbuDhabi },
+      { name: "Hatta", time: "About 1 hour 30 minutes by car or the Hatta Express bus from Dubai Mall", text: "A mountain town in the Hajar range, for kayaking on Hatta Dam, hiking and mountain-bike trails.", photo: photos.dubaiHatta },
+      { name: "Sharjah", time: "About 30 minutes by car, longer in rush hour", text: "Dubai’s neighbour, with a restored Heritage Area, museums on Islamic art and civilisation, and a calmer pace.", photo: photos.dubaiSharjah },
+    ],
+    visual: {
+      days: [
+        { photo: photos.dubaiAbra, stops: ["Al Fahidi", "Abra across the creek", "Gold and spice souks", "Dinner by the creek"] },
+        { photo: photos.dubaiFountain, stops: ["Dubai Frame", "Dubai Mall", "Burj Khalifa at sunset", "Dubai Fountain"] },
+        { photo: photos.dubaiDesert, stops: ["JBR or Kite Beach", "Desert trip", "Dinner at a desert camp"] },
+      ],
+      stay: [
+        { name: "Downtown Dubai", bestFor: "First visits", photo: photos.dubaiDowntown },
+        { name: "Dubai Marina and JBR", bestFor: "The beach", photo: photos.dubaiMarina },
+        { name: "Deira and Bur Dubai", bestFor: "Old Dubai and value", photo: photos.dubaiAlSeef },
+      ],
+    },
     airports: [
       {
         code: "DXB",
@@ -33,7 +71,14 @@ export const middleEastAfricaDepth: Record<string, DestinationDepth> = {
     ],
     daysNeeded: "Three to four days, or one to two nights as a stopover on a long-haul trip.",
     gettingAround: "The Dubai Metro’s Red and Green lines cover the airport, the old town, Downtown and the Marina; buy a nol card for the metro, trams and buses. Taxis and ride-hailing are plentiful and fill the gaps, especially in summer heat.",
-    essentials: { currency: "UAE dirham (AED)", plugs: "Type G, 230V", language: "Arabic, with English widely spoken" },
+    essentials: {
+      currency: "UAE dirham (AED)",
+      plugs: "Type G, 230V",
+      language: "Arabic, with English widely spoken",
+      emergency: "999 police, 998 ambulance, 997 fire",
+      tipping: "Check the bill for a service charge; if there isn’t one, 10 to 15% for good service",
+      water: "Tap water meets WHO guidelines at the mains, but most visitors drink bottled or filtered water",
+    },
     faqs: [
       {
         q: "How far is Dubai Airport from the Burj Khalifa?",
@@ -43,11 +88,60 @@ export const middleEastAfricaDepth: Record<string, DestinationDepth> = {
         q: "Is Dubai too hot to visit in summer?",
         a: "From about May to September, daytime heat is extreme and outdoor sightseeing is hard. Hotels are often cheaper then; November to March is the comfortable season.",
       },
+      {
+        q: "Do I need a visa for Dubai?",
+        a: "British citizens with a full British passport get a free visit visa on arrival. Check GOV.UK’s UAE entry requirements for the length of stay and passport validity before you fly; US citizens should check travel.state.gov.",
+      },
+      {
+        q: "Is Dubai safe to visit?",
+        a: "Street crime is low, but the UK Foreign Office changed its UAE advice several times in 2026 because of tensions in the region. Read the current GOV.UK travel advice before you book and again before you fly.",
+      },
+      {
+        q: "Can you drink alcohol in Dubai?",
+        a: "Yes, in licensed hotels, bars and restaurants, which check ID. Drinking in the street, on beaches or in parks is illegal, and so is being drunk in public.",
+      },
     ],
     guides: ["self-transfer-separate-tickets", "power-bank-rules-on-planes", "when-to-book-international-flights"],
   },
   istanbul: {
-    checked: "2026-11-03",
+    // Batch 22 fields checked 6 Nov 2026: GOV.UK (visa-free stays for British
+    // citizens, 112), istanbul.com and Şehir Hatları timetables via search
+    // (Princes’ Islands and Bosphorus ferries), İDO via Uludağ University (Bursa ferry).
+    checked: "2026-11-06",
+    timeZone: "Europe/Istanbul",
+    localTips: [
+      { icon: "transport", title: "Buy an İstanbulkart", text: "One card for the tram, metro, Marmaray, ferries and buses, and much cheaper than single tickets. Buy and top it up at machines by the stations and piers." },
+      { icon: "dress", title: "Dress for the mosques", text: "Cover shoulders and knees, and women cover their hair. Mosques close to visitors during prayers, so plan around them." },
+      { icon: "money", title: "Carry some lira", text: "Cards work in most shops and restaurants, but small cafés, kiosks and bazaar stalls often want cash." },
+      { icon: "safety", title: "Watch for common scams", text: "Be wary of friendly strangers who suggest a bar, and of shoe-shiners who drop a brush. Agree prices before any service." },
+      { icon: "etiquette", title: "Haggle in the bazaars", text: "Bargaining is normal in the Grand Bazaar and other markets. Fixed-price shops and restaurants don’t haggle." },
+      { icon: "water", title: "Drink bottled water", text: "Most locals drink bottled or filtered water rather than tap water. It’s sold everywhere." },
+    ],
+    foods: [
+      { name: "Simit", text: "A sesame-crusted bread ring sold from street carts all over the city, eaten for breakfast with tea." },
+      { name: "Balık ekmek", text: "Grilled fish in bread with onion and salad, sold by the boats and stalls at Eminönü beside the Galata Bridge." },
+      { name: "Turkish breakfast", text: "A spread of cheeses, olives, tomatoes, eggs, honey and bread with endless tea, served in cafés across Kadıköy and Beşiktaş." },
+      { name: "Döner and İskender", text: "Spit-roasted meat, sliced into bread or served as İskender over bread with tomato sauce and yoghurt, in kebab houses citywide." },
+      { name: "Baklava", text: "Layers of filo, pistachios and syrup, sold by weight in pastry shops, with Karaköy known for its baklava makers." },
+      { name: "Turkish tea and coffee", text: "Strong black tea in tulip glasses all day, and thick coffee served with a glass of water, at every café." },
+    ],
+    dayTrips: [
+      { name: "Princes’ Islands", time: "About 1 hour 30 minutes by ferry from Kabataş or Eminönü", text: "Car-free islands in the Sea of Marmara, with wooden mansions, pine woods and swimming spots; Büyükada is the largest.", photo: photos.istanbulTripBuyukada },
+      { name: "Bursa", time: "About 1 hour 30 minutes by İDO ferry from Yenikapı, plus the ride into town", text: "The first Ottoman capital, with the Green Mosque, old silk markets and the cable car up Uludağ.", photo: photos.istanbulTripBursa },
+      { name: "The Upper Bosphorus", time: "About 1 hour 30 minutes each way by the Bosphorus ferry from Eminönü", text: "Ride the public ferry past the palaces and fortresses to Anadolu Kavağı, then walk up to Yoros Castle for the view of the Black Sea.", photo: photos.istanbulTripBosphorus },
+    ],
+    visual: {
+      days: [
+        { photo: photos.istanbulHagiaSophia, stops: ["Hagia Sophia", "Blue Mosque", "Basilica Cistern", "Topkapı Palace"] },
+        { photo: photos.istanbulGalataBridge, stops: ["Grand Bazaar", "Spice Bazaar", "Bosphorus ferry", "Galata Bridge"] },
+        { photo: photos.istanbulDolmabahce, stops: ["Kadıköy market", "Dolmabahçe Palace", "İstiklal Avenue", "Taksim Square"] },
+      ],
+      stay: [
+        { name: "Sultanahmet", bestFor: "First visits", photo: photos.istanbulBlueMosque },
+        { name: "Beyoğlu and Galata", bestFor: "Nightlife", photo: photos.istanbulGalata },
+        { name: "Kadıköy", bestFor: "Food and a local feel", photo: photos.istanbulKadikoy },
+      ],
+    },
     airports: [
       {
         code: "IST",
@@ -82,7 +176,14 @@ export const middleEastAfricaDepth: Record<string, DestinationDepth> = {
     ],
     daysNeeded: "Three to four days for the main sights.",
     gettingAround: "Load an İstanbulkart for the trams, metro, ferries, buses and funiculars; it’s much cheaper than single tickets and can be shared. The T1 tram links Sultanahmet with the bridges, and ferries are the best way to cross between Europe and Asia.",
-    essentials: { currency: "Turkish lira (TRY)", plugs: "Types C and F, 230V", language: "Turkish" },
+    essentials: {
+      currency: "Turkish lira (TRY)",
+      plugs: "Types C and F, 230V",
+      language: "Turkish",
+      emergency: "112",
+      tipping: "About 10% in restaurants if service isn’t included; round up for taxis",
+      water: "Drink bottled or filtered water",
+    },
     faqs: [
       {
         q: "Which Istanbul airport should I fly into?",
@@ -92,11 +193,60 @@ export const middleEastAfricaDepth: Record<string, DestinationDepth> = {
         q: "What should I wear to visit Istanbul’s mosques?",
         a: "Cover your shoulders and knees, and women should cover their hair; scarves are often available at the entrance. Visits pause at prayer times.",
       },
+      {
+        q: "Do I need a visa for Istanbul?",
+        a: "Not if you’re a British citizen visiting as a tourist: you can stay up to 90 days in any 180-day period without a visa. Check passport validity rules on GOV.UK’s Türkiye entry requirements page; other nationalities should check Türkiye’s e-Visa site.",
+      },
+      {
+        q: "Is the Bosphorus ferry the same as a cruise?",
+        a: "No. The city’s Şehir Hatları ferries, both the commuter boats and the scheduled Bosphorus tour, cost much less than private cruises, which add commentary, music or dinner. The views from the water are the same.",
+      },
+      {
+        q: "Is Istanbul safe for tourists?",
+        a: "Most visits are trouble-free. The usual risks are pickpockets and scams in crowded areas such as İstiklal Avenue, the bazaars and the trams. Read GOV.UK’s Türkiye travel advice before you go.",
+      },
     ],
     guides: ["self-transfer-separate-tickets", "hand-luggage-sizes-bag-fees", "europe-shoulder-season"],
   },
   cairo: {
-    checked: "2026-11-03",
+    // Batch 22 fields checked 6 Nov 2026: GOV.UK (Egypt emergency numbers
+    // 122, 123, 126, 180; visa needed for British citizens), train guides for
+    // Ramses to Alexandria (about 2.5 hours on faster trains), tour operators’
+    // routes for Saqqara and Dahshur.
+    checked: "2026-11-06",
+    timeZone: "Africa/Cairo",
+    localTips: [
+      { icon: "transport", title: "Use a ride-hailing app", text: "Apps give a fixed fare up front and save haggling. If you take a street taxi, agree the price first." },
+      { icon: "money", title: "Keep small notes", text: "Small tips are expected for many services, from bathroom attendants to guards who open a tomb. Carry low-value Egyptian pound notes." },
+      { icon: "safety", title: "Agree prices at the pyramids", text: "Camel, horse and carriage rides at Giza are offered hard. Settle the full price and what it covers before you get on." },
+      { icon: "dress", title: "Dress modestly", text: "Cover shoulders and knees in mosques, old Cairo and markets. Women need a headscarf in mosques." },
+      { icon: "phone", title: "Tourist police: 126", text: "The tourist police handle scams, harassment and lost documents, and often speak English. Their number is 126." },
+      { icon: "water", title: "Don’t drink the tap water", text: "Drink bottled water and avoid ice from unknown sources. Bottles are sold everywhere." },
+    ],
+    foods: [
+      { name: "Koshari", text: "Rice, lentils, pasta and chickpeas under spicy tomato sauce and crispy onions, Egypt’s favourite cheap meal, served in koshari shops downtown." },
+      { name: "Ful medames", text: "Slow-cooked fava beans with oil, cumin and lemon, eaten for breakfast with bread from street carts and cafés." },
+      { name: "Ta’ameya", text: "Egypt’s falafel, made with fava beans rather than chickpeas, green inside and fried to order at breakfast stalls." },
+      { name: "Molokhia", text: "A silky green soup of jute leaves with garlic and coriander, served with rice or bread in Egyptian home-style restaurants." },
+      { name: "Feteer meshaltet", text: "Flaky layered pastry, eaten with honey or cheese, from feteer bakeries across the city." },
+    ],
+    dayTrips: [
+      { name: "Saqqara and Memphis", time: "About 45 minutes to an hour by car from Giza", text: "The Step Pyramid of Djoser, the oldest of Egypt’s pyramids, and painted tombs, with the open-air museum at Memphis nearby.", photo: photos.cairoTripSaqqara },
+      { name: "Dahshur", time: "Usually combined with Saqqara on a day with a driver", text: "The Bent Pyramid and the Red Pyramid, which you can enter, with far fewer visitors than Giza.", photo: photos.cairoTripDahshur },
+      { name: "Alexandria", time: "About 2 hours 30 minutes by train from Ramses Station", text: "Egypt’s Mediterranean city, for the Citadel of Qaitbay, the modern Bibliotheca Alexandrina and fish restaurants on the seafront.", photo: photos.cairoTripAlexandria },
+    ],
+    visual: {
+      days: [
+        { photo: photos.cairoSphinx, stops: ["Giza pyramids", "The Sphinx", "Grand Egyptian Museum", "Sound and light show"] },
+        { photo: photos.cairoCitadel, stops: ["Coptic Cairo", "Ben Ezra Synagogue", "The Citadel", "Khan el-Khalili"] },
+        { photo: photos.cairoMuseumHall, stops: ["Egyptian Museum", "Al-Azhar Park", "Felucca on the Nile"] },
+      ],
+      stay: [
+        { name: "Downtown", bestFor: "Central and busy", photo: photos.cairoMuseum },
+        { name: "Zamalek", bestFor: "A calmer base", photo: photos.cairoZamalek },
+        { name: "Giza", bestFor: "Pyramid views", photo: photos.cairo },
+      ],
+    },
     airports: [
       {
         code: "CAI",
@@ -122,7 +272,14 @@ export const middleEastAfricaDepth: Record<string, DestinationDepth> = {
     ],
     daysNeeded: "Three days for Cairo and Giza. Most visitors then head south to Luxor and Aswan.",
     gettingAround: "Ride-hailing apps are the easiest way round Cairo, with fixed prices and no haggling. The metro is cheap and useful for downtown, Coptic Cairo and some other districts. Traffic is heavy at most times, so allow extra time.",
-    essentials: { currency: "Egyptian pound (EGP)", plugs: "Types C and F, 220V", language: "Arabic" },
+    essentials: {
+      currency: "Egyptian pound (EGP)",
+      plugs: "Types C and F, 220V",
+      language: "Arabic",
+      emergency: "122 police, 123 ambulance, 180 fire, 126 tourist police",
+      tipping: "Small tips are expected for most services; about 10% in restaurants, even when a service charge is added",
+      water: "Drink bottled water",
+    },
     faqs: [
       {
         q: "How far are the pyramids from central Cairo?",
@@ -131,6 +288,18 @@ export const middleEastAfricaDepth: Record<string, DestinationDepth> = {
       {
         q: "What is the Grand Egyptian Museum?",
         a: "A large museum beside the Giza pyramids that houses the Tutankhamun collection. It’s easy to combine with the pyramids on the same day.",
+      },
+      {
+        q: "Do I need a visa for Egypt?",
+        a: "Yes, British passport holders normally need one. You can apply for an e-visa before you travel or buy a visa on arrival at Cairo airport; check GOV.UK’s Egypt entry requirements for the current rules.",
+      },
+      {
+        q: "Do I need cash in Cairo?",
+        a: "Yes. Hotels, malls and larger restaurants take cards, but tips, small cafés, markets and street taxis run on Egyptian pounds. Carry small notes.",
+      },
+      {
+        q: "Is Cairo safe for tourists?",
+        a: "Most visits are trouble-free, and the main sights have a visible police presence. Expect persistent touts at the big sites, and read GOV.UK’s Egypt travel advice before you book: the Foreign Office advises against travel to some parts of the country.",
       },
     ],
     guides: ["self-transfer-separate-tickets", "power-bank-rules-on-planes", "when-to-book-international-flights"],

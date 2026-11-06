@@ -4,19 +4,28 @@ import { pageMetadata, unsplashShareImage } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { AirplaneTakeoff, ArrowUpRight, CalendarCheck, CaretRight, Lightbulb, MapPin } from "@phosphor-icons/react/dist/ssr";
+import { AirplaneTakeoff, CalendarCheck, CaretRight, Lightbulb, MapPin, Star } from "@phosphor-icons/react/dist/ssr";
 import { ParallaxHero } from "@/components/destinations/parallax-hero";
 import { DestinationTile } from "@/components/destinations/destination-tile";
 import { SearchPanel } from "@/components/search/search-panel";
-import { SmartImage } from "@/components/ui/smart-image";
 import { AirportTabs } from "@/components/destinations/airport-tabs";
 import { MonthStrip } from "@/components/destinations/month-strip";
 import { QuestionList } from "@/components/destinations/question-list";
-import { destinationDepth } from "@/content/destination-depth";
+import { GuideSection, SectionMenu } from "@/components/destinations/guide-section";
+import { TripEssentials } from "@/components/destinations/trip-essentials";
+import { FlightTimes } from "@/components/destinations/flight-times";
+import { DayPlan } from "@/components/destinations/day-plan";
+import { StayTiles } from "@/components/destinations/stay-tiles";
+import { LocalTips } from "@/components/destinations/local-tips";
+import { FoodList } from "@/components/destinations/food-list";
+import { DayTrips } from "@/components/destinations/day-trips";
+import { GuideCard } from "@/components/guides/guide-card";
+import { depthCopy, destinationDepth } from "@/content/destination-depth";
+import { guideBySlug } from "@/content/guides";
 import { airports } from "@/content/airports";
 import { MonthCalendar } from "@/components/destinations/month-calendar";
 import { TripExtras } from "@/components/destinations/trip-extras";
-import { originByCode, routePagesTo, routes } from "@/content/deals";
+import { originByCode, routes } from "@/content/deals";
 import { destinationGuides, entryNote, usPassportNote } from "@/content/destination-guides";
 import { destinationBySlug, destinations, regions } from "@/content/destinations";
 import { site } from "@/content/site";
@@ -44,16 +53,23 @@ export async function generateMetadata({ params }: PageProps<"/destinations/[slu
   });
 }
 
+/**
+ * Destination page v2 (Batch 22): one template for every city. Hero and
+ * search, then sections in the shared GuideSection wrapper with a sticky
+ * "On this page" menu. All copy lives in src/content (depthCopy and the city's
+ * DestinationDepth); the fare board stays the one signature element.
+ */
 export default async function DestinationPage({ params }: PageProps<"/destinations/[slug]">) {
   const { slug } = await params;
   const d = destinationBySlug[slug];
   const guide = destinationGuides[slug];
-  if (!d || !guide) notFound();
+  const depth = destinationDepth[slug];
+  if (!d || !guide || !depth) notFound();
 
   const airport = airports.find((a) => a.code === d.airport);
   const fromNyc = approxFlightTime("JFK", d.airport);
   const fromLon = approxFlightTime("LHR", d.airport);
-  // Departure cities: our featured routes to this place, plus New York and London.
+  // Fare board: our featured routes to this place, plus New York and London.
   const fromCodes = [...new Set(["NYC", "LON", ...routes.filter((r) => r.destination.slug === slug).map((r) => r.origin.code)])];
   const fromOrigins = fromCodes.map((c) => originByCode[c]).filter((o) => o.apiCode !== d.cityCode);
   const related = destinations.filter((x) => x.region === d.region && x.slug !== d.slug).slice(0, 3);
@@ -84,43 +100,48 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
     d.city !== "New York" && { from: "New York", time: fromNyc },
   ].filter((t) => !!t);
   const notUkUs = d.country !== "United Kingdom" && d.country !== "United States";
-  const qa = {
-    bestTime: { q: destinationQuestions.bestTime.q(d.city), a: destinationQuestions.bestTime.a(guide.bestTime, guide.whenToGo) },
-    airports: { q: destinationQuestions.airports.q(d.city), a: guide.flying },
-    flightTime: {
+  const entryAnswer = `${destinationQuestions.entryLead} ${guide.entry.label}. ${entryNote}${notUkUs ? ` ${usPassportNote}` : ""}`;
+  // The six built answers, then the city's own questions. The same list feeds
+  // the accordion and the FAQPage markup, so they always match.
+  const questions = [
+    { q: destinationQuestions.bestTime.q(d.city), a: destinationQuestions.bestTime.a(guide.bestTime, guide.whenToGo) },
+    { q: destinationQuestions.airports.q(d.city), a: guide.flying },
+    {
       q: destinationQuestions.flightTime.q(d.city, d.city === "London" ? "the US" : d.city === "New York" ? "the UK" : "the UK and US"),
       a: destinationQuestions.flightTime.a(timesFrom),
     },
-    entry: {
+    {
       q: destinationQuestions.entry.q(/^United /.test(d.country) ? `the ${d.country}` : d.country),
-      rest: `${entryNote}${notUkUs ? ` ${usPassportNote}` : ""}`,
+      a: entryAnswer,
+      link: { label: guide.entry.label, href: guide.entry.url },
     },
-  };
-  // Batch 7: cities with photo-led content get the at-a-glance layout; the rest keep the approved page.
-  const depth = destinationDepth[slug];
-  const v = depth?.visual;
-  const entryAnswer = `${destinationQuestions.entryLead} ${guide.entry.label}. ${qa.entry.rest}`;
-  const questions = v
-    ? [
-        { q: qa.bestTime.q, a: qa.bestTime.a },
-        { q: qa.airports.q, a: qa.airports.a },
-        { q: qa.flightTime.q, a: qa.flightTime.a },
-        { q: qa.entry.q, a: entryAnswer, link: { label: guide.entry.label, href: guide.entry.url } },
-        { q: `What’s the best way to get around ${d.city}?`, a: depth.gettingAround },
-        { q: `How many days do you need in ${d.city}?`, a: depth.daysNeeded },
-      ]
-    : [];
-  const cityRoutes = v ? routePagesTo(slug) : routes.filter((r) => r.destination.slug === slug);
+    { q: `What’s the best way to get around ${d.city}?`, a: depth.gettingAround },
+    { q: `How many days do you need in ${d.city}?`, a: depth.daysNeeded },
+    ...depth.faqs,
+  ];
   const cal = calendars[0];
   const cheapest = cal?.months.length ? cal.months.reduce((a, b) => (b.price < a.price ? b : a)) : undefined;
+  const cityGuides = depth.guides.flatMap((s) => (guideBySlug[s] ? [guideBySlug[s]] : []));
+  const regionLabel = regions.find((x) => x.id === d.region)?.label;
+
+  const nav = depthCopy.nav;
+  const menu = [
+    { id: "overview", label: nav.overview },
+    { id: "flight-times", label: nav.flights },
+    { id: "airports", label: nav.airports },
+    { id: "plan", label: nav.plan },
+    { id: "stay", label: nav.stay },
+    { id: "when", label: nav.months },
+    { id: "tips", label: nav.tips },
+    { id: "food", label: nav.food },
+    { id: "day-trips", label: nav.trips },
+    { id: "questions", label: nav.faqs },
+    ...(cityGuides.length ? [{ id: "before-you-go", label: nav.guides }] : []),
+  ];
 
   const jsonLd = {
     "@graph": [
-      faqPage(
-        v
-          ? questions.map((x) => ({ q: x.q, a: x.a }))
-          : [qa.bestTime, qa.airports, qa.flightTime, { q: qa.entry.q, a: `${destinationQuestions.entryLead} ${guide.entry.label} (${guide.entry.url}). ${qa.entry.rest}` }],
-      ),
+      faqPage(questions.map((x) => ({ q: x.q, a: x.a }))),
       {
         "@type": "TouristDestination",
         name: d.city,
@@ -164,203 +185,144 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
         </div>
       </ParallaxHero>
 
-      <div className="container-page relative z-10 -mt-6">
+      {/* Above the sticky section menu (z-30), so the search's popovers open over it; below the header (z-40). */}
+      <div className="container-page relative z-[35] -mt-6 mb-10">
         <SearchPanel variant="bar" defaultFrom="NYC" defaultTo={d.airport} subId={`destination_${d.slug}`} />
       </div>
 
-      <div className="container-page grid gap-12 py-14 md:py-20 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
-        <div>
-          <dl className="grid gap-5 sm:grid-cols-3">
-            {facts.map(({ icon: Icon, label, value }) => (
-              <div key={label} className="rounded-(--radius-card) bg-mist p-5">
-                <Icon className="size-6 text-action" aria-hidden />
-                <dt className="mt-3 text-[0.8125rem] text-ink-soft">{label}</dt>
-                <dd className="mt-1 font-semibold leading-snug text-ink">{value}</dd>
-              </div>
-            ))}
-          </dl>
+      {/* A direct child of the article, so it stays stuck under the header for the whole page. */}
+      <SectionMenu items={menu} />
 
-          {v ? (
-            <>
-              <h2 className="mt-12 font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">Getting in from the airport</h2>
-              <div className="mt-5">
-                <AirportTabs airports={depth.airports} />
-              </div>
-              <h2 className="mt-12 font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">Good to know</h2>
-              <div className="mt-4">
-                <QuestionList items={questions} />
-              </div>
-            </>
-          ) : (
-            <>
-          <h2 className="mt-12 font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">Things to do in {d.city}</h2>
-            <ol className="mt-6 space-y-4">
-              {guide.highlights.map((h, i) => (
-                <li key={h} className="flex gap-4">
-                  <span className="grid size-9 shrink-0 place-items-center rounded-full bg-ink font-display-tight font-bold text-sun">{i + 1}</span>
-                  <span className="pt-1.5 text-[1.0625rem] text-ink">{h}</span>
-                </li>
+      <GuideSection id="overview" title={depthCopy.overview.title(d.city)} intro={depthCopy.overview.intro}>
+        <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
+          <div className="min-w-0">
+            <dl className="grid gap-5 sm:grid-cols-3">
+              {facts.map(({ icon: Icon, label, value }) => (
+                <div key={label} className="rounded-(--radius-card) bg-mist p-5">
+                  <Icon className="size-6 text-action" aria-hidden />
+                  <dt className="mt-3 text-[0.8125rem] text-ink-soft">{label}</dt>
+                  <dd className="mt-1 font-semibold leading-snug text-ink">{value}</dd>
+                </div>
               ))}
-            </ol>
-  
-            <h2 className="mt-12 font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">Visiting {d.city}</h2>
-            {/* Answer-first questions; the same text feeds the FAQPage markup below. */}
-            <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">{qa.bestTime.q}</h3>
-            <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">
-              <strong className="font-semibold text-ink">{guide.bestTime}.</strong> {guide.whenToGo}
-            </p>
-            <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">{qa.airports.q}</h3>
-            <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">{guide.flying}</p>
-            <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">{qa.flightTime.q}</h3>
-            <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">{qa.flightTime.a}</p>
-            <h3 className="mt-6 text-[1.125rem] font-semibold text-ink">{qa.entry.q}</h3>
-            <p className="mt-2 text-[1.0625rem] leading-[1.75] text-ink/85">
-              {destinationQuestions.entryLead}{" "}
-              <a href={guide.entry.url} target="_blank" rel="noopener" className="inline-flex items-center gap-1 font-semibold text-action hover:underline">
-                {guide.entry.label}
-                <ArrowUpRight className="size-3.5" weight="bold" aria-hidden />
-                <span className="sr-only"> (opens in a new tab)</span>
-              </a>
-              . {qa.entry.rest}
-            </p>
-  
-              </>
-          )}
+            </dl>
 
-          {cityRoutes.length > 0 && (
-            <>
-              <h2 className="mt-12 font-display-tight text-[1.375rem] font-bold text-ink">Popular routes to {d.city}</h2>
-              <ul className="mt-4 flex flex-wrap gap-2">
-                {cityRoutes
-                  .map((r) => (
-                    <li key={r.slug}>
-                      <Link href={`/routes/${r.slug}`} className="inline-flex h-10 items-center rounded-full px-4 font-semibold text-ink ring-1 ring-line hover:bg-mist">
-                        From {r.origin.city}
-                      </Link>
-                    </li>
-                  ))}
-              </ul>
-            </>
-          )}
-
-          <div className="mt-10 flex gap-4 rounded-(--radius-card) bg-sun/20 p-5 ring-1 ring-sun/50">
-            <Lightbulb className="size-6 shrink-0 text-ink" weight="fill" aria-hidden />
-            <p className="leading-relaxed text-ink">
-              <strong className="font-semibold">Flight tip: </strong>
-              {guide.tip}
-            </p>
-          </div>
-        </div>
-
-        <aside aria-labelledby="fares-title">
-          <div className="rounded-(--radius-panel) bg-board p-6 text-white md:p-7">
-            <h2 id="fares-title" className="font-display-tight text-[1.5rem] font-bold">Recent fares to {d.city}</h2>
-            {fares.length > 0 ? (
-              <ul className="mt-5 divide-y divide-white/10">
-                {fares.map(({ origin, fare }) => {
-                  const href = dealHref(fare, origin.code, d.airport, `destination_${d.slug}_fares_${origin.slug}`);
-                  return (
-                    <li key={origin.code}>
-                      <Link href={href} className="group flex items-center justify-between gap-4 py-3">
-                        <span>
-                          <span className="block font-semibold group-hover:underline">From {origin.city}</span>
-                          <span className="text-[0.875rem] text-white/65">
-                            {fareDates(fare)} · {stopsText(fare.transfers)}
-                          </span>
-                        </span>
-                        <Price amount={fare.price} currency={fare.currency} className="tabular text-[1.25rem] font-bold text-sun" />
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              <p className="mt-4 leading-relaxed text-white/75">No recent fares found for {d.city}. Search your dates to see live prices.</p>
-            )}
-            <p className="mt-4 text-[0.8125rem] leading-relaxed text-white/60">
-              Cheapest round trips per person found in the last few days. The provider confirms the final price.
-            </p>
-          </div>
-        </aside>
-      </div>
-
-      {v && (
-        <section aria-labelledby="days-title" className="border-t border-line bg-mist py-14 md:py-20">
-          <div className="container-page">
-            <h2 id="days-title" className="font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">
-              3 days in {d.city}
-            </h2>
-            <ol className="mt-8 grid gap-5 md:grid-cols-3">
-              {v.days.map((day, i) => (
-                <li key={i} className="overflow-hidden rounded-(--radius-card) bg-white ring-1 ring-line">
-                  <div className="relative aspect-[3/2]">
-                    <SmartImage photo={day.photo} sizes="(min-width: 768px) 400px, 100vw" />
-                    <span className="absolute top-3 left-3 rounded-full bg-ink px-3 py-1 font-display-tight text-[0.875rem] font-bold text-sun">Day {i + 1}</span>
-                  </div>
-                  <div className="p-5">
-                    <h3 className="font-display-tight text-[1.25rem] leading-snug font-bold text-ink">{depth.itinerary[i]?.title}</h3>
-                    <ul className="mt-3 flex flex-wrap gap-1.5">
-                      {day.stops.map((stop) => (
-                        <li key={stop} className="rounded-full bg-mist px-3 py-1 text-[0.875rem] text-ink">
-                          {stop}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
-      )}
-
-      {v && (
-        <section aria-labelledby="stay-title" className="border-t border-line py-14 md:py-20">
-          <div className="container-page">
-            <h2 id="stay-title" className="font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">
-              Where to stay
-            </h2>
-            <ul className="mt-8 grid gap-4 sm:grid-cols-3">
-              {v.stay.map((n) => (
-                <li key={n.name} className="relative aspect-[16/9] overflow-hidden rounded-(--radius-card) sm:aspect-[4/3]">
-                  <SmartImage photo={n.photo} sizes="(min-width: 640px) 400px, 100vw" />
-                  <span aria-hidden className="absolute inset-0 bg-[linear-gradient(0deg,rgb(15_31_61/0.82)_0%,rgb(15_31_61/0.2)_50%,transparent_75%)]" />
-                  <span className="absolute inset-x-0 bottom-0 p-5">
-                    <span className="block font-display-tight text-[1.375rem] leading-tight font-bold text-white">{n.name}</span>
-                    <span className="block text-[0.875rem] text-white/85">Best for {n.bestFor[0].toLowerCase() + n.bestFor.slice(1)}</span>
-                  </span>
+            <h3 className="mt-10 font-display-tight text-[1.375rem] font-bold text-ink">{depthCopy.overview.highlights}</h3>
+            <ul className="mt-4 space-y-3">
+              {guide.highlights.map((h) => (
+                <li key={h} className="flex gap-3">
+                  <Star className="mt-0.5 size-5 shrink-0 text-action" weight="duotone" aria-hidden />
+                  <span className="text-[1.0625rem] leading-snug text-ink">{h}</span>
                 </li>
               ))}
             </ul>
-          </div>
-        </section>
-      )}
 
-      {v && (
-        <section aria-labelledby="when-title" className="border-t border-line py-14 md:py-20">
-          <div className="container-page">
-            <h2 id="when-title" className="font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">
-              When to go
-            </h2>
-            <p className="mt-2 text-[1.0625rem] font-medium text-ink">{guide.bestTime}</p>
-            <div className="mt-6">
-              <MonthStrip weather={depth.weather} climate={depth.climate?.months} cheapestMonth={cheapest ? Number(cheapest.month.slice(5, 7)) - 1 : undefined} cheapestLabel={cal ? `Cheapest from ${cal.origin.city}` : undefined} />
+            <div className="mt-10 flex gap-4 rounded-(--radius-card) bg-sun/20 p-5 ring-1 ring-sun/50">
+              <Lightbulb className="size-6 shrink-0 text-ink" weight="fill" aria-hidden />
+              <p className="leading-relaxed text-ink">
+                <strong className="font-semibold">{depthCopy.overview.tip}: </strong>
+                {guide.tip}
+              </p>
             </div>
           </div>
-        </section>
-      )}
 
-      {calendars.length > 0 && (
-        <section aria-labelledby="months-title" className="border-t border-line py-14 md:py-20">
-          <div className="container-page">
-            <h2 id="months-title" className="font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">
-              Cheapest month to fly to {d.city}
-            </h2>
-            <div className="mt-6">
+          <aside className="min-w-0 space-y-6">
+            <section aria-labelledby="fares-title" className="rounded-(--radius-panel) bg-board p-6 text-white md:p-7">
+              <h3 id="fares-title" className="font-display-tight text-[1.5rem] font-bold">Recent fares to {d.city}</h3>
+              {fares.length > 0 ? (
+                <ul className="mt-5 divide-y divide-white/10">
+                  {fares.map(({ origin, fare }) => {
+                    const href = dealHref(fare, origin.code, d.airport, `destination_${d.slug}_fares_${origin.slug}`);
+                    return (
+                      <li key={origin.code}>
+                        <Link href={href} className="group flex items-center justify-between gap-4 py-3">
+                          <span>
+                            <span className="block font-semibold group-hover:underline">From {origin.city}</span>
+                            <span className="text-[0.875rem] text-white/65">
+                              {fareDates(fare)} · {stopsText(fare.transfers)}
+                            </span>
+                          </span>
+                          <Price amount={fare.price} currency={fare.currency} className="tabular text-[1.25rem] font-bold text-sun" />
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <p className="mt-4 leading-relaxed text-white/75">No recent fares found for {d.city}. Search your dates to see live prices.</p>
+              )}
+              <p className="mt-4 text-[0.8125rem] leading-relaxed text-white/60">
+                Cheapest round trips per person found in the last few days. The provider confirms the final price.
+              </p>
+            </section>
+            <TripEssentials city={d.city} timeZone={depth.timeZone} essentials={depth.essentials} />
+          </aside>
+        </div>
+      </GuideSection>
+
+      <GuideSection id="flight-times" tone="mist" title={depthCopy.flightTimes.title(d.city)} intro={depthCopy.flightTimes.intro}>
+        <FlightTimes d={d} timeZone={depth.timeZone} />
+      </GuideSection>
+
+      <GuideSection id="airports" title={depthCopy.airports.title(d.city)} intro={depthCopy.airports.intro}>
+        <AirportTabs airports={depth.airports} />
+      </GuideSection>
+
+      <GuideSection id="plan" tone="mist" title={depthCopy.plan.title(d.city)} intro={depthCopy.plan.intro}>
+        <DayPlan days={depth.visual.days} itinerary={depth.itinerary} />
+      </GuideSection>
+
+      <GuideSection id="stay" title={depthCopy.stay.title(d.city)} intro={depthCopy.stay.intro}>
+        <StayTiles stay={depth.visual.stay} neighbourhoods={depth.neighbourhoods} />
+      </GuideSection>
+
+      <GuideSection id="when" tone="mist" title={depthCopy.months.title(d.city)} intro={depthCopy.months.intro}>
+        <p className="text-[1.0625rem] font-semibold text-ink">{guide.bestTime}</p>
+        <div className="mt-5">
+          <MonthStrip
+            weather={depth.weather}
+            climate={depth.climate?.months}
+            cheapestMonth={cheapest ? Number(cheapest.month.slice(5, 7)) - 1 : undefined}
+            cheapestLabel={cal ? `Cheapest from ${cal.origin.city}` : undefined}
+          />
+        </div>
+        {calendars.length > 0 && (
+          <div className="mt-12">
+            <h3 className="font-display-tight text-[1.375rem] font-bold text-ink md:text-[1.625rem]">{depthCopy.months.calendar(d.city)}</h3>
+            <div className="mt-5">
               <MonthCalendar calendars={calendars} to={d.airport} subPrefix={`destination_${d.slug}`} />
             </div>
           </div>
-        </section>
+        )}
+      </GuideSection>
+
+      <GuideSection id="tips" title={depthCopy.tips.title(d.city)} intro={depthCopy.tips.intro}>
+        <LocalTips tips={depth.localTips} />
+      </GuideSection>
+
+      <GuideSection id="food" tone="mist" title={depthCopy.food.title(d.city)} intro={depthCopy.food.intro}>
+        <FoodList foods={depth.foods} />
+      </GuideSection>
+
+      <GuideSection id="day-trips" title={depthCopy.dayTrips.title(d.city)} intro={depthCopy.dayTrips.intro}>
+        <DayTrips trips={depth.dayTrips} />
+      </GuideSection>
+
+      <GuideSection id="questions" tone="mist" title={depthCopy.faqs.title(d.city)} intro={depthCopy.faqs.intro}>
+        <div className="max-w-4xl">
+          <QuestionList items={questions} />
+        </div>
+      </GuideSection>
+
+      {cityGuides.length > 0 && (
+        <GuideSection id="before-you-go" title={depthCopy.beforeYouGo.title} intro={depthCopy.beforeYouGo.intro(d.city)}>
+          <ul className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {cityGuides.map((g) => (
+              <li key={g.slug}>
+                <GuideCard guide={g} />
+              </li>
+            ))}
+          </ul>
+        </GuideSection>
       )}
 
       <TripExtras slug={d.slug} city={d.city} subPrefix={`destination_${d.slug}`} />
@@ -368,7 +330,7 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
       {related.length > 0 && (
         <section aria-labelledby="related-title" className="border-t border-line bg-mist py-14 md:py-20">
           <div className="container-page">
-            <h2 id="related-title" className="font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">More in {regions.find((x) => x.id === d.region)?.label}</h2>
+            <h2 id="related-title" className="font-display-tight text-[1.75rem] font-bold text-ink md:text-[2.25rem]">More in {regionLabel}</h2>
             <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((r) => (
                 <li key={r.slug}>
