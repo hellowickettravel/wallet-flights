@@ -64,3 +64,10 @@ Tests to update at step 5: `growth.spec.ts` photo-led layout (FAQ count 11 for L
 
 ## Guides B done (6 Nov)
 5 guides written. Spot-check: jet-lag and DVT claims rest on search summaries (cdc.gov and fitfortravel.nhs.uk blocked in sandbox); Priority Pass / Gatwick lounge prices are dated "as of 5 Nov 2026" and sources disagree on Clubrooms (£42 vs £44).
+
+## Asia & Pacific done (6 Nov)
+6 cities complete. Weakly sourced lines to verify or soften before publishing (brief: no invented facts):
+- Sydney day-trip times (Blue Mountains ~2h, Royal National Park ~1h, Hunter Valley ~2h by car) came from general knowledge, not a source.
+- Bali emergency numbers; Bangkok 30-day exemption from 15 Sep 2026 (embassy and press disagree); Singapore Bintan ferry time and 10% service charge; Delhi Agra/Jaipur times.
+- Tips/FAQs from general knowledge: Singapore gum/MRT rules, Thai lèse-majesté and "palace closed" scam, India dress codes, Taj closed Fridays.
+- Photo subjects least certain: Delhi Connaught Place tile, Tokyo market tile.
