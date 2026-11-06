@@ -497,4 +497,111 @@ export const americasDepth: Record<string, DestinationDepth> = {
     ],
     guides: ["esta-and-uk-eta", "24-hour-flight-cancellation-rule", "hand-luggage-sizes-bag-fees"],
   },
+  miami: {
+    // Checked 6 Nov 2026: Miami-Dade Transit (Metrorail fare, Metromover free,
+    // contactless), NPS (Shark Valley about 25 miles west of Miami), NHC/NOAA
+    // season dates. Unverified journey times are left out.
+    checked: "2026-11-06",
+    timeZone: "America/New_York",
+    localTips: [
+      { icon: "weather", title: "Hurricane season", text: "The Atlantic hurricane season runs from 1 June to 30 November. Book flexible fares and insurance if you travel then." },
+      { icon: "transport", title: "Metromover is free", text: "The elevated Metromover loop around Downtown and Brickell costs nothing to ride. Metrorail takes contactless cards and phones." },
+      { icon: "money", title: "Tip 18 to 20%", text: "Tipping is expected in restaurants, bars and taxis. Check the bill first, as some places add a service charge." },
+      { icon: "safety", title: "Don’t leave bags in cars", text: "Break-ins on parked cars are a common problem, so take your valuables with you. Park in staffed garages when you can." },
+      { icon: "health", title: "Respect the sun", text: "The Florida sun is strong all year. Use sunscreen, drink water and take a break in the shade at midday." },
+      { icon: "safety", title: "Obey the beach flags", text: "Rip currents can form on Miami Beach. Swim near a lifeguard tower and don’t swim when a red flag is flying." },
+    ],
+    foods: [
+      { name: "Cuban sandwich", text: "Roast pork, ham, Swiss cheese and pickles pressed in Cuban bread, served at the cafés of Little Havana and Calle Ocho." },
+      { name: "Cafecito", text: "A small, sweet shot of Cuban espresso, ordered at a walk-up window (ventanita) and drunk standing." },
+      { name: "Croquetas", text: "Crisp fried croquettes with a creamy ham or chicken filling, sold with coffee at Cuban bakeries." },
+      { name: "Stone crab", text: "Claws served chilled with mustard sauce, in season from 15 October to 1 May at seafood restaurants." },
+      { name: "Key lime pie", text: "A tart custard pie with a graham-cracker crust, found at bakeries and diners across South Florida." },
+    ],
+    dayTrips: [
+      { name: "Everglades National Park", time: "Shark Valley is about 25 miles west of Miami by road", text: "A vast subtropical wetland of sawgrass, alligators and birds. Shark Valley has a paved loop to walk or cycle, and airboat tours run nearby.", photo: photos.miamiTripEverglades },
+      { name: "Key West", time: "About 160 miles by road along the Overseas Highway; most visitors stay overnight", text: "Cross the Seven Mile Bridge to the end of the Keys, with its Old Town, harbour and the Southernmost Point buoy.", photo: photos.miamiTripKeyWest },
+      { name: "Fort Lauderdale", time: "By Brightline or Tri-Rail from Miami; check operators for times", text: "A beach city with a promenade, canals and a boat-lined waterfront, easy by train from downtown Miami.", photo: photos.miamiTripFortLauderdale },
+    ],
+    visual: {
+      days: [
+        { photo: photos.miami, stops: ["South Beach and Ocean Drive", "Lummus Park beach", "Art Deco Historic District", "Lincoln Road"] },
+        { photo: photos.miamiWynwood, stops: ["Wynwood Walls", "Little Havana and Calle Ocho", "A cafecito stop", "Brickell dinner"] },
+        { photo: photos.miamiVizcaya, stops: ["Vizcaya Museum and Gardens", "Coconut Grove", "Or Everglades Shark Valley"] },
+      ],
+      stay: [
+        { name: "South Beach", bestFor: "Beach and nightlife", photo: photos.miamiSouthBeach },
+        { name: "Wynwood and the Design District", bestFor: "Street art and dining", photo: photos.miamiWynwood },
+        { name: "Coconut Grove", bestFor: "Calm, leafy and by the water", photo: photos.miamiVizcaya },
+      ],
+    },
+    airports: [
+      {
+        code: "MIA",
+        name: "Miami International",
+        summary: "About 13 km west of Downtown Miami, and the main airport for flights from the UK and Latin America.",
+        transfers: [
+          { mode: "metro", name: "MIA Mover and Metrorail Orange Line", to: "Brickell and Downtown Miami", note: "The free MIA Mover links the terminals to the Miami Intermodal Center, where the Metrorail station is.", fare: { text: "$2.25 on Metrorail", source: { label: "Miami-Dade Transit: Metrorail", url: "https://www.miamidade.gov/global/transportation/metrorail.page" } } },
+          { mode: "taxi", name: "Taxi or ride-hailing", to: "Downtown, Brickell and Miami Beach", note: "Use the official taxi ranks or app pick-up areas outside arrivals." },
+        ],
+        officialPage: { label: "Miami International Airport: public transportation", url: "https://www.miami-airport.com/public-transportation.asp" },
+      },
+      {
+        code: "FLL",
+        name: "Fort Lauderdale-Hollywood International",
+        summary: "About 45 km north of Downtown Miami, with many low-cost and leisure flights.",
+        transfers: [
+          { mode: "train", name: "Tri-Rail or Brightline", to: "Miami", note: "A shuttle links the airport terminals to Tri-Rail’s Fort Lauderdale Airport station; Brightline runs between Fort Lauderdale and MiamiCentral." },
+          { mode: "taxi", name: "Taxi or ride-hailing", to: "Miami and Miami Beach", note: "Allow extra time at rush hour on I-95." },
+        ],
+        officialPage: { label: "Fort Lauderdale-Hollywood International Airport", url: "https://www.broward.org/Airport/" },
+      },
+    ],
+    weather: "BBBBGMMMMMGB",
+    neighbourhoods: [
+      { name: "South Beach", bestFor: "Beach and nightlife", text: "Art Deco hotels, the Ocean Drive promenade and a wide beach, with Lincoln Road for shopping. Busy and noisy at night, so ask for a quieter room." },
+      { name: "Wynwood and the Design District", bestFor: "Street art and dining", text: "Warehouse murals, galleries, breweries and restaurants, a short ride from Downtown. Livelier in the evening than by day." },
+      { name: "Coconut Grove", bestFor: "Calm, leafy and by the water", text: "A green bayside village of cafés and marinas, home to Vizcaya Museum and Gardens. Quieter than the beach areas." },
+      { name: "Little Havana", bestFor: "Cuban food and culture", text: "Calle Ocho’s cafés, cigar shops and domino players. Visit by day for coffee and lunch; stay elsewhere." },
+      { name: "Brickell and Downtown", bestFor: "Business and city views", text: "High-rise hotels and restaurants on Biscayne Bay, with Metrorail and the free Metromover on your doorstep. Handy for airport transfers and Brightline." },
+    ],
+    itinerary: [
+      { title: "South Beach", morning: "Walk the Art Deco Historic District along Ocean Drive before the crowds.", afternoon: "Swim and relax at South Beach, then stroll Lincoln Road.", evening: "Dine and drink in South Beach or on Española Way." },
+      { title: "Wynwood and Little Havana", morning: "See the murals of Wynwood Walls and nearby streets.", afternoon: "Eat a Cuban sandwich on Calle Ocho and have a cafecito at a ventanita.", evening: "Take the free Metromover through Downtown and Brickell, and have dinner there." },
+      { title: "Vizcaya or the Everglades", morning: "Tour Vizcaya Museum and Gardens in Coconut Grove, or drive out to Shark Valley in the Everglades.", afternoon: "Explore Coconut Grove’s waterfront or walk the Shark Valley loop.", evening: "Watch the sunset over Biscayne Bay." },
+    ],
+    daysNeeded: "Three to four days covers the beaches, Wynwood and Little Havana. Add a day for the Everglades or a trip to the Keys.",
+    gettingAround: "Metrorail and the free Metromover cover Downtown, Brickell and the airport link, but the beaches and other districts are easiest by ride-hailing app. Many visitors hire a car for the Everglades and Keys; many Florida toll roads are cashless, so ask the rental firm how tolls are charged.",
+    essentials: {
+      currency: "US dollar (USD)",
+      plugs: "Types A and B, 120V",
+      language: "English and Spanish",
+      emergency: "911",
+      tipping: "18 to 20% in restaurants, bars and taxis",
+      water: "Tap water is safe to drink",
+    },
+    faqs: [
+      {
+        q: "When is the best time to visit Miami?",
+        a: "December to April is the driest and most comfortable time, with sunny days and lower humidity. Summer is hot and humid, with afternoon storms, and the Atlantic hurricane season runs from 1 June to 30 November.",
+      },
+      {
+        q: "Which airport is better for Miami, MIA or FLL?",
+        a: "MIA is the closest to Downtown Miami and has Metrorail. FLL is in Fort Lauderdale, about 45 km north, and is useful if it has a cheaper fare, so compare fares and add the transfer.",
+      },
+      {
+        q: "Do I need an ESTA to visit Miami from the UK?",
+        a: "Yes, if you travel under the Visa Waiver Program: British citizens need an approved ESTA before boarding. Apply on the official US government site; our ESTA and UK ETA guide explains how.",
+      },
+      {
+        q: "Do I need a car in Miami?",
+        a: "Not for South Beach, Wynwood or Downtown, where Metrorail, Metromover and ride-hailing work well. A car helps for the Everglades and the Keys.",
+      },
+      {
+        q: "Is Miami Beach the same as Miami?",
+        a: "No. Miami Beach is a separate city on an island across Biscayne Bay from Miami, linked by causeways. Most visitors stay in one and visit the other.",
+      },
+    ],
+    guides: ["esta-and-uk-eta", "when-to-book-international-flights", "24-hour-flight-cancellation-rule"],
+  },
 };

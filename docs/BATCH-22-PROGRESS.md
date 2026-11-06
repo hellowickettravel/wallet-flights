@@ -74,3 +74,6 @@ Tests to update at step 5: `growth.spec.ts` photo-led layout (FAQ count 11 for L
 
 ## Europe done (6 Nov)
 Paris, Rome, Barcelona, Lisbon and Amsterdam complete. Weak photo matches to swap if wanted: `parisIsland`, `amsterdamTripHaarlem`, `amsterdamTripKeukenhof`. Barcelona Girona "about 40 minutes" is a rounding of Renfe's 38. No Amsterdam airport train fare (sources disagreed).
+
+## Americas done (6 Nov)
+Cancún, Rio, Mexico City, Cusco, New York, Miami complete. To verify: Miami tap-water line (no official page); Key West "about 160 miles by road"; New York day trips (Hudson Valley time weak; Philadelphia and Coney Island have no times); Tri-Rail shuttle note for FLL; Rio emergency numbers 190/192/193 only; photos `cancunHotelZone`, `cancunTulumBeach` loosely matched.

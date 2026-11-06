@@ -46,4 +46,14 @@ export const americasPhotos = {
   nycTripConey: photo("photo-1623766647719-9972b994e598", "The boardwalk at Coney Island with people walking", "#0c8cd9", "michal dziekonski", "poloska25"),
   nycTripPhiladelphia: photo("photo-1614946403309-cc9d1f9b6164", "Independence Hall in Philadelphia", "#8ca6d9", "Dan Mall", "danmall"),
   nycTripHudson: photo("photo-1642716559031-902161279f40", "Mist rising over the Hudson River valley", "#26260c", "Gerald Berliner", "geraberl"),
+
+  // Miami
+  miami: photo("photo-1549881464-3798dcecbe36", "A traffic light and palm tree on Ocean Drive in South Beach under bright sun", "#c0c0c0", "Franck CHARLES", "franckcharles_"),
+  miamiSouthBeach: photo("photo-1589066724013-06f34f2cc17c", "Ocean Drive in South Beach lit up at night", "#0c2626", "Andre Tan", "andredantan19"),
+  miamiWynwood: photo("photo-1590157867535-b8435e08a93f", "A colourful mural in the Wynwood arts district", "#262626", "Juan Carlos Trujillo", "jctrujillo"),
+  miamiLittleHavana: photo("photo-1574167630074-8221b69f8b98", "A pink building on a street in Little Havana", "#c0d9d9", "Kian Lem", "kianlem"),
+  miamiVizcaya: photo("photo-1719297203659-b5378112f2da", "The fountain and driveway of Vizcaya Museum and Gardens in Coconut Grove", "#c0c0c0", "Zoshua Colah", "zoshuacolah"),
+  miamiTripEverglades: photo("photo-1679092620695-45cac316d657", "An alligator swimming in the water in the Florida Everglades", "#8ca6c0", "Nellie Adamyan", "nellie_adamyan"),
+  miamiTripKeyWest: photo("photo-1722480176525-1cefada5037e", "The Southernmost Point buoy in Key West", "#8cc0f3", "Zoshua Colah", "zoshuacolah"),
+  miamiTripFortLauderdale: photo("photo-1691423332423-f2132628ff72", "Fort Lauderdale beach and coastline from the air", "#738c8c", "By Carl", "bycarl17"),
 } satisfies Record<string, Photo>;
