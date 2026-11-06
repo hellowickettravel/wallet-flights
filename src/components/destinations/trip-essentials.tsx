@@ -119,15 +119,13 @@ export function TripEssentials({ city, timeZone, essentials, copy }: { city: str
       </div>
       <dl className="divide-y divide-line bg-white px-6 md:px-7">
         {rows.map(({ icon: RowIcon, label, value, extra }) => (
-          <div key={label} className="flex gap-4 py-4">
-            <RowIcon className="mt-0.5 size-6 shrink-0 text-action" weight="duotone" aria-hidden />
-            <div className="min-w-0">
-              <dt className="text-[0.8125rem] text-ink-soft">{label}</dt>
-              <dd className="mt-0.5 leading-snug text-ink">
-                {value}
-                {extra}
-              </dd>
-            </div>
+          <div key={label} className="relative min-w-0 py-4 pl-10">
+            <RowIcon className="absolute left-0 top-4 mt-0.5 size-6 shrink-0 text-action" weight="duotone" aria-hidden />
+            <dt className="text-[0.8125rem] text-ink-soft">{label}</dt>
+            <dd className="mt-0.5 leading-snug text-ink">
+              {value}
+              {extra}
+            </dd>
           </div>
         ))}
       </dl>

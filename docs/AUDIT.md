@@ -1096,3 +1096,70 @@ FAQPage matches); **3 photo "where to stay" tiles** in the "More in Europe" styl
 strip with one line. Six Unsplash photos added (credited on /photo-credits). Height 5,716 px desktop
 (1.32× the approved 4,333) and 10,247 px phone; no overflow, no page errors, axe clean. The other 19
 cities keep the approved layout until London is signed off.
+
+## Batch 22 — Destination pages v2, four new destinations, 20 new guides (6 Nov 2026)
+
+**Brief:** `docs/BATCH-22-BRIEF.md`; progress log and sources to re-check: `docs/BATCH-22-PROGRESS.md`.
+
+**Built:** every destination page uses one photo-led v2 layout: Trip essentials (live local time, time
+difference from London and New York, currency with the site's rate, plugs, emergency, tipping, tap water),
+a flight-times board from the 8 departure cities, airport tabs, 3 photo day cards, 3 photo stay tiles,
+When to go, a Know-before-you-go icon grid, What to eat, 3 day-trip tiles and a question accordion matching
+the FAQPage markup. New destinations: Amsterdam, Marrakech, Abu Dhabi, Miami (six per region). 20 new
+guides registered in `guides/index.ts`. Route pairs 156 → 188; wave 2 is 111 pairs, still staged.
+
+**Checks (6 Nov 2026):** lint and typecheck clean; `next build` passes; e2e 412 passed. Six currency tests
+fail in the cloud sandbox only: it blocks the exchange-rate hosts, so they ran against a stand-in rates
+file that was reverted before committing; re-run them where the network is open. An axe failure in the
+Trip essentials definition list was fixed. No horizontal scroll at 390 px and 1440 px.
+
+**Not done / needs the owner:** many journey times, emergency numbers and rules came from search results,
+not the official pages (blocked here). The "Facts to spot-check" and per-region notes in
+`docs/BATCH-22-PROGRESS.md` list each one. The owner said "6 new pages"; four were built to reach six per
+region. Climate tables and costs are still not added (sources blocked).
+
+**Links to request indexing (Search Console):**
+- https://walletflights.com/destinations/london
+- https://walletflights.com/destinations/paris
+- https://walletflights.com/destinations/rome
+- https://walletflights.com/destinations/barcelona
+- https://walletflights.com/destinations/lisbon
+- https://walletflights.com/destinations/amsterdam
+- https://walletflights.com/destinations/tokyo
+- https://walletflights.com/destinations/bali
+- https://walletflights.com/destinations/singapore
+- https://walletflights.com/destinations/bangkok
+- https://walletflights.com/destinations/sydney
+- https://walletflights.com/destinations/delhi
+- https://walletflights.com/destinations/dubai
+- https://walletflights.com/destinations/istanbul
+- https://walletflights.com/destinations/cairo
+- https://walletflights.com/destinations/cape-town
+- https://walletflights.com/destinations/marrakech
+- https://walletflights.com/destinations/abu-dhabi
+- https://walletflights.com/destinations/cancun
+- https://walletflights.com/destinations/rio-de-janeiro
+- https://walletflights.com/destinations/mexico-city
+- https://walletflights.com/destinations/cusco
+- https://walletflights.com/destinations/new-york
+- https://walletflights.com/destinations/miami
+- https://walletflights.com/travel-guides/are-last-minute-flights-cheaper
+- https://walletflights.com/travel-guides/cheapest-day-to-fly
+- https://walletflights.com/travel-guides/direct-vs-connecting-flights
+- https://walletflights.com/travel-guides/basic-economy-explained
+- https://walletflights.com/travel-guides/flight-price-alerts
+- https://walletflights.com/travel-guides/first-long-haul-flight-tips
+- https://walletflights.com/travel-guides/jet-lag-tips
+- https://walletflights.com/travel-guides/best-seat-on-a-plane
+- https://walletflights.com/travel-guides/flying-with-children
+- https://walletflights.com/travel-guides/airport-lounge-access
+- https://walletflights.com/travel-guides/new-york-airports-guide
+- https://walletflights.com/travel-guides/checked-baggage-allowances
+- https://walletflights.com/travel-guides/lost-or-delayed-luggage
+- https://walletflights.com/travel-guides/denied-boarding-overbooked-flights
+- https://walletflights.com/travel-guides/passport-validity-rules
+- https://walletflights.com/travel-guides/cheapest-time-to-fly-to-europe
+- https://walletflights.com/travel-guides/winter-sun-destinations
+- https://walletflights.com/travel-guides/best-time-to-visit-southeast-asia
+- https://walletflights.com/travel-guides/stopover-vs-layover
+- https://walletflights.com/travel-guides/dubai-travel-rules

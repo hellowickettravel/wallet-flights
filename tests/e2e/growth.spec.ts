@@ -25,14 +25,14 @@ const visible = (html: string) =>
 
 test.describe("route matrix", () => {
   test("covers every pair once, in the planned waves", () => {
-    expect(allRoutePairs).toHaveLength(156); // 8 × 20, less the two home cities and Manchester and Birmingham to London
-    expect(new Set(allRoutePairs.map((r) => r.slug)).size).toBe(156);
+    expect(allRoutePairs).toHaveLength(188); // 8 × 24, less the two home cities and Manchester and Birmingham to London
+    expect(new Set(allRoutePairs.map((r) => r.slug)).size).toBe(188);
     expect(allRoutePairs.length - routes.length).toBeGreaterThanOrEqual(100); // the proposal's "100+ new route pages"
     // Featured routes keep their slugs and are all in the matrix.
     for (const r of routes) expect(routeWave(r.slug), r.slug).toBe(0);
     expect(allRoutePairs.filter((r) => routeWave(r.slug) === 1)).toHaveLength(40);
-    expect(allRoutePairs.filter((r) => routeWave(r.slug) === 2)).toHaveLength(79);
-    const live = 37 + (liveRouteWaves.includes(1) ? 40 : 0) + (liveRouteWaves.includes(2) ? 79 : 0);
+    expect(allRoutePairs.filter((r) => routeWave(r.slug) === 2)).toHaveLength(111);
+    const live = 37 + (liveRouteWaves.includes(1) ? 40 : 0) + (liveRouteWaves.includes(2) ? 111 : 0);
     expect(routePages).toHaveLength(live);
   });
 
@@ -115,18 +115,17 @@ test.describe("photo-led destination layout (Batch 7, London first)", () => {
     await expect(q).toHaveAttribute("aria-expanded", "false");
     await q.click();
     await expect(q).toHaveAttribute("aria-expanded", "true");
-    await expect(page.getByRole("region", { name: "3 days in London" }).locator("ol > li")).toHaveCount(3);
-    await expect(page.getByRole("region", { name: "Where to stay" }).locator("ul > li")).toHaveCount(3);
+    await expect(page.getByRole("region", { name: "A 3-day plan for London" }).locator("ol > li")).toHaveCount(3);
+    await expect(page.getByRole("region", { name: "Where to stay in London" }).locator("ul > li")).toHaveCount(3);
   });
 
-  test("London's FAQPage markup matches the questions on the page; other cities keep the approved layout", async ({ request }) => {
+  test("London's FAQPage markup matches the questions on the page; every city has the same layout", async ({ request }) => {
     const london = await (await request.get("/destinations/london")).text();
     const faq = jsonLd(london).find((d) => d["@type"] === "FAQPage");
-    expect(faq.mainEntity).toHaveLength(6);
+    expect(faq.mainEntity).toHaveLength(11); // the 6 built answers + London's 5 own
     for (const x of faq.mainEntity) expect(visible(london), x.name).toContain(x.acceptedAnswer.text.slice(0, 40));
     const paris = await (await request.get("/destinations/paris")).text();
-    expect(visible(paris)).toContain("Things to do in Paris");
-    expect(visible(paris)).not.toContain("3 days in Paris");
+    expect(visible(paris)).toContain("A 3-day plan for Paris");
   });
 });
 
