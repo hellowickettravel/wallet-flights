@@ -61,3 +61,6 @@ from here. The full brief and rules: `docs/BATCH-22-BRIEF.md`.
 ## UI agent done (6 Nov)
 v2 page + widgets written (`page.tsx`, `src/components/destinations/*`, `depthCopy` keys). Not yet built or seen rendering.
 Tests to update at step 5: `growth.spec.ts` photo-led layout (FAQ count 11 for London, region names "A 3-day plan for London", "Where to stay in London", Paris check), `trust.spec.ts` and Lisbon check in `site.spec.ts` (h3 questions, "Visiting Lisbon").
+
+## Guides B done (6 Nov)
+5 guides written. Spot-check: jet-lag and DVT claims rest on search summaries (cdc.gov and fitfortravel.nhs.uk blocked in sandbox); Priority Pass / Gatwick lounge prices are dated "as of 5 Nov 2026" and sources disagree on Clubrooms (£42 vs £44).

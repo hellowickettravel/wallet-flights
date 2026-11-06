@@ -50,4 +50,14 @@ export const europePhotos = {
   lisbonTripSintra: photo("photo-1565865735988-fd5752a02846", "The grey and yellow Pena Palace on a hilltop in Sintra", "#c0c0d9", "Katia De Juan", "katiadejuan"),
   lisbonTripCascais: photo("photo-1587973878097-ef3aabd5eeaa", "Boats off the waterfront and beach at Cascais", "#265973", "Calin Stan", "calinstan"),
   lisbonTripEvora: photo("photo-1693750034188-0ce3b87b17fb", "The columns of the Roman Temple of Évora", "#a6a6a6", "Filipe Nobre", "filipenobre"),
+
+  // Amsterdam (Europe content agent)
+  amsterdam: photo("photo-1584003564911-a7a321c84e1c", "Bicycles parked on a bridge over a canal in Amsterdam", "#73c0f3", "Gaurav Jain", "gj098"),
+  amsterdamPalace: photo("photo-1612098606612-e9b63793ca22", "The Royal Palace on Dam Square in Amsterdam, with its dome and statues", "#a6c0d9", "Marcos Pena Jr", "marcospenajr"),
+  amsterdamRijksmuseum: photo("photo-1589825743636-cd96373c3319", "A fountain in the park with the Rijksmuseum in the background", "#a6c0c0", "Frans Ruiter", "frns"),
+  amsterdamCanals: photo("photo-1534351590666-13e3e96b5017", "Boats moored along a tree-lined canal with historic houses in Amsterdam", "#d9d9f3", "Adrien Olichon", "adrienolichon"),
+  amsterdamVondelpark: photo("photo-1690201030167-891e88caee09", "A fountain in a pond in Vondelpark, Amsterdam", "#264026", "Martti Salmi", "marttisalmi"),
+  amsterdamTripZaanseSchans: photo("photo-1566450653303-2614cbb292ea", "Green wooden houses beside the water at Zaanse Schans", "#595959", "Aswathy N", "abnair"),
+  amsterdamTripKeukenhof: photo("photo-1564085027783-a233e0a38b5f", "Orange and pink tulips at Keukenhof", "#a6c0d9", "Jonne Mäkikyrö", "jonnemakikyro"),
+  amsterdamTripHaarlem: photo("photo-1604611266776-49dcc7a2b5e4", "Autumn along the water in Haarlem", "#a6d9f3", "Dee.", "marealacris"),
 } satisfies Record<string, Photo>;
