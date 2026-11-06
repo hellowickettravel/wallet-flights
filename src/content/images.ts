@@ -4,6 +4,15 @@
 // the photo loads, or if it fails, so a slot never renders empty.
 // `by` / `user` feed the photo credits page, as Unsplash's API guidelines ask.
 
+import { europePhotos } from "./photos/europe";
+import { asiaPacificPhotos } from "./photos/asia-pacific";
+import { middleEastAfricaPhotos } from "./photos/middle-east-africa";
+import { americasPhotos } from "./photos/americas";
+import { guidesAPhotos } from "./photos/guides-a";
+import { guidesBPhotos } from "./photos/guides-b";
+import { guidesCPhotos } from "./photos/guides-c";
+import { guidesDPhotos } from "./photos/guides-d";
+
 export type Photo = { id: string; alt: string; tone: string; by: string; user: string };
 
 const p = (id: string, alt: string, tone: string, by: string, user: string): Photo => ({ id, alt, tone, by, user });
@@ -65,6 +74,15 @@ export const photos = {
   guideCheckIn: p("photo-1730288278805-42d46b17438d", "Travellers queueing at airport check-in counters", "#a6a6a6", "Edwin Petrus", "ep_petrus"),
   guideCheapFlights: p("photo-1508745453110-c69ab4be30cb", "A traveller using a laptop on a train", "#f3f3f3", "KOBU Agency", "kobuagency"),
   guideLondonAirports: p("photo-1705662143994-1f237b825e88", "The entrance to Heathrow Terminal 2", "#737373", "CabService London", "taxiservicelondon"),
+  // Batch 22 (5 Nov 2026): destination pages v2, new destinations and 20 new guides.
+  ...europePhotos,
+  ...asiaPacificPhotos,
+  ...middleEastAfricaPhotos,
+  ...americasPhotos,
+  ...guidesAPhotos,
+  ...guidesBPhotos,
+  ...guidesCPhotos,
+  ...guidesDPhotos,
 } satisfies Record<string, Photo>;
 
 export function unsplashUrl(id: string, width: number, quality = 72) {

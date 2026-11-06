@@ -1,3 +1,4 @@
+import { photos } from "../images";
 import type { DestinationDepth } from "./types";
 
 // Fares and journey times checked 3 Nov 2026 on the pages linked beside them.
@@ -11,7 +12,43 @@ const dmkBus = { label: "Don Mueang Airport: BMTA buses", url: "https://donmuean
 
 export const asiaPacificDepth: Record<string, DestinationDepth> = {
   tokyo: {
-    checked: "2026-11-03",
+    // Batch 22 fields checked 6 Nov 2026: Japan Tourism Agency/JNTO visitor sheet
+    // (110 and 119), GOV.UK entry requirements, Odakyu (Romancecar about 80
+    // minutes), Tobu (about 2 hours to Nikko).
+    checked: "2026-11-06",
+    timeZone: "Asia/Tokyo",
+    localTips: [
+      { icon: "money", title: "Carry some cash", text: "Hotels, chains and stations take cards, but small restaurants, shrines and market stalls may be cash only. ATMs at 7-Eleven and post offices usually accept foreign cards." },
+      { icon: "transport", title: "Get a Suica or Pasmo", text: "One IC card, or the version on your phone, pays for trains, the metro, buses and many shops. Top it up at any station machine." },
+      { icon: "etiquette", title: "Keep quiet on trains", text: "Phone calls on trains are frowned on, so set your phone to silent. Queue in the marked lines on the platform." },
+      { icon: "money", title: "Don’t leave a tip", text: "Tipping isn’t part of the culture, and staff may chase you to hand back money left on the table." },
+      { icon: "phone", title: "Sort data before you land", text: "An eSIM bought before you fly is simplest. Airports also sell data SIMs and rent pocket Wi-Fi routers." },
+      { icon: "weather", title: "Plan round the summer heat", text: "July and August are hot and humid, and typhoons can disrupt travel in late summer and early autumn. Start sightseeing early." },
+    ],
+    foods: [
+      { name: "Sushi", text: "Raw fish on vinegared rice, from conveyor-belt chains to counters around the Tsukiji Outer Market." },
+      { name: "Ramen", text: "Noodles in a rich broth, sold all over the city, with a row of well-known shops on Ramen Street inside Tokyo Station." },
+      { name: "Tempura", text: "Seafood and vegetables fried in a light batter, a classic in the old restaurants of Asakusa and Ginza." },
+      { name: "Yakitori", text: "Grilled chicken skewers, best in the tiny bars of Omoide Yokocho in Shinjuku or under the tracks at Yurakucho." },
+      { name: "Monjayaki", text: "A runny savoury pancake you cook on a hotplate at the table, the speciality of Monja Street in Tsukishima." },
+    ],
+    dayTrips: [
+      { name: "Kamakura", time: "About 1 hour by JR train from Tokyo Station", text: "The bronze Great Buddha, Hase-dera temple and Tsurugaoka Hachimangu shrine, with a beach close to the station.", photo: photos.tokyoTripKamakura },
+      { name: "Hakone", time: "About 80 minutes by Odakyu Romancecar from Shinjuku", text: "Hot springs, boats on Lake Ashi and a ropeway over the volcanic valley of Owakudani, with Mount Fuji in view on clear days.", photo: photos.tokyoTripHakone },
+      { name: "Nikko", time: "About 2 hours by Tobu limited express from Asakusa", text: "The ornate Toshogu shrine and the red Shinkyo bridge, a World Heritage Site in forested mountains.", photo: photos.tokyoTripNikko },
+    ],
+    visual: {
+      days: [
+        { photo: photos.tokyoSensoji, stops: ["Senso-ji", "Ueno Park", "Ameyoko", "Tokyo Skytree"] },
+        { photo: photos.tokyoShibuya, stops: ["Meiji Jingu", "Harajuku", "Shibuya Crossing", "Omoide Yokocho"] },
+        { photo: photos.tokyoMarket, stops: ["Tsukiji Outer Market", "Ginza", "Hama-rikyu Gardens", "Odaiba"] },
+      ],
+      stay: [
+        { name: "Shinjuku", bestFor: "First visits and nightlife", photo: photos.tokyoShinjuku },
+        { name: "Shibuya", bestFor: "Shopping and youth culture", photo: photos.tokyoShibuya },
+        { name: "Asakusa", bestFor: "Old Tokyo and value", photo: photos.tokyoSensoji },
+      ],
+    },
     airports: [
       {
         code: "HND",
@@ -51,7 +88,14 @@ export const asiaPacificDepth: Record<string, DestinationDepth> = {
     ],
     daysNeeded: "Four to five days for Tokyo itself. Add more for Kyoto, a Shinkansen ride away, or for Hakone and Nikko.",
     gettingAround: "Trains and the metro. A rechargeable IC card such as Suica or Pasmo works on almost every train, metro and bus, and in many shops, so you rarely need tickets; you can also add one to your phone. The JR Yamanote line loops round the main districts.",
-    essentials: { currency: "Japanese yen (JPY)", plugs: "Types A and B, 100V", language: "Japanese" },
+    essentials: {
+      currency: "Japanese yen (JPY)",
+      plugs: "Types A and B, 100V",
+      language: "Japanese",
+      emergency: "110 for police, 119 for ambulance and fire",
+      tipping: "Not expected, and money left behind is often returned",
+      water: "Tap water is safe to drink",
+    },
     faqs: [
       {
         q: "Narita or Haneda: which is closer to Shinjuku and Shibuya?",
@@ -61,11 +105,59 @@ export const asiaPacificDepth: Record<string, DestinationDepth> = {
         q: "When is cherry blossom season in Tokyo?",
         a: "Usually from late March to early April, though the dates move each year with the weather. Flights and hotels fill early, so book well ahead if you want to see it.",
       },
+      {
+        q: "Do I need cash in Tokyo?",
+        a: "Some. Cards and phone payments work in hotels, chains, stations and most shops, but small restaurants, shrines and market stalls may take cash only. ATMs at 7-Eleven and post offices usually accept foreign cards.",
+      },
+      {
+        q: "Do UK citizens need a visa for Japan?",
+        a: "Not for a short holiday. UK passport holders get permission to stay for tourism for up to 90 days on arrival, with no application beforehand, according to GOV.UK’s Japan entry requirements. Check the page before you travel, as rules can change.",
+      },
+      {
+        q: "Is Tokyo safe for tourists?",
+        a: "Yes, it’s one of the safer big cities to visit, including at night. Take normal care in nightlife districts, and read the earthquake guidance in your hotel room when you arrive.",
+      },
     ],
     guides: ["when-to-book-international-flights", "self-transfer-separate-tickets", "power-bank-rules-on-planes"],
   },
   bali: {
-    checked: "2026-11-03",
+    // Batch 22 fields checked 6 Nov 2026: GOV.UK Indonesia entry requirements
+    // (visa on arrival), Love Bali (tourist levy). Emergency numbers are
+    // Indonesia's national ones.
+    checked: "2026-11-06",
+    timeZone: "Asia/Makassar",
+    localTips: [
+      { icon: "money", title: "Keep small notes", text: "Cards work in hotels and most restaurants, but warungs, markets and temple donations need cash. Use ATMs inside banks or shops." },
+      { icon: "transport", title: "Book a driver for days out", text: "There’s almost no public transport for visitors. Ride-hailing apps cover the south and Ubud; hire a driver for longer trips." },
+      { icon: "dress", title: "Cover up at temples", text: "Wear a sarong and sash to enter temples; most lend or rent one at the gate. Shoulders should be covered." },
+      { icon: "safety", title: "Mind the monkeys", text: "Monkeys at Uluwatu and in Ubud snatch sunglasses, phones and food. Keep bags closed and loose items out of reach." },
+      { icon: "water", title: "Don’t drink the tap water", text: "Drink bottled or filtered water, and many hotels and cafés offer refills. Watch for ice in very basic places." },
+      { icon: "etiquette", title: "Step round offerings", text: "Small palm-leaf offerings (canang sari) are placed on pavements and doorsteps each day. Try not to tread on them." },
+    ],
+    foods: [
+      { name: "Babi guling", text: "Spit-roast suckling pig with spiced stuffing and rice, served at lunchtime in specialist warungs, many of them around Ubud." },
+      { name: "Nasi campur", text: "Rice with small portions of meat, vegetables, egg and sambal, the everyday lunch at warungs across the island." },
+      { name: "Sate lilit", text: "Minced fish or meat mixed with coconut and spices, wrapped round lemongrass sticks and grilled, found at warungs and night markets." },
+      { name: "Bebek betutu", text: "Duck rubbed with spice paste and slow-cooked in banana leaves, a Balinese ceremonial dish now served in Ubud restaurants." },
+      { name: "Nasi goreng", text: "Fried rice with sweet soy, shallots and a fried egg on top, sold everywhere from street carts to beach cafés." },
+    ],
+    dayTrips: [
+      { name: "Nusa Penida", time: "About 45 minutes by fast boat from Sanur", text: "Clifftop views over Kelingking Beach, snorkelling with manta rays and rough island roads, best with a booked driver.", photo: photos.baliTripNusaPenida },
+      { name: "Mount Batur", time: "About 1 hour by car from Ubud, with a pre-dawn start", text: "A guided sunrise hike up an active volcano, with views over Lake Batur and hot springs below.", photo: photos.baliTripBatur },
+      { name: "Bedugul and Ulun Danu Beratan", time: "About 1 hour 30 minutes by car from Ubud", text: "The lakeside water temple in the cool highlands, often paired with the botanic garden and nearby waterfalls.", photo: photos.bali },
+    ],
+    visual: {
+      days: [
+        { photo: photos.baliMonkeyForest, stops: ["Campuhan Ridge", "Sacred Monkey Forest", "Ubud Palace", "Ubud market"] },
+        { photo: photos.baliTegallalang, stops: ["Tegallalang", "Tirta Empul", "Ubud rice fields"] },
+        { photo: photos.baliUluwatu, stops: ["Seminyak beach", "Padang Padang", "Uluwatu Temple", "Kecak dance"] },
+      ],
+      stay: [
+        { name: "Seminyak", bestFor: "Restaurants and beach clubs", photo: photos.baliBeachClub },
+        { name: "Ubud", bestFor: "Culture and rice terraces", photo: photos.baliTegallalang },
+        { name: "Uluwatu", bestFor: "Cliffs and sunsets", photo: photos.baliUluwatu },
+      ],
+    },
     airports: [
       {
         code: "DPS",
@@ -93,7 +185,14 @@ export const asiaPacificDepth: Record<string, DestinationDepth> = {
     ],
     daysNeeded: "A week lets you split your time between Ubud and the coast. With four or five days, pick one base.",
     gettingAround: "By car with a driver, or with ride-hailing apps, as there is almost no public transport for visitors. Many people hire a driver for the day for longer trips. Scooters are common, but only ride one if you hold the right licence and your insurance covers it.",
-    essentials: { currency: "Indonesian rupiah (IDR)", plugs: "Types C and F, 230V", language: "Indonesian and Balinese" },
+    essentials: {
+      currency: "Indonesian rupiah (IDR)",
+      plugs: "Types C and F, 230V",
+      language: "Indonesian and Balinese",
+      emergency: "112, or 110 for police and 118 or 119 for an ambulance",
+      tipping: "Not expected; many restaurants add a service charge, and rounding up is appreciated",
+      water: "Don’t drink tap water; use bottled or filtered water",
+    },
     faqs: [
       {
         q: "What is Bali’s airport called?",
@@ -103,11 +202,58 @@ export const asiaPacificDepth: Record<string, DestinationDepth> = {
         q: "Is there a tourist levy in Bali?",
         a: "Yes. Foreign visitors pay a tourist levy, which you can pay online through Bali’s official Love Bali system before you travel or on arrival. Check the current amount there before you go.",
       },
+      {
+        q: "Do I need a visa for Bali?",
+        a: "Yes. UK visitors need a visa for Indonesia, and a 30-day visa on arrival is available, which you can also apply for online before you fly. Check GOV.UK’s Indonesia entry requirements for the current rules.",
+      },
+      {
+        q: "Can you drink the tap water in Bali?",
+        a: "No. Drink bottled or filtered water; many hotels, cafés and refill stations offer it. Use it for brushing your teeth too if your stomach is sensitive.",
+      },
+      {
+        q: "Is it better to stay in Ubud or Seminyak?",
+        a: "Split your stay if you can. Ubud suits temples, rice terraces and culture; Seminyak suits beaches, restaurants and sunsets. With only a few days, pick the one that matches your trip, as the drive between them can be slow.",
+      },
     ],
     guides: ["when-to-book-international-flights", "carry-on-only-checklist", "self-transfer-separate-tickets"],
   },
   singapore: {
-    checked: "2026-11-03",
+    // Batch 22 fields checked 6 Nov 2026: SPF and SCDF (999 and 995), PUB (tap
+    // water), NParks (Pulau Ubin bumboats), ferry timetables (Bintan).
+    checked: "2026-11-06",
+    timeZone: "Asia/Singapore",
+    localTips: [
+      { icon: "transport", title: "Tap your bank card", text: "Contactless bank cards and phones work on the MRT and buses, so there’s no need to buy a travel card. Use the same card each time." },
+      { icon: "etiquette", title: "No eating on the MRT", text: "Eating and drinking are banned on trains and in stations, and fines apply. Durians aren’t allowed on board either." },
+      { icon: "safety", title: "Fines are enforced", text: "Littering, jaywalking and smoking outside marked areas can all bring fines. Selling or importing chewing gum is banned." },
+      { icon: "money", title: "Service charge is built in", text: "Most restaurants add a 10% service charge plus GST, shown on the bill. Hawker centres have neither." },
+      { icon: "weather", title: "Expect daily showers", text: "It’s hot and humid all year, with short, heavy downpours. Carry an umbrella and use the covered walkways." },
+      { icon: "food", title: "Use the tissue packet rule", text: "At hawker centres, a packet of tissues on a seat means it’s taken. Order, then find a table." },
+    ],
+    foods: [
+      { name: "Hainanese chicken rice", text: "Poached chicken on rice cooked in chicken stock, with chilli and ginger sauce, at almost every hawker centre." },
+      { name: "Chilli crab", text: "Crab in a sweet, spicy tomato and egg sauce, eaten with fried buns at seafood restaurants on the East Coast and by the river." },
+      { name: "Laksa", text: "Rice noodles in a spicy coconut curry broth with prawns and fishcake, best known from the Katong area." },
+      { name: "Char kway teow", text: "Flat rice noodles stir-fried with egg, prawns and Chinese sausage in dark soy, a hawker-centre staple." },
+      { name: "Kaya toast", text: "Toast spread with coconut jam and butter, with soft-boiled eggs and kopi, the traditional breakfast at coffee shops." },
+    ],
+    dayTrips: [
+      { name: "Pulau Ubin", time: "About 10 to 15 minutes by bumboat from Changi Point", text: "A rural island of village houses, quarry lakes and the Chek Jawa wetlands, best explored by hired bicycle.", photo: photos.singaporeTripUbin },
+      { name: "Bintan", time: "About 1 hour by ferry from Tanah Merah", text: "An Indonesian island of beach resorts, mangrove boat trips and the dunes beside a blue lake. Take your passport.", photo: photos.singaporeTripBintan },
+      { name: "Johor Bahru", time: "A short bus or train ride from Woodlands, plus border checks", text: "Malaysia’s southern city, with markets, temples and lower prices just across the Causeway. Take your passport and avoid rush hour.", photo: photos.singaporeTripJohor },
+    ],
+    visual: {
+      days: [
+        { photo: photos.singaporeMarinaBay, stops: ["Merlion", "Helix Bridge", "Gardens by the Bay", "Supertree light show"] },
+        { photo: photos.singaporeChinatown, stops: ["Buddha Tooth Relic Temple", "Sultan Mosque", "Haji Lane", "Little India"] },
+        { photo: photos.singaporeBotanic, stops: ["Singapore Botanic Gardens", "Orchard Road", "Sentosa"] },
+      ],
+      stay: [
+        { name: "Marina Bay", bestFor: "The skyline", photo: photos.singaporeMarinaBay },
+        { name: "Chinatown", bestFor: "Food and value", photo: photos.singaporeChinatown },
+        { name: "Sentosa", bestFor: "Families and resorts", photo: photos.singaporeSentosa },
+      ],
+    },
     airports: [
       {
         code: "SIN",
@@ -135,7 +281,14 @@ export const asiaPacificDepth: Record<string, DestinationDepth> = {
     ],
     daysNeeded: "Three to four days. Singapore also works well as a stopover of one or two nights on the way to Australia or Asia.",
     gettingAround: "The MRT and buses reach almost everywhere, and you can tap a contactless bank card or phone to pay. Taxis and ride-hailing are easy to find, and many sights are linked by covered walkways out of the sun and rain.",
-    essentials: { currency: "Singapore dollar (SGD)", plugs: "Type G, 230V", language: "English, Mandarin, Malay and Tamil" },
+    essentials: {
+      currency: "Singapore dollar (SGD)",
+      plugs: "Type G, 230V",
+      language: "English, Mandarin, Malay and Tamil",
+      emergency: "999 for police, 995 for ambulance and fire",
+      tipping: "Not expected; restaurants usually add a 10% service charge",
+      water: "Tap water is safe to drink",
+    },
     faqs: [
       {
         q: "Is Singapore a good stopover?",
@@ -145,11 +298,59 @@ export const asiaPacificDepth: Record<string, DestinationDepth> = {
         q: "What is the best way to get around Singapore?",
         a: "The MRT and buses reach almost everywhere and accept contactless bank cards. Taxis and ride-hailing are easy to find too.",
       },
+      {
+        q: "Is chewing gum illegal in Singapore?",
+        a: "Selling and importing it is banned, apart from some medical gum, so you won’t find it in shops. Leave it at home to be safe, and never drop gum in the street.",
+      },
+      {
+        q: "Can you drink the tap water in Singapore?",
+        a: "Yes. Tap water from the national water agency, PUB, is safe to drink straight from the tap, so carry a refillable bottle.",
+      },
+      {
+        q: "Is Singapore expensive?",
+        a: "Hotels and alcohol are, but eating out needn’t be. Hawker centres serve full meals for much less than restaurants, and the MRT is good value for getting around.",
+      },
     ],
     guides: ["self-transfer-separate-tickets", "power-bank-rules-on-planes", "when-to-book-international-flights"],
   },
   bangkok: {
-    checked: "2026-11-03",
+    // Batch 22 fields checked 6 Nov 2026: thailand.go.th (191, 1669, Tourist
+    // Police 1155), Royal Thai Embassy notice (30-day visa exemption from
+    // 15 Sept 2026, Digital Arrival Card), Thai Railways (Kanchanaburi line).
+    checked: "2026-11-06",
+    timeZone: "Asia/Bangkok",
+    localTips: [
+      { icon: "dress", title: "Dress for the temples", text: "Cover shoulders and knees for the Grand Palace, Wat Pho and Wat Arun. Carry a light scarf or trousers in your bag." },
+      { icon: "safety", title: "Ignore ‘it’s closed today’", text: "A friendly stranger saying the palace is shut, then offering a tuk-tuk tour, is a well-known scam. Check opening times yourself." },
+      { icon: "transport", title: "Insist on the meter", text: "Ask taxis to use the meter, or book through a ride-hailing app. Agree tuk-tuk fares before you get in." },
+      { icon: "etiquette", title: "Respect the monarchy", text: "Criticising the royal family is a serious crime. Stand when the royal anthem plays before cinema films." },
+      { icon: "water", title: "Drink bottled water", text: "Don’t drink tap water. Ice in restaurants and cafés is usually made from purified water." },
+      { icon: "weather", title: "Expect afternoon storms", text: "From around May to October, heavy showers often arrive in the afternoon. Plan temples for the morning." },
+    ],
+    foods: [
+      { name: "Pad thai", text: "Stir-fried rice noodles with egg, tofu or prawns, peanuts and lime, cooked to order at street stalls across the city." },
+      { name: "Tom yum goong", text: "Hot and sour prawn soup with lemongrass, galangal and lime leaf, served in restaurants and riverside canteens." },
+      { name: "Som tam", text: "Pounded green papaya salad with chilli, lime and fish sauce, from Isan food stalls, often eaten with sticky rice and grilled chicken." },
+      { name: "Khao man gai", text: "Poached chicken on rice cooked in chicken fat, with a ginger and soybean sauce, a cheap lunch at street stalls." },
+      { name: "Mango sticky rice", text: "Sweet coconut sticky rice with ripe mango, best in the mango season from around March to May." },
+    ],
+    dayTrips: [
+      { name: "Ayutthaya", time: "About 1 to 2 hours by train or road", text: "Temple ruins and giant Buddhas of the old Siamese capital, a UNESCO World Heritage Site best seen by bicycle or tuk-tuk.", photo: photos.bangkokTripAyutthaya },
+      { name: "Damnoen Saduak", time: "About 1 hour 30 minutes to 2 hours by road", text: "Boat vendors selling fruit and noodles on narrow canals. Go early, before the tour coaches arrive.", photo: photos.bangkokTripFloatingMarket },
+      { name: "Kanchanaburi", time: "About 2 to 3 hours by train from Thonburi", text: "The Bridge on the River Kwai and the war cemeteries and museums of the Death Railway, with Erawan’s waterfalls further out.", photo: photos.bangkokTripKanchanaburi },
+    ],
+    visual: {
+      days: [
+        { photo: photos.bangkokGrandPalace, stops: ["Grand Palace", "Wat Pho", "Wat Arun", "Yaowarat Road"] },
+        { photo: photos.bangkokSkytrain, stops: ["Chatuchak market", "Jim Thompson House", "Siam malls", "A rooftop bar"] },
+        { photo: photos.bangkokRiver, stops: ["Thonburi canals", "Lumphini Park", "Wat Pho massage school"] },
+      ],
+      stay: [
+        { name: "Rattanakosin (Old Town)", bestFor: "Temples", photo: photos.bangkokGrandPalace },
+        { name: "Riverside", bestFor: "Hotels with a view", photo: photos.bangkokRiver },
+        { name: "Sukhumvit", bestFor: "Nightlife and malls", photo: photos.bangkokSkytrain },
+      ],
+    },
     airports: [
       {
         code: "BKK",
@@ -187,7 +388,14 @@ export const asiaPacificDepth: Record<string, DestinationDepth> = {
     ],
     daysNeeded: "Three to four days. Bangkok is also a common starting point for trips to the islands or the north.",
     gettingAround: "The BTS Skytrain and MRT underground are the fastest way round central Bangkok, and river boats run along the Chao Phraya to the old town. Taxis should use the meter, and ride-hailing apps are widely used. Traffic can be very slow at rush hour.",
-    essentials: { currency: "Thai baht (THB)", plugs: "Types A, B, C and O, 220V", language: "Thai" },
+    essentials: {
+      currency: "Thai baht (THB)",
+      plugs: "Types A, B, C and O, 220V",
+      language: "Thai",
+      emergency: "191 for police, 1669 for ambulance, 1155 for the Tourist Police",
+      tipping: "Not expected; round up or leave small change, and check for a service charge",
+      water: "Don’t drink tap water; use bottled water",
+    },
     faqs: [
       {
         q: "Which Bangkok airport do budget airlines use?",
@@ -197,11 +405,59 @@ export const asiaPacificDepth: Record<string, DestinationDepth> = {
         q: "What should I wear to the Grand Palace?",
         a: "Cover your shoulders and knees. The Grand Palace and the main temples have a dress code, and visitors in shorts or sleeveless tops can be turned away.",
       },
+      {
+        q: "Do I need a visa for Thailand?",
+        a: "Not for a short holiday. From 15 September 2026, UK passport holders can stay up to 30 days without a visa, and every visitor must fill in the free Thailand Digital Arrival Card online before arriving. Check GOV.UK’s Thailand entry requirements before you go.",
+      },
+      {
+        q: "Is Bangkok safe for tourists?",
+        a: "Generally, yes. The main risks are scams, such as the ‘palace is closed’ tuk-tuk trick and unmetered taxis, plus bag snatching in busy areas. Call the Tourist Police on 1155 for help in English.",
+      },
+      {
+        q: "How do I get from Bangkok to Ayutthaya?",
+        a: "By train, minibus or taxi; the trip takes about one to two hours. Trains are the cheapest option, and many visitors hire a bicycle or tuk-tuk at Ayutthaya to get between the ruins.",
+      },
     ],
     guides: ["self-transfer-separate-tickets", "when-to-book-international-flights", "carry-on-only-checklist"],
   },
   sydney: {
-    checked: "2026-11-03",
+    // Batch 22 fields checked 6 Nov 2026: Australian Government (000 and 112),
+    // Home Affairs (eVisitor for UK citizens, ETA for US), Transport for NSW
+    // (Opal, Blue Mountains Line).
+    checked: "2026-11-06",
+    timeZone: "Australia/Sydney",
+    localTips: [
+      { icon: "transport", title: "Tap on, tap off", text: "Use the same contactless card or phone on trains, buses, ferries and light rail, tapping on and off. Daily and weekly caps keep costs down." },
+      { icon: "safety", title: "Swim between the flags", text: "Beaches can have strong rip currents. Only swim between the red and yellow flags, where lifeguards are watching." },
+      { icon: "health", title: "Take the sun seriously", text: "UV levels are high even on cloudy days. Wear sunscreen, a hat and sunglasses, and avoid the midday sun." },
+      { icon: "money", title: "Tipping is optional", text: "Wages include service, so tipping isn’t expected. Rounding up or about 10% for good restaurant service is appreciated." },
+      { icon: "clock", title: "Book the big tickets", text: "Opera House tours, BridgeClimb and popular restaurants book up in summer and school holidays. Reserve ahead." },
+    ],
+    foods: [
+      { name: "Fish and chips by the water", text: "Battered or grilled fish with chips, best eaten on the sand at Manly, Bondi or Watsons Bay." },
+      { name: "Sydney rock oysters", text: "Small, creamy native oysters from New South Wales estuaries, served at the Sydney Fish Market and harbourside restaurants." },
+      { name: "Meat pie", text: "A hand-held pie of minced beef and gravy, often with tomato sauce, from bakeries and late-night pie carts." },
+      { name: "Flat white", text: "Espresso with steamed milk and a thin layer of foam, the standard order in Sydney’s cafés, especially in Surry Hills." },
+      { name: "Barramundi", text: "A mild white fish native to northern Australia, grilled or pan-fried on menus across the city." },
+      { name: "Pavlova", text: "A meringue dessert with cream and fresh fruit, crisp outside and soft inside, served in cafés and at Christmas." },
+    ],
+    dayTrips: [
+      { name: "Blue Mountains", time: "About 2 hours by train from Central to Katoomba", text: "Clifftop lookouts over the Three Sisters, bushwalks through eucalyptus forest and the rides at Scenic World.", photo: photos.sydneyTripBlueMountains },
+      { name: "Royal National Park", time: "About 1 hour by train from Central", text: "Australia’s oldest national park, with coastal walks, sea cliffs and beaches on Sydney’s southern edge.", photo: photos.sydneyTripRoyalNationalPark },
+      { name: "Hunter Valley", time: "About 2 hours by car", text: "Australia’s oldest wine region, known for semillon and shiraz, with cellar-door tastings best done on a tour.", photo: photos.sydneyTripHunterValley },
+    ],
+    visual: {
+      days: [
+        { photo: photos.sydneyHarbour, stops: ["Sydney Opera House", "Royal Botanic Garden", "The Rocks", "Harbour Bridge"] },
+        { photo: photos.sydneyBondi, stops: ["Bondi Beach", "Bondi to Coogee walk", "Bronte", "Surry Hills"] },
+        { photo: photos.sydneyFerry, stops: ["Manly ferry", "Shelly Beach", "Taronga Zoo"] },
+      ],
+      stay: [
+        { name: "The Rocks and Circular Quay", bestFor: "First visits", photo: photos.sydneyHarbour },
+        { name: "Bondi", bestFor: "The beach", photo: photos.sydneyBondi },
+        { name: "Manly", bestFor: "A relaxed base", photo: photos.sydneyFerry },
+      ],
+    },
     airports: [
       {
         code: "SYD",
@@ -229,7 +485,14 @@ export const asiaPacificDepth: Record<string, DestinationDepth> = {
     ],
     daysNeeded: "Four to five days, plus a day for the Blue Mountains.",
     gettingAround: "Trains, buses, ferries and light rail all take Opal or a contactless bank card or phone, with daily and weekly fare caps. Ferries are the most scenic way to cross the harbour. Ride-hailing and taxis are easy to find.",
-    essentials: { currency: "Australian dollar (AUD)", plugs: "Type I, 230V", language: "English" },
+    essentials: {
+      currency: "Australian dollar (AUD)",
+      plugs: "Type I, 230V",
+      language: "English",
+      emergency: "000, or 112 from a mobile",
+      tipping: "Not expected; about 10% for good restaurant service is appreciated",
+      water: "Tap water is safe to drink",
+    },
     faqs: [
       {
         q: "When can you see whales in Sydney?",
@@ -239,11 +502,59 @@ export const asiaPacificDepth: Record<string, DestinationDepth> = {
         q: "Can I use contactless on Sydney’s trains and ferries?",
         a: "Yes. Opal readers on trains, buses, ferries and light rail accept contactless bank cards and phones, so you don’t need to buy an Opal card.",
       },
+      {
+        q: "Do I need a visa to visit Sydney?",
+        a: "Yes, everyone except New Zealanders needs a visa or travel authority for Australia. British citizens can apply online for a free eVisitor visa, and US citizens for an Electronic Travel Authority (ETA), through the Department of Home Affairs before travelling.",
+      },
+      {
+        q: "Is the Bondi to Coogee walk hard?",
+        a: "No. It’s a paved coastal path of about 6 km with some steps and hills, so most people walk it in two to three hours with stops. Go early in summer to avoid the heat.",
+      },
+      {
+        q: "How do I get to the Blue Mountains from Sydney?",
+        a: "Take the Blue Mountains Line train from Central to Katoomba, about two hours, and pay with a contactless card. From Katoomba, walk or take a hop-on bus to Echo Point and Scenic World.",
+      },
     ],
     guides: ["self-transfer-separate-tickets", "power-bank-rules-on-planes", "when-to-book-international-flights"],
   },
   delhi: {
-    checked: "2026-11-03",
+    // Batch 22 fields checked 6 Nov 2026: Incredible India (112, 1363 helpline),
+    // Delhi Airport metro page already cited, Gatimaan Express press coverage
+    // (about 100 minutes), Delhi to Jaipur rail times (about 4 hours).
+    checked: "2026-11-06",
+    timeZone: "Asia/Kolkata",
+    localTips: [
+      { icon: "water", title: "Stick to bottled water", text: "Don’t drink tap water, and avoid ice and raw salads from stalls. Choose busy places with hot, freshly cooked food." },
+      { icon: "transport", title: "Use the metro", text: "The Delhi Metro is quick, air-conditioned and avoids the traffic. Carriages for women are marked and worth using if you’re travelling alone." },
+      { icon: "safety", title: "Agree prices first", text: "Agree auto-rickshaw fares before getting in, or use a ride-hailing app. Be wary of anyone who says a place is closed and offers a different route." },
+      { icon: "dress", title: "Dress modestly", text: "Cover shoulders and knees at mosques, gurudwaras and temples. You’ll remove your shoes and cover your head at gurudwaras." },
+      { icon: "phone", title: "Get a local SIM or eSIM", text: "Set up an eSIM before you fly, or buy a SIM with ID at the airport. Maps and ride-hailing apps are essential here." },
+      { icon: "weather", title: "Mind the heat and smog", text: "Summers are very hot, and winter air quality can be poor. October to March is the more comfortable season to visit." },
+    ],
+    foods: [
+      { name: "Butter chicken", text: "Chicken in a creamy tomato sauce, said to have been created in Delhi, served at restaurants from Old Delhi to Connaught Place." },
+      { name: "Chaat", text: "Crisp, tangy street snacks of fried dough, yoghurt, chutneys and spices, best from the busy stalls of Chandni Chowk." },
+      { name: "Paratha", text: "Stuffed fried flatbread eaten with pickles and curd, famously sold in the Paranthe Wali Gali lane in Old Delhi." },
+      { name: "Kebabs", text: "Spiced grilled meat, soft and smoky, from the old-style kebab shops around Jama Masjid." },
+      { name: "Chole bhature", text: "Spiced chickpeas with puffed fried bread, a hearty breakfast or lunch across the city." },
+    ],
+    dayTrips: [
+      { name: "Agra and the Taj Mahal", time: "About 2 to 4 hours each way by train or road", text: "The Taj Mahal and Agra Fort. The fastest trains take about 100 minutes, and the Taj is closed on Fridays.", photo: photos.delhiTripAgra },
+      { name: "Jaipur", time: "About 4 hours each way by train", text: "The Pink City, with the Hawa Mahal, City Palace and Amber Fort, usually done as an overnight stay.", photo: photos.delhiTripJaipur },
+      { name: "Fatehpur Sikri", time: "A short drive west of Agra, often combined with the Taj", text: "A World Heritage Site of red sandstone palaces and the Buland Darwaza gate, built as an imperial capital in the 16th century.", photo: photos.delhiTripFatehpurSikri },
+    ],
+    visual: {
+      days: [
+        { photo: photos.delhiRedFort, stops: ["Red Fort", "Jama Masjid", "Chandni Chowk", "Gurudwara Bangla Sahib"] },
+        { photo: photos.delhiQutub, stops: ["Humayun’s Tomb", "Lodhi Garden", "India Gate", "Qutub Minar"] },
+        { photo: photos.delhiTripAgra, stops: ["Taj Mahal", "Agra Fort"] },
+      ],
+      stay: [
+        { name: "Connaught Place", bestFor: "First visits", photo: photos.delhiConnaught },
+        { name: "Old Delhi", bestFor: "Heritage and food", photo: photos.delhiChandniChowk },
+        { name: "Hauz Khas", bestFor: "Cafés and nightlife", photo: photos.delhiHauzKhas },
+      ],
+    },
     airports: [
       {
         code: "DEL",
@@ -271,7 +582,14 @@ export const asiaPacificDepth: Record<string, DestinationDepth> = {
     ],
     daysNeeded: "Two to three days for Delhi. Most visitors add Agra and Jaipur for the Golden Triangle, about a week in all.",
     gettingAround: "The Delhi Metro is clean, cheap and covers most of the city, including the airport; use a token or a travel card. For other journeys, use ride-hailing apps or prepaid taxis, and agree the fare first for auto-rickshaws.",
-    essentials: { currency: "Indian rupee (INR)", plugs: "Types C, D and M, 230V", language: "Hindi and English" },
+    essentials: {
+      currency: "Indian rupee (INR)",
+      plugs: "Types C, D and M, 230V",
+      language: "Hindi and English",
+      emergency: "112, or the 24-hour tourist helpline on 1363",
+      tipping: "Not required, but about 10% in restaurants without a service charge is welcome",
+      water: "Don’t drink tap water; use bottled or filtered water",
+    },
     faqs: [
       {
         q: "Is the Taj Mahal open every day?",
@@ -280,6 +598,18 @@ export const asiaPacificDepth: Record<string, DestinationDepth> = {
       {
         q: "How do I get from Delhi to Agra?",
         a: "By train or by road. Fast trains link Delhi with Agra, and the Yamuna Expressway makes the drive straightforward; many visitors book a day tour that includes both.",
+      },
+      {
+        q: "Do I need a visa for India?",
+        a: "Yes. Most visitors, including British and US citizens, apply for an e-visa online through India’s official visa portal before travelling. Fees and stay lengths change, so check GOV.UK’s India entry requirements and avoid agents that add extra charges.",
+      },
+      {
+        q: "Is Delhi safe for tourists?",
+        a: "Most visits pass without trouble, but take care. Watch for scams and overcharging, keep valuables out of sight, and use licensed taxis or apps at night. Dial 112 in an emergency or 1363 for the tourist helpline.",
+      },
+      {
+        q: "Can you drink the tap water in Delhi?",
+        a: "No. Drink bottled or filtered water, and avoid ice unless you know it’s made from purified water.",
       },
     ],
     guides: ["self-transfer-separate-tickets", "when-to-book-international-flights", "power-bank-rules-on-planes"],

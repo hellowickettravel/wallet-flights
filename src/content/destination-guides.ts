@@ -1,3 +1,7 @@
+import { europeNewGuides } from "./new-destinations/europe";
+import { middleEastAfricaNewGuides } from "./new-destinations/middle-east-africa";
+import { americasNewGuides } from "./new-destinations/americas";
+
 // Travel notes for each destination page. General, well-established facts
 // only (seasons, landmarks, which airports serve a city); no prices,
 // schedules or journey times. Plan item 4.5 (16 Oct 2026) added `whenToGo`,
@@ -243,6 +247,9 @@ export const destinationGuides: Record<string, DestinationGuide> = {
       "New York has three main airports. JFK and Newark, in New Jersey, handle most international flights, with nonstop routes from London and several other UK airports. LaGuardia mainly serves flights within the US and to Canada. Compare all three, and add the cost of getting into Manhattan from each.",
     entry: { label: "U.S. Customs and Border Protection: ESTA for Visa Waiver Program travellers", url: "https://www.cbp.gov/travel/international-visitors/esta" },
   },
+  ...europeNewGuides,
+  ...middleEastAfricaNewGuides,
+  ...americasNewGuides,
 };
 
 /** Shown under each destination's entry link. */

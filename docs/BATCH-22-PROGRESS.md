@@ -1,0 +1,82 @@
+# Batch 22: progress notes (read this first to continue)
+
+Live log for the destination v2 / new destinations / 20 guides project. Updated after every step and
+pushed to branch `claude/destinations-v2-blog-batch`, so any new Claude session (or account) can pick up
+from here. The full brief and rules: `docs/BATCH-22-BRIEF.md`.
+
+## The owner's request (5 Nov 2026, in their words, summarised)
+
+- Client has paid to **extend the 20 destination pages**: SEO-optimised, keyword-researched content,
+  **double the visible value**, not paragraphs. Add relevant widgets/sections/sidebars/banners per city
+  (2–4+ widgets), UI must look perfect on mobile and desktop (client judges UI, not tech).
+- **Add new destination pages** so each region has 6: Europe +1, Middle East & Africa +2, Americas +1
+  (Asia & Pacific already has 6). Chosen: Amsterdam, Marrakech, Abu Dhabi, Miami (keyword research in
+  `docs/SEO-KEYWORD-RESEARCH.md` lists Amsterdam and Miami among top "how long is the flight from London
+  to…" completions; Marrakech and Abu Dhabi are top UK winter-sun/leisure routes). The owner said "6 new
+  pages"; their region counts add up to 4, so 4 were built — confirm with the owner if they want 2 more.
+- **20 new SEO blog posts** (travel guides), researched, published.
+- Work as admin: plan → assign specialist agents → verify → publish. At the end give the owner a **list
+  of links** for Search Console "Request indexing".
+- Owner (5 Nov): keep these memory notes after every step, pushed, so work can continue from another account.
+
+## Decisions taken
+
+| Decision | Why |
+|---|---|
+| One v2 template for every city (`src/app/destinations/[slug]/page.tsx`), data in `src/content/destination-depth/*` | Batch 20/21 history: depth must sit in a photo-led, organised layout, not stacked text |
+| New widgets: Trip essentials (live local time, time difference, currency via site rates, plugs, emergency, tipping, water), Flight-times board from 8 cities, Know-before-you-go icon grid, What to eat cards, Day-trip photo tiles, 3-day photo plan, Where to stay tiles, FAQ accordion, Before-you-go guide cards | "Widgets relevant to the location/trip", visible value |
+| No climate numbers / daily cost figures | en.wikipedia.org and numbeo.com are blocked in this sandbox (even via WebFetch); house rule: no invented figures. Climate shows automatically if a sourced `climate` is added later |
+| New route pairs for the 4 new cities go into staged wave 2 | Keeps live route count and indexing plan unchanged (`docs/HANDOFF.md`) |
+| Photos: Unsplash via MCP, one file per agent in `src/content/photos/` | Avoids parallel edit conflicts; all merged into `photos` in `src/content/images.ts` |
+
+## Steps
+
+| # | Step | State |
+|---|---|---|
+| 1 | Read site, docs, history; plan; brief (`docs/BATCH-22-BRIEF.md`) | Done |
+| 2 | Schema: `DestinationDepth` gains `visual` (required), `timeZone`, `localTips`, `foods`, `dayTrips`, essentials `emergency/tipping/water` (`types.ts`) | Done |
+| 3 | Scaffolding: `src/content/photos/*.ts`, `src/content/new-destinations/*.ts` wired into destinations + destination-guides; RAK/AUH airports + coordinates; /destinations grid fixed for 6 per region | Done |
+| 3b | Branch pushed; draft PR https://github.com/hellowickettravel/wallet-flights/pull/9 | Done |
+| 4 | Agents launched (5 Nov): UI (template + widgets + London), Content ×4 (Europe+Amsterdam, Asia-Pacific, ME&A+Marrakech+Abu Dhabi, Americas+Miami), Guides A–D (5 each, slugs in the brief). All 9 stopped at the account's 5-hour usage limit after research, before writing (only a few photos saved). Resumed after the reset with "save after each city/guide". If they stop again, check the files: each city/guide on disk is done; redo only what's missing | Running (resumed) |
+| 4b | 6 Nov: new session (another account) resumed on branch `claude/beautiful-goodall-u4jvf3` (based on `claude/destinations-v2-blog-batch`; this session may only push there). State found: schema + scaffolding, London Batch 22 fields, 1 guide (`are-last-minute-flights-cheaper`), photos for guides A–C and Dubai/Abu Dhabi. Not started: UI template/widgets, every other city, Amsterdam/Marrakech/Abu Dhabi/Miami entries, 19 guides. Agents relaunched with the same brief | Running |
+| 5 | Admin merge: register 20 guides in `src/content/guides/index.ts`, update `deals.ts` comment, tests (`growth.spec.ts` counts: pairs 156 → 188, wave 2 79 → 111; `content.spec.ts` destinations 20 → 24; paris "Things to do" check), llms | Done 6 Nov |
+| 6 | Build, lint, typecheck, e2e (`PW_CHROMIUM_PATH=/opt/pw-browsers/chromium`), screenshots 1440 + phone, fix | Done 6 Nov (412 pass; currency tests need open network) |
+| 7 | `docs/AUDIT.md` Batch 22 + `docs/HANDOFF.md`, commit, push, PR, merge to main (Vercel deploys) | Done; PR open |
+| 8 | Give owner the link list for indexing | To do |
+
+## If you are a new session picking this up
+
+1. `git fetch origin claude/beautiful-goodall-u4jvf3 && git checkout claude/beautiful-goodall-u4jvf3` (latest; older work on `claude/destinations-v2-blog-batch`)
+2. Read this file, then `docs/BATCH-22-BRIEF.md`.
+3. Check which agent outputs exist: `git status`, `ls src/content/guides`, and the content files for
+   empty `localTips`/`dayTrips`. Re-run only the missing parts, following the brief.
+4. Continue from the first step not marked Done.
+
+## Facts to spot-check before publishing (agents could not open these pages)
+
+- `cheapest-day-to-fly`: Google travel posts (blog.google blocked); the 2026 figures are less certain.
+- `new-york-airports-guide`: AirTrain JFK fare ($8.75) and "Q70 every 10 minutes by day" come from search snippets, not full pages.
+- `lost-or-delayed-luggage`: 1,519 SDR and $4,700 figures corroborated by search results, pages not fetched.
+
+## UI agent done (6 Nov)
+v2 page + widgets written (`page.tsx`, `src/components/destinations/*`, `depthCopy` keys). Not yet built or seen rendering.
+Tests to update at step 5: `growth.spec.ts` photo-led layout (FAQ count 11 for London, region names "A 3-day plan for London", "Where to stay in London", Paris check), `trust.spec.ts` and Lisbon check in `site.spec.ts` (h3 questions, "Visiting Lisbon").
+
+## Guides B done (6 Nov)
+5 guides written. Spot-check: jet-lag and DVT claims rest on search summaries (cdc.gov and fitfortravel.nhs.uk blocked in sandbox); Priority Pass / Gatwick lounge prices are dated "as of 5 Nov 2026" and sources disagree on Clubrooms (£42 vs £44).
+
+## Asia & Pacific done (6 Nov)
+6 cities complete. Weakly sourced lines to verify or soften before publishing (brief: no invented facts):
+- Sydney day-trip times (Blue Mountains ~2h, Royal National Park ~1h, Hunter Valley ~2h by car) came from general knowledge, not a source.
+- Bali emergency numbers; Bangkok 30-day exemption from 15 Sep 2026 (embassy and press disagree); Singapore Bintan ferry time and 10% service charge; Delhi Agra/Jaipur times.
+- Tips/FAQs from general knowledge: Singapore gum/MRT rules, Thai lèse-majesté and "palace closed" scam, India dress codes, Taj closed Fridays.
+- Photo subjects least certain: Delhi Connaught Place tile, Tokyo market tile.
+
+## Europe done (6 Nov)
+Paris, Rome, Barcelona, Lisbon and Amsterdam complete. Weak photo matches to swap if wanted: `parisIsland`, `amsterdamTripHaarlem`, `amsterdamTripKeukenhof`. Barcelona Girona "about 40 minutes" is a rounding of Renfe's 38. No Amsterdam airport train fare (sources disagreed).
+
+## Americas done (6 Nov)
+Cancún, Rio, Mexico City, Cusco, New York, Miami complete. To verify: Miami tap-water line (no official page); Key West "about 160 miles by road"; New York day trips (Hudson Valley time weak; Philadelphia and Coney Island have no times); Tri-Rail shuttle note for FLL; Rio emergency numbers 190/192/193 only; photos `cancunHotelZone`, `cancunTulumBeach` loosely matched.
+
+## Middle East & Africa done (6 Nov) — all content agents finished; next is step 5 (admin merge) and step 6 (build/tests)
+To verify: Marrakech emergency numbers (19/177/15; some pages say 150); Abu Dhabi airport link `abudhabiairport.ae` is a guess, Sharjah/Liwa times unsourced (`TODO(confirm)`), A1/A2 airport bus from secondary sources; Dubai alcohol age left out. Photos matched by search only (`TODO(confirm)` in file): capeTownCityBowl/CampsBay/TripFranschhoek/TripHermanus, marrakechBahia/Rooftops/Riad/TripAtlas, abuDhabiLouvre/Corniche/QasrAlWatan/Yas. Four tiles share an image on one page.

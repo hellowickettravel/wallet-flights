@@ -66,8 +66,36 @@ export type DestinationVisual = {
   stay: { name: string; bestFor: string; photo: Photo }[];
 };
 
+/** Icons available for the "Know before you go" grid (Batch 22). */
+export type TipIcon = "money" | "transport" | "safety" | "etiquette" | "phone" | "food" | "water" | "weather" | "ticket" | "clock" | "dress" | "health";
+
+/** One practical tip for the "Know before you go" grid: a short title and one or two sentences. */
+export type LocalTip = { icon: TipIcon; title: string; text: string };
+
+/** A dish or drink worth trying, with one sentence on what it is and where to find it. */
+export type Food = { name: string; text: string };
+
+/** A day trip from the city: how long it takes, how to get there and why go. */
+export type DayTrip = {
+  name: string;
+  /** Travel time each way and the usual way to get there ("About 1 hour by train from Paddington"). */
+  time: string;
+  /** One or two sentences: what it is and why it's worth the day. */
+  text: string;
+  photo: Photo;
+};
+
 export type DestinationDepth = {
-  visual?: DestinationVisual;
+  /** Batch 22: every city has the photo-led layout. */
+  visual: DestinationVisual;
+  /** IANA time zone of the city, for the live local-time widget ("Europe/London"). */
+  timeZone: string;
+  /** 4 to 6 icon tips: money and tipping, transport ticket, safety, etiquette, SIM/eSIM, water. */
+  localTips: LocalTip[];
+  /** 4 to 6 local dishes or drinks. */
+  foods: Food[];
+  /** Exactly 3 day trips with a photo each. */
+  dayTrips: DayTrip[];
   /** ISO date this guide's facts were last checked. */
   checked: string;
   airports: AirportGuide[];
@@ -85,6 +113,12 @@ export type DestinationDepth = {
     /** Plug types and mains voltage. */
     plugs: string;
     language: string;
+    /** Emergency number(s) to dial ("999 or 112"). */
+    emergency: string;
+    /** One line on tipping ("10 to 12.5% in restaurants, often added to the bill"). */
+    tipping: string;
+    /** One line on tap water ("Safe to drink" / "Drink bottled or filtered water"). */
+    water: string;
   };
   /** City-specific questions people search for, with answers we can stand behind. */
   faqs: { q: string; a: string }[];

@@ -107,14 +107,15 @@ test("every guide is about 1,000+ words, lists official sources and shows the up
 
 test("destination pages have a trip-planning section with official entry requirements", async ({ page }) => {
   await page.goto("/destinations/lisbon");
-  await expect(page.getByRole("heading", { level: 2, name: "Visiting Lisbon" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 2, name: "Lisbon: questions travellers ask" })).toBeVisible();
   for (const h of ["When is the best time to visit Lisbon?", "Which airport do I fly into for Lisbon?", "How long is the flight to Lisbon from the UK and US?", "Do I need a visa to visit Portugal?"])
-    await expect(page.getByRole("heading", { level: 3, name: h })).toBeVisible();
+    await expect(page.getByRole("button", { name: h })).toBeVisible();
+  await page.getByRole("button", { name: "Do I need a visa to visit Portugal?" }).click();
   await expect(page.getByRole("link", { name: /GOV\.UK: Portugal entry requirements/ })).toHaveAttribute("href", "https://www.gov.uk/foreign-travel-advice/portugal/entry-requirements");
   await expect(page.locator("main")).toContainText("Travelling on a US passport?");
 
   await page.goto("/destinations/new-york");
-  await expect(page.getByRole("link", { name: /ESTA/ })).toHaveAttribute("href", "https://www.cbp.gov/travel/international-visitors/esta");
+  await expect(page.getByRole("link", { name: /ESTA/, includeHidden: false }).and(page.locator("a[target=_blank]"))).toHaveAttribute("href", "https://www.cbp.gov/travel/international-visitors/esta");
   await expect(page.locator("main")).not.toContainText("Travelling on a US passport?");
 });
 

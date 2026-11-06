@@ -13,6 +13,8 @@ pages live (wave 2 of 40 staged), `/routes` hub, four new guides, GA4 click-out 
 (critical security fixes). See `docs/PLAN.md` Batch 6, `docs/AUDIT.md` Batch 18 and
 `docs/REPORTING.md`.
 
+**Batch 22 (6 Nov 2026):** destination v2 on all 24 pages, four new destinations, 20 new guides, 188 route pairs (wave 2 = 111, staged). See `docs/AUDIT.md` and `docs/BATCH-22-PROGRESS.md` (facts to re-check).
+
 ### Phase 2: what's next
 0. **Batch 19 (3 Nov 2026, owner review):** destination layout and content rewritten, Birmingham and Boston
    added as route departure cities (156 pairs, 119 new). Next session, once en.wikipedia.org and

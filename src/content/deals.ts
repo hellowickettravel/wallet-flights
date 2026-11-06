@@ -90,7 +90,7 @@ const wave1 = [
 ];
 
 /**
- * Waves whose route pages are published. Wave 2 is every remaining pair (79);
+ * Waves whose route pages are published. Wave 2 is every remaining pair (111);
  * add 2 here once at least half of wave 1 shows "URL is on Google" in Search
  * Console (planned for early December 2026, see docs/HANDOFF.md).
  */
