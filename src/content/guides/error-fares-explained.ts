@@ -1,17 +1,18 @@
 import { guidesEPhotos } from "../photos/guides-e";
 import type { Guide } from "./types";
 
-// Batch E, guide 2. Primary keywords: "error fare" / "mistake fares". US rules
-// from US Department of Transportation pages (2015 mistaken-fare enforcement
-// policy statement, the "Buying a Ticket" consumer page, the 24-hour
-// reservation guidance), found with WebSearch on 6 Nov 2026; the pages
-// themselves could not be opened from the build sandbox, so only what the
-// search results quoted is used. UK: we found no CAA or GOV.UK page that sets
-// out a rule on honouring mistaken fares, so the guide says so and states no UK
-// rule; the CAA complaints route is cited. Airline examples are the wording of
-// easyJet holidays' booking conditions and British Airways' Conditions of Use.
-// Not verified, so left out: how long error fares last, how often airlines
-// honour them, EU rules. The booking advice is ours and labelled.
+// Batch E, guide 2. Primary keywords: "error fare" / "mistake fares". Airline
+// wording is from Delta's U.S. Contract of Carriage, Rule 16(B) "Erroneous
+// Fares", opened and read on 6 Nov 2026. The CAA leaflet "Your rights when
+// there is a problem with your flight" was opened for the complaints point.
+// US Department of Transportation points (2015 mistaken-fare enforcement
+// policy, "Buying a Ticket" page, 24-hour reservation guidance) come from
+// WebSearch results quoting those pages: transportation.gov returned 403 to
+// the build sandbox, so they are NOT verified by opening and need a re-check.
+// UK/EU: we found no CAA or GOV.UK page that sets out a rule on honouring
+// mistaken fares, so none is stated. Not verified, so left out: other
+// airlines' terms, how long error fares last, how often airlines honour them.
+// The booking advice is ours and labelled.
 export const errorFaresExplained: Guide = {
   slug: "error-fares-explained",
   title: "Error fares explained: are mistake fares honoured, and what to do",
@@ -24,7 +25,7 @@ export const errorFaresExplained: Guide = {
   summary: [
     "An error fare, or mistake fare, is a price an airline or seller published by mistake, far below what it meant to charge.",
     "There is no promise that it will be honoured. In the US, the Department of Transportation says an airline that shows a fare was a mistake can cancel it, but must refund the ticket and reimburse out-of-pocket costs.",
-    "Airline terms can let the seller cancel a booking made at an obvious pricing error. We found no UK regulator page that sets out a rule either way.",
+    "Airline terms can let the seller cancel: Delta’s contract lets it cancel an erroneous fare and refund, and reimburse out-of-pocket costs. We found no UK regulator page that sets out a rule either way.",
     "Our advice: don’t pay for non-refundable hotels, tours or other flights until the ticket is confirmed, and keep every confirmation.",
   ],
   sections: [
@@ -47,18 +48,17 @@ export const errorFaresExplained: Guide = {
     {
       heading: "What about the UK and Europe?",
       paragraphs: [
-        "We searched the UK Civil Aviation Authority’s and GOV.UK’s pages and did not find one that sets out a rule on whether an airline must honour a mistaken fare. We haven’t found an official EU page either. So we are not stating a rule for UK or EU bookings. What we can say is what the terms of two sellers we checked say.",
-        "easyJet holidays’ booking conditions say it may end a contract and refund payments if it confirmed a booking that contained an obvious error, such as a wrong price. British Airways’ Executive Club Conditions of Use say that for an obvious price error it will tell the customer promptly and, where possible, offer the choice of keeping the booking at the correct price within a set period, or cancelling for a refund. Both are examples from specific products, not a universal rule, so read the terms of the airline or agent you book with.",
-        "If you think a seller has treated you unfairly, the CAA’s advice is to complain to the airline first and, if that fails, refer the complaint to an alternative dispute resolution provider if the airline is a member of one, or otherwise to the CAA.",
+        "We looked for a rule in the UK Civil Aviation Authority’s and GOV.UK’s published material and did not find a page that sets out whether an airline must honour a mistaken fare. We haven’t found an official EU page either. So we are not stating a rule for UK or EU bookings: your seller’s terms and conditions are the place to look.",
+        "Airlines do write the situation into their terms. Delta’s U.S. Contract of Carriage, Rule 16(B), says Delta does not intend to file fares that are erroneous or reasonably apparent as erroneous. If one is inadvertently published and a ticket is issued before it has been corrected, Delta reserves the right to cancel the purchase and refund all amounts paid or, at the purchaser’s option, to reissue the ticket at the correct fare. It also says it will reimburse reasonable, actual, nonrefundable and verifiable out-of-pocket expenses incurred in reliance on the purchase, and that you must provide receipts. That is one airline’s contract, not a universal rule, so read the terms of the airline or agent you book with.",
+        "If you think a seller has treated you unfairly, the CAA’s leaflet on passenger rights says to pursue the issue with your airline first; if you can’t resolve it directly, the CAA’s website explains how to escalate.",
       ],
       table: {
         caption: "What we found on cancelling bookings made at a pricing error",
         head: ["Where", "What the source says", "Source"],
         rows: [
           ["United States", "Airline may cancel a mistaken fare if it proves the mistake; must refund the ticket and reimburse out-of-pocket costs", "US Department of Transportation"],
-          ["easyJet holidays (UK)", "May end the contract and refund payments if a confirmed booking contained an obvious error", "easyJet holidays booking conditions"],
-          ["British Airways Executive Club", "For an obvious price error, offers the correct price or a refund", "BA Conditions of Use"],
-          ["UK regulator", "No rule found on honouring mistaken fares; complaints go to the airline, then an ADR provider or the CAA", "UK Civil Aviation Authority"],
+          ["Delta (contract)", "May cancel an erroneous fare and refund, or reissue at the correct fare; reimburses verifiable out-of-pocket costs", "Delta Contract of Carriage, Rule 16(B)"],
+          ["UK regulator", "No rule found on honouring mistaken fares; complaints go to the airline first", "UK Civil Aviation Authority"],
         ],
       },
     },
@@ -78,7 +78,7 @@ export const errorFaresExplained: Guide = {
       heading: "After you book: why to wait before paying for anything else",
       paragraphs: [
         "The most important rule is the one that costs nothing to follow: don’t buy anything non-refundable until the airline has confirmed the ticket and you have a booking reference you can see on the airline’s own site. Hotels, tours, trains, visas and other flights are the usual losses.",
-        "In the US, DOT says the airline must reimburse reasonable out-of-pocket costs if it cancels a mistaken fare, and keeping receipts for anything you paid is sensible. Elsewhere, we found no equivalent official promise. The safest plan is to wait.",
+        "In the US, DOT says the airline must reimburse reasonable out-of-pocket costs if it cancels a mistaken fare, and Delta’s contract asks for receipts, so keep them. Elsewhere, we found no equivalent official promise. The safest plan is to wait.",
         "In the US, the DOT’s 24-hour rule may also help in the first day. For tickets bought at least seven days before departure, airlines must either hold the fare for 24 hours without payment or let you cancel for a full refund within 24 hours, and DOT’s guidance says this does not apply to tickets bought through travel agents. Our guide to the [24-hour flight cancellation rule](/travel-guides/24-hour-flight-cancellation-rule) explains how it works.",
       ],
       tip: "Our advice: after booking, screenshot the confirmation and the fare conditions, then wait until the airline shows the ticket as issued before booking hotels or other flights. Don’t contact the airline repeatedly to “check” the fare; if there’s a problem it will contact you.",
@@ -86,7 +86,7 @@ export const errorFaresExplained: Guide = {
     {
       heading: "If the airline cancels",
       paragraphs: [
-        "If a seller cancels an error fare, ask for the refund in writing and keep the correspondence. In the US, see DOT’s aviation consumer pages. In the UK, follow the CAA’s route above. If you booked through a travel agent or comparison site, start with them, because they hold your contract.",
+        "If a seller cancels an error fare, ask for the refund in writing and keep the correspondence. In the US, see DOT’s aviation consumer pages. In the UK, follow the CAA’s route above, starting with the airline. If you booked through a travel agent or comparison site, start with them, because they hold your contract.",
         "Cancellation of an error fare is different from a flight being cancelled or delayed after the ticket is issued. If the airline cancels a flight itself, different rules apply: see [your rights when a flight is delayed or cancelled](/travel-guides/flight-cancelled-or-delayed-rights).",
       ],
     },
@@ -108,7 +108,7 @@ export const errorFaresExplained: Guide = {
     },
     {
       q: "Can an airline cancel my ticket after I’ve been sent a confirmation?",
-      a: "Some terms allow it. easyJet holidays’ booking conditions say it may end a contract for an obvious error even after confirming, and British Airways’ Executive Club terms describe a keep-or-cancel option. Read the terms of your seller.",
+      a: "Some terms allow it. Delta’s contract says that if an erroneous fare is inadvertently published and a ticket is issued before it is corrected, Delta may cancel the purchase and refund all amounts paid. Read the terms of your seller.",
     },
     {
       q: "Should I book a hotel straight after buying an error fare?",
@@ -116,16 +116,15 @@ export const errorFaresExplained: Guide = {
     },
     {
       q: "Where do I complain if an error fare is cancelled?",
-      a: "Start with the airline or the agent you booked with. In the UK, the CAA says to complain to the airline first, then to an alternative dispute resolution provider if the airline is a member of one, or otherwise to the CAA. In the US, see DOT’s aviation consumer pages.",
+      a: "Start with the airline or the agent you booked with. In the UK, the CAA says to pursue the issue with the airline first and explains on its website how to escalate if that fails. In the US, see DOT’s aviation consumer pages.",
     },
   ],
   sources: [
+    { label: "Delta: Contract of Carriage, U.S. (Rule 16(B): Erroneous Fares)", url: "https://www.delta.com/us/en/legal/contract-of-carriage-dgr" },
+    { label: "UK Civil Aviation Authority: Your rights when there is a problem with your flight", url: "https://www.caa.co.uk/publication/download/15085" },
     { label: "US Department of Transportation: Mistaken fare policy statement (8 May 2015)", url: "https://www.transportation.gov/sites/dot.gov/files/docs/Mistaken_Fare_Policy_Statement_05082015_0.pdf" },
     { label: "US Department of Transportation: Buying a ticket", url: "https://www.transportation.gov/individuals/aviation-consumer-protection/buying-ticket" },
     { label: "US Department of Transportation: Guidance on the 24-hour reservation requirement", url: "https://www.transportation.gov/airconsumer/notice-24hour-reservation" },
-    { label: "easyJet holidays: Booking conditions", url: "https://www.easyjet.com/en/holidays/info/booking-conditions" },
-    { label: "British Airways: Executive Club Conditions of Use", url: "https://www.britishairways.com/content/the-british-airways-club/about-the-club/conditions-of-use" },
-    { label: "UK Civil Aviation Authority: What to do if your airline won’t help", url: "https://www.caa.co.uk/publication/download/15085" },
   ],
   keywords: ["error fare", "mistake fares", "mistaken fare", "are error fares honoured", "airline pricing error cancel booking", "error fare what to do", "mistake fare rights"],
 };

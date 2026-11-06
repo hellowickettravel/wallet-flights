@@ -2,27 +2,26 @@ import { guidesEPhotos } from "../photos/guides-e";
 import type { Guide } from "./types";
 
 // Batch E, guide 3. Primary keyword: "red eye flights". Health points come only
-// from the NHS jet lag and healthy-flight pages and the CDC Yellow Book jet lag
-// page, found with WebSearch on 6 Nov 2026 (the pages themselves could not be
-// opened from the build sandbox, so only wording the search results quoted is
-// used). Our route pages show approximate flight time and time difference but
-// not schedules, so the guide names no overnight departure times and says which
-// route types to check. The comparison table, arrival-time points and
-// route suggestions are our own advice and are labelled. Not verified, so left
-// out: any figure on how well people sleep on planes, and any airline's
-// overnight schedule.
+// from the NHS "Jet lag" page, opened and read on 6 Nov 2026. CDC's Yellow Book
+// page returned 403 to the build sandbox, so no CDC claim is used. Our route
+// pages show approximate flight time and time difference but not schedules, so
+// the guide names no overnight departure times and says which route types to
+// check. The comparison table, arrival-time points and route suggestions are
+// our own advice and are labelled. Not verified, so left out: any figure on
+// how well people sleep on planes, any airline's overnight schedule, naps
+// guidance, sleeping-tablet risks beyond what the NHS says.
 export const redEyeVsDaytimeFlights: Guide = {
   slug: "red-eye-vs-daytime-flights",
   title: "Red-eye vs daytime flights: which is better, and how to cope",
   seoTitle: "Red-eye flights vs daytime flights: which is better?",
   excerpt:
-    "A red-eye flight leaves in the evening and lands in the morning. Pros and cons against a daytime flight, jet lag, and NHS and CDC sleep tips.",
+    "A red-eye flight leaves in the evening and lands in the morning. Pros and cons against a daytime flight, jet lag, and NHS sleep tips.",
   topic: "flying",
   published: "2026-11-06",
   photo: guidesEPhotos.guideRedEye,
   summary: [
     "A red-eye is an overnight flight that leaves in the evening or late at night and lands the next morning, so you use the night for travel.",
-    "The NHS advice is to try to sleep on the plane if it’s night at your destination, and to avoid caffeine and alcohol.",
+    "The NHS advice is to try to sleep on the plane if it’s night at your destination, and not to drink too much caffeine or alcohol.",
     "Whether a red-eye helps depends on the direction: our advice is to compare departure and arrival times, and the time difference, before you choose.",
     "A daytime flight keeps your sleep at normal hours but uses a whole day; a red-eye saves a day but can leave you tired on arrival.",
   ],
@@ -64,23 +63,23 @@ export const redEyeVsDaytimeFlights: Guide = {
     {
       heading: "Arrival time and jet lag",
       paragraphs: [
-        "Jet lag is your body clock being out of step with local time. The NHS says it can’t be prevented but its effects can be reduced, that symptoms include difficulty sleeping, tiredness and poor concentration, and that they usually improve within a few days. The CDC’s Yellow Book also lists daylight at your destination and short naps among the tools that help.",
-        "That matters for the red-eye choice. The NHS advice is to try to sleep on the plane if it’s night at your destination, and to move your sleep schedule to the new time zone as soon as you can. If your overnight flight arrives in the morning local time, you are being asked to stay awake through the day, and the CDC says short daytime naps of 20 to 30 minutes can help you stay alert, while longer ones may interfere with sleep that night.",
+        "The NHS describes jet lag as your normal sleep pattern being disturbed after a long flight. Its main symptoms include difficulty sleeping at bedtime and waking in the morning, tiredness and exhaustion, difficulty staying awake during the day, and concentration and memory problems. It usually improves within a few days as your body adjusts to the new time zone.",
+        "That matters for the red-eye choice. The NHS advice is to try to sleep on the plane if it’s night at your destination, and to move your sleep schedule to the new time zone as soon as you can. If your overnight flight arrives in the morning local time, you are being asked to stay awake through the day: the NHS advice after arriving is not to sleep during the day, only at night, and to go outside in the daytime because natural light helps your body clock adjust.",
         "For a deeper look at timing your body clock, read our [jet lag tips guide](/travel-guides/jet-lag-tips). If your trip is long, a [stopover](/travel-guides/stopover-vs-layover) can split the time change in two.",
       ],
-      tip: "Our advice: on a red-eye that lands in the morning, plan the first day. Book something outdoors and bright, set an alarm for bedtime and aim to get through to the local evening before you sleep.",
+      tip: "Our advice: on a red-eye that lands in the morning, plan the first day. Book something outdoors, in daylight, and aim to get through to the local evening before you sleep, as the NHS suggests.",
     },
     {
-      heading: "Sleep tips from the NHS and CDC",
+      heading: "Sleep tips from the NHS",
       paragraphs: [
-        "These come from the NHS and CDC pages we checked. They are general guidance, not medical advice for your circumstances.",
+        "These come from the NHS jet lag page. They are general guidance, not medical advice for your circumstances.",
       ],
       list: [
-        "Try to sleep if it’s night at your destination, and use eye masks and earplugs if they help you (NHS).",
-        "Avoid caffeine and alcohol, which can make jet lag worse (NHS); the CDC adds that both can cause dehydration.",
-        "Keep active: stretch and walk around the cabin from time to time (NHS).",
-        "The NHS says medicines aren’t usually needed for jet lag, and doesn’t recommend melatonin tablets on the NHS for it because there is not enough evidence they work. The CDC notes that taking sleeping tablets (hypnotics) during a flight could increase the risk of deep vein thrombosis because of the immobility. Speak to a pharmacist or doctor before taking anything.",
-        "After you land, get daylight at your destination, and keep daytime naps short (CDC).",
+        "Try to sleep if it’s night time at your destination, and use an eye mask and earplugs if they help you sleep.",
+        "Do not drink too much caffeine or alcohol: the NHS says they can make jet lag worse.",
+        "Drink plenty of water, and keep active by stretching and regularly walking around the cabin.",
+        "After you arrive, change your sleep schedule to the new time zone as quickly as possible, set an alarm to avoid oversleeping, go outside during the day and sleep only at night.",
+        "The NHS says medicines are not usually needed for jet lag. Sleeping tablets may help if you have problems sleeping, but they can be addictive and should only be used for a short time and if symptoms are severe. Melatonin tablets are not recommended on the NHS for jet lag because there is not enough evidence they work. Speak to a pharmacist or doctor before taking anything.",
       ],
     },
     {
@@ -102,7 +101,7 @@ export const redEyeVsDaytimeFlights: Guide = {
     },
     {
       q: "How can I sleep on a red-eye flight?",
-      a: "The NHS suggests eye masks and earplugs if they help, avoiding caffeine and alcohol, and staying active when you are awake. Ask a pharmacist or doctor before using any sleep aids; the CDC says taking sleeping tablets during a flight could raise the risk of deep vein thrombosis.",
+      a: "The NHS suggests an eye mask and earplugs if they help, not drinking too much caffeine or alcohol, and keeping active by stretching and walking around the cabin. Ask a pharmacist or doctor before using any sleep aids.",
     },
     {
       q: "Do red-eye flights save money?",
@@ -110,14 +109,11 @@ export const redEyeVsDaytimeFlights: Guide = {
     },
     {
       q: "Should I nap when I land after a red-eye?",
-      a: "The CDC says short daytime naps of 20 to 30 minutes can help you stay alert, while longer daytime naps may interfere with sleep at night.",
+      a: "The NHS advice after arriving is not to sleep during the day, only at night, and to go outside in daylight to help your body clock adjust. If you are very tired, ask a doctor or pharmacist what is right for you.",
     },
   ],
   sources: [
     { label: "NHS: Jet lag", url: "https://www.nhs.uk/conditions/jet-lag/" },
-    { label: "NHS: How can I have a healthy and comfortable flight?", url: "https://www.nhs.uk/common-health-questions/travel-health/how-can-i-have-a-healthy-and-comfortable-flight/" },
-    { label: "CDC Yellow Book: Jet lag disorder", url: "https://www.cdc.gov/yellow-book/hcp/travel-air-sea/jet-lag-disorder.html" },
-    { label: "NHS 111 Wales: Jet lag", url: "https://111.wales.nhs.uk/encyclopaedia/j/article/jetlag" },
   ],
   keywords: ["red eye flights", "red-eye flight", "red eye vs daytime flight", "overnight flights", "is a red eye flight worth it", "how to sleep on a red eye", "overnight flight jet lag"],
 };

@@ -2,16 +2,17 @@ import { guidesEPhotos } from "../photos/guides-e";
 import type { Guide } from "./types";
 
 // Batch E, guide 4. Primary keyword: "one way vs round trip flights". Entry
-// requirements come from the GOV.UK Dominican Republic entry requirements page,
-// the US State Department's Japan and Thailand pages and CBP's Carrier
-// Information Guide, found with WebSearch on 6 Nov 2026 (the pages themselves
-// could not be opened from the build sandbox, so only wording the search
-// results quoted is used). The search form's one-way, return and multi-city
-// options were checked in the site code. Whether two one-ways are cheaper is not
-// stated as a fact: the guide says to compare, as our how-to-find-cheap-flights
-// guide does. Not verified, so left out: any price comparison, any airline's
-// one-way pricing policy, UK or US entry rules on onward travel. Advice on when
-// to book each type is ours and labelled.
+// requirements come from GOV.UK foreign travel advice entry-requirements pages
+// for the Dominican Republic, Thailand, Indonesia and Mexico, and Heathrow's
+// connections page, all opened and read on 6 Nov 2026. The US State Department
+// and CBP pages could not be opened from the build sandbox (403 / blocked), so
+// the earlier Japan, Thailand-State-Department and CBP carrier-guide claims were
+// removed. The search form's one-way, return and multi-city options were
+// checked in the site code. Whether two one-ways are cheaper is not stated as a
+// fact: the guide says to compare, as our how-to-find-cheap-flights guide does.
+// Not verified, so left out: any price comparison, any airline's one-way
+// pricing policy, UK or US entry rules on onward travel, airline boarding
+// practice on onward tickets. Advice on when to book each type is ours.
 export const oneWayVsReturnFlights: Guide = {
   slug: "one-way-vs-return-flights",
   title: "One-way vs return flights: when each is the better booking",
@@ -25,7 +26,7 @@ export const oneWayVsReturnFlights: Guide = {
     "A return (round trip) is one booking with both flights; two one-way tickets are separate bookings, so a change to one doesn’t change the other.",
     "On some routes, two one-ways, even with different airlines, cost less than a return. Compare both, because it is not true on every route.",
     "Separate tickets are separate contracts: if one flight is late, the other airline isn’t obliged to rebook you.",
-    "Some countries may refuse entry, or an airline may refuse boarding, if you can’t show a return or onward ticket. Check the government page for your destination.",
+    "Some countries may refuse entry if you can’t show a return or onward ticket. Check the government page for your destination.",
   ],
   sections: [
     {
@@ -75,11 +76,11 @@ export const oneWayVsReturnFlights: Guide = {
     {
       heading: "Proof of onward travel: why a one-way can be refused",
       paragraphs: [
-        "The biggest practical difference is entry requirements. Some countries ask visitors to show they will leave, and airlines may check before they let you board. The details change by country and by passport, so check the official page for your destination.",
-        "For example, the UK government’s travel advice for the Dominican Republic warns that you may be refused entry without proof of onward or return travel. The US State Department’s pages say that visa-free visitors to Japan staying up to 90 days should have proof of a return or onward ticket, and that in Thailand immigration officials or airline staff may ask for your onward or return ticket and proof of funds. US Customs and Border Protection’s guide for carriers says the final decision to board a passenger lies with the carrier, which is why airlines check documents closely.",
-        "If you plan to buy only a one-way because your onward plans are open, check the entry page for your destination first, and ask your airline how it applies the rule. Our guides to [passport validity rules](/travel-guides/passport-validity-rules) and [EES and ETIAS for UK and US travellers](/travel-guides/ees-etias-uk-us-travellers) cover other documents to check.",
+        "The biggest practical difference is entry requirements. Some countries ask visitors to show they will leave. The details change by country and by passport, so check the official page for your destination.",
+        "For example, GOV.UK’s travel advice says that in the Dominican Republic you may be refused entry if you do not have proof of onward or return travel when you arrive. For Thailand, it says immigration officials may ask for evidence of onward travel, accommodation or sufficient funds, and that British nationals have been refused entry for failing to provide evidence of onward or return travel. For Mexico, it says that at border control you may need to show a return or onward ticket, and for Indonesia that a visa on arrival requires proof of your onward or return journey. These pages are written for British passport holders, and other nationalities should check their own government’s advice.",
+        "If you plan to buy only a one-way because your onward plans are open, check the entry page for your destination first, and ask your airline what it accepts. Our guides to [passport validity rules](/travel-guides/passport-validity-rules) and [EES and ETIAS for UK and US travellers](/travel-guides/ees-etias-uk-us-travellers) cover other documents to check.",
       ],
-      tip: "Our advice: look up your destination’s entry requirements on your own government’s travel advice page, such as GOV.UK’s foreign travel advice, before you buy a one-way ticket. If a page mentions onward travel, ask your airline what it accepts.",
+      tip: "Our advice: look up your destination’s entry requirements on your own government’s travel advice page, such as GOV.UK’s foreign travel advice, before you buy a one-way ticket. If a page mentions onward or return travel, ask your airline what it accepts.",
     },
     {
       heading: "How to search on Wallet Flights",
@@ -100,11 +101,7 @@ export const oneWayVsReturnFlights: Guide = {
     },
     {
       q: "Can I be refused entry with a one-way ticket?",
-      a: "Some countries ask for proof of return or onward travel. For example, GOV.UK warns that you may be refused entry to the Dominican Republic without it, and the US State Department says visa-free visitors to Japan should have a return or onward ticket. Check the official page for your destination.",
-    },
-    {
-      q: "Can an airline refuse to let me board with a one-way ticket?",
-      a: "US Customs and Border Protection’s guide says the final decision to board a passenger lies with the carrier. If your destination asks for onward travel, airlines may check before you fly, so ask yours what it accepts.",
+      a: "Some countries ask for proof of return or onward travel. For example, GOV.UK says you may be refused entry to the Dominican Republic without proof of onward or return travel, and that immigration officials in Thailand may ask for evidence of it. Check the official page for your destination.",
     },
     {
       q: "What happens if one of two separate one-way flights is delayed?",
@@ -113,9 +110,9 @@ export const oneWayVsReturnFlights: Guide = {
   ],
   sources: [
     { label: "GOV.UK: Dominican Republic travel advice, entry requirements", url: "https://www.gov.uk/foreign-travel-advice/dominican-republic/entry-requirements" },
-    { label: "US Department of State: Japan travel advisory", url: "https://travel.state.gov/en/international-travel/travel-advisories/japan.html" },
-    { label: "US Department of State: Thailand country information", url: "https://travel.state.gov/content/travel/en/international-travel/International-Travel-Country-Information-Pages/Thailand.html" },
-    { label: "US Customs and Border Protection: Carrier Information Guide, United States document requirements for travel", url: "https://www.cbp.gov/sites/default/files/assets/documents/2019-Mar/2019%20Carrier%20Information%20Guide%20-%20ENGLISH.pdf" },
+    { label: "GOV.UK: Thailand travel advice, entry requirements", url: "https://www.gov.uk/foreign-travel-advice/thailand/entry-requirements" },
+    { label: "GOV.UK: Mexico travel advice, entry requirements", url: "https://www.gov.uk/foreign-travel-advice/mexico/entry-requirements" },
+    { label: "GOV.UK: Indonesia travel advice, entry requirements", url: "https://www.gov.uk/foreign-travel-advice/indonesia/entry-requirements" },
     { label: "Heathrow: Connecting flights", url: "https://www.heathrow.com/connecting-flights" },
   ],
   keywords: ["one way vs round trip flights", "one way vs return flights", "are two one way flights cheaper than a return", "proof of onward travel", "one way ticket entry requirements", "open jaw flights", "multi-city flights"],
