@@ -71,3 +71,6 @@ Tests to update at step 5: `growth.spec.ts` photo-led layout (FAQ count 11 for L
 - Bali emergency numbers; Bangkok 30-day exemption from 15 Sep 2026 (embassy and press disagree); Singapore Bintan ferry time and 10% service charge; Delhi Agra/Jaipur times.
 - Tips/FAQs from general knowledge: Singapore gum/MRT rules, Thai lèse-majesté and "palace closed" scam, India dress codes, Taj closed Fridays.
 - Photo subjects least certain: Delhi Connaught Place tile, Tokyo market tile.
+
+## Europe done (6 Nov)
+Paris, Rome, Barcelona, Lisbon and Amsterdam complete. Weak photo matches to swap if wanted: `parisIsland`, `amsterdamTripHaarlem`, `amsterdamTripKeukenhof`. Barcelona Girona "about 40 minutes" is a rounding of Renfe's 38. No Amsterdam airport train fare (sources disagreed).
