@@ -55,13 +55,13 @@ export const passportValidityRules: Guide = {
         "The 10-year rule catches people out. Before October 2018, the UK added up to 9 extra months to a new passport if you renewed before the old one expired. GOV.UK warns that passports renewed before 1 October 2018 may have an issue date more than 10 years ago, so a passport with an expiry date well in the future can still fail the rule. Look at the issue date on the photo page, not only the expiry date.",
         "The same rules apply to US citizens visiting the Schengen area: the State Department says your passport must be valid for at least 3 months beyond your planned departure, and recommends having 6 months. The EU’s new Entry/Exit System registers non-EU travellers at the border but doesn’t change these validity rules; our [EES and ETIAS guide](/travel-guides/ees-etias-uk-us-travellers) has the details.",
       ],
-      tip: "Use the GOV.UK passport checker for Europe: it asks for your issue and expiry dates and tells you whether your passport meets the rules for your trip.",
+      tip: "Our advice: look at the issue date as well as the expiry date. GOV.UK suggests your passport should be no older than 9 years and 6 months on the day you travel."
     },
     {
       heading: "Travelling to the US and the UK",
       paragraphs: [
         "For British citizens visiting the US, GOV.UK says your passport must be valid for the length of your planned stay. You also need an approved ESTA or a visa before you fly, and a valid ESTA doesn’t guarantee entry. GOV.UK reminds travellers to check the rules for any country they transit too, since many countries require 6 months’ validity. Our guide to the [ESTA and the UK ETA](/travel-guides/esta-and-uk-eta) explains both systems.",
-        "For Americans visiting the UK, you need a passport valid for your whole stay and, under the UK’s Electronic Travel Authorisation scheme, an ETA approved before you travel. Flying [New York to London](/routes/new-york-to-london) or [London to New York](/routes/london-to-new-york), check both documents well before departure.",
+        "For Americans visiting the UK, you need a passport valid for your whole stay and, under the UK’s Electronic Travel Authorisation scheme, an ETA approved before you travel (GOV.UK says US nationals are covered). Flying [New York to London](/routes/new-york-to-london) or [London to New York](/routes/london-to-new-york), check both documents well before departure.",
       ],
     },
     {
@@ -83,7 +83,7 @@ export const passportValidityRules: Guide = {
         "If you’re close to a limit, renew before you book, and allow for processing times shown on GOV.UK or travel.state.gov",
         "Once you have a new passport, update the number in any ESTA, ETA or airline booking: an ESTA is linked to a specific passport",
       ],
-      tip: "Children’s passports from the UK last only 5 years, so check them separately: it’s easy to remember your own passport and forget theirs. For more on family trips, see our [half-term flights guide](/travel-guides/half-term-flights).",
+      tip: "Check every traveller’s passport separately, including children’s: it’s easy to remember your own and forget theirs. For family trips, see our [half-term flights guide](/travel-guides/half-term-flights)."
     },
   ],
   faqs: [
@@ -111,6 +111,7 @@ export const passportValidityRules: Guide = {
   sources: [
     { label: "GOV.UK: Travelling to the EU and Schengen area", url: "https://www.gov.uk/travel-to-eu-schengen-area" },
     { label: "GOV.UK: France entry requirements", url: "https://www.gov.uk/foreign-travel-advice/france/entry-requirements" },
+    { label: "GOV.UK: Electronic travel authorisation (ETA) overview", url: "https://www.gov.uk/eta" },
     { label: "GOV.UK: Passport rules for travel to Europe", url: "https://www.gov.uk/guidance/passport-rules-for-travel-to-europe" },
     { label: "GOV.UK: USA entry requirements", url: "https://www.gov.uk/foreign-travel-advice/usa/entry-requirements" },
     { label: "GOV.UK: United Arab Emirates entry requirements", url: "https://www.gov.uk/foreign-travel-advice/united-arab-emirates/entry-requirements" },

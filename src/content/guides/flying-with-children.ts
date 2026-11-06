@@ -66,7 +66,7 @@ export const flyingWithChildren: Guide = {
     {
       heading: "Baby milk and food at security",
       paragraphs: [
-        "In the UK, GOV.UK’s hand luggage rules let you take baby milk, baby food and sterilised water in containers over 100ml when you’re travelling with a baby. They don’t need to go in the clear liquids bag, but they will be screened separately and may be tested, so pack them where you can reach them. Our guide to [UK airport liquids rules](/travel-guides/uk-airport-liquids-rules) covers the details and how the new scanners change things.",
+        "In the UK, GOV.UK’s hand luggage rules let you take baby milk, baby food and sterilised water in containers over 100ml when you’re travelling with a baby. They don’t need to go in the clear liquids bag, but they will be screened separately and may be tested, so pack them where you can reach them. Our guide to [UK airport liquids rules](/travel-guides/uk-airport-liquids-rules) covers the details.",
         "In the US, the TSA allows formula, breast milk, toddler drinks and baby or toddler food, including puree pouches, in more than 3.4 ounces (100ml), outside the quart-sized bag. Tell the officer at the start of screening that you have them. Ice packs and gel packs to keep them cool are allowed too, and you can ask for the items not to be X-rayed or opened, in which case expect other checks.",
       ],
       tip: "Take more milk, nappies and snacks than the flight time needs. Delays happen, and you can’t always buy what your child eats once you’re past security. That’s our advice from experience.",

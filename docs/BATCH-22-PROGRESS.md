@@ -51,3 +51,9 @@ from here. The full brief and rules: `docs/BATCH-22-BRIEF.md`.
 3. Check which agent outputs exist: `git status`, `ls src/content/guides`, and the content files for
    empty `localTips`/`dayTrips`. Re-run only the missing parts, following the brief.
 4. Continue from the first step not marked Done.
+
+## Facts to spot-check before publishing (agents could not open these pages)
+
+- `cheapest-day-to-fly`: Google travel posts (blog.google blocked); the 2026 figures are less certain.
+- `new-york-airports-guide`: AirTrain JFK fare ($8.75) and "Q70 every 10 minutes by day" come from search snippets, not full pages.
+- `lost-or-delayed-luggage`: 1,519 SDR and $4,700 figures corroborated by search results, pages not fetched.

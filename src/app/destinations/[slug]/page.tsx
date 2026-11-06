@@ -34,6 +34,7 @@ import { dealHref, fareDates, stopsText } from "@/lib/deal-links";
 import { destinationTileFares, monthCalendars } from "@/lib/fares";
 import { cheapestFare } from "@/lib/travelpayouts";
 import { Price } from "@/components/currency/currency-provider";
+import { diffTemplates } from "@/components/destinations/zone-time";
 
 export function generateStaticParams() {
   return destinations.map((d) => ({ slug: d.slug }));
@@ -124,6 +125,8 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
   const cityGuides = depth.guides.flatMap((s) => (guideBySlug[s] ? [guideBySlug[s]] : []));
   const regionLabel = regions.find((x) => x.id === d.region)?.label;
 
+  const te = depthCopy.tripEssentials;
+  const essentialsCopy = { title: te.title, localTime: te.localTime(d.city), rateNote: te.rateNote, diff: diffTemplates(te), rows: te.rows };
   const nav = depthCopy.nav;
   const menu = [
     { id: "overview", label: nav.overview },
@@ -254,7 +257,7 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
                 Cheapest round trips per person found in the last few days. The provider confirms the final price.
               </p>
             </section>
-            <TripEssentials city={d.city} timeZone={depth.timeZone} essentials={depth.essentials} />
+            <TripEssentials city={d.city} timeZone={depth.timeZone} essentials={depth.essentials} copy={essentialsCopy} />
           </aside>
         </div>
       </GuideSection>
