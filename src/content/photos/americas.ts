@@ -35,4 +35,15 @@ export const americasPhotos = {
   cuscoSacredValley: photo("photo-1725153264822-ab95a6e81428", "A small town in the Sacred Valley ringed by Andean mountains", "#735959", "Meg von Haartman", "traveleroohlala"),
   cuscoTripMaras: photo("photo-1525222529557-b8849ca37860", "Two visitors above the terraced salt pans of Salinas de Maras", "#262626", "Thomas Griggs", "viajeenparacaidas"),
   cuscoTripRainbow: photo("photo-1744295816404-4c73fd69e0f2", "Hikers below the striped slopes of Rainbow Mountain, Vinicunca", "#a6a68c", "Justin Eloo", "justin_eloo"),
+
+  // New York
+  nycStatue: photo("photo-1503572327579-b5c6afe5c5c5", "The Statue of Liberty lit by a beam of sunlight on the Hudson", "#a6c0d9", "AussieActive", "aussieactive"),
+  nycCentralPark: photo("photo-1568515387631-8b650bbcdb90", "Central Park with the Manhattan skyline rising behind the trees", "#262626", "Jermaine Ee", "eejermaine"),
+  nycHighLine: photo("photo-1673296633888-6fa24514d256", "People walking along the High Line between city buildings", "#595959", "Bernd Dittrich", "hdbernd"),
+  nycTimesSquare: photo("photo-1582760548598-0bccdf815aa2", "Crowds in Times Square at dusk", "#262626", "James Ting", "jamesting"),
+  nycWilliamsburg: photo("photo-1600019280996-2d64c3ad31cd", "The Manhattan skyline seen from Williamsburg, Brooklyn", "#8ca6c0", "Cassandra Liau", "cassliau"),
+  nycVillage: photo("photo-1547602044-adc6f6fa3c25", "A quiet street in Greenwich Village", "#d9d9d9", "chloe s.", "chloesimpson"),
+  nycTripConey: photo("photo-1623766647719-9972b994e598", "The boardwalk at Coney Island with people walking", "#0c8cd9", "michal dziekonski", "poloska25"),
+  nycTripPhiladelphia: photo("photo-1614946403309-cc9d1f9b6164", "Independence Hall in Philadelphia", "#8ca6d9", "Dan Mall", "danmall"),
+  nycTripHudson: photo("photo-1642716559031-902161279f40", "Mist rising over the Hudson River valley", "#26260c", "Gerald Berliner", "geraberl"),
 } satisfies Record<string, Photo>;

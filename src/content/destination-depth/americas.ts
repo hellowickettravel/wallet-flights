@@ -386,7 +386,44 @@ export const americasDepth: Record<string, DestinationDepth> = {
     guides: ["self-transfer-separate-tickets", "carry-on-only-checklist", "when-to-book-international-flights"],
   },
   "new-york": {
-    checked: "2026-11-03",
+    // Batch 22 fields checked 6 Nov 2026: NYC.gov (911; tap water meets
+    // standards per NYC DEP). Day-trip times are not quoted where no operator
+    // page confirmed them; check Amtrak and Metro-North before travelling.
+    checked: "2026-11-06",
+    timeZone: "America/New_York",
+    localTips: [
+      { icon: "money", title: "Tip 18 to 20%", text: "Tipping is expected in restaurants, bars and taxis; the bill rarely includes service. Check the menu for an added charge first." },
+      { icon: "transport", title: "Tap to ride the subway", text: "Use a contactless card or phone on the OMNY reader. Your fares are capped weekly, so there is no need to buy a pass." },
+      { icon: "water", title: "Tap water is safe", text: "New York City water meets all federal and state standards, according to the city’s water department. Refill a bottle at hotels and cafés." },
+      { icon: "ticket", title: "Book the Statue early", text: "Ferries to the Statue of Liberty and Ellis Island, and crown access, sell out. Buy only from the official ferry operator." },
+      { icon: "etiquette", title: "Walk on the right", text: "Pavements move fast. Keep to one side, stay out of bike lanes and wait for the walk signal." },
+      { icon: "weather", title: "Pack for the season", text: "Summer is hot and humid and winter is cold, sometimes with snow. Spring and autumn are the easiest for walking." },
+    ],
+    foods: [
+      { name: "New York pizza", text: "Large thin slices with a foldable crust, sold by the slice at counters across the city." },
+      { name: "Bagel with lox", text: "A chewy boiled bagel with cream cheese and smoked salmon, from the bagel shops of the Lower East Side and the Upper West Side." },
+      { name: "Pastrami on rye", text: "Hot, peppery smoked beef piled into rye bread with mustard, a Jewish deli classic." },
+      { name: "Cheesecake", text: "Dense, creamy New York-style cheesecake, served at diners and bakeries." },
+      { name: "Halal cart chicken over rice", text: "Chicken and rice with white and hot sauce from street carts in Midtown, an affordable local staple." },
+      { name: "Hot dog", text: "A street-cart hot dog with mustard and onions, eaten on a bench in a park." },
+    ],
+    dayTrips: [
+      { name: "Philadelphia", time: "By Amtrak from New York Penn Station; check Amtrak for current times", text: "Independence Hall, the Liberty Bell and the Museum of Art are all within a short ride of 30th Street Station.", photo: photos.nycTripPhiladelphia },
+      { name: "Hudson Valley", time: "About 1¼ to 1½ hours by Metro-North from Grand Central", text: "Ride the Hudson Line up the river to riverside towns such as Beacon, with views and galleries.", photo: photos.nycTripHudson },
+      { name: "Coney Island", time: "By subway from Manhattan", text: "A seaside boardwalk, beach and amusement rides in south Brooklyn, best on a warm day.", photo: photos.nycTripConey },
+    ],
+    visual: {
+      days: [
+        { photo: photos.nycCentralPark, stops: ["Central Park", "MoMA", "Top of the Rock or Empire State Building", "Broadway"] },
+        { photo: photos.nycStatue, stops: ["Statue of Liberty and Ellis Island", "9/11 Memorial", "Brooklyn Bridge", "DUMBO"] },
+        { photo: photos.nycHighLine, stops: ["The Met", "The High Line", "Chelsea Market", "Greenwich Village jazz"] },
+      ],
+      stay: [
+        { name: "Midtown", bestFor: "First visits", photo: photos.nycTimesSquare },
+        { name: "Greenwich Village and SoHo", bestFor: "Walking and restaurants", photo: photos.nycVillage },
+        { name: "Williamsburg, Brooklyn", bestFor: "Bars and skyline views", photo: photos.nycWilliamsburg },
+      ],
+    },
     airports: [
       {
         code: "JFK",
@@ -428,7 +465,14 @@ export const americasDepth: Record<string, DestinationDepth> = {
     ],
     daysNeeded: "Four to five days for a first visit.",
     gettingAround: "The subway runs around the clock and reaches most places; tap a contactless bank card or phone with OMNY, and fares are capped after a set number of rides each week. Manhattan is easy to walk, and yellow cabs and ride-hailing fill the gaps.",
-    essentials: { currency: "US dollar (USD)", plugs: "Types A and B, 120V", language: "English" },
+    essentials: {
+      currency: "US dollar (USD)",
+      plugs: "Types A and B, 120V",
+      language: "English",
+      emergency: "911",
+      tipping: "18 to 20% in restaurants and bars, and about the same in taxis",
+      water: "Tap water is safe to drink",
+    },
     faqs: [
       {
         q: "JFK or Newark: which is easier for Manhattan?",
@@ -437,6 +481,18 @@ export const americasDepth: Record<string, DestinationDepth> = {
       {
         q: "Do I need an ESTA to visit New York from the UK?",
         a: "Yes, if you travel under the Visa Waiver Program: British citizens need an approved ESTA before boarding. Apply on the official US government site; our ESTA and UK ETA guide explains how.",
+      },
+      {
+        q: "Do I need to tip in New York?",
+        a: "Yes. Tipping is expected in restaurants, bars and taxis, usually 18 to 20%, because servers rely on tips for their pay. Check your bill first, as a few places add service.",
+      },
+      {
+        q: "Can I use my UK card on the New York subway?",
+        a: "Yes. Tap a contactless bank card or phone on the OMNY reader at the turnstile or bus, and your fares are capped each week. Your bank may add a foreign transaction fee.",
+      },
+      {
+        q: "Is the tap water safe to drink in New York?",
+        a: "Yes. The city’s water department says New York City water meets all federal and state standards. If the water looks discoloured, don’t drink it.",
       },
     ],
     guides: ["esta-and-uk-eta", "24-hour-flight-cancellation-rule", "hand-luggage-sizes-bag-fees"],
