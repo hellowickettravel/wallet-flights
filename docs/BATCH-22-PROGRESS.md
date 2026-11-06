@@ -77,3 +77,6 @@ Paris, Rome, Barcelona, Lisbon and Amsterdam complete. Weak photo matches to swa
 
 ## Americas done (6 Nov)
 Cancún, Rio, Mexico City, Cusco, New York, Miami complete. To verify: Miami tap-water line (no official page); Key West "about 160 miles by road"; New York day trips (Hudson Valley time weak; Philadelphia and Coney Island have no times); Tri-Rail shuttle note for FLL; Rio emergency numbers 190/192/193 only; photos `cancunHotelZone`, `cancunTulumBeach` loosely matched.
+
+## Middle East & Africa done (6 Nov) — all content agents finished; next is step 5 (admin merge) and step 6 (build/tests)
+To verify: Marrakech emergency numbers (19/177/15; some pages say 150); Abu Dhabi airport link `abudhabiairport.ae` is a guess, Sharjah/Liwa times unsourced (`TODO(confirm)`), A1/A2 airport bus from secondary sources; Dubai alcohol age left out. Photos matched by search only (`TODO(confirm)` in file): capeTownCityBowl/CampsBay/TripFranschhoek/TripHermanus, marrakechBahia/Rooftops/Riad/TripAtlas, abuDhabiLouvre/Corniche/QasrAlWatan/Yas. Four tiles share an image on one page.

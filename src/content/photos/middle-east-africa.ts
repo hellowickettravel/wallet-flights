@@ -18,6 +18,12 @@ export const middleEastAfricaPhotos = {
   // Abu Dhabi
   abuDhabi: photo("photo-1512632578888-169bbbc64f33", "The Sheikh Zayed Grand Mosque reflected in a pool at low sun, Abu Dhabi", "#262626", "David Rodrigo", "david__r"),
   abuDhabiMosque: photo("photo-1619729239841-d7354ebf9bb3", "White domes of the Sheikh Zayed Grand Mosque reflected in its marble courtyard", "#0c408c", "Nick Fewings", "jannerboy62"),
+  // TODO(confirm): abuDhabiLouvre, abuDhabiCorniche, abuDhabiQasrAlWatan and abuDhabiYas matched their searches but carry no caption naming the place
+  abuDhabiLouvre: photo("photo-1587421890935-5fb13a3beccc", "The white domed museum buildings of Louvre Abu Dhabi beside the water", "#d9f3f3", "Nazar Skalatsky", "skltsk"),
+  abuDhabiCorniche: photo("photo-1769160853964-402d56a943b3", "Skyscrapers rising above the sea on the Abu Dhabi waterfront", "#0c59a6", "raghul ayyasamy", "raghul_ayyasamy"),
+  abuDhabiQasrAlWatan: photo("photo-1720754096019-d4330e022d97", "A palace hall with a domed ceiling and a chandelier in Abu Dhabi", "#c08c59", "Alex", "junypr"),
+  abuDhabiYas: photo("photo-1685909201292-d86e15a63a1b", "Sunset over the city and water on the Abu Dhabi coast", "#a6a6c0", "Gamze Teoman", "gamzeteoman"),
+  abuDhabiDesert: photo("photo-1510479524860-95998e54a8c6", "A vehicle on the desert sands near Abu Dhabi", "#d9d9d9", "Jakub David", "jadav"),
   // Istanbul
   istanbulHagiaSophia: photo("photo-1623621534850-d325a1980c7e", "Hagia Sophia's great dome and minarets in Sultanahmet, Istanbul", "#a6c0c0", "Lewis J Goetz", "lgoetz"),
   istanbulGalataBridge: photo("photo-1613221350942-c0831690fbd0", "People fishing from the Galata Bridge over the Golden Horn, Istanbul", "#d9d9d9", "Andrea Leopardi", "whatyouhide"),
@@ -46,4 +52,14 @@ export const middleEastAfricaPhotos = {
   capeTownTripStellenbosch: photo("photo-1706700700231-91a762a35531", "Vineyard rows with mountains behind at Stellenbosch", "#a6c0c0", "Ben", "bengerber05"),
   capeTownTripFranschhoek: photo("photo-1730793371246-6b755066e9d8", "A valley town below a mountain range in the Franschhoek area", "#59738c", "Sheila C", "qld_traveller"),
   capeTownTripHermanus: photo("photo-1716899976949-ee2eb4a0d4d1", "Ocean and rocky coastline on the Western Cape near Hermanus", "#73a6d9", "Spekboom", "spekboom"),
+  // Marrakech (TODO(confirm): marrakechBahia, marrakechRooftops, marrakechRiad and marrakechTripAtlas matched their searches but carry no caption naming the place)
+  marrakech: photo("photo-1597212618440-806262de4f6b", "The Koutoubia Mosque minaret rising above Marrakech with the Atlas Mountains behind", "#8cc0d9", "Paul Macallan", "pemacallan"),
+  marrakechBahia: photo("photo-1580814488128-5880a40726be", "A palace building under a blue sky in the Marrakech medina", "#59a6d9", "Abdelhamid Azoui", "abdelhamid_az"),
+  marrakechJemaa: photo("photo-1587974928442-77dc3e0dba72", "People walking through the Jemaa el-Fna market square in Marrakech", "#f3d9a6", "CALIN STAN", "calinstan"),
+  marrakechMajorelle: photo("photo-1773501934878-104c1e234ba0", "Blue and pink buildings reflected in the lily pond at Jardin Majorelle", "#f3f3f3", "Val Vesa", "adspedia"),
+  marrakechRooftops: photo("photo-1675782357250-8329a7677819", "Rooftops and market umbrellas across the Marrakech medina", "#a6c0d9", "Danai Tsoutreli", "danaetsoutreli"),
+  marrakechRiad: photo("photo-1624804823268-7d5454caa8c8", "Palm trees by a riad swimming pool in Marrakech", "#595959", "rigel", "rigels"),
+  marrakechTripEssaouira: photo("photo-1786973511015-74157f822096", "The old walls of Essaouira above the foggy seafront", "#a68c8c", "Ousseynou Cissé", "frenchouze"),
+  marrakechTripOuzoud: photo("photo-1683028094236-7e5655c6607b", "Macaques in front of the Ouzoud waterfalls", "#735940", "Danai Tsoutreli", "danaetsoutreli"),
+  marrakechTripAtlas: photo("photo-1624802294472-4dc449c1c127", "Green trees and brown mountains in the High Atlas near Marrakech", "#d9d9d9", "rigel", "rigels"),
 } satisfies Record<string, Photo>;

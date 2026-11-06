@@ -400,4 +400,166 @@ export const middleEastAfricaDepth: Record<string, DestinationDepth> = {
     ],
     guides: ["self-transfer-separate-tickets", "power-bank-rules-on-planes", "when-to-book-international-flights"],
   },
+  marrakech: {
+    // Batch 22 fields checked 6 Nov 2026 from search results (GOV.UK pages were not
+    // reachable from the build sandbox): TODO(confirm) emergency numbers against GOV.UK,
+    // bus 19 fare and day-trip drive times (tour-operator figures, approximate).
+    checked: "2026-11-06",
+    timeZone: "Africa/Casablanca",
+    localTips: [
+      { icon: "money", title: "Carry small notes", text: "Cards work in hotels and bigger restaurants. Taxis, souk stalls and cafés want cash in dirhams, and change is scarce." },
+      { icon: "transport", title: "Agree the taxi fare first", text: "Airport and street taxis often have no meter, so settle the price before you get in. Petits taxis are the small ones for trips inside the city." },
+      { icon: "safety", title: "Ignore unsolicited guides", text: "Say a firm no to people who offer to lead you through the medina or say a road is closed. Use a map app, or hire a guide through your riad." },
+      { icon: "etiquette", title: "Haggle in the souks", text: "Prices on unmarked goods are open to bargaining. Start well below the ask and walk away politely if you don’t agree." },
+      { icon: "dress", title: "Dress modestly", text: "Cover shoulders and knees in the medina and away from the pool. Non-Muslims can’t enter most mosques, so view them from outside." },
+      { icon: "water", title: "Drink bottled water", text: "Locals may drink tap water, but visitors are advised to stick to bottled water and avoid ice from unknown places." },
+    ],
+    foods: [
+      { name: "Tagine", text: "Meat or vegetables slow-cooked in a conical clay pot, served at riad restaurants and café terraces across the medina." },
+      { name: "Couscous", text: "Steamed semolina with vegetables and meat, traditionally served on Fridays in family-run restaurants." },
+      { name: "Pastilla", text: "A flaky pie of pigeon or chicken with almonds, cinnamon and sugar, a dish of special occasions that restaurants serve every day." },
+      { name: "Mint tea", text: "Sweet green tea poured from a height into small glasses, offered as a welcome in riads, shops and cafés." },
+      { name: "Harira", text: "A tomato, lentil and chickpea soup, eaten with dates, sold from stalls and cafés, especially at sunset in Ramadan." },
+    ],
+    dayTrips: [
+      { name: "Ourika Valley", time: "About 1 hour by car from Marrakech", text: "A river valley in the High Atlas, with village markets, walking paths and cafés beside waterfalls. It’s the closest escape to the mountains.", photo: photos.marrakechTripAtlas },
+      { name: "Essaouira", time: "About 2 hours 30 minutes by car or coach from Marrakech", text: "A walled Atlantic port with a whitewashed medina, ramparts, fish grills at the harbour and a long, windy beach.", photo: photos.marrakechTripEssaouira },
+      { name: "Ouzoud Falls", time: "About 2 hours 30 minutes by car from Marrakech", text: "Waterfalls dropping through olive groves, with walking trails and boats below. Macaques live around the viewpoints.", photo: photos.marrakechTripOuzoud },
+    ],
+    visual: {
+      days: [
+        { photo: photos.marrakechBahia, stops: ["Koutoubia Mosque", "Bahia Palace", "Saadian Tombs", "Mint tea on a terrace"] },
+        { photo: photos.marrakechJemaa, stops: ["The souks", "Ben Youssef Madrasa", "Jemaa el-Fna at sunset", "Food stalls"] },
+        { photo: photos.marrakechMajorelle, stops: ["Jardin Majorelle", "Yves Saint Laurent Museum", "Gueliz", "Hammam"] },
+      ],
+      stay: [
+        { name: "The Medina", bestFor: "First visits", photo: photos.marrakechRooftops },
+        { name: "Gueliz", bestFor: "Restaurants and cafés", photo: photos.marrakechMajorelle },
+        { name: "Hivernage and the Palmeraie", bestFor: "Pools and resorts", photo: photos.marrakechRiad },
+      ],
+    },
+    airports: [
+      {
+        code: "RAK",
+        name: "Marrakech Menara",
+        summary: "About 6 km west of the medina, and the airport for all Marrakech flights.",
+        transfers: [
+          { mode: "bus", name: "Bus 19 (ALSA)", to: "Jemaa el-Fna and the medina edge", note: "Runs to the centre but not to your riad door. Check the current fare and times with the operator." },
+          { mode: "taxi", name: "Airport taxi", to: "the medina and the new town", note: "Taxis from the rank have no meter, so agree the fare before you set off. Riads can arrange a pickup in advance." },
+        ],
+        officialPage: { label: "ONDA: Marrakech Menara Airport", url: "https://www.onda.ma/" },
+      },
+    ],
+    weather: "GGBBBMMMGBBG",
+    neighbourhoods: [
+      { name: "The Medina", bestFor: "First visits", text: "The walled old city, with Jemaa el-Fna, the souks and the palaces on foot. Stay in a riad, a house around a courtyard, but expect narrow lanes where taxis can’t reach the door." },
+      { name: "Gueliz", bestFor: "Restaurants and cafés", text: "The French-built new town, with wide streets, cafés, galleries and Jardin Majorelle nearby. Quieter and easier for taxis than the medina." },
+      { name: "Hivernage", bestFor: "Hotels with pools", text: "A leafy district between the medina and Gueliz, with larger hotels and good restaurants. A short taxi from Jemaa el-Fna." },
+      { name: "The Palmeraie", bestFor: "Resorts", text: "A palm grove on the northern edge with large resorts and villas. Peaceful, but you’ll need a taxi for almost everything." },
+    ],
+    itinerary: [
+      { title: "Mosque, palaces and tombs", morning: "Start at the Koutoubia Mosque, then walk to the Bahia Palace before the tour groups arrive.", afternoon: "Visit the Saadian Tombs and the El Badi Palace ruins, then take mint tea on a rooftop terrace.", evening: "Head to Jemaa el-Fna as the food stalls open." },
+      { title: "Souks and Jemaa el-Fna", morning: "Wander the souks while they open, with leather, spices and lanterns, then see the Ben Youssef Madrasa.", afternoon: "Rest at your riad or in a hammam in the hottest hours.", evening: "Watch Jemaa el-Fna fill up with storytellers, musicians and food stalls at sunset." },
+      { title: "Gardens and the new town", morning: "Go to Jardin Majorelle when it opens, then the Yves Saint Laurent Museum next door.", afternoon: "Have lunch in Gueliz and browse its galleries and shops.", evening: "Eat on a medina rooftop and watch the sun set behind the Atlas Mountains." },
+    ],
+    daysNeeded: "Three days covers the main sights. Add a day for Ourika Valley, Essaouira or Ouzoud Falls.",
+    gettingAround: "Walk inside the medina and use petits taxis to reach the new town and the gardens; agree the fare first or ask for the meter. Bus 19 runs from the airport to the medina edge. Many riads will arrange airport pickups.",
+    essentials: {
+      currency: "Moroccan dirham (MAD)",
+      plugs: "Types C and E, 220V",
+      language: "Arabic and Amazigh, with French widely spoken and English in tourist areas",
+      emergency: "19 police, 177 gendarmerie, 15 ambulance and fire",
+      tipping: "About 10% in restaurants for good service; small change for guides and porters",
+      water: "Drink bottled water",
+    },
+    faqs: [
+      { q: "When is the best time to visit Marrakech?", a: "March to May and October to November, when days are warm rather than hot. June to August is very hot, and winter nights are cold." },
+      { q: "Do I need a visa for Morocco?", a: "British citizens can visit Morocco as tourists without a visa. Check GOV.UK’s Morocco entry requirements for the length of stay and passport validity before you fly." },
+      { q: "How do I get from Marrakech airport to the medina?", a: "Take bus 19 to the medina edge or a taxi from the rank. Taxis have no meter, so agree the fare first, or ask your riad to arrange a pickup." },
+      { q: "Is Marrakech safe for tourists?", a: "Most visits are trouble-free. Expect persistent touts, and watch for pickpockets in the souks and on Jemaa el-Fna; read GOV.UK’s Morocco travel advice before you go." },
+      { q: "Do I need cash in Marrakech?", a: "Yes. Cards work in hotels and larger restaurants, but taxis, souks and cafés run on dirhams. Carry small notes." },
+    ],
+    guides: ["self-transfer-separate-tickets", "power-bank-rules-on-planes", "when-to-book-international-flights"],
+  },
+  "abu-dhabi": {
+    // Batch 22 fields checked 6 Nov 2026: u.ae (999 police, 998 ambulance, 997 civil defence),
+    // search results for airport buses A1 and A2 (check Abu Dhabi Mobility), Grand Mosque (free,
+    // dress code enforced). TODO(confirm): airport page link, day-trip drive times.
+    checked: "2026-11-06",
+    timeZone: "Asia/Dubai",
+    localTips: [
+      { icon: "dress", title: "Dress for the Grand Mosque", text: "Entry is free, and the dress code is strictly enforced at the door. Cover arms and legs fully and, for women, hair." },
+      { icon: "transport", title: "Taxis and the Darbi app", text: "Use licensed taxis or ride-hailing apps. Buses are run by Abu Dhabi Mobility, which publishes routes on its Darbi app." },
+      { icon: "weather", title: "Plan around the heat", text: "From about May to September, do outdoor sights early or after sunset. Most sights, malls and museums are air-conditioned." },
+      { icon: "etiquette", title: "Respect local law", text: "Public drunkenness, public displays of affection and photographing people without asking can cause trouble. Check GOV.UK’s UAE page before you go." },
+      { icon: "health", title: "Bring your prescription", text: "Some common medicines are controlled in the UAE. Carry a copy of your prescription and check the rules before you pack." },
+      { icon: "money", title: "Check the bill", text: "Many restaurants add a service charge. If there isn’t one, 10 to 15% is a normal tip for good service." },
+    ],
+    foods: [
+      { name: "Machboos", text: "Spiced rice with chicken, lamb or fish, the Emirati home dish, served at Emirati restaurants and Qasr Al Hosn events." },
+      { name: "Luqaimat", text: "Small fried dumplings drizzled with date syrup, sold hot at heritage cafés and festivals." },
+      { name: "Shawarma", text: "Spit-roasted chicken or lamb in flatbread, from the cheap cafeterias off the Corniche." },
+      { name: "Arabic coffee and dates", text: "Light, cardamom-scented gahwa poured in small cups with dates, the traditional welcome, offered in hotels and cafés." },
+      { name: "Camel milk chocolate", text: "A local souvenir made from camel milk, sold in Emirati chocolate shops and gift stores." },
+    ],
+    dayTrips: [
+      { name: "Dubai", time: "About 1 hour 30 minutes by car, longer in traffic", text: "The Burj Khalifa, Dubai Mall and the old creek, easy to combine in one long day.", photo: photos.dubaiDowntown },
+      { name: "Sharjah", time: "About 2 hours by car", text: "A calmer emirate with a restored Heritage Area, museums on Islamic art and civilisation, and a grand mosque.", photo: photos.dubaiSharjah },
+      { name: "Liwa Desert", time: "About 2 hours by road", text: "Huge dunes at the edge of the Empty Quarter, reached by road and best with a driver or a local operator.", photo: photos.abuDhabiDesert },
+    ],
+    visual: {
+      days: [
+        { photo: photos.abuDhabiMosque, stops: ["Sheikh Zayed Grand Mosque", "Qasr Al Watan", "Emirates Palace", "Dinner on the Corniche"] },
+        { photo: photos.abuDhabiLouvre, stops: ["Louvre Abu Dhabi", "Saadiyat Beach", "Manarat Al Saadiyat", "Sunset on the water"] },
+        { photo: photos.abuDhabiCorniche, stops: ["The Corniche", "Heritage Village", "Etihad Towers", "Yas Island"] },
+      ],
+      stay: [
+        { name: "The Corniche and city centre", bestFor: "First visits", photo: photos.abuDhabiCorniche },
+        { name: "Saadiyat Island", bestFor: "Beaches and museums", photo: photos.abuDhabiLouvre },
+        { name: "Yas Island", bestFor: "Theme parks and the Grand Prix", photo: photos.abuDhabiYas },
+      ],
+    },
+    airports: [
+      {
+        code: "AUH",
+        name: "Zayed International (Abu Dhabi)",
+        summary: "About 30 km east of the city centre, and the airport for all Abu Dhabi flights.",
+        transfers: [
+          { mode: "bus", name: "Airport buses A1 and A2", to: "the city centre, Al Zahiyah and Khalifa Street", note: "Pay with a Hafilat card. Check routes and times on the Darbi app or with Abu Dhabi Mobility." },
+          { mode: "taxi", name: "Taxi", to: "anywhere in the city", note: "From the official ranks outside arrivals." },
+        ],
+        officialPage: { label: "Abu Dhabi Airports", url: "https://www.abudhabiairport.ae/" },
+      },
+    ],
+    weather: "BBBGMMMMMGBB",
+    neighbourhoods: [
+      { name: "The Corniche and city centre", bestFor: "First visits", text: "A waterfront promenade with beaches, cafés and towers, close to the old centre and the Heritage Village. The easiest base for taxis and buses." },
+      { name: "Saadiyat Island", bestFor: "Beaches and museums", text: "Home to Louvre Abu Dhabi and a long beach, with resort hotels. Quiet, with little to do on foot beyond the island." },
+      { name: "Yas Island", bestFor: "Theme parks and the Grand Prix", text: "Theme parks, a marina and the Yas Marina Circuit, with large family hotels. About 30 minutes from the centre by taxi." },
+      { name: "Al Maryah and Al Reem Islands", bestFor: "Business and shopping", text: "Towers, malls and restaurants on islands linked to the centre by bridge. Practical for business trips." },
+    ],
+    itinerary: [
+      { title: "Grand Mosque and palaces", morning: "Visit the Sheikh Zayed Grand Mosque in the morning, dressed to its dress code.", afternoon: "See Qasr Al Watan and Emirates Palace on the waterfront.", evening: "Dine on the Corniche." },
+      { title: "Saadiyat Island", morning: "Spend the morning at Louvre Abu Dhabi.", afternoon: "Relax on Saadiyat Beach.", evening: "Watch the sunset from the water, then eat on the island or in the centre." },
+      { title: "Corniche and Yas Island", morning: "Walk or cycle the Corniche, then see the Heritage Village.", afternoon: "Go up to the Etihad Towers viewing platform, or head to Yas Island for the theme parks.", evening: "Have dinner at Yas Marina." },
+    ],
+    daysNeeded: "Two to three days. It also works as a day trip from Dubai.",
+    gettingAround: "Taxis and ride-hailing are the simplest way around. Buses run across the city on a Hafilat card, and Abu Dhabi Mobility publishes routes on its Darbi app. The sights are spread out, so plan by area.",
+    essentials: {
+      currency: "UAE dirham (AED)",
+      plugs: "Type G, 230V",
+      language: "Arabic, with English widely spoken",
+      emergency: "999 police, 998 ambulance, 997 fire",
+      tipping: "Check the bill for a service charge; if there isn’t one, 10 to 15% for good service",
+      water: "Most visitors drink bottled or filtered water",
+    },
+    faqs: [
+      { q: "Is the Sheikh Zayed Grand Mosque free to visit?", a: "Yes, entry is free. The dress code is strictly enforced, so cover arms and legs fully, and women should cover their hair." },
+      { q: "Is Abu Dhabi worth visiting if I’m in Dubai?", a: "Yes, for the Grand Mosque, Louvre Abu Dhabi and a quieter feel. It’s about 1 hour 30 minutes from Dubai by car, so it works as a day trip or a separate stay." },
+      { q: "Is Abu Dhabi expensive?", a: "Costs depend on how you travel, so we don’t quote prices. Hotels are often cheaper from about May to September, when the heat is extreme." },
+      { q: "Do I need a visa for Abu Dhabi?", a: "British citizens with a full British passport get a free visit visa on arrival in the UAE. Check GOV.UK’s UAE entry requirements for the length of stay and passport validity." },
+      { q: "Can you drink alcohol in Abu Dhabi?", a: "Yes, in licensed hotels, bars and restaurants. Drinking in public places is illegal, and being drunk in public is an offence." },
+    ],
+    guides: ["self-transfer-separate-tickets", "power-bank-rules-on-planes", "when-to-book-international-flights"],
+  },
 };
