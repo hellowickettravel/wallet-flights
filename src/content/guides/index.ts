@@ -18,6 +18,26 @@ import { howLongALayover } from "./how-long-a-layover";
 import { howEarlyAirport } from "./how-early-to-get-to-the-airport";
 import { cheapFlights } from "./how-to-find-cheap-flights";
 import { londonAirports } from "./london-airports-guide";
+import { areLastMinuteFlightsCheaper } from "./are-last-minute-flights-cheaper";
+import { cheapestDayToFly } from "./cheapest-day-to-fly";
+import { directVsConnectingFlights } from "./direct-vs-connecting-flights";
+import { basicEconomyExplained } from "./basic-economy-explained";
+import { flightPriceAlerts } from "./flight-price-alerts";
+import { firstLongHaulFlightTips } from "./first-long-haul-flight-tips";
+import { jetLagTips } from "./jet-lag-tips";
+import { bestSeatOnAPlane } from "./best-seat-on-a-plane";
+import { flyingWithChildren } from "./flying-with-children";
+import { airportLoungeAccess } from "./airport-lounge-access";
+import { newYorkAirportsGuide } from "./new-york-airports-guide";
+import { checkedBaggageAllowances } from "./checked-baggage-allowances";
+import { lostOrDelayedLuggage } from "./lost-or-delayed-luggage";
+import { deniedBoardingOverbookedFlights } from "./denied-boarding-overbooked-flights";
+import { passportValidityRules } from "./passport-validity-rules";
+import { cheapestTimeToFlyToEurope } from "./cheapest-time-to-fly-to-europe";
+import { winterSunDestinations } from "./winter-sun-destinations";
+import { bestTimeToVisitSoutheastAsia } from "./best-time-to-visit-southeast-asia";
+import { stopoverVsLayover } from "./stopover-vs-layover";
+import { dubaiTravelRules } from "./dubai-travel-rules";
 
 export type { Guide, GuideSection, GuideTable, Topic, TopicId } from "./types";
 
@@ -52,6 +72,27 @@ export const guides: Guide[] = [
   whenToBook,
   europeShoulderSeason,
   carryOnChecklist,
+  // Batch 22 (5 Nov 2026): 20 new guides.
+  areLastMinuteFlightsCheaper,
+  cheapestDayToFly,
+  directVsConnectingFlights,
+  basicEconomyExplained,
+  flightPriceAlerts,
+  firstLongHaulFlightTips,
+  jetLagTips,
+  bestSeatOnAPlane,
+  flyingWithChildren,
+  airportLoungeAccess,
+  newYorkAirportsGuide,
+  checkedBaggageAllowances,
+  lostOrDelayedLuggage,
+  deniedBoardingOverbookedFlights,
+  passportValidityRules,
+  cheapestTimeToFlyToEurope,
+  winterSunDestinations,
+  bestTimeToVisitSoutheastAsia,
+  stopoverVsLayover,
+  dubaiTravelRules,
 ].sort((a, b) => b.published.localeCompare(a.published));
 
 export const guideBySlug = Object.fromEntries(guides.map((g) => [g.slug, g])) as Record<string, Guide>;

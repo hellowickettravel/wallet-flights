@@ -33,6 +33,15 @@ export const asiaPacificPhotos = {
   sydneyTripBlueMountains: photo("photo-1595797128407-ea746eaccb00", "The Three Sisters rock formation in the Blue Mountains", "#404026", "Nicholas Doherty", "nrdoherty"),
   sydneyTripRoyalNationalPark: photo("photo-1645611182597-4fe713acc446", "Sea cliffs and ocean in the Royal National Park", "#0c4073", "Deeva Sood", "deev_s0"),
   sydneyTripHunterValley: photo("photo-1664970925595-90402bf3fbcb", "Vineyard rows in the Hunter region of New South Wales at golden hour", "#26260c", "Arie Oldman", "arizard"),
+  // Delhi
+  delhiRedFort: photo("photo-1685790582503-1b2762d95407", "The Red Fort in Delhi with its two towers and flag", "#d9f3f3", "Jayanth Muppaneni", "jay_5"),
+  delhiQutub: photo("photo-1748500192752-6f3f441c2a51", "Qutub Minar rising against a blue sky among trees in Delhi", "#8cc0d9", "Aamir Ahmad", "aks_by_aamir"),
+  delhiChandniChowk: photo("photo-1760782065835-a6a5e06509c3", "Rickshaws and crowds in the lanes of Chandni Chowk market at dusk", "#402626", "Zoshua Colah", "zoshuacolah"),
+  delhiConnaught: photo("photo-1633891422216-19f70dfd3e7a", "The colonnaded buildings of Connaught Place, Delhi", "#405959", "Ravi Sharma", "ravinepz"),
+  delhiHauzKhas: photo("photo-1728384028318-6e2e22da8345", "Grass and the 14th-century ruins by Hauz Khas Lake in South Delhi", "#405926", "Zoshua Colah", "zoshuacolah"),
+  delhiTripAgra: photo("photo-1587135941948-670b381f08ce", "The Taj Mahal in Agra at sunset", "#f3d9a6", "Rowan Heuvel", "insolitus"),
+  delhiTripJaipur: photo("photo-1477587458883-47145ed94245", "Two men on decorated horses riding past the Hawa Mahal in Jaipur", "#8c7359", "Aditya Siva", "msaditya9"),
+  delhiTripFatehpurSikri: photo("photo-1717761558642-32cbeccbee7e", "Water in front of the red sandstone buildings of Fatehpur Sikri", "#404040", "Naveen Kumar Dusi", "i_m_naveennavi"),
   // Tokyo
   tokyoSensoji: photo("photo-1673330245973-6f267657731f", "The five-storey pagoda at Senso-ji temple in Asakusa, Tokyo", "#260c0c", "Matt Ketchum", "mkultraman"),
   tokyoShibuya: photo("photo-1573456373835-579c408de263", "Shibuya Crossing seen from above, with crowds crossing in every direction", "#262626", "Denys Nevozhai", "dnevozhai"),

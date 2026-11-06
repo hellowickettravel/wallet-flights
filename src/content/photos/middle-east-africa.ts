@@ -37,4 +37,13 @@ export const middleEastAfricaPhotos = {
   cairoTripSaqqara: photo("photo-1636020895075-5e598638375e", "The Step Pyramid of Djoser at Saqqara", "#a68c73", "Dmitrii Zhodzishskii", "dmitrii_zhodzishskii"),
   cairoTripDahshur: photo("photo-1632836471674-28a2d2b132a2", "The Bent Pyramid at Dahshur in the desert", "#738cc0", "Dmitrii Zhodzishskii", "dmitrii_zhodzishskii"),
   cairoTripAlexandria: photo("photo-1610131042652-42d6f3754c51", "The Citadel of Qaitbay on the Mediterranean shore in Alexandria", "#f3d9c0", "Farah Samy", "farahgsamy"),
+  // Cape Town (TODO(confirm): capeTownCityBowl, capeTownCampsBay, capeTownTripFranschhoek and capeTownTripHermanus matched their search but carry no caption naming the place)
+  capeTownCableCar: photo("photo-1751473681036-fa181075d22d", "The Table Mountain Aerial Cableway climbing the cliff face above Cape Town", "#262626", "Asher Pardey", "asherpardey"),
+  capeTownBoulders: photo("photo-1496497243327-9dccd845c35f", "African penguins on the shore among boulders at Boulders Beach", "#d9c0c0", "Casey Allen", "westbeach013"),
+  capeTownRobbenIsland: photo("photo-1661112483600-bf3485542ec7", "The entrance to the Maximum Security Prison on Robben Island", "#4073a6", "Moheen Reeyad", "moheenreeyad"),
+  capeTownCityBowl: photo("photo-1733886870851-82f45e3fad3c", "A city street below the mountain in Cape Town's city centre", "#737373", "Anil Baki Durmus", "anldrms"),
+  capeTownCampsBay: photo("photo-1712952825210-e2ea2535c9ae", "A beach below the mountains at Camps Bay, Cape Town", "#0c73c0", "Diana Krotova", "redpuma"),
+  capeTownTripStellenbosch: photo("photo-1706700700231-91a762a35531", "Vineyard rows with mountains behind at Stellenbosch", "#a6c0c0", "Ben", "bengerber05"),
+  capeTownTripFranschhoek: photo("photo-1730793371246-6b755066e9d8", "A valley town below a mountain range in the Franschhoek area", "#59738c", "Sheila C", "qld_traveller"),
+  capeTownTripHermanus: photo("photo-1716899976949-ee2eb4a0d4d1", "Ocean and rocky coastline on the Western Cape near Hermanus", "#73a6d9", "Spekboom", "spekboom"),
 } satisfies Record<string, Photo>;

@@ -305,7 +305,44 @@ export const middleEastAfricaDepth: Record<string, DestinationDepth> = {
     guides: ["self-transfer-separate-tickets", "power-bank-rules-on-planes", "when-to-book-international-flights"],
   },
   "cape-town": {
-    checked: "2026-11-03",
+    // Batch 22 fields checked 6 Nov 2026: GOV.UK (112 from mobiles, 10111 police,
+    // 10177 ambulance and fire), City of Cape Town (tap water meets SANS 241 standard),
+    // tour operators and winelands guides (drive times, approximate).
+    checked: "2026-11-06",
+    timeZone: "Africa/Johannesburg",
+    localTips: [
+      { icon: "transport", title: "Use ride-hailing at night", text: "Order a ride by app after dark rather than walking, even for short distances. Many visitors hire a car for the peninsula and Winelands." },
+      { icon: "weather", title: "Check the mountain first", text: "The Table Mountain cable car closes in strong wind or cloud. Check its status on the day, and go up early in clear weather." },
+      { icon: "safety", title: "Keep valuables out of sight", text: "Don’t leave bags or phones visible in parked cars, on beaches or at viewpoints. Use paid car guards in busy car parks." },
+      { icon: "money", title: "Tip car guards and waiters", text: "About 10% in restaurants is usual, and a small tip for petrol attendants and car guards. Carry small notes in rand." },
+      { icon: "health", title: "Sun and sea are strong", text: "The sun is fierce even on cool days, and Atlantic beaches are cold with strong currents. Swim where lifeguards are on duty." },
+      { icon: "phone", title: "Buy a local SIM or eSIM", text: "Data helps for ride-hailing apps and maps. Buy one at the airport or install an eSIM before you arrive." },
+    ],
+    foods: [
+      { name: "Braai", text: "South Africa’s barbecue, with boerewors sausage, lamb chops and steak, found at braai restaurants and beach cafés across the city." },
+      { name: "Cape Malay curry", text: "A mild, fragrant curry with apricots and spices from the Cape Malay community, served in the Bo-Kaap." },
+      { name: "Bobotie", text: "Spiced minced meat baked under an egg custard, with yellow rice, on the menus of Cape restaurants." },
+      { name: "Gatsby", text: "A long roll stuffed with chips, meat and sauce, a Cape Town fast-food favourite at takeaways in the suburbs." },
+      { name: "Cape wine", text: "Pinotage, chenin blanc and Cape blends from the Stellenbosch and Franschhoek estates, also poured in city wine bars." },
+      { name: "Fish and chips", text: "Line-caught fish with chips, eaten at Kalk Bay and Simon’s Town harbours." },
+    ],
+    dayTrips: [
+      { name: "Stellenbosch", time: "About 45 minutes by car from the city centre", text: "A university town of oak-lined streets and Cape Dutch buildings, ringed by wine estates open for tastings.", photo: photos.capeTownTripStellenbosch },
+      { name: "Franschhoek", time: "About 1 hour by car from the city centre", text: "A valley of vineyards founded by French Huguenots, known for its restaurants and wine estates.", photo: photos.capeTownTripFranschhoek },
+      { name: "Hermanus", time: "About 1 hour 30 minutes to 2 hours by car", text: "A seaside town where southern right whales come close to shore in winter and spring, watched from the cliff path.", photo: photos.capeTownTripHermanus },
+    ],
+    visual: {
+      days: [
+        { photo: photos.capeTownCableCar, stops: ["Table Mountain cable car", "Bo-Kaap", "Company’s Garden", "V&A Waterfront"] },
+        { photo: photos.capeTownBoulders, stops: ["Chapman’s Peak drive", "Cape Point", "Boulders Beach penguins", "Kalk Bay"] },
+        { photo: photos.capeTownRobbenIsland, stops: ["Robben Island ferry", "Kirstenbosch Gardens", "Camps Bay sunset"] },
+      ],
+      stay: [
+        { name: "V&A Waterfront", bestFor: "First visits", photo: photos.capeTown },
+        { name: "City Bowl and De Waterkant", bestFor: "Restaurants", photo: photos.capeTownCityBowl },
+        { name: "Camps Bay", bestFor: "The beach", photo: photos.capeTownCampsBay },
+      ],
+    },
     airports: [
       {
         code: "CPT",
@@ -331,7 +368,14 @@ export const middleEastAfricaDepth: Record<string, DestinationDepth> = {
     ],
     daysNeeded: "Four to five days, plus extra for the Winelands or the Garden Route.",
     gettingAround: "Ride-hailing apps are the usual way round the city, and many visitors hire a car for the peninsula and the Winelands. The MyCiTi buses cover the centre and the Atlantic coast. Avoid walking alone after dark away from busy areas.",
-    essentials: { currency: "South African rand (ZAR)", plugs: "Types C, D, M and N, 230V", language: "English, Afrikaans and isiXhosa, among others" },
+    essentials: {
+      currency: "South African rand (ZAR)",
+      plugs: "Types C, D, M and N, 230V",
+      language: "English, Afrikaans and isiXhosa, among others",
+      emergency: "112 from a mobile, 10111 police, 10177 ambulance and fire",
+      tipping: "About 10% in restaurants for good service; small tips for car guards and petrol attendants",
+      water: "Tap water is safe to drink",
+    },
     faqs: [
       {
         q: "When can you see whales near Cape Town?",
@@ -340,6 +384,18 @@ export const middleEastAfricaDepth: Record<string, DestinationDepth> = {
       {
         q: "Can you see penguins near Cape Town?",
         a: "Yes, at Boulders Beach near Simon’s Town, home to a colony of African penguins, about an hour’s drive from the city.",
+      },
+      {
+        q: "Is Cape Town safe for tourists?",
+        a: "Most visits are trouble-free in the main tourist areas, but petty theft and street crime happen. Avoid walking alone after dark and don’t leave valuables in view; read GOV.UK’s South Africa travel advice before you go.",
+      },
+      {
+        q: "Is Cape Town tap water safe to drink?",
+        a: "Yes. The City of Cape Town says its tap water meets South Africa’s drinking-water standard (SANS 241). It can taste earthy at times, which the City says is harmless.",
+      },
+      {
+        q: "Do I need a car in Cape Town?",
+        a: "Not for the centre, where ride-hailing apps and the MyCiTi buses cover most trips. A car helps for the Cape Peninsula and the Winelands, where public transport is limited.",
       },
     ],
     guides: ["self-transfer-separate-tickets", "power-bank-rules-on-planes", "when-to-book-international-flights"],

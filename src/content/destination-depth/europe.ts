@@ -543,4 +543,106 @@ export const europeDepth: Record<string, DestinationDepth> = {
     ],
     guides: ["ees-etias-uk-us-travellers", "europe-shoulder-season", "carry-on-only-checklist"],
   },
+  amsterdam: {
+    // Written 6 Nov 2026. Sources: Schiphol (train 14 to 17 minutes to Amsterdam
+    // Central; Amsterdam Airport Express bus 397), GVB (OVpay contactless on trams,
+    // metro and buses), Anne Frank House (timed tickets online only), GOV.UK
+    // Netherlands (112), I amsterdam and Holland.com (tap water, tipping, Haarlem
+    // and Zaanse Schans journey times, Keukenhof season).
+    checked: "2026-11-06",
+    timeZone: "Europe/Amsterdam",
+    localTips: [
+      { icon: "transport", title: "Tap in with your bank card", text: "Trams, metro and buses take a contactless card or phone: check in and check out every journey with the same card or phone. No registration or app is needed." },
+      { icon: "ticket", title: "Book Anne Frank House online", text: "Tickets are sold online for a set time slot and not at the door. Buy only from the museum’s own website." },
+      { icon: "safety", title: "Watch for cyclists", text: "Bike lanes run beside the pavement and cyclists move fast. Check both ways before you step across one." },
+      { icon: "money", title: "Round up, don’t add a fixed tip", text: "Tipping is informal. Rounding up or leaving about 5 to 10% for good service is usual." },
+      { icon: "water", title: "Drink from the tap", text: "Tap water is safe everywhere in the Netherlands, so carry a refillable bottle." },
+    ],
+    foods: [
+      { name: "Stroopwafel", text: "Two thin waffles sandwiching caramel syrup, best warm from a market stall." },
+      { name: "Bitterballen", text: "Crisp fried balls of meat ragout, served with mustard in brown cafés as a bar snack." },
+      { name: "Haring", text: "Raw herring served with onions and pickles from street-side fish stands." },
+      { name: "Poffertjes", text: "Small fluffy pancakes dusted with icing sugar and butter, sold at cafés and markets." },
+      { name: "Patat", text: "Thick Dutch chips served in a paper cone with mayonnaise from frites shops across the centre." },
+    ],
+    dayTrips: [
+      { name: "Haarlem", time: "About 15 minutes by train from Amsterdam Centraal", text: "A compact old town around the Grote Markt, with museums, canals and small shops.", photo: photos.amsterdamTripHaarlem },
+      { name: "Zaanse Schans", time: "About 18 to 20 minutes by train from Amsterdam Centraal to Zaandijk Zaanse Schans", text: "A riverside village of traditional wooden houses and working windmills.", photo: photos.amsterdamTripZaanseSchans },
+      { name: "Keukenhof", time: "Spring only, by train and bus; check Keukenhof’s own page for the route", text: "The bulb gardens in Lisse, open from March to May, are full of tulips and other spring flowers.", photo: photos.amsterdamTripKeukenhof },
+    ],
+    visual: {
+      days: [
+        { photo: photos.amsterdamPalace, stops: ["Royal Palace", "Dam Square", "Anne Frank House", "Jordaan"] },
+        { photo: photos.amsterdamRijksmuseum, stops: ["Rijksmuseum", "Van Gogh Museum", "Museumplein", "Vondelpark"] },
+        { photo: photos.amsterdamCanals, stops: ["A canal cruise", "The Nine Streets", "Albert Cuyp Market", "De Pijp"] },
+      ],
+      stay: [
+        { name: "Old Centre", bestFor: "First visits", photo: photos.amsterdamPalace },
+        { name: "Canal Ring", bestFor: "Canal views and quiet streets", photo: photos.amsterdamCanals },
+        { name: "Museum Quarter", bestFor: "Museums and parks", photo: photos.amsterdamVondelpark },
+      ],
+    },
+    airports: [
+      {
+        code: "AMS",
+        name: "Schiphol",
+        summary: "About 15 km south-west of the centre, with Europe’s main KLM hub and flights from across the UK and US.",
+        transfers: [
+          { mode: "train", name: "NS train", to: "Amsterdam Centraal", time: "14 to 17 minutes", note: "The station is directly below the terminal, with trains several times an hour." },
+          { mode: "bus", name: "Amsterdam Airport Express (bus 397)", to: "Museumplein, the Rijksmuseum and Leidseplein", note: "Doesn’t stop at Centraal; the bus is handy if you’re staying near the museums." },
+        ],
+        officialPage: { label: "Schiphol: by train to Amsterdam", url: "https://www.schiphol.nl/en/from-to-schiphol/by-public-transport/train/" },
+      },
+    ],
+    weather: "MMGBBBGGBGMM",
+    neighbourhoods: [
+      { name: "Old Centre", bestFor: "First visits", text: "The medieval core around Dam Square, the Royal Palace and Centraal station, with most of the main sights within a short walk. It is busy and noisy, and the Red Light District sits in its eastern part, so choose a hotel on a side street." },
+      { name: "Canal Ring", bestFor: "Canal views and quiet streets", text: "The curve of 17th-century canals, with tall narrow houses, small shops and cafés in the Nine Streets. Calmer than the Old Centre at night, and a short walk or tram ride from everything." },
+      { name: "Museum Quarter", bestFor: "Museums and parks", text: "Home of the Rijksmuseum, the Van Gogh Museum and Vondelpark, with wide leafy streets. More residential and polished than the centre, and well connected by tram." },
+      { name: "Jordaan", bestFor: "Cafés and small streets", text: "A former workers’ district of narrow lanes, canalside bars and small galleries west of the Canal Ring. Close to the Anne Frank House and charming, though few hotels sit here." },
+      { name: "De Pijp", bestFor: "Food and a local feel", text: "A lively area south of the centre around the Albert Cuyp Market, with cheaper restaurants and bars. It is on the North/South metro line, which is quick to the centre." },
+    ],
+    itinerary: [
+      { title: "The Old Centre and the Jordaan", morning: "Visit the Royal Palace on Dam Square, then walk the lanes around it before the crowds arrive.", afternoon: "Go to the Anne Frank House on your booked time slot, then wander the Jordaan’s canals and galleries.", evening: "Eat in the Jordaan or at a brown café for bitterballen and a local beer." },
+      { title: "Museums and Vondelpark", morning: "Spend the morning in the Rijksmuseum, which holds Rembrandt and Vermeer; book a timed ticket.", afternoon: "Visit the Van Gogh Museum on Museumplein, then relax in Vondelpark.", evening: "Have dinner near Leidseplein, a short walk from the park." },
+      { title: "Canals and De Pijp", morning: "Take a canal cruise from near Centraal, or hire a boat to see the canal ring from the water.", afternoon: "Browse the Nine Streets, then take the metro to De Pijp and walk the Albert Cuyp Market.", evening: "Eat in De Pijp, where restaurants and bars cover a wide range of cuisines." },
+    ],
+    daysNeeded: "Two to three days covers the main sights. Add a day for Haarlem or Zaanse Schans, or for Keukenhof in spring.",
+    gettingAround: "Walking and cycling cover the compact centre, with trams, buses and the metro for longer hops. Tap a contactless bank card or phone to check in and out on GVB trams, metro and buses, using the same card each time. From Schiphol, the train to Amsterdam Centraal takes 14 to 17 minutes.",
+    essentials: {
+      currency: "Euro (EUR)",
+      plugs: "Types C and F, 230V",
+      language: "Dutch (English widely spoken)",
+      emergency: "112",
+      tipping: "Not obligatory; round up or leave about 5 to 10% for good service",
+      water: "Tap water is safe to drink",
+    },
+    faqs: [
+      {
+        q: "How do I get from Schiphol to Amsterdam city centre?",
+        a: "Take the train from the station below the terminal. Schiphol says the journey to Amsterdam Centraal takes about 14 to 17 minutes. Bus 397, the Amsterdam Airport Express, runs to Museumplein, the Rijksmuseum and Leidseplein instead.",
+      },
+      {
+        q: "Can I use my contactless bank card on Amsterdam trams and the metro?",
+        a: "Yes. GVB accepts contactless debit and credit cards, phones and smartwatches. Check in and out with the same card or phone each time, as switching between them counts as an incomplete journey.",
+      },
+      {
+        q: "Do I need to book the Anne Frank House in advance?",
+        a: "Yes. Tickets are sold online for a set time slot and aren’t sold at the door. Buy only on the museum’s own website, as it warns about lookalike sites and third-party sellers.",
+      },
+      {
+        q: "Do you tip in Amsterdam?",
+        a: "It’s optional. Holland.com says a tip of about 10% is acceptable in restaurants, while other guidance suggests 5 to 10%. Rounding up is fine in cafés and taxis.",
+      },
+      {
+        q: "Is Amsterdam tap water safe to drink?",
+        a: "Yes. I amsterdam says you can drink tap water everywhere in the Netherlands. The water company can issue a boil-water notice in rare cases, so follow any local notice.",
+      },
+      {
+        q: "Do Americans need a visa for the Netherlands?",
+        a: "Not for short tourist stays: US citizens can visit the Netherlands and the rest of the Schengen area without a visa for up to 90 days in any 180-day period. Our EES and ETIAS guide explains the EU’s new border checks.",
+      },
+    ],
+    guides: ["ees-etias-uk-us-travellers", "europe-shoulder-season", "carry-on-only-checklist"],
+  },
 };

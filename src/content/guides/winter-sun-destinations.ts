@@ -11,7 +11,7 @@ export const winterSunDestinations: Guide = {
   title: "Winter sun from the UK: where to go for warm weather from November to March",
   seoTitle: "Winter sun from the UK: where to go and when",
   excerpt:
-    "Where to find warm weather between November and March from the UK: short-haul, North Africa, the Gulf, Asia and the Caribbean, with flight times and entry rules.",
+    "Where to find warm weather from November to March from the UK: short-haul, North Africa, the Gulf, Asia and the Caribbean, with entry rules for each.",
   topic: "seasons",
   published: "2026-11-05",
   photo: guidesDPhotos.guideWinterSun,

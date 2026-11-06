@@ -518,7 +518,43 @@ export const asiaPacificDepth: Record<string, DestinationDepth> = {
     guides: ["self-transfer-separate-tickets", "power-bank-rules-on-planes", "when-to-book-international-flights"],
   },
   delhi: {
-    checked: "2026-11-03",
+    // Batch 22 fields checked 6 Nov 2026: Incredible India (112, 1363 helpline),
+    // Delhi Airport metro page already cited, Gatimaan Express press coverage
+    // (about 100 minutes), Delhi to Jaipur rail times (about 4 hours).
+    checked: "2026-11-06",
+    timeZone: "Asia/Kolkata",
+    localTips: [
+      { icon: "water", title: "Stick to bottled water", text: "Don’t drink tap water, and avoid ice and raw salads from stalls. Choose busy places with hot, freshly cooked food." },
+      { icon: "transport", title: "Use the metro", text: "The Delhi Metro is quick, air-conditioned and avoids the traffic. Carriages for women are marked and worth using if you’re travelling alone." },
+      { icon: "safety", title: "Agree prices first", text: "Agree auto-rickshaw fares before getting in, or use a ride-hailing app. Be wary of anyone who says a place is closed and offers a different route." },
+      { icon: "dress", title: "Dress modestly", text: "Cover shoulders and knees at mosques, gurudwaras and temples. You’ll remove your shoes and cover your head at gurudwaras." },
+      { icon: "phone", title: "Get a local SIM or eSIM", text: "Set up an eSIM before you fly, or buy a SIM with ID at the airport. Maps and ride-hailing apps are essential here." },
+      { icon: "weather", title: "Mind the heat and smog", text: "Summers are very hot, and winter air quality can be poor. October to March is the more comfortable season to visit." },
+    ],
+    foods: [
+      { name: "Butter chicken", text: "Chicken in a creamy tomato sauce, said to have been created in Delhi, served at restaurants from Old Delhi to Connaught Place." },
+      { name: "Chaat", text: "Crisp, tangy street snacks of fried dough, yoghurt, chutneys and spices, best from the busy stalls of Chandni Chowk." },
+      { name: "Paratha", text: "Stuffed fried flatbread eaten with pickles and curd, famously sold in the Paranthe Wali Gali lane in Old Delhi." },
+      { name: "Kebabs", text: "Spiced grilled meat, soft and smoky, from the old-style kebab shops around Jama Masjid." },
+      { name: "Chole bhature", text: "Spiced chickpeas with puffed fried bread, a hearty breakfast or lunch across the city." },
+    ],
+    dayTrips: [
+      { name: "Agra and the Taj Mahal", time: "About 2 to 4 hours each way by train or road", text: "The Taj Mahal and Agra Fort. The fastest trains take about 100 minutes, and the Taj is closed on Fridays.", photo: photos.delhiTripAgra },
+      { name: "Jaipur", time: "About 4 hours each way by train", text: "The Pink City, with the Hawa Mahal, City Palace and Amber Fort, usually done as an overnight stay.", photo: photos.delhiTripJaipur },
+      { name: "Fatehpur Sikri", time: "A short drive west of Agra, often combined with the Taj", text: "A World Heritage Site of red sandstone palaces and the Buland Darwaza gate, built as an imperial capital in the 16th century.", photo: photos.delhiTripFatehpurSikri },
+    ],
+    visual: {
+      days: [
+        { photo: photos.delhiRedFort, stops: ["Red Fort", "Jama Masjid", "Chandni Chowk", "Gurudwara Bangla Sahib"] },
+        { photo: photos.delhiQutub, stops: ["Humayun’s Tomb", "Lodhi Garden", "India Gate", "Qutub Minar"] },
+        { photo: photos.delhiTripAgra, stops: ["Taj Mahal", "Agra Fort"] },
+      ],
+      stay: [
+        { name: "Connaught Place", bestFor: "First visits", photo: photos.delhiConnaught },
+        { name: "Old Delhi", bestFor: "Heritage and food", photo: photos.delhiChandniChowk },
+        { name: "Hauz Khas", bestFor: "Cafés and nightlife", photo: photos.delhiHauzKhas },
+      ],
+    },
     airports: [
       {
         code: "DEL",
@@ -546,7 +582,14 @@ export const asiaPacificDepth: Record<string, DestinationDepth> = {
     ],
     daysNeeded: "Two to three days for Delhi. Most visitors add Agra and Jaipur for the Golden Triangle, about a week in all.",
     gettingAround: "The Delhi Metro is clean, cheap and covers most of the city, including the airport; use a token or a travel card. For other journeys, use ride-hailing apps or prepaid taxis, and agree the fare first for auto-rickshaws.",
-    essentials: { currency: "Indian rupee (INR)", plugs: "Types C, D and M, 230V", language: "Hindi and English" },
+    essentials: {
+      currency: "Indian rupee (INR)",
+      plugs: "Types C, D and M, 230V",
+      language: "Hindi and English",
+      emergency: "112, or the 24-hour tourist helpline on 1363",
+      tipping: "Not required, but about 10% in restaurants without a service charge is welcome",
+      water: "Don’t drink tap water; use bottled or filtered water",
+    },
     faqs: [
       {
         q: "Is the Taj Mahal open every day?",
@@ -555,6 +598,18 @@ export const asiaPacificDepth: Record<string, DestinationDepth> = {
       {
         q: "How do I get from Delhi to Agra?",
         a: "By train or by road. Fast trains link Delhi with Agra, and the Yamuna Expressway makes the drive straightforward; many visitors book a day tour that includes both.",
+      },
+      {
+        q: "Do I need a visa for India?",
+        a: "Yes. Most visitors, including British and US citizens, apply for an e-visa online through India’s official visa portal before travelling. Fees and stay lengths change, so check GOV.UK’s India entry requirements and avoid agents that add extra charges.",
+      },
+      {
+        q: "Is Delhi safe for tourists?",
+        a: "Most visits pass without trouble, but take care. Watch for scams and overcharging, keep valuables out of sight, and use licensed taxis or apps at night. Dial 112 in an emergency or 1363 for the tourist helpline.",
+      },
+      {
+        q: "Can you drink the tap water in Delhi?",
+        a: "No. Drink bottled or filtered water, and avoid ice unless you know it’s made from purified water.",
       },
     ],
     guides: ["self-transfer-separate-tickets", "when-to-book-international-flights", "power-bank-rules-on-planes"],
