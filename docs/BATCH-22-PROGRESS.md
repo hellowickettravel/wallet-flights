@@ -57,3 +57,7 @@ from here. The full brief and rules: `docs/BATCH-22-BRIEF.md`.
 - `cheapest-day-to-fly`: Google travel posts (blog.google blocked); the 2026 figures are less certain.
 - `new-york-airports-guide`: AirTrain JFK fare ($8.75) and "Q70 every 10 minutes by day" come from search snippets, not full pages.
 - `lost-or-delayed-luggage`: 1,519 SDR and $4,700 figures corroborated by search results, pages not fetched.
+
+## UI agent done (6 Nov)
+v2 page + widgets written (`page.tsx`, `src/components/destinations/*`, `depthCopy` keys). Not yet built or seen rendering.
+Tests to update at step 5: `growth.spec.ts` photo-led layout (FAQ count 11 for London, region names "A 3-day plan for London", "Where to stay in London", Paris check), `trust.spec.ts` and Lisbon check in `site.spec.ts` (h3 questions, "Visiting Lisbon").
