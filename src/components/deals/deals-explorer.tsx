@@ -109,7 +109,7 @@ export function DealsExplorer({ fares }: { fares: FareMap }) {
       ) : (
         // Fade cards in and out on filter changes. No per-card layout animation:
         // 36 projection nodes made hydration on /deals a 600 ms long task.
-        <ul className="mt-4 grid grid-cols-1 gap-x-5 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <ul className="mt-4 grid grid-cols-1 gap-x-5 gap-y-5 sm:gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <AnimatePresence initial={false}>
             {list.map((d, i) => (
               <m.li
@@ -120,7 +120,7 @@ export function DealsExplorer({ fares }: { fares: FareMap }) {
                 transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
               >
                 {/* The first cards are the mobile LCP: load them straight away. */}
-                <DealCard route={d} fare={fares[d.slug]} subId={`deals_${d.slug}`} priority={i < 2} />
+                <DealCard route={d} fare={fares[d.slug]} subId={`deals_${d.slug}`} priority={i < 2} rowOnPhone />
               </m.li>
             ))}
           </AnimatePresence>

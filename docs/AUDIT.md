@@ -1163,3 +1163,21 @@ region. Climate tables and costs are still not added (sources blocked).
 - https://walletflights.com/travel-guides/best-time-to-visit-southeast-asia
 - https://walletflights.com/travel-guides/stopover-vs-layover
 - https://walletflights.com/travel-guides/dubai-travel-rules
+
+## Batch 23 — Existing pages: calendar and deals polish (6 Nov 2026)
+
+**Owner feedback:** the existing destination pages had a broken-looking dates section ("When to go").
+
+**Cause (reproduced with test fares):** the "Cheapest from <city>" tag sat inside a 12-column month cell, so
+it collapsed into a green blob and spilled out of the cell; the fare calendar's bars floated unevenly and
+September read "Sept" against three-letter months. The four new cities had no fare data, so they never showed it.
+
+**Fix:** month strip shows a short "Cheapest" tag and the origin city moves to the key; calendar bars sit on
+a common baseline in equal-height cards; month labels are fixed three-letter forms (`monthLabel`). /deals
+cards are a compact photo-beside-details row on phones (page 18,437 → about 10,200 px), unchanged from 640 px up.
+
+**Checks:** lint and typecheck clean; e2e 412 passed (six currency tests need open network, as in Batch 22).
+No overflow at 390 or 1440 px. Checked in a browser with test fares; real fares not visible in the sandbox.
+
+**Still to review:** home, route pages, guides and the info pages were screenshotted at both widths with no
+overflow, but only /deals, /destinations and /airlines were reviewed closely.
