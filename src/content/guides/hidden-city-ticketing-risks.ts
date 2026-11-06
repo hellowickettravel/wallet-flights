@@ -1,0 +1,124 @@
+import { guidesEPhotos } from "../photos/guides-e";
+import type { Guide } from "./types";
+
+// Batch E, guide 1. Primary keyword: "hidden city ticketing". An informational
+// warning, never a tactic. Airline wording comes from Delta's U.S. Contract of
+// Carriage, American Airlines' conditions of carriage, British Airways' and
+// Lufthansa's general conditions, found with WebSearch on 6 Nov 2026 (the pages
+// themselves could not be opened from the build sandbox, so only wording the
+// search results quoted is used). Not verified, so left out: loyalty-account
+// penalties, court outcomes in any country, how often airlines act. The
+// explanation of through-checked bags and the alternatives are our own advice
+// and are labelled as such.
+export const hiddenCityTicketingRisks: Guide = {
+  slug: "hidden-city-ticketing-risks",
+  title: "Hidden city ticketing: what it is and why airlines forbid it",
+  seoTitle: "Hidden city ticketing: what it is and the risks",
+  excerpt:
+    "Hidden city ticketing means booking a flight to a city you don’t plan to reach. What airline contracts say about it, the risks, and safer ways to cut a fare.",
+  topic: "booking",
+  published: "2026-11-06",
+  photo: guidesEPhotos.guideHiddenCity,
+  summary: [
+    "Hidden city ticketing means buying a ticket to a city beyond the one you actually want, and leaving the trip at the connection.",
+    "Airline contracts of carriage prohibit it. Delta’s and American’s let the airline cancel the unused part of the ticket, refuse to fly you or check your bags, or charge the fare you would have paid.",
+    "A skipped flight can invalidate the rest of the ticket, so a return leg is at risk, and checked bags are the practical problem.",
+    "We don’t recommend it. Flexible dates, nearby airports and one-way tickets are allowed ways to look for a lower fare.",
+  ],
+  sections: [
+    {
+      heading: "The short answer: it breaks the airline’s contract",
+      paragraphs: [
+        "Hidden city ticketing, also called point-beyond ticketing, is buying a ticket to a destination you don’t intend to reach because it is cheaper than a ticket to the city where you actually want to go. The traveller gets off at the connecting airport and skips the last flight. This guide explains it so you can recognise it and understand the risk. It is not a how-to, and we don’t recommend it.",
+        "The reason to be wary is simple: you agree to the airline’s contract of carriage when you buy a ticket, and the major airlines’ contracts say you must fly the journey you paid for. Breaking the terms can cost you more than the saving. This guide is general information, not legal advice. If you are in a dispute with an airline, take advice specific to your case.",
+      ],
+      tip: "If a fare looks too good to be true because the destination is further away than the one you want, read the airline’s conditions of carriage before you book. Our advice: if you can’t find a clause that allows it, assume it doesn’t.",
+    },
+    {
+      heading: "How it works, and why it can look cheap",
+      paragraphs: [
+        "Say you want to fly from city A to city B, and the airline connects through B on the way to city C. Sometimes the A to C ticket is priced lower than A to B, even though it includes the same first flight. A hidden city traveller books A to C and leaves at B.",
+        "We don’t explain how to find these fares, and we don’t show them on our pages. The point is the other side of the deal: the airline sold you a single journey with a single price, and it expects you to fly all of it.",
+      ],
+    },
+    {
+      heading: "What airlines’ contracts say",
+      paragraphs: [
+        "Delta’s U.S. Contract of Carriage defines hidden city or point-beyond ticketing as the purchase or use of a fare from a point before the passenger’s actual origin, or to a point beyond the passenger’s actual destination. It lists this among prohibited ticketing practices. If a passenger or their agent has done this, Delta reserves the right to cancel any unused portion of the ticket. As summarised in the search results we used, its remedies also include refusing to carry you or check your bags, or requiring you to pay the full applicable fare.",
+        "American Airlines’ conditions of carriage also list hidden city ticketing among prohibited practices, described there as purchasing a ticket without intending to fly all of its flights in order to get a lower fare. The remedies it lists include cancelling the unused ticket, refusing to fly you or check your bags, and charging what the ticket would have cost had it been booked properly.",
+        "British Airways’ general conditions of carriage say a ticket is no longer valid if you don’t use all of its coupons in the sequence provided, and Lufthansa’s general conditions require a ticket to contain the coupon for the flight you are taking and all the other unused coupons. In plain terms: the contracts treat a ticket as a package to be flown in order.",
+      ],
+      table: {
+        caption: "What the airline contracts we checked say about unused flights",
+        head: ["Airline", "What its conditions say", "Where to read it"],
+        rows: [
+          ["Delta", "Hidden city is a prohibited practice; may cancel the unused portion of the ticket and refuse to carry or check bags", "Contract of Carriage: U.S."],
+          ["American Airlines", "Hidden city is a prohibited practice; may cancel the unused ticket, refuse carriage and bags, or charge the fare that applied", "Conditions of carriage"],
+          ["British Airways", "A ticket is no longer valid if its coupons aren’t used in sequence", "General Conditions of Carriage"],
+          ["Lufthansa", "Carriage requires the ticket to contain the current coupon and all other unused coupons", "General Conditions of Carriage"],
+        ],
+      },
+    },
+    {
+      heading: "The risks, one by one",
+      paragraphs: [
+        "These are the practical ways it can go wrong. The contract wording above is sourced; how an airline applies it in a particular case is up to the airline, so treat the rest as what could happen, not what always does.",
+      ],
+      list: [
+        "The rest of your ticket may be cancelled. Delta’s and American’s terms let the airline cancel the unused part of the ticket, so a return flight on the same booking is at risk.",
+        "You may be refused carriage, or refused bags. Both airlines’ terms mention refusing to check bags or carry you. If this happens at the airport, you could be left to buy a new ticket at the walk-up fare.",
+        "You may be asked to pay the difference. American’s terms mention charging what the ticket would have cost had it been booked properly, which can be more than you saved.",
+        "A checked bag goes to the ticketed destination. Our explanation, not from a source: bags are normally checked through to the final destination on your ticket, so with a hidden city booking your bag may go to a city you never meant to visit.",
+        "Other penalties may exist. Airlines may also have rules in their loyalty programme terms. We haven’t checked any airline’s, so read yours before you try anything.",
+      ],
+      tip: "Our advice: before you buy any ticket, open the airline’s conditions of carriage and search for “unused”, “coupons” and “prohibited”. If you can’t tell what applies, ask the airline.",
+    },
+    {
+      heading: "Legal ways to pay less",
+      paragraphs: [
+        "The good news is that most of the savings people look for come from allowed methods. These are our own advice, and none of them breaks a contract.",
+        "Search around your dates. Fares vary from day to day, and our guides on the [cheapest day to fly](/travel-guides/cheapest-day-to-fly) and [how to find cheap flights](/travel-guides/how-to-find-cheap-flights) show a step-by-step search routine. The [fare calendar](/fare-calendar) shows prices across a month for routes we cover.",
+        "Try nearby airports. A city’s airports can have very different fares and prices to get there. Our guides to [London’s airports](/travel-guides/london-airports-guide) and [New York’s airports](/travel-guides/new-york-airports-guide) explain how to compare them.",
+        "Compare one-ways with returns, and consider a connection or a stopover. A connecting itinerary on one ticket is allowed, because you fly every leg. See [direct vs connecting flights](/travel-guides/direct-vs-connecting-flights) for the trade-offs, and [stopover vs layover](/travel-guides/stopover-vs-layover) if you would like to break up a long trip.",
+        "Set a price alert and book when your target fare appears. Our [flight price alerts guide](/travel-guides/flight-price-alerts) explains how.",
+      ],
+    },
+    {
+      heading: "If you are offered a suspiciously cheap ticket",
+      paragraphs: [
+        "The cheapest ticket on screen is not always the best deal. Check three things before paying: which airport the ticket ends at, whether it is on one ticket with the connection you want, and what the fare conditions say about skipping flights.",
+        "If the answer is that you would be buying a flight you plan to skip, the safest decision is not to book it. Weigh any saving against the chance of a cancelled return or a new ticket bought at the airport.",
+      ],
+    },
+  ],
+  faqs: [
+    {
+      q: "What is hidden city ticketing?",
+      a: "Buying a ticket to a city beyond the one you want to reach, because it costs less, and leaving the journey at the connecting city. Airline contracts generally prohibit it.",
+    },
+    {
+      q: "Is hidden city ticketing illegal?",
+      a: "We can’t give legal advice. What we can say is that Delta’s and American’s contracts of carriage prohibit it and give the airline remedies such as cancelling the unused ticket. Whether it would be treated as anything more than a breach of contract is a question for a lawyer.",
+    },
+    {
+      q: "What happens if you skip the last leg of a flight?",
+      a: "Under Delta’s and American’s terms, the airline can cancel the unused part of the ticket, which puts a return flight on the same booking at risk. British Airways’ conditions say a ticket stops being valid when its coupons aren’t used in sequence.",
+    },
+    {
+      q: "Can I check a bag on a hidden city ticket?",
+      a: "Bags are normally checked through to the destination on your ticket, which is our understanding of how through-checking works, so a checked bag could go to a city you didn’t plan to visit. Delta’s and American’s terms also mention refusing to check bags where the practice is suspected.",
+    },
+    {
+      q: "What are the safer ways to find a cheaper flight?",
+      a: "Be flexible on dates, compare nearby airports, check one-way tickets against returns and set a price alert. Our guide to finding cheap flights walks through each step.",
+    },
+  ],
+  sources: [
+    { label: "Delta: Contract of Carriage, U.S. (prohibited ticketing practices)", url: "https://www.delta.com/us/en/legal/contract-of-carriage-dgr" },
+    { label: "Delta: Contract of Carriage, International", url: "https://www.delta.com/us/en/legal/contract-of-carriage-igr" },
+    { label: "American Airlines: Conditions of carriage", url: "https://www.aa.com/web/i18n/customer-service/support/conditions-of-carriage.html" },
+    { label: "British Airways: General Conditions of Carriage", url: "https://www.britishairways.com/content/information/legal/conditions-of-carriage/general-conditions-of-carriage" },
+    { label: "Lufthansa: General Conditions of Carriage for Passengers and Baggage", url: "https://www.lufthansa.com/content/dam/lh/documents/common/terms-and-conditions/terms-of-service/abb_06-2021_EN.pdf" },
+  ],
+  keywords: ["hidden city ticketing", "hidden city flights", "point beyond ticketing", "hidden city ticketing risks", "skiplagging", "is hidden city ticketing illegal", "airline conditions of carriage unused flight coupon"],
+};
