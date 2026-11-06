@@ -18,7 +18,6 @@ export function dealHref(fare: Partial<Pick<Fare, "departureAt" | "returnAt">> |
 }
 
 const day = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
-const month = new Intl.DateTimeFormat("en-GB", { month: "short", year: "numeric", timeZone: "UTC" });
 
 /** "26 Nov – 3 Dec" (dates are the fare's own; shown in UTC, as the API gives them). */
 export function fareDates(f: Pick<Fare, "departureAt" | "returnAt">) {
@@ -26,6 +25,8 @@ export function fareDates(f: Pick<Fare, "departureAt" | "returnAt">) {
   return f.returnAt ? `${out} – ${day.format(new Date(f.returnAt))}` : out;
 }
 
-export const monthLabel = (ym: string) => month.format(new Date(`${ym}-01T12:00:00Z`));
+const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+/** "Sep 2027": fixed three-letter months, because en-GB's own short form is "Sept" for September only. */
+export const monthLabel = (ym: string) => `${SHORT_MONTHS[Number(ym.slice(5, 7)) - 1] ?? ym.slice(5, 7)} ${ym.slice(0, 4)}`;
 
 export const stopsText = (n: number) => (n === 0 ? "Nonstop" : n === 1 ? "1 stop" : `${n} stops`);

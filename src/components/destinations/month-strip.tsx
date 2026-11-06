@@ -9,7 +9,7 @@ type Rating = keyof typeof weatherLegend;
  * month to fly (from recent fares) gets its own marker. Climate figures show
  * only when the guide has them with a source.
  */
-export function MonthStrip({ weather, cheapestMonth, cheapestLabel, climate }: { weather: string; cheapestMonth?: number; cheapestLabel?: string; climate?: ClimateMonth[] }) {
+export function MonthStrip({ weather, cheapestMonth, cheapestFrom, climate }: { weather: string; cheapestMonth?: number; cheapestFrom?: string; climate?: ClimateMonth[] }) {
   const ratings = [...weather] as Rating[];
   return (
     <div>
@@ -21,7 +21,7 @@ export function MonthStrip({ weather, cheapestMonth, cheapestLabel, climate }: {
             <li
               key={name}
               className={clsx(
-                "relative flex min-h-24 flex-col justify-between rounded-xl p-3",
+                "relative flex min-h-28 min-w-0 flex-col justify-between gap-2 rounded-xl p-3",
                 r === "B" && "bg-board text-white",
                 r === "G" && "bg-mist text-ink",
                 r === "M" && "bg-white text-ink ring-1 ring-line",
@@ -42,8 +42,8 @@ export function MonthStrip({ weather, cheapestMonth, cheapestLabel, climate }: {
                 )}
               </span>
               {cheapest && (
-                <span className="mt-2 inline-flex w-fit rounded-full bg-fare px-2 py-0.5 text-[0.75rem] font-semibold text-white">
-                  {cheapestLabel ?? "Cheapest"}
+                <span className="mt-2 inline-flex w-fit max-w-full items-center whitespace-nowrap rounded-full bg-fare px-1.5 py-0.5 text-[0.6875rem] font-semibold leading-tight text-white sm:px-2 sm:text-[0.75rem]">
+                  Cheapest
                 </span>
               )}
             </li>
@@ -66,7 +66,7 @@ export function MonthStrip({ weather, cheapestMonth, cheapestLabel, climate }: {
         {cheapestMonth !== undefined && (
           <li className="flex items-center gap-2">
             <span className="size-3.5 rounded-full bg-fare" aria-hidden />
-            Cheapest month to fly in recent fares
+            {cheapestFrom ? `Cheapest month to fly from ${cheapestFrom}, in recent fares` : "Cheapest month to fly in recent fares"}
           </li>
         )}
       </ul>

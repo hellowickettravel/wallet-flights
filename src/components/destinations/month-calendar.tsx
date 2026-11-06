@@ -58,13 +58,13 @@ export function MonthCalendar({ calendars, to, subPrefix }: { calendars: Calenda
           const h = max === min ? 100 : 30 + ((m.price - min) / (max - min)) * 70;
           const href = dealHref(m, cal.origin.code, to, `${subPrefix}_month_${m.month}`);
           const cls = clsx(
-            "group flex h-full flex-col justify-end rounded-xl p-3 ring-1 transition-colors",
+            "group flex h-full min-h-40 flex-col justify-end gap-0.5 rounded-xl p-3 ring-1 transition-colors",
             cheapest ? "bg-fare/[0.07] ring-fare/40 hover:bg-fare/[0.12]" : "ring-line hover:bg-mist",
           );
           const inner = (
             <>
-              <span aria-hidden className="flex h-14 items-end">
-                <span className={clsx("w-full rounded-md", cheapest ? "bg-fare" : "bg-action/25 group-hover:bg-action/40")} style={{ height: `${h}%` }} />
+              <span aria-hidden className="flex h-16 items-end border-b border-line/70 pb-0">
+                <span className={clsx("w-full rounded-t-md", cheapest ? "bg-fare" : "bg-action/25 group-hover:bg-action/40")} style={{ height: `${h}%` }} />
               </span>
               <span className="mt-2 text-[0.8125rem] text-ink-soft">{monthLabel(m.month)}</span>
               <Price amount={m.price} currency={m.currency} className={clsx("tabular text-[1.0625rem] font-bold", cheapest ? "text-fare" : "text-ink")} />

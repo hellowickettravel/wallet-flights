@@ -116,44 +116,45 @@ export function DealsRail({ fares }: { fares: FareMap }) {
 }
 
 /** A featured route. Shows the recent cheapest fare when there is one; otherwise no price. */
-export function DealCard({ route, fare, subId, priority }: { route: Route; fare?: Fare; subId: string; priority?: boolean }) {
+/** `rowOnPhone`: below 640px show a compact row (small photo beside the details) instead of the full-width photo card. */
+export function DealCard({ route, fare, subId, priority, rowOnPhone }: { route: Route; fare?: Fare; subId: string; priority?: boolean; rowOnPhone?: boolean }) {
   const { destination: d, origin } = route;
   const href = dealHref(fare, origin.code, d.airport, subId);
   const body = (
-    <>
-      <div className="relative aspect-[4/3] overflow-hidden rounded-(--radius-card)">
+    <div className={rowOnPhone ? "flex items-center gap-4 sm:block" : undefined}>
+      <div className={clsx("relative overflow-hidden rounded-(--radius-card)", rowOnPhone ? "aspect-square w-28 shrink-0 sm:aspect-[4/3] sm:w-auto" : "aspect-[4/3]")}>
         <SmartImage
           photo={d.photo}
           priority={priority}
-          sizes="(min-width: 1024px) 300px, (min-width: 640px) 44vw, 78vw"
+          sizes={rowOnPhone ? "(min-width: 1024px) 300px, (min-width: 640px) 44vw, 112px" : "(min-width: 1024px) 300px, (min-width: 640px) 44vw, 78vw"}
           imgClassName="transition-transform duration-700 ease-(--ease-out-quint) group-hover:scale-[1.04]"
         />
         {fare && (
           <span className="absolute top-3 left-3 rounded-full bg-white/95 px-2.5 py-1 text-[0.75rem] font-semibold text-ink">{stopsText(fare.transfers)}</span>
         )}
       </div>
-      <div className="mt-3.5 flex items-start justify-between gap-3">
+      <div className={clsx("flex justify-between gap-3", rowOnPhone ? "min-w-0 flex-1 flex-col gap-2 sm:mt-3.5 sm:flex-row sm:items-start sm:gap-3" : "mt-3.5 items-start")}>
         <div className="min-w-0">
           <h3 className="flex items-center gap-1 truncate text-[1.0625rem] font-semibold text-ink group-hover:text-action">
             {d.city}
           </h3>
-          <p className="truncate text-[0.875rem] text-ink-soft">
+          <p className={clsx("text-[0.875rem] text-ink-soft", rowOnPhone ? "sm:truncate" : "truncate")}>
             {origin.city} to {d.city}
             {fare && <> · {fareDates(fare)}</>}
           </p>
         </div>
         {fare ? (
-          <div className="shrink-0 text-right">
+          <div className={clsx("shrink-0", rowOnPhone ? "text-left sm:text-right" : "text-right")}>
             <p className="tabular text-[1.25rem] leading-none font-bold text-fare">
               <Price amount={fare.price} currency={fare.currency} />
             </p>
             <p className="mt-1 text-[0.75rem] text-ink-soft">round trip</p>
           </div>
         ) : (
-          <p className="shrink-0 pt-0.5 text-right text-[0.875rem] font-semibold text-action">Search dates</p>
+          <p className={clsx("shrink-0 pt-0.5 text-[0.875rem] font-semibold text-action", rowOnPhone ? "text-left sm:text-right" : "text-right")}>Search dates</p>
         )}
       </div>
-    </>
+    </div>
   );
   // relative: keeps anything absolutely positioned (sr-only text) inside the card, so it can't
   // escape the rail's scroll container and widen the page.

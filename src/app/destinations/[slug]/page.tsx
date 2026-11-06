@@ -285,7 +285,7 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
             weather={depth.weather}
             climate={depth.climate?.months}
             cheapestMonth={cheapest ? Number(cheapest.month.slice(5, 7)) - 1 : undefined}
-            cheapestLabel={cal ? `Cheapest from ${cal.origin.city}` : undefined}
+            cheapestFrom={cal && cheapest ? cal.origin.city : undefined}
           />
         </div>
         {calendars.length > 0 && (
