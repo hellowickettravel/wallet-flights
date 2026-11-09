@@ -1,3 +1,4 @@
+import { isPreviewDeploy } from "@/lib/deploy-env";
 import { CONSENT_FLAG_SCRIPT, CURRENCY_FLAG_SCRIPT } from "@/lib/consent-flag";
 import { getRates } from "@/lib/rates";
 import type { Metadata, Viewport } from "next";
@@ -105,7 +106,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             Analytics on production builds, but not Vercel previews, so test deploys don't count. */}
         <ConsentedAnalytics
           vercel={Boolean(process.env.VERCEL)}
-          gaId={process.env.NODE_ENV === "production" && process.env.VERCEL_ENV !== "preview" ? site.googleAnalyticsId : undefined}
+          gaId={process.env.NODE_ENV === "production" && !isPreviewDeploy() ? site.googleAnalyticsId : undefined}
         />
       </body>
     </html>

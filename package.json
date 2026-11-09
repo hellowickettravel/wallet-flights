@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
+    "@netlify/functions": "^6.1.1",
     "@playwright/test": "^1.64.0",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^20",

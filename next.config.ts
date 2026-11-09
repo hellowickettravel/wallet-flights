@@ -4,7 +4,13 @@ import { contentSecurityPolicy } from "./src/lib/csp";
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
-  env: { NEXT_PUBLIC_BUILD_YEAR: String(new Date().getFullYear()) },
+  env: {
+    NEXT_PUBLIC_BUILD_YEAR: String(new Date().getFullYear()),
+    // Vercel's VERCEL_ENV or Netlify's CONTEXT, normalised (see src/lib/deploy-env.ts).
+    DEPLOY_CONTEXT:
+      process.env.VERCEL_ENV ??
+      (process.env.CONTEXT ? (process.env.CONTEXT === "production" ? "production" : "preview") : ""),
+  },
   partialPrefetching: true,
   poweredByHeader: false,
   async redirects() {
@@ -14,6 +20,10 @@ const nextConfig: NextConfig = {
     return [
       // The production .vercel.app address duplicates the site: send it to the real domain.
       { source: "/:path*", has: [{ type: "host", value: "wallet-flights.vercel.app" }], destination: "https://walletflights.com/:path*", permanent: true },
+      // Same for the Netlify address, once the custom domain is attached there.
+      ...(process.env.NETLIFY && process.env.CUSTOM_DOMAIN_LIVE === "1"
+        ? [{ source: "/:path*", has: [{ type: "host" as const, value: "wallet-flights.netlify.app" }], destination: "https://walletflights.com/:path*", permanent: true }]
+        : []),
       { source: "/", has: [{ type: "query", key: "flightSearch" }], destination: "/flights", permanent: false },
       ...legacyRedirects.map((r) => ({ ...r, permanent: true })),
       ...legacyOwnerRedirects.map((r) => ({ ...r, permanent: false })),
