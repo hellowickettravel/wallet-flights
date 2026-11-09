@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
     DEPLOY_CONTEXT:
       process.env.VERCEL_ENV ??
       (process.env.CONTEXT ? (process.env.CONTEXT === "production" ? "production" : "preview") : ""),
+    // On Netlify the database falls back to Netlify Blobs (src/lib/redis.ts).
+    NETLIFY_BLOBS: process.env.NETLIFY ? "1" : "",
   },
   partialPrefetching: true,
   poweredByHeader: false,
@@ -22,7 +24,7 @@ const nextConfig: NextConfig = {
       { source: "/:path*", has: [{ type: "host", value: "wallet-flights.vercel.app" }], destination: "https://walletflights.com/:path*", permanent: true },
       // Same for the Netlify address, once the custom domain is attached there.
       ...(process.env.NETLIFY && process.env.CUSTOM_DOMAIN_LIVE === "1"
-        ? [{ source: "/:path*", has: [{ type: "host" as const, value: "wallet-flights.netlify.app" }], destination: "https://walletflights.com/:path*", permanent: true }]
+        ? [{ source: "/:path*", has: [{ type: "host" as const, value: "walletflights.netlify.app" }], destination: "https://walletflights.com/:path*", permanent: true }]
         : []),
       { source: "/", has: [{ type: "query", key: "flightSearch" }], destination: "/flights", permanent: false },
       ...legacyRedirects.map((r) => ({ ...r, permanent: true })),
