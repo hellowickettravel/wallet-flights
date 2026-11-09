@@ -8,7 +8,8 @@ import { calendarLink, checkAlerts, linkOrigin, stopLinks } from "@/lib/price-al
 export const maxDuration = 300;
 
 /**
- * The daily price check, called by the cron in vercel.json. Vercel sends
+ * The daily price check, called by the cron in vercel.json (Vercel) or by
+ * netlify/functions/price-alerts-cron.mts (Netlify). Both send
  * `Authorization: Bearer $CRON_SECRET`; without the secret set, only
  * development and the e2e server may run it.
  */

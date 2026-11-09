@@ -1,0 +1,10 @@
+# Netlify hosting (free plan). Next.js runs through Netlify's OpenNext adapter,
+# which Netlify installs and keeps up to date by itself.
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # Skip the browser download from @playwright/test during npm install.
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1"

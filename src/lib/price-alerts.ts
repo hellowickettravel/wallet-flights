@@ -7,6 +7,7 @@
 // same way the fare calendar does and emails the alerts it's now below.
 // Development and the e2e server keep alerts in memory instead. Starts,
 // emails and stops are also written to the admin activity log (src/lib/activity.ts).
+import { isProductionDeploy } from "@/lib/deploy-env";
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { groupByDate, monthSummaries, noFilters } from "@/components/fare-calendar/model";
 import type { Currency } from "@/content/deals";
@@ -275,7 +276,7 @@ const CONFIRM_TTL_MS = 7 * 24 * 60 * 60_000;
 export const CONFIRM_PURPOSE = "price-alert-confirm";
 
 /** Production links always use the canonical host; previews and local runs use their own. */
-export const linkOrigin = (req: Request, canonical: string) => (process.env.VERCEL_ENV === "production" ? canonical : new URL(req.url).origin);
+export const linkOrigin = (req: Request, canonical: string) => (isProductionDeploy() ? canonical : new URL(req.url).origin);
 
 export function calendarLink(origin: string, a: Pick<AlertSpec, "from" | "to" | "trip" | "nights">) {
   const p = new URLSearchParams({ from: a.from.code, to: a.to.code, trip: a.trip });

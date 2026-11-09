@@ -1,3 +1,4 @@
+import { isProductionDeploy } from "@/lib/deploy-env";
 import { NextResponse } from "next/server";
 import { site } from "@/content/site";
 import { guardFormRequest } from "@/lib/api-guard";
@@ -29,7 +30,7 @@ export async function POST(req: Request) {
   const token = createOptInToken(email);
   if (!token) return NextResponse.json({ error: "Sign-up service unavailable" }, { status: 503 });
   // Production links always use the canonical host; previews and local runs use their own.
-  const origin = process.env.VERCEL_ENV === "production" ? site.url : new URL(req.url).origin;
+  const origin = isProductionDeploy() ? site.url : new URL(req.url).origin;
   const link = `${origin}/fare-alerts/confirm?t=${token}`;
   const result = await sendFareAlertConfirmation(email, link);
   if (!result.ok) return NextResponse.json({ error: "Sign-up service unavailable" }, { status: 503 });

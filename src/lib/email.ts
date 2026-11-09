@@ -7,6 +7,7 @@
 // SMTP_HOST and SMTP_PORT have defaults below. With neither, development logs
 // the message and production reports the form as unavailable rather than
 // pretending to send.
+import { isPreviewDeploy } from "@/lib/deploy-env";
 import nodemailer, { type Transporter } from "nodemailer";
 import { formatPrice } from "@/content/deals";
 import { tripText } from "@/content/fare-calendar";
@@ -21,7 +22,7 @@ const user = () => process.env.SMTP_USER || site.email;
 // EMAIL_DRY_RUN=1 (used by the e2e test server) logs instead of sending, even
 // when a key is set, so tests never send real email.
 const dryRun = () => process.env.EMAIL_DRY_RUN === "1";
-const isProd = () => process.env.NODE_ENV === "production" && process.env.VERCEL_ENV !== "preview";
+const isProd = () => process.env.NODE_ENV === "production" && !isPreviewDeploy();
 const inbox = () => process.env.CONTACT_TO || site.email;
 
 /** Whether email can go out: Resend, the mailbox, or a dry run that only logs. */
