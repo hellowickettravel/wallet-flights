@@ -332,3 +332,16 @@ test("delay compensation: claim letter and partners", async ({ page }) => {
   await expect(page.getByText("No win, no fee")).toBeVisible();
   await expect(page.getByRole("link", { name: /Claim with AirHelp/ })).toHaveCount(0);
 });
+
+test("shared API answers vary by query string on the CDN (Netlify keys on path otherwise)", async ({ request }) => {
+  const lhr = await request.get("/api/airport?code=LHR");
+  // The lookup needs the Travelpayouts data API; a sandbox without it gets 404 (never cached).
+  test.skip(lhr.status() !== 200, "airport data API unreachable from this machine");
+  for (const code of ["LHR", "HYD"]) {
+    const res = await request.get(`/api/airport?code=${code}`);
+    expect(res.status()).toBe(200);
+    expect(res.headers()["netlify-vary"]).toBe("query");
+    expect(res.headers()["cache-control"]).toContain("s-maxage=");
+    expect((await res.json()).code).toBe(code);
+  }
+});
