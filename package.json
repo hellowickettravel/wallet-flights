@@ -13,6 +13,7 @@
     "currencies": "node scripts/country-currencies.mjs"
   },
   "dependencies": {
+    "@netlify/blobs": "^11.1.8",
     "@phosphor-icons/react": "^2.1.10",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
