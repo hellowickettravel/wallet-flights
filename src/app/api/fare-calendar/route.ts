@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { fareCalendar } from "@/lib/fare-calendar";
 import { priceAlertsReady } from "@/lib/price-alerts";
+import { sharedCache, noStore } from "@/lib/cache-headers";
 
 const CODE = /^[A-Z]{3}$/;
 
@@ -21,6 +22,6 @@ export async function GET(req: NextRequest) {
   const data = await fareCalendar(origin, destination, currency, p.get("trip") === "return");
   const found = data.out.length > 0;
   return NextResponse.json({ ...data, alerts: priceAlertsReady() }, {
-    headers: { "Cache-Control": found ? "public, s-maxage=3600, stale-while-revalidate=86400" : "no-store" },
+    headers: found ? sharedCache(3600, 86400) : noStore,
   });
 }

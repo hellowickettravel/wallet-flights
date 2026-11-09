@@ -3,6 +3,7 @@ import type { Airport } from "@/content/airports";
 import type { Currency } from "@/content/deals";
 import { placeByCode, startingCity, type Place } from "@/lib/travel-data";
 import { popularFrom } from "@/lib/travelpayouts";
+import { sharedCache } from "@/lib/cache-headers";
 
 export type CalendarStart = {
   /** Where to start from: the `from` asked for, else a city near the visitor, else null (they pick). */
@@ -42,5 +43,5 @@ export async function GET(req: NextRequest) {
   const body: CalendarStart = { from: place ? asAirport(place) : null, currency, destinations };
   // An answer for a named city can be shared; one based on location can't.
   const shared = !!asked && destinations.length > 0;
-  return NextResponse.json(body, { headers: { "Cache-Control": shared ? "public, s-maxage=3600, stale-while-revalidate=86400" : "private, no-store" } });
+  return NextResponse.json(body, { headers: shared ? sharedCache(3600, 86400) : { "Cache-Control": "private, no-store" } });
 }
