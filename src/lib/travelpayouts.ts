@@ -70,7 +70,7 @@ function toFare(r: RawFare, currency: Currency): Fare | null {
 /** Cheapest round-trip fare found recently on a route (any dates). */
 export async function cheapestFare(origin: string, destination: string, currency: Currency): Promise<Fare | null> {
   "use cache";
-  cacheLife("hours");
+  cacheLife("fares");
   cacheTag("tp-prices", `tp-route-${origin}-${destination}`);
   const data = await get<RawFare[]>("prices_for_dates", {
     origin,
@@ -88,7 +88,7 @@ export async function cheapestFare(origin: string, destination: string, currency
 /** Cheapest fare per departure month on a route, for the month calendar. */
 export async function cheapestByMonth(origin: string, destination: string, currency: Currency): Promise<MonthFare[]> {
   "use cache";
-  cacheLife("hours");
+  cacheLife("fares");
   cacheTag("tp-prices", `tp-months-${origin}-${destination}`);
   const data = await get<Record<string, RawFare>>("grouped_prices", {
     origin,
@@ -123,7 +123,7 @@ export async function faresFor(routes: { origin: string; destination: string; cu
  */
 export async function popularFrom(origin: string, currency: Currency): Promise<{ destination: string; price: number }[]> {
   "use cache";
-  cacheLife("hours");
+  cacheLife("fares");
   cacheTag("tp-prices", `tp-popular-${origin}`);
   const token = process.env.TRAVELPAYOUTS_TOKEN;
   if (!token) return [];

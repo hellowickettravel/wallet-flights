@@ -78,13 +78,14 @@ export function routeRights(r: Route) {
 export const isUkOrigin = (r: Route) => ukOrigins.has(r.origin.code);
 
 /**
- * `timeDifference` for a route slug, cached for a few hours: with Cache
+ * `timeDifference` for a route slug, cached for a day: with Cache
  * Components the current time can only be read inside a cache scope, and
- * the answer only changes when clocks change.
+ * the answer only changes when clocks change (twice a year). A shorter life
+ * would make every route page rebuild more often than its fares do.
  */
 export async function routeTimeDifference(slug: string) {
   "use cache";
-  cacheLife("hours");
+  cacheLife("days");
   const r = routeBySlug[slug];
   return r ? timeDifference(r) : null;
 }

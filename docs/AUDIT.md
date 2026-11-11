@@ -157,7 +157,7 @@ Branch `travelpayouts-integration`. Dashboard audit: [`docs/TRAVELPAYOUTS.md`](T
 |---|---|
 | `npm run lint` | Pass, 0 warnings |
 | `npm run typecheck` | Pass |
-| `npm run build` | Pass — 88 routes (+37 `/routes/*`); priced pages revalidate hourly (`cacheLife("hours")`) |
+| `npm run build` | Pass — 88 routes (+37 `/routes/*`); priced pages revalidated hourly then (since 11 Nov 2026: `cacheLife("fares")`, every 6 h) |
 | `npm run test:e2e` (desktop 1440 + Pixel 7) | **146 passed**, 24 skipped (demo-only + one-platform tests) |
 | Demo build (`NEXT_PUBLIC_DEMO_RESULTS=true`) + `flights-demo.spec.ts` | 21 passed |
 | axe WCAG 2.2 AA on every page incl. `/routes/*`, `/flights` gate and widget, `/go` | 0 serious / critical |
@@ -1181,3 +1181,30 @@ No overflow at 390 or 1440 px. Checked in a browser with test fares; real fares 
 
 **Still to review:** home, route pages, guides and the info pages were screenshotted at both widths with no
 overflow, but only /deals, /destinations and /airlines were reviewed closely.
+
+## Go-live on the new Vercel account, live audit and CPU savings (11 Nov 2026)
+
+**Hosting:** the old Vercel account hit its Fluid Active CPU limit, and the Netlify domain was locked to a
+suspended account, so the site moved to a new Vercel account (`realxxxboss-6613's projects`, project
+`wallet-flights`, linked to this repo's `main`). Env vars are set there as sensitive; Upstash for Redis is
+connected (`KV_REST_API_*`). DNS at Hostinger: apex A `216.198.79.1`, `www` CNAME to Vercel, two `_vercel` TXT.
+MX, SPF and DKIM untouched.
+
+**Live audit (walletflights.com):** all 153 sitemap URLs 200 (under 1.2 s); `www` 308s to the apex; HSTS, CSP
+and the other headers present; one canonical, title, description and H1 per page; no partner name in visible
+text. 299 affiliate links, all marker 567389 / trs 344771 with the right campaign and `p`; `/go` hands off to
+`tp.media` and on to the partner with `marker=567389`, and refuses other hosts. Drive rewrites links to
+`mn-tz.com/re` with the same marker. Search suggestions, fare calendar, White Label search (LON→DXB) start
+correctly; real result rows weren't visible from the sandbox (partner hosts blocked there). Contact and
+price-alert emails sent through Resend to info@; bad input gets field errors; bots get a silent 202. Admin
+login, export guard, cron secret check all behave. No horizontal overflow on eight pages at iPhone 13 width.
+
+**CPU savings (owner agreed):**
+- `robots.ts`: training crawlers (GPTBot, ClaudeBot, CCBot, Bytespider, Amazonbot…) and bulk SEO crawlers
+  are now `Disallow: /`. Search engines and AI answer engines stay allowed.
+- `proxy.ts`: the matcher skips crawler and scripted user agents, which never keep cookies and so ran the
+  proxy on every page they fetched.
+- New `fares` cache profile (revalidate 6 h, expire 3 days) for Data API calls; route time differences cache
+  for a day. Priced pages rebuild every 6 h instead of hourly (the fares are 2–7-day-old searches anyway).
+
+**Checks:** lint and typecheck clean; build passes (`/routes/*` now `6h / 3d`); e2e 418 passed, 46 skipped.

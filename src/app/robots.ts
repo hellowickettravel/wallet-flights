@@ -8,8 +8,9 @@ const disallow = ["/api/", "/admin", "/go$", "/go?"];
 
 // Search engines and AI answer engines are named explicitly, so the policy is
 // visible and a future catch-all change can't silently drop them. Training
-// crawlers are allowed too (a new brand benefits from being known to models);
-// move them to a `disallow: "/"` rule if the owner opts out.
+// crawlers and bulk SEO/scraper bots are blocked (owner, 11 Nov 2026): they
+// bring no visitors and their page loads spent Vercel's Fluid Active CPU
+// allowance on the old account.
 const searchAndAnswerBots = [
   "Googlebot",
   "Bingbot",
@@ -23,13 +24,14 @@ const searchAndAnswerBots = [
   "Claude-SearchBot",
   "Claude-User",
 ];
-const trainingBots = ["GPTBot", "ClaudeBot", "Google-Extended", "Applebot-Extended", "CCBot", "meta-externalagent"];
+const trainingBots = ["GPTBot", "ClaudeBot", "Google-Extended", "Applebot-Extended", "CCBot", "meta-externalagent", "Bytespider", "Amazonbot"];
+const bulkCrawlers = ["MJ12bot", "DotBot", "PetalBot", "DataForSeoBot", "BLEXBot", "ImagesiftBot", "Barkrowler"];
 
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       { userAgent: searchAndAnswerBots, allow: "/", disallow },
-      { userAgent: trainingBots, allow: "/", disallow },
+      { userAgent: [...trainingBots, ...bulkCrawlers], disallow: "/" },
       { userAgent: "*", allow: "/", disallow },
     ],
     sitemap: `${site.url}/sitemap.xml`,
