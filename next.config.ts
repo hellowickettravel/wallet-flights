@@ -4,6 +4,13 @@ import { contentSecurityPolicy } from "./src/lib/csp";
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  cacheLife: {
+    // Fares from the Data API are searches people made in the last 2–7 days,
+    // so refreshing them hourly bought little and rebuilt every priced page
+    // (routes, deals, destinations) 24 times a day, the main cost on
+    // Vercel's Fluid Active CPU allowance. Six hours keeps them current.
+    fares: { stale: 300, revalidate: 6 * 60 * 60, expire: 3 * 24 * 60 * 60 },
+  },
   env: {
     NEXT_PUBLIC_BUILD_YEAR: String(new Date().getFullYear()),
     // Vercel's VERCEL_ENV or Netlify's CONTEXT, normalised (see src/lib/deploy-env.ts).

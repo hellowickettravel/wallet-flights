@@ -84,7 +84,7 @@ function compact(raw: RawFare[], today: string): CalendarFare[] {
 /** One-way fares departing in one month. */
 async function monthFares(origin: string, destination: string, month: string, currency: Currency): Promise<CalendarFare[]> {
   "use cache";
-  cacheLife("hours");
+  cacheLife("fares");
   cacheTag("tp-prices", `tp-calendar-${origin}-${destination}`);
   const data = await get<RawFare[]>("prices_for_dates", {
     origin,
